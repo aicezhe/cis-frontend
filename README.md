@@ -1,8 +1,8 @@
 # CIS.PR Frontend
 
-Web app for Russian-speaking students from CIS countries applying to the University of Parma.
+Web app for Russian-speaking students from CIS countries applying to the University of Parma. Structured relocation plan, AI chatbot powered by RAG, and Parma map in one product.
 
-Structured relocation plan, AI chatbot powered by RAG, Parma map, community.
+![CIS.PR welcome screen](./docs/design/01-welcome-first-visit.png)
 
 ## Tech Stack
 
@@ -10,23 +10,15 @@ React, TypeScript, Vite, Tailwind CSS, React Router
 
 ## Design
 
-![CIS.PR screens overview](./docs/design/cispr-screens-overview.png)
-
 [Full Figma file](https://www.figma.com/design/JVjzBULODXS2dX6oOIBMsH/CIS-PR?node-id=1-2&t=g3SphMpDNVGJPXVi-1)
 
-17 screens designed: welcome flow, registration, onboarding quiz across University, Visa, and Travel sections.
+17 screens designed so far: welcome flow, registration, onboarding quiz (University, Visa, Travel sections). All screens available in `docs/design/`.
 
 ## Status
 
-Done:
-- Welcome screens
-- Registration flow (4 steps)
-- Onboarding quiz (10 screens across 3 sections)
+Done: welcome screens, registration flow, onboarding quiz
 
-In progress:
-- Dashboard Your Way
-- Laura chat
-- Parma map
+In progress: dashboard Your Way, Laura chat interface, Parma map, profile
 
 ## Project
 
