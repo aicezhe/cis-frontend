@@ -23,3 +23,32 @@ In progress: dashboard Your Way, Laura chat interface, Parma map, profile
 ## Project
 
 Built solo: product strategy, design, frontend code.
+
+## Development
+
+Требования: Node.js 18+ и npm.
+
+```bash
+# установить зависимости
+npm install
+
+# запустить dev-сервер (http://localhost:5173)
+npm run dev
+
+# собрать продакшен-бандл
+npm run build
+
+# превью продакшен-сборки
+npm run preview
+
+# линтер и форматирование
+npm run lint
+npm run format
+```
+
+Структура `src/`:
+
+- `pages/` — страницы-роуты
+- `components/` — переиспользуемые компоненты
+- `lib/` — утилиты и API-клиент
+- `types/` — TypeScript-типы
