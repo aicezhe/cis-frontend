@@ -4,12 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#F5EDE0',
+        cream: '#F4F1E9',
         'soft-cream': '#FBF6EC',
-        navy: '#1A2438',
-        brick: '#8B4A2F',
-        gold: '#9B8550',
-        green: '#7A9B5A',
+        navy: '#1C2A48',
+        gold: '#B89968',
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'serif'],
