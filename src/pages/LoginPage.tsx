@@ -1,7 +1,8 @@
+import skyline from '../assets/parma design.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
-import skyline from '../assets/parma design.svg';
+
 
 const stars = [
   { top: '6%', left: '12%', size: 3 },
