@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Eye, EyeOff, User } from 'lucide-react';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -12,15 +13,13 @@ export default function RegisterPage() {
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-function canGoNext() {
+  function canGoNext() {
     if (step === 1) {
-      // проверка email — формат
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email.trim());
     }
     if (step === 2) return nickname.trim() !== '';
     if (step === 3) {
-      // возраст — число от 14 до 100
       const ageNum = parseInt(age);
       return !isNaN(ageNum) && ageNum >= 14 && ageNum <= 100;
     }
@@ -105,7 +104,7 @@ function canGoNext() {
                 autoComplete="off"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />
-              <span className="text-navy text-xl">👤</span>
+              <Mail size={20} className="text-navy" />
             </div>
           </>
         )}
@@ -125,7 +124,7 @@ function canGoNext() {
                 autoComplete="off"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />
-              <span className="text-navy text-xl">👤</span>
+              <User size={20} className="text-navy" />
             </div>
           </>
         )}
@@ -136,7 +135,7 @@ function canGoNext() {
               Сколько тебе лет?
             </h1>
             <div className="w-full flex items-center border border-navy rounded-2xl px-5 py-4 mb-6">
-            <input
+              <input
                 type="number"
                 min="0"
                 max="100"
@@ -147,7 +146,7 @@ function canGoNext() {
                 autoComplete="off"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />
-              <span className="text-navy text-xl">👤</span>
+              <User size={20} className="text-navy" />
             </div>
           </>
         )}
@@ -164,14 +163,14 @@ function canGoNext() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={handleKeyDown}
-                autoComplete="off"
+                autoComplete="new-password"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />
               <button
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-navy text-xl"
+                className="text-navy"
               >
-                👁
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
@@ -181,14 +180,14 @@ function canGoNext() {
                 value={passwordRepeat}
                 onChange={(e) => setPasswordRepeat(e.target.value)}
                 onKeyDown={handleKeyDown}
-                autoComplete="off"
+                autoComplete="new-password"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />
               <button
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-navy text-xl"
+                className="text-navy"
               >
-                👁
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
