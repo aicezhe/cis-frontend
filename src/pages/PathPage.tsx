@@ -248,7 +248,8 @@ export default function PathPage() {
                 <img
                   src={section.icon}
                   alt={section.title}
-                  className={'w-12 h-12 ' + (isDone ? 'opacity-70' : '')}
+                  className="w-12 h-12"
+                  style={isDone ? { filter: 'brightness(0) saturate(100%) invert(13%) sepia(25%) saturate(1400%) hue-rotate(196deg) brightness(92%)' } : undefined}
                 />
               </div>
 
