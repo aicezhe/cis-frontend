@@ -109,7 +109,7 @@ export default function LoginPage() {
       </button>
 
       <img
-        src={new URL('../assets/parma_design.svg', import.meta.url).href}
+        src={new URL('../assets/parma design.svg', import.meta.url).href}
         alt="Парма"
         className="w-full"
       />
