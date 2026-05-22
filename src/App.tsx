@@ -3,6 +3,7 @@ import WelcomePage from './pages/WelcomePage';
 import RegisterPage from './pages/RegisterPage';
 import ChangeStagePage from './pages/ChangeStagePage';
 import OnboardingPage from './pages/OnboardingPage';
+import ExpansesPage from './pages/ExpansesPage';
 import QuizVisaPage from './pages/QuizVisaPage';
 import QuizTravelPage from './pages/QuizTravelPage';
 import PathPage from './pages/PathPage';
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/quiz-visa" element={<QuizVisaPage />} />
       <Route path="/quiz-travel" element={<QuizTravelPage />} />
       <Route path="/path" element={<PathPage />} />
+      <Route path="/path/expenses" element={<ExpansesPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />
