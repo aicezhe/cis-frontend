@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Eye, EyeOff } from 'lucide-react';
 
 const stars = [
   { top: '6%', left: '12%', size: 3 },
@@ -35,7 +36,6 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col items-center px-8 overflow-hidden">
 
-      {/* стрелка назад на Welcome */}
       <button
         onClick={() => navigate('/')}
         className="absolute top-12 left-6 text-cream text-2xl z-10"
@@ -43,7 +43,6 @@ export default function LoginPage() {
         ←
       </button>
 
-      {/* звёзды */}
       {stars.map((star, index) => (
         <div
           key={index}
@@ -58,12 +57,10 @@ export default function LoginPage() {
         />
       ))}
 
-      {/* Заголовок Bentornati! */}
       <h1 className="font-serif text-cream text-6xl mt-32 mb-12">
         Bentornati!
       </h1>
 
-      {/* Email */}
       <div className="w-full mb-2">
         <p className="font-serif text-gold text-sm italic mb-2">Email</p>
         <div className="w-full flex items-center border border-navy rounded-2xl px-5 py-4">
@@ -76,11 +73,10 @@ export default function LoginPage() {
             autoComplete="off"
             className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
           />
-          <span className="text-navy text-xl">✉</span>
+          <Mail size={20} className="text-navy" />
         </div>
       </div>
 
-      {/* Пароль */}
       <div className="w-full mt-4 mb-10">
         <p className="font-serif text-gold text-sm italic mb-2">Пароль</p>
         <div className="w-full flex items-center border border-navy rounded-2xl px-5 py-4">
@@ -94,14 +90,13 @@ export default function LoginPage() {
           />
           <button
             onClick={() => setShowPassword(!showPassword)}
-            className="text-navy text-xl"
+            className="text-navy"
           >
-            👁
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Кнопка ВОЙТИ */}
       <button
         onClick={handleLogin}
         disabled={!canLogin}
@@ -113,14 +108,12 @@ export default function LoginPage() {
         ВОЙТИ
       </button>
 
-      {/* Здания Пармы */}
       <img
-        src={new URL('../assets/parma design.svg', import.meta.url).href}
+        src={new URL('../assets/parma_design.svg', import.meta.url).href}
         alt="Парма"
         className="w-full"
       />
 
-      {/* Полоски */}
       <div className="w-full flex flex-col gap-1 pb-6">
         <div className="h-0.5 bg-gold w-full" />
         <div className="h-0.5 bg-gold w-full" />
