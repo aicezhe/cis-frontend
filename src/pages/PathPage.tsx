@@ -169,15 +169,24 @@ export default function PathPage() {
   // готовим разделы для сетки
   const sections = sectionsOrder.map((id, i) => {
     const base = sectionsData[id];
-    const isCompletedSection = i < passedIndex;
-    const progress = getSectionProgress(id, isCompletedSection);
+    const isCompletedByQuiz = i < passedIndex;
+    const progress = getSectionProgress(id, isCompletedByQuiz);
+    const isCompletedSection = isCompletedByQuiz || progress === 100;
     const status = isCompletedSection ? 'done' : (i === passedIndex ? 'current' : 'future');
     return { id, title: base.title, icon: base.icon, status, progress };
   });
 
-  // карточка "Сейчас важно" — берём из текущего раздела
-  const currentSectionData = sectionsData[passed];
-  const currentStep = getCurrentStep(passed);
+  // карточка "Сейчас важно" — ищем первый невыполненный шаг во всех разделах по порядку
+  let currentStep: any = null;
+  let currentSectionData: any = sectionsData[passed];
+  for (const sectionKey of sectionsOrder) {
+    const step = getCurrentStep(sectionKey);
+    if (step) {
+      currentStep = step;
+      currentSectionData = sectionsData[sectionKey];
+      break;
+    }
+  }
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -239,12 +248,12 @@ export default function PathPage() {
               }
             >
               {isDone && (
-                <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-navy flex items-center justify-center">
+                <div className="absolute top-3 left-3 w-7 h-7 rounded-full bg-navy flex items-center justify-center">
                   <span className="text-gold text-base">✓</span>
                 </div>
               )}
 
-              <div className={isDone ? 'flex justify-start' : 'flex justify-end'}>
+              <div className="flex justify-end">
                 <img
                   src={section.icon}
                   alt={section.title}
