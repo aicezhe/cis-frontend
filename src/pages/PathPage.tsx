@@ -248,19 +248,20 @@ export default function PathPage() {
               }
             >
               {isDone && (
-                <div className="absolute top-3 left-3 w-7 h-7 rounded-full bg-navy flex items-center justify-center">
+                <div className="absolute top-3 left-3 w-7 h-7 rounded-full bg-navy flex items-center justify-center z-10">
                   <span className="text-gold text-base">✓</span>
                 </div>
               )}
 
-              <div className="flex justify-end">
-                <img
-                  src={section.icon}
-                  alt={section.title}
-                  className="w-12 h-12"
-                  style={isDone ? { filter: 'brightness(0) saturate(100%) invert(13%) sepia(25%) saturate(1400%) hue-rotate(196deg) brightness(92%)' } : undefined}
-                />
-              </div>
+              {/* iconUni и iconInParma — растровые SVG с фото внутри, фильтр делает их сплошным синим блоком, поэтому красим только векторные visa/travel */}
+              <img
+                src={section.icon}
+                alt={section.title}
+                className="absolute top-3 right-3 w-10 h-10"
+                style={isDone && (section.id === 'visa' || section.id === 'travel')
+                  ? { filter: 'brightness(0) saturate(100%) invert(13%) sepia(25%) saturate(1400%) hue-rotate(196deg) brightness(92%)' }
+                  : undefined}
+              />
 
               <div className="mt-auto text-left">
                 <h4 className={
