@@ -294,20 +294,14 @@ export default function PathPage() {
       <h3 className="font-serif text-gold text-lg italic px-6 mt-8 mb-2">
         Расходы
       </h3>
-      <button
-        onClick={() => navigate('/path/expenses')}
-        className="mx-6 bg-soft-cream border border-navy/25 rounded-2xl p-5 flex items-center gap-4"
-      >
-        <div className="flex-1">
-          <p className="font-serif text-navy text-lg">
-            €500 <span className="text-navy/60 text-sm">из €2000</span>
-          </p>
-          <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
-            <div className="h-full bg-navy rounded-full" style={{ width: '25%' }} />
-          </div>
+      <div className="mx-6 bg-soft-cream border border-navy/25 rounded-2xl p-5">
+        <p className="font-serif text-navy text-lg">
+          €500 <span className="text-navy/60 text-sm">из €2000</span>
+        </p>
+        <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
+          <div className="h-full bg-navy rounded-full" style={{ width: '25%' }} />
         </div>
-        <span className="text-navy text-2xl">→</span>
-      </button>
+      </div>
 
       <TabBar active="path" />
 
