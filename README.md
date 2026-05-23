@@ -12,7 +12,7 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 | Welcome | Registration | Quiz |
 |---------|-------------|------|
@@ -24,7 +24,7 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 
 ---
 
-## 🎯 About the project
+## About the project
 
 **The problem:** Applying to an Italian university as a CIS student involves a maze of bureaucracy — entrance exams, visa types, document legalisation, housing deadlines, and culture shock. Most students navigate this alone, relying on scattered Telegram threads and outdated blogs.
 
@@ -34,7 +34,7 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 
 ---
 
-## ✨ Features
+## Features
 
 - [x] Welcome screen, login, and multi-step registration flow
 - [x] Stage picker — 4 life-cycle categories (apply, visa, move, settle)
@@ -49,7 +49,7 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 
 ---
 
-## 🛠 Tech stack
+## Tech stack
 
 ### Frontend
 | Layer | Technology |
@@ -74,7 +74,7 @@ FastAPI · PostgreSQL · Supabase · Anthropic API
 
 ---
 
-## 📦 Project structure
+## Project structure
 
 ```
 src/
@@ -102,7 +102,7 @@ src/
 
 ---
 
-## 🚀 Running locally
+## Running locally
 
 Requires **Node.js 18+**.
 
@@ -117,7 +117,7 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ---
 
-## 🧪 Running tests
+## Running tests
 
 ```bash
 npm test
@@ -125,7 +125,7 @@ npm test
 
 ---
 
-## 📍 Roadmap
+## Roadmap
 
 - [ ] Backend integration — FastAPI + PostgreSQL
 - [ ] Laura RAG chatbot — Anthropic API + pgvector
@@ -135,11 +135,11 @@ npm test
 
 ---
 
-## 👤 Author
+## Author
 
 **Anna Zheleikina** — Management Engineering student, Università di Parma
 
-[LinkedIn →](https://linkedin.com/in/your-handle) <!-- replace with your profile URL -->
+[LinkedIn →](https://www.linkedin.com/in/anna-zheleikina-136094291/?locale=en) <!-- replace with your profile URL -->
 
 ---
 
