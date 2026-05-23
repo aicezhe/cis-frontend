@@ -13,6 +13,7 @@ const sectionsData: Record<string, any> = {
     title: 'УНИВЕР',
     titleFull: 'Университет',
     icon: iconUni,
+    budget: 2000,
     steps: [
       { num: 1, title: 'Выбор программы', deadline: 'актуально', price: '€0', substeps: [] },
       { num: 2, title: 'Проверка учебной базы', deadline: '14 дней', price: '€0', substeps: [] },
@@ -35,6 +36,7 @@ const sectionsData: Record<string, any> = {
     title: 'ВИЗА',
     titleFull: 'Виза',
     icon: iconVisa,
+    budget: 600,
     steps: [
       { num: 1, title: 'Понять свою схему', deadline: '3 дня', price: '€0', substeps: [
         { title: 'Консульский округ', price: '€0' },
@@ -87,6 +89,7 @@ const sectionsData: Record<string, any> = {
     title: 'ПЕРЕЕЗД',
     titleFull: 'Переезд',
     icon: iconTravel,
+    budget: 1700,
     steps: [
       { num: 1, title: 'Билеты в Италию', deadline: 'актуально', price: '€500', substeps: [] },
       { num: 2, title: 'Поиск жилья', deadline: 'актуально', price: '€450', substeps: [] },
@@ -100,6 +103,7 @@ const sectionsData: Record<string, any> = {
     title: 'В ПАРМЕ',
     titleFull: 'В Парме',
     icon: iconInParma,
+    budget: 3000,
     steps: [
       { num: 1, title: 'Медицина', deadline: 'актуально', price: '€150', substeps: [] },
       { num: 2, title: 'Транспорт', deadline: '7 дней', price: '€100', substeps: [] },
@@ -115,6 +119,33 @@ function getItemId(section: string, stepNum: number, subIndex: number | null = n
   return subIndex === null
     ? `${section}-step-${stepNum}`
     : `${section}-step-${stepNum}-sub-${subIndex}`;
+}
+
+// '€200' → 200, '€100–200' → 150, '~€170' → 170, '€0' → 0
+function parsePrice(price: string): number {
+  const cleaned = price.replace(/[€~\s]/g, '');
+  if (cleaned.includes('–') || cleaned.includes('-')) {
+    const [a, b] = cleaned.split(/[–-]/).map(Number);
+    return Math.round((a + b) / 2);
+  }
+  return parseInt(cleaned) || 0;
+}
+
+function getSectionSpent(sectionKey: string, isCompletedSection: boolean): number {
+  const data = sectionsData[sectionKey];
+  if (isCompletedSection) return data.budget;
+  const completed = loadCompleted(sectionKey);
+  let spent = 0;
+  data.steps.forEach((step: any) => {
+    if (step.substeps.length === 0) {
+      if (completed.includes(getItemId(sectionKey, step.num))) spent += parsePrice(step.price);
+    } else {
+      step.substeps.forEach((sub: any, i: number) => {
+        if (completed.includes(getItemId(sectionKey, step.num, i))) spent += parsePrice(sub.price);
+      });
+    }
+  });
+  return spent;
 }
 
 function loadCompleted(section: string): string[] {
@@ -173,8 +204,19 @@ export default function PathPage() {
     const progress = getSectionProgress(id, isCompletedByQuiz);
     const isCompletedSection = isCompletedByQuiz || progress === 100;
     const status = isCompletedSection ? 'done' : (i === passedIndex ? 'current' : 'future');
-    return { id, title: base.title, icon: base.icon, status, progress };
+    return { id, title: base.title, icon: base.icon, status, progress, isCompletedSection };
   });
+
+  // общие расходы — сумма по всем разделам
+  const totalSpent = sections.reduce(
+    (sum, s) => sum + getSectionSpent(s.id, s.isCompletedSection),
+    0
+  );
+  const totalBudget = sectionsOrder.reduce(
+    (sum, id) => sum + sectionsData[id].budget,
+    0
+  );
+  const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
 
   // карточка "Сейчас важно" — ищем первый невыполненный шаг во всех разделах по порядку
   let currentStep: any = null;
@@ -253,12 +295,11 @@ export default function PathPage() {
                 </div>
               )}
 
-              {/* iconUni и iconInParma — растровые SVG с фото внутри, фильтр делает их сплошным синим блоком, поэтому красим только векторные visa/travel */}
               <img
                 src={section.icon}
                 alt={section.title}
                 className="absolute top-3 right-3 w-10 h-10"
-                style={isDone && (section.id === 'visa' || section.id === 'travel')
+                style={isDone
                   ? { filter: 'brightness(0) saturate(100%) invert(13%) sepia(25%) saturate(1400%) hue-rotate(196deg) brightness(92%)' }
                   : undefined}
               />
@@ -296,10 +337,13 @@ export default function PathPage() {
       </h3>
       <div className="mx-6 bg-soft-cream border border-navy/25 rounded-2xl p-5">
         <p className="font-serif text-navy text-lg">
-          €500 <span className="text-navy/60 text-sm">из €2000</span>
+          €{totalSpent} <span className="text-navy/60 text-sm">из €{totalBudget}</span>
         </p>
         <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
-          <div className="h-full bg-navy rounded-full" style={{ width: '25%' }} />
+          <div
+            className="h-full bg-navy rounded-full transition-all duration-500"
+            style={{ width: expensesPercent + '%' }}
+          />
         </div>
       </div>
 
