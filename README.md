@@ -16,11 +16,11 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 
 | Welcome | Registration | Quiz |
 |---------|-------------|------|
-| ![Welcome](./docs/screenshots/welcomePage.png) | ![Registration](./docs/screenshots/regestrationPage.png) | ![Quiz](./docs/screenshots/testPage.png) |
+| <img src="./docs/screenshots/welcomePage.png" width="200"/> | <img src="./docs/screenshots/regestrationPage.png" width="200"/> | <img src="./docs/screenshots/testPage.png" width="200"/> |
 
 | Dashboard | Stage Picker | Laura (AI chat) | Loci (Map) |
 |-----------|-------------|-----------------|-----------|
-| ![Dashboard](./docs/screenshots/dashboardPage.png) | ![Choose](./docs/screenshots/choosePage.png) | ![Laura](./docs/screenshots/lauraPage.png) | ![Loci](./docs/screenshots/lociPage.png) |
+| <img src="./docs/screenshots/dashboardPage.png" width="200"/> | <img src="./docs/screenshots/choosePage.png" width="200"/> | <img src="./docs/screenshots/lauraPage.png" width="200"/> | <img src="./docs/screenshots/lociPage.png" width="200"/> |
 
 ---
 
