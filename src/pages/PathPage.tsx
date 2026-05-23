@@ -300,7 +300,7 @@ export default function PathPage() {
                 alt={section.title}
                 className="absolute top-3 right-3 w-10 h-10"
                 style={isDone
-                  ? { filter: 'brightness(0) saturate(100%) invert(13%) sepia(25%) saturate(1400%) hue-rotate(196deg) brightness(92%)' }
+                  ? { filter: 'brightness(0) saturate(100%) invert(97%) sepia(8%) saturate(394%) hue-rotate(7deg) brightness(99%) contrast(93%)' }
                   : undefined}
               />
 
