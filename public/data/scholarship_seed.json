@@ -1,0 +1,61 @@
+{
+  "provider": "ER.GO",
+  "provider_full": "Azienda Regionale per il Diritto agli Studi Superiori dell'Emilia-Romagna",
+  "academic_year": "2025-2026",
+  "source_url": "https://www.er-go.it",
+  "source_bando": "https://www.er-go.it/cosa-fare-per/bandi-di-concorso/leggi-il-bando/guida-al-bando-2025_26",
+  "isee_threshold_eur": 25000,
+  "isee_note_ru": "Базовый порог ISEE для подачи — 25 000 €. Превышение порога — отказ автоматически.",
+  "amounts_eur": {
+    "fuori_sede": 7072,
+    "pendolare": 4132,
+    "in_sede": 2850
+  },
+  "amounts_note_ru": "Сумма зависит от статуса проживания: fuori sede — для тех, кто снимает жильё в Парме и прописан далеко (это про большинство СНГ-студентов). Pendolare — если ездишь каждый день. In sede — если прописан в Парме.",
+  "bonuses": [
+    {
+      "code": "low_isee",
+      "title_ru": "Низкий ISEE",
+      "condition_ru": "ISEE ≤ 12 500 €",
+      "modifier": "+15%",
+      "stackable": true
+    },
+    {
+      "code": "stem_female",
+      "title_ru": "Девушка на STEM-курсе",
+      "condition_ru": "Студентка на STEM-программе (см. is_stem курса)",
+      "modifier": "+20%",
+      "stackable": true,
+      "depends_on_course": true
+    },
+    {
+      "code": "disability",
+      "title_ru": "Инвалидность",
+      "condition_ru": "Инвалидность ≥ 66%",
+      "modifier": "+10%",
+      "stackable": true
+    }
+  ],
+  "benefits": [
+    "Полное освобождение от tasse универа (включая возврат региональной таксы 140 €)",
+    "Доступ к общежитиям ER.GO (отдельная заявка)",
+    "Льготный доступ к столовым ER.GO",
+    "Контрибуты на международную мобильность (Erasmus и пр.)"
+  ],
+  "deadlines_2025_26": {
+    "matricole_borsa_e_alloggio": "01.09.2025",
+    "anni_successivi_alloggio": "08.08.2025",
+    "contributi_straordinari": "01.10.2025 – 01.12.2025",
+    "contributi_disabilita": "20.01.2026 – 05.03.2026",
+    "tirocinio_post_lauream": "26.01.2026 – 29.05.2026"
+  },
+  "deadlines_note_ru": "Главный дедлайн для новичков — 1 сентября. Подаёшь онлайн через портал ER.GO (Dossier Utente). Даты обновляются каждый год — проверяй официальный bando.",
+  "how_to_apply_ru": [
+    "Получить ISEE (или Parificato ISEE для не-резидентов ЕС) — через CAF",
+    "Зарегистрироваться на портале ER.GO → Dossier Utente",
+    "Заполнить заявку на borsa di studio (и опционально на alloggio)",
+    "Подтвердить заявку до дедлайна",
+    "Догрузить контракт жилья до 2 февраля 2026 (если fuori sede)"
+  ],
+  "disclaimer_ru": "Данные актуальны на bando 2025/2026. Каждый год суммы и сроки обновляются. Перед подачей всегда проверяй er-go.it/bandi"
+}

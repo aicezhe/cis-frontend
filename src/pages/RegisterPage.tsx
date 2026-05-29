@@ -2,16 +2,38 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff, User } from 'lucide-react';
 
+const COUNTRIES = ['Россия', 'Беларусь', 'Украина', 'Казахстан'];
+
+function Corners() {
+  const base = 'absolute w-3 h-3 border-gold';
+  return (
+    <>
+      <span className={base + ' top-2 left-2 border-t-2 border-l-2'} />
+      <span className={base + ' top-2 right-2 border-t-2 border-r-2'} />
+      <span className={base + ' bottom-2 left-2 border-b-2 border-l-2'} />
+      <span className={base + ' bottom-2 right-2 border-b-2 border-r-2'} />
+    </>
+  );
+}
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
+  // Original 4 steps — unchanged
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // New steps: 5=gender, 6=country, 7=city (only if Russia)
+  const [gender, setGender] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+
+  const totalSteps = step === 7 ? 7 : 6;
 
   function canGoNext() {
     if (step === 1) {
@@ -24,33 +46,45 @@ export default function RegisterPage() {
       return !isNaN(ageNum) && ageNum >= 14 && ageNum <= 100;
     }
     if (step === 4) {
-      return (
-        password.trim().length >= 6 &&
-        password === passwordRepeat
-      );
+      return password.trim().length >= 6 && password === passwordRepeat;
     }
+    if (step === 5) return gender !== '';
+    if (step === 6) return country !== '';
+    if (step === 7) return city.trim() !== '';
     return false;
+  }
+
+  function finish() {
+    localStorage.setItem('cispr_email', email);
+    localStorage.setItem('cispr_nickname', nickname);
+    localStorage.setItem('cispr_age', age);
+    localStorage.setItem('cispr_gender', gender === 'Девушка' ? 'f' : 'm');
+    localStorage.setItem('cispr_country', country);
+    if (country === 'Россия' && city.trim()) {
+      localStorage.setItem('cispr_city', city.trim());
+    }
+    navigate('/change-stage');
   }
 
   function goNext() {
     if (!canGoNext()) return;
-    if (step < 4) {
-      setStep(step + 1);
-    } else {
-      console.log('Регистрация:', { email, nickname, age, password });
-      localStorage.setItem('cispr_email', email);
-      localStorage.setItem('cispr_nickname', nickname);
-      localStorage.setItem('cispr_age', age);
-      navigate('/change-stage');
+    if (step < 4) { setStep(step + 1); return; }
+    if (step === 4) { setStep(5); return; }
+    if (step === 5) { setStep(6); return; }
+    if (step === 6) {
+      if (country === 'Россия') { setStep(7); return; }
+      finish();
+      return;
     }
+    if (step === 7) { finish(); return; }
   }
 
   function goBack() {
-    if (step > 1) {
-      setStep(step - 1);
-    } else {
-      navigate('/');
-    }
+    if (step === 7) { setStep(6); return; }
+    if (step === 6) { setStep(5); return; }
+    if (step === 5) { setStep(4); return; }
+    if (step > 1) { setStep(step - 1); return; }
+    navigate('/');
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -71,7 +105,7 @@ export default function RegisterPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3, 4].map((n) => (
+          {Array.from({ length: totalSteps }, (_, i) => i + 1).map((n) => (
             <div
               key={n}
               className={
@@ -201,6 +235,75 @@ export default function RegisterPage() {
                 Пароли не совпадают
               </p>
             )}
+          </>
+        )}
+
+        {step === 5 && (
+          <>
+            <h1 className="font-serif text-navy text-3xl text-center mb-10">
+              Ты девушка или парень?
+            </h1>
+            <div className="w-full flex flex-col gap-4">
+              {['Девушка', 'Парень'].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setGender(option)}
+                  className={
+                    'relative font-serif text-xl rounded-2xl py-6 border ' +
+                    (gender === option
+                      ? 'bg-navy text-gold border-navy'
+                      : 'bg-cream text-navy border-navy/30')
+                  }
+                >
+                  {gender === option && <Corners />}
+                  {option}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 6 && (
+          <>
+            <h1 className="font-serif text-navy text-3xl text-center mb-10">
+              Из какой ты страны?
+            </h1>
+            <div className="w-full flex flex-col gap-4">
+              {COUNTRIES.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setCountry(option)}
+                  className={
+                    'relative font-serif text-xl rounded-2xl py-6 border ' +
+                    (country === option
+                      ? 'bg-navy text-gold border-navy'
+                      : 'bg-cream text-navy border-navy/30')
+                  }
+                >
+                  {country === option && <Corners />}
+                  {option}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 7 && (
+          <>
+            <h1 className="font-serif text-navy text-3xl text-center mb-10">
+              Из какого ты города?
+            </h1>
+            <div className="w-full flex items-center border border-navy rounded-2xl px-5 py-4 mb-6">
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Москва"
+                autoComplete="off"
+                className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
+              />
+            </div>
           </>
         )}
 

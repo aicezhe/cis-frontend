@@ -22,6 +22,13 @@ export default function QuizTravelPage() {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
 
+  function determineResidenceStatus(country: string | null, departCity: string): string {
+    if (!country || country.toLowerCase() !== 'италия') return 'fuori_sede';
+    const c = departCity.toLowerCase().trim();
+    if (c.includes('parma') || c.includes('парм')) return 'in_sede';
+    return 'pendolare';
+  }
+
   function goNext() {
     if (step < 3) {
       setStep(step + 1);
@@ -30,6 +37,8 @@ export default function QuizTravelPage() {
       localStorage.setItem('cispr_passed_quiz', 'travel');
       if (address) localStorage.setItem('cispr_address', address);
       if (city) localStorage.setItem('cispr_city', city);
+      const country = localStorage.getItem('cispr_country');
+      localStorage.setItem('cispr_residence_status', determineResidenceStatus(country, city));
       navigate('/path');
     }
   }

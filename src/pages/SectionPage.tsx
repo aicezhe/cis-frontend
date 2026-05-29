@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import iconTime from '../assets/time sign.svg';
+import { MyCourseButton } from '../components/path/MyCourseButton';
 
 const sectionsData: Record<string, any> = {
   uni: {
@@ -280,6 +281,12 @@ export default function SectionPage() {
           </div>
         </div>
       </div>
+
+      {sectionKey === 'uni' && (
+        <div className="mx-6 mt-4">
+          <MyCourseButton />
+        </div>
+      )}
 
       {/* Сейчас важно — берёт текущий невыполненный шаг */}
       {currentStep && (
