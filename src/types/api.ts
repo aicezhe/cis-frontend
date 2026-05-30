@@ -66,6 +66,11 @@ export interface CourseFull extends CourseCatalog {
   dept_name: string;
   url: string;
   sbocchi_raw: string;
+  // ИИ-оценки 1..5 (0 — ещё не сгенерировано)
+  difficulty: number;
+  demand_it: number;
+  difficulty_note: string;
+  demand_note: string;
   subjects: CourseSubject[];
 }
 

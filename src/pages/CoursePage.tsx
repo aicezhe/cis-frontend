@@ -9,6 +9,36 @@ const LEVEL_LABEL: Record<string, string> = {
   magistrale: 'Магистратура',
 };
 
+// Полоса-шкала 1..5 с подписью. value=0 → не показываем (нет оценки).
+function ScaleBar({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: number;
+  note: string;
+}) {
+  const pct = Math.max(0, Math.min(100, (value / 5) * 100));
+  return (
+    <div className="bg-soft-cream border border-navy/20 rounded-2xl px-4 py-3">
+      <div className="flex items-baseline justify-between mb-2">
+        <span className="font-serif text-navy text-sm font-bold">{label}</span>
+        <span className="font-serif text-gold text-sm font-bold">{value}/5</span>
+      </div>
+      <div className="h-2 rounded-full bg-navy/10 overflow-hidden">
+        <div
+          className="h-full rounded-full bg-navy transition-all duration-700"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {note && (
+        <p className="font-serif text-navy/60 text-xs italic mt-2">{note}</p>
+      )}
+    </div>
+  );
+}
+
 function groupByYear(subjects: CourseSubject[]): Map<number | string, CourseSubject[]> {
   const map = new Map<number | string, CourseSubject[]>();
   for (const s of subjects) {
@@ -107,6 +137,34 @@ export default function CoursePage() {
           )}
         </div>
       </div>
+
+      {/* ИИ-оценки */}
+      {(course.difficulty > 0 || course.demand_it > 0) && (
+        <>
+          <h3 className="font-serif text-gold text-base font-bold px-6 mt-8 mb-3">
+            Оценка ИИ
+          </h3>
+          <div className="px-6 flex flex-col gap-3">
+            {course.difficulty > 0 && (
+              <ScaleBar
+                label="Сложность обучения"
+                value={course.difficulty}
+                note={course.difficulty_note}
+              />
+            )}
+            {course.demand_it > 0 && (
+              <ScaleBar
+                label="Востребованность в Италии"
+                value={course.demand_it}
+                note={course.demand_note}
+              />
+            )}
+          </div>
+          <p className="font-serif text-navy/40 text-[11px] italic px-6 mt-2">
+            Ориентировочная оценка ИИ, не официальная статистика
+          </p>
+        </>
+      )}
 
       {/* Описание */}
       {course.short_ru && (
