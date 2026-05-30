@@ -54,6 +54,12 @@ export default function SettingsPage() {
     navigate('/change-stage');
   }
 
+  function handleChangeCourse() {
+    navigate('/choice-program');
+  }
+
+  const courseName = localStorage.getItem('cispr_course_name');
+
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-10">
 
@@ -100,13 +106,26 @@ export default function SettingsPage() {
 
         <button
           onClick={handleEditPath}
-          className="w-full flex items-center justify-between px-5 py-4"
+          className="w-full flex items-center justify-between px-5 py-4 border-b border-navy/10"
         >
           <div className="text-left">
             <span className="font-serif text-navy text-base block">Редактировать путь</span>
             <span className="font-serif text-gold text-xs italic">сменить этап обучения</span>
           </div>
           <span className="text-navy/60 text-xl">→</span>
+        </button>
+
+        <button
+          onClick={handleChangeCourse}
+          className="w-full flex items-center justify-between px-5 py-4"
+        >
+          <div className="text-left min-w-0 pr-3">
+            <span className="font-serif text-navy text-base block">Поменять мой курс</span>
+            <span className="font-serif text-gold text-xs italic truncate block">
+              {courseName || 'курс ещё не выбран'}
+            </span>
+          </div>
+          <span className="text-navy/60 text-xl flex-shrink-0">→</span>
         </button>
 
       </div>

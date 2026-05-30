@@ -104,7 +104,11 @@ export default function ChoiceProgramPage() {
     } finally {
       localStorage.setItem('cispr_course_id', selected.id);
       localStorage.setItem('cispr_course_name', selected.name);
-      localStorage.setItem('cispr_passed_quiz', 'uni');
+      // стадию ставим только при первом прохождении онбординга (значения ещё нет).
+      // при смене курса из настроек НЕ откатываем стадию назад на 'uni'.
+      if (!localStorage.getItem('cispr_passed_quiz')) {
+        localStorage.setItem('cispr_passed_quiz', 'uni');
+      }
       setSaving(false);
       navigate('/course/' + selected.id);
     }

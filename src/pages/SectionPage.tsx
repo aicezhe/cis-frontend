@@ -446,20 +446,43 @@ export default function SectionPage() {
                       </button>
                     </div>
                   ) : sectionKey === 'uni' && step.num === 1 ? (
-                    <div className="flex flex-col gap-3">
-                      <p className="font-serif text-navy/70 text-sm">
-                        Подбери и открой свою программу из каталога UniPR.
-                      </p>
-                      <button
-                        onClick={() => {
-                          const id = localStorage.getItem('cispr_course_id');
-                          navigate(id ? '/course/' + id : '/choice-program');
-                        }}
-                        className="font-serif text-cream bg-navy rounded-full py-2.5 text-sm"
-                      >
-                        {localStorage.getItem('cispr_course_id') ? 'Моя программа' : 'Выбрать программу'}
-                      </button>
-                    </div>
+                    (() => {
+                      const courseId = localStorage.getItem('cispr_course_id');
+                      const courseName = localStorage.getItem('cispr_course_name');
+                      return courseId ? (
+                        <div className="flex flex-col gap-3">
+                          <p className="font-serif text-gold text-xs italic">
+                            Твоя программа
+                          </p>
+                          <div className="bg-cream border border-navy/20 rounded-2xl px-4 py-3">
+                            <p className="font-serif text-navy text-base font-bold leading-snug">
+                              {courseName || 'Программа выбрана'}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => navigate('/course/' + courseId)}
+                            className="font-serif text-cream bg-navy rounded-full py-2.5 text-sm"
+                          >
+                            Открыть программу
+                          </button>
+                          <p className="font-serif text-navy/50 text-xs italic">
+                            Поменять курс можно в Настройках.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-3">
+                          <p className="font-serif text-navy/70 text-sm">
+                            Подбери и открой свою программу из каталога UniPR.
+                          </p>
+                          <button
+                            onClick={() => navigate('/choice-program')}
+                            className="font-serif text-cream bg-navy rounded-full py-2.5 text-sm"
+                          >
+                            Выбрать программу
+                          </button>
+                        </div>
+                      );
+                    })()
                   ) : (
                     <p className="font-serif text-navy/50 text-sm italic">
                       Здесь будут расписаны подробные действия по этому шагу

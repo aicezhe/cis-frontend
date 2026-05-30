@@ -45,6 +45,19 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await api.registerAndLogin(email.trim(), nickname.trim(), password);
+      // новый аккаунт начинает с чистого листа: убираем прогресс/стадию/курс,
+      // оставшиеся от предыдущих сессий (иначе в кабинете всплывают ложные 100%)
+      [
+        'cispr_passed_quiz',
+        'cispr_course_id',
+        'cispr_course_name',
+        'cispr_quiz_level',
+        'cispr_quiz_lang',
+        'cispr_quiz_dept',
+      ].forEach((k) => localStorage.removeItem(k));
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith('cispr_done_'))
+        .forEach((k) => localStorage.removeItem(k));
       // сохраняем для мгновенного отображения в шапке/настройках
       localStorage.setItem('cispr_email', email.trim());
       localStorage.setItem('cispr_nickname', nickname.trim());

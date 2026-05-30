@@ -36,9 +36,9 @@ export default function ChangeStagePage() {
   function handlePick(stage: { id: string; route: string }) {
     setPressed(stage.id);
     setTimeout(() => {
-      if (stage.id === 'parma') {
-        localStorage.setItem('cispr_passed_quiz', 'parma');
-      }
+      // сразу фиксируем выбранную стадию, чтобы кабинет не показывал
+      // ложный прогресс от старого значения (баг "виза 100%")
+      localStorage.setItem('cispr_passed_quiz', stage.id);
       navigate(stage.route);
     }, 250);
   }
