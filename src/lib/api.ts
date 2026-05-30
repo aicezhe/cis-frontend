@@ -115,6 +115,17 @@ export const api = {
     });
   },
 
+  // Проверка занятости email/username для пошаговой валидации регистрации
+  async checkAvailability(params: { email?: string; username?: string }): Promise<{
+    email_taken?: boolean;
+    username_taken?: boolean;
+  }> {
+    const q = new URLSearchParams();
+    if (params.email) q.set('email', params.email);
+    if (params.username) q.set('username', params.username);
+    return request(`/api/v1/auth/availability?${q.toString()}`);
+  },
+
   async login(email: string, password: string): Promise<TokenResponse> {
     return request<TokenResponse>('/api/v1/auth/login', {
       method: 'POST',

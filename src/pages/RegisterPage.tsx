@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState('');
 
   function canGoNext() {
@@ -36,12 +37,49 @@ export default function RegisterPage() {
   }
 
   async function goNext() {
-    if (!canGoNext() || loading) return;
+    if (!canGoNext() || loading || checking) return;
+    setError('');
+
+    // Шаг 1 — проверяем, не занят ли email, прежде чем идти дальше
+    if (step === 1) {
+      setChecking(true);
+      try {
+        const { email_taken } = await api.checkAvailability({ email: email.trim() });
+        if (email_taken) {
+          setError('Этот email уже зарегистрирован');
+          return;
+        }
+      } catch {
+        // сеть/сервер недоступны — не блокируем шаг, финальная проверка будет при регистрации
+      } finally {
+        setChecking(false);
+      }
+      setStep(2);
+      return;
+    }
+
+    // Шаг 2 — проверяем никнейм
+    if (step === 2) {
+      setChecking(true);
+      try {
+        const { username_taken } = await api.checkAvailability({ username: nickname.trim() });
+        if (username_taken) {
+          setError('Этот никнейм уже занят');
+          return;
+        }
+      } catch {
+        // не блокируем — проверим при регистрации
+      } finally {
+        setChecking(false);
+      }
+      setStep(3);
+      return;
+    }
+
     if (step < 4) {
       setStep(step + 1);
       return;
     }
-    setError('');
     setLoading(true);
     try {
       await api.registerAndLogin(email.trim(), nickname.trim(), password);
@@ -79,6 +117,7 @@ export default function RegisterPage() {
   }
 
   function goBack() {
+    setError('');
     if (step > 1) {
       setStep(step - 1);
     } else {
@@ -131,7 +170,7 @@ export default function RegisterPage() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setError(''); }}
                 onKeyDown={handleKeyDown}
                 placeholder="anna@mail.ru"
                 autoComplete="off"
@@ -151,7 +190,7 @@ export default function RegisterPage() {
               <input
                 type="text"
                 value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => { setNickname(e.target.value); setError(''); }}
                 onKeyDown={handleKeyDown}
                 placeholder="aicezhe"
                 autoComplete="off"
@@ -245,13 +284,13 @@ export default function RegisterPage() {
 
         <button
           onClick={goNext}
-          disabled={!nextEnabled || loading}
+          disabled={!nextEnabled || loading || checking}
           className={
             'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
-            (nextEnabled && !loading ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
+            (nextEnabled && !loading && !checking ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
           }
         >
-          {loading ? '...' : 'ДАЛЕЕ'}
+          {loading || checking ? '...' : 'ДАЛЕЕ'}
         </button>
 
       </div>
