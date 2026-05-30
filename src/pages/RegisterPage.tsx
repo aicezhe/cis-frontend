@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff, User } from 'lucide-react';
+import { api, ApiError } from '../lib/api';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   function canGoNext() {
     if (step === 1) {
@@ -32,16 +35,33 @@ export default function RegisterPage() {
     return false;
   }
 
-  function goNext() {
-    if (!canGoNext()) return;
+  async function goNext() {
+    if (!canGoNext() || loading) return;
     if (step < 4) {
       setStep(step + 1);
-    } else {
-      console.log('Регистрация:', { email, nickname, age, password });
-      localStorage.setItem('cispr_email', email);
-      localStorage.setItem('cispr_nickname', nickname);
+      return;
+    }
+    setError('');
+    setLoading(true);
+    try {
+      await api.registerAndLogin(email.trim(), nickname.trim(), password);
+      // сохраняем для мгновенного отображения в шапке/настройках
+      localStorage.setItem('cispr_email', email.trim());
+      localStorage.setItem('cispr_nickname', nickname.trim());
       localStorage.setItem('cispr_age', age);
+      // возраст уходит в профиль на бэкенд
+      try {
+        await api.updateProfile({ age: parseInt(age) || null });
+      } catch {
+        // не критично для регистрации — профиль допишется позже в онбординге
+      }
       navigate('/change-stage');
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : 'Не удалось зарегистрироваться';
+      // частый случай — email уже занят
+      setError(/exist|занят|registered|409/i.test(msg) ? 'Этот email уже зарегистрирован' : msg);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -204,15 +224,21 @@ export default function RegisterPage() {
           </>
         )}
 
+        {error && (
+          <p className="font-serif text-sm italic mt-4 text-center" style={{ color: '#a8332a' }}>
+            {error}
+          </p>
+        )}
+
         <button
           onClick={goNext}
-          disabled={!nextEnabled}
+          disabled={!nextEnabled || loading}
           className={
             'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
-            (nextEnabled ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
+            (nextEnabled && !loading ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
           }
         >
-          ДАЛЕЕ
+          {loading ? '...' : 'ДАЛЕЕ'}
         </button>
 
       </div>

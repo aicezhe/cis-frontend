@@ -1,5 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../lib/api';
+import {
+  AREA_TO_DEPT,
+  languageToFilter,
+  levelToFilter,
+  levelToProgramLevel,
+  saveQuizFilters,
+} from '../lib/quiz';
 
 const areas = [
   'Гуманитарные / культура',
@@ -35,13 +43,27 @@ export default function OnboardingPage() {
   const [area, setArea] = useState('');
   const [ready, setReady] = useState('');
 
-  function goNext() {
+  async function goNext() {
     if (step < 4) {
       setStep(step + 1);
-    } else {
-      console.log('Квиз Universitet:', { level, language, area, ready });
-      navigate('/choice-program');
+      return;
     }
+    // сохраняем фильтры для подбора курсов в ChoiceProgramPage
+    saveQuizFilters({
+      level: levelToFilter(level),
+      lang: languageToFilter(language),
+      dept_id: AREA_TO_DEPT[area],
+    });
+    // пишем уровень/язык в профиль (не блокируем переход при ошибке/без токена)
+    try {
+      await api.updateProfile({
+        program_level: levelToProgramLevel(level),
+        language: languageToFilter(language),
+      });
+    } catch {
+      // профиль допишется позже; для прототипа переход важнее
+    }
+    navigate('/choice-program');
   }
 
   function goBack() {

@@ -433,6 +433,33 @@ export default function SectionPage() {
                         );
                       })}
                     </div>
+                  ) : sectionKey === 'parma' && step.num === 3 ? (
+                    <div className="flex flex-col gap-3">
+                      <p className="font-serif text-navy/70 text-sm">
+                        Рассчитай сумму стипендии ER.GO под свой профиль и посмотри дедлайны.
+                      </p>
+                      <button
+                        onClick={() => navigate('/scholarship')}
+                        className="font-serif text-navy bg-gold rounded-full py-2.5 text-sm"
+                      >
+                        Открыть стипендию ER.GO
+                      </button>
+                    </div>
+                  ) : sectionKey === 'uni' && step.num === 1 ? (
+                    <div className="flex flex-col gap-3">
+                      <p className="font-serif text-navy/70 text-sm">
+                        Подбери и открой свою программу из каталога UniPR.
+                      </p>
+                      <button
+                        onClick={() => {
+                          const id = localStorage.getItem('cispr_course_id');
+                          navigate(id ? '/course/' + id : '/choice-program');
+                        }}
+                        className="font-serif text-cream bg-navy rounded-full py-2.5 text-sm"
+                      >
+                        {localStorage.getItem('cispr_course_id') ? 'Моя программа' : 'Выбрать программу'}
+                      </button>
+                    </div>
                   ) : (
                     <p className="font-serif text-navy/50 text-sm italic">
                       Здесь будут расписаны подробные действия по этому шагу

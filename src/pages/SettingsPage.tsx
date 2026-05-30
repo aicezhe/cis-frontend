@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api, clearToken, isAuthed } from '../lib/api';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -7,16 +8,43 @@ export default function SettingsPage() {
   const [geolocation, setGeolocation] = useState(false);
   const [language, setLanguage] = useState('Русский');
 
-  const nickname = localStorage.getItem('cispr_nickname') || 'Aicezhe';
-  const email = localStorage.getItem('cispr_email') || 'anna@gmail.com';
+  const [nickname, setNickname] = useState(
+    localStorage.getItem('cispr_nickname') || 'Aicezhe',
+  );
+  const [email, setEmail] = useState(
+    localStorage.getItem('cispr_email') || 'anna@gmail.com',
+  );
+
+  // подтягиваем актуальный профиль с бэкенда
+  useEffect(() => {
+    if (!isAuthed()) return;
+    let cancelled = false;
+    api
+      .me()
+      .then((u) => {
+        if (cancelled) return;
+        setNickname(u.username);
+        setEmail(u.email);
+        localStorage.setItem('cispr_nickname', u.username);
+        localStorage.setItem('cispr_email', u.email);
+      })
+      .catch(() => {
+        // токен мог истечь — остаёмся на локальных значениях
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function handleLogout() {
+    clearToken();
     localStorage.clear();
     navigate('/');
   }
 
   function handleDeleteAccount() {
     if (confirm('Удалить аккаунт? Это действие нельзя отменить.')) {
+      clearToken();
       localStorage.clear();
       navigate('/');
     }
