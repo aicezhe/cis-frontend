@@ -2,6 +2,7 @@ import skyline from '../assets/parma design.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
+import { api, ApiError, setToken } from '../lib/api';
 
 
 const stars = [
@@ -22,18 +23,34 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  function handleLogin() {
-    if (email.trim() === '' || password.trim() === '') return;
-    console.log('Логин:', { email, password });
-    navigate('/path');
+  async function handleLogin() {
+    if (email.trim() === '' || password.trim() === '' || loading) return;
+    setError('');
+    setLoading(true);
+    try {
+      const { access_token } = await api.login(email.trim(), password);
+      setToken(access_token);
+      const user = await api.me();
+      localStorage.setItem('cispr_email', user.email);
+      localStorage.setItem('cispr_nickname', user.username);
+      if (user.course_id) localStorage.setItem('cispr_course_id', user.course_id);
+      navigate('/path');
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : 'Не удалось войти';
+      setError(/401|invalid|incorrect|неверн/i.test(msg) ? 'Неверный email или пароль' : msg);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') handleLogin();
   }
 
-  const canLogin = email.trim() !== '' && password.trim() !== '';
+  const canLogin = email.trim() !== '' && password.trim() !== '' && !loading;
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col items-center px-8 overflow-hidden">
@@ -99,6 +116,12 @@ export default function LoginPage() {
         </div>
       </div>
 
+      {error && (
+        <p className="font-serif text-sm italic mb-4 text-center" style={{ color: '#a8332a' }}>
+          {error}
+        </p>
+      )}
+
       <button
         onClick={handleLogin}
         disabled={!canLogin}
@@ -107,7 +130,7 @@ export default function LoginPage() {
           (canLogin ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
         }
       >
-        ВОЙТИ
+        {loading ? '...' : 'ВОЙТИ'}
       </button>
 
       <img
