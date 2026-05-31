@@ -218,10 +218,13 @@ export default function PathPage() {
   );
   const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
 
-  // карточка "Сейчас важно" — ищем первый невыполненный шаг во всех разделах по порядку
+  // карточка "Сейчас важно" — первый невыполненный шаг, начиная с текущего
+  // раздела по квизу (разделы до passedIndex считаются пройденными, их шаги
+  // в localStorage могут быть не отмечены — их нельзя показывать как актуальные)
   let currentStep: any = null;
   let currentSectionData: any = sectionsData[passed];
-  for (const sectionKey of sectionsOrder) {
+  for (let i = Math.max(0, passedIndex); i < sectionsOrder.length; i++) {
+    const sectionKey = sectionsOrder[i];
     const step = getCurrentStep(sectionKey);
     if (step) {
       currentStep = step;
