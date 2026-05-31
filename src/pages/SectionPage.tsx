@@ -6,12 +6,12 @@ import iconTime from '../assets/time sign.svg';
 const sectionsData: Record<string, any> = {
   uni: {
     title: 'Университет',
-    subtitle: 'Ingegneria gestionale',
+    subtitle: 'Программа не выбрана',
     meta: 'non-EU · laurea · 2026/27',
     budget: { total: 2000 },
     stepsTitle: 'Шаги поступления',
     steps: [
-      { num: 1, title: 'Выбор программы', sub: 'Ingegneria gestionale · €0', deadline: 'актуально', price: '€0', substeps: [] },
+      { num: 1, title: 'Выбор программы', sub: 'Выбор программы · €0', deadline: 'актуально', price: '€0', substeps: [] },
       { num: 2, title: 'Проверка учебной базы', sub: 'Языки, профильные предметы · €0', deadline: '14 дней', price: '€0', substeps: [] },
       { num: 3, title: 'Документы и легализация', sub: '€200–400', deadline: '14 дней', price: '€800', substeps: [
         { title: 'Перевод аттестата на итальянский', price: '€200' },
@@ -146,6 +146,12 @@ export default function SectionPage() {
 
   const [completed, setCompleted] = useState<string[]>(() => loadCompleted(sectionKey));
 
+  // Реальная выбранная программа (из онбординга/настроек) подменяет placeholder
+  // в шапке раздела «Университет» и в подзаголовке шага «Выбор программы».
+  const selectedCourseName = localStorage.getItem('cispr_course_name') || '';
+  const headerSubtitle =
+    sectionKey === 'uni' && selectedCourseName ? selectedCourseName : data.subtitle;
+
   const passedQuiz = localStorage.getItem('cispr_passed_quiz') || 'uni';
   const sectionsOrder = ['uni', 'visa', 'travel', 'parma'];
   const passedIndex = sectionsOrder.indexOf(passedQuiz);
@@ -250,7 +256,7 @@ export default function SectionPage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-right">
           <h1 className="font-serif text-navy text-3xl font-bold">{data.title}</h1>
-          <p className="font-serif text-gold text-base italic mt-1">{data.subtitle}</p>
+          <p className="font-serif text-gold text-base italic mt-1">{headerSubtitle}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">{data.meta}</p>
         </div>
 
@@ -376,7 +382,11 @@ export default function SectionPage() {
                   }>
                     {step.title}
                   </h4>
-                  <p className="font-serif text-gold text-xs italic mt-0.5">{step.sub}</p>
+                  <p className="font-serif text-gold text-xs italic mt-0.5">
+                    {sectionKey === 'uni' && step.num === 1 && selectedCourseName
+                      ? `${selectedCourseName} · €0`
+                      : step.sub}
+                  </p>
                 </button>
 
                 {/* синий треугольник раскрытия */}
