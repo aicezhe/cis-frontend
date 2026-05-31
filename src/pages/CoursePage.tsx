@@ -49,12 +49,42 @@ function groupByYear(subjects: CourseSubject[]): Map<number | string, CourseSubj
   return map;
 }
 
+// Учебный план по годам: карточки лет с предметами, выборные помечены.
+function YearPlan({ subjects }: { subjects: CourseSubject[] }) {
+  const yearGroups = groupByYear(subjects);
+  return (
+    <div className="flex flex-col gap-4">
+      {[...yearGroups.entries()].map(([year, subs]) => (
+        <div key={String(year)} className="bg-soft-cream border border-navy/20 rounded-2xl p-4">
+          <p className="font-serif text-navy font-bold text-sm mb-3">
+            {typeof year === 'number' ? `${year}-й год` : year}
+          </p>
+          <div className="flex flex-col gap-2">
+            {subs.map((s, i) => (
+              <div key={i} className="flex justify-between items-baseline gap-3">
+                <p className={
+                  'font-serif text-sm ' +
+                  (s.optional ? 'text-navy/60 italic' : 'text-navy')
+                }>
+                  {s.name}{s.optional ? ' (по выбору)' : ''}
+                </p>
+                <p className="font-serif text-navy/50 text-xs flex-shrink-0">{s.cfu} CFU</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function CoursePage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [course, setCourse] = useState<CourseFull | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [curIdx, setCurIdx] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -100,7 +130,11 @@ export default function CoursePage() {
     );
   }
 
-  const yearGroups = groupByYear(course.subjects);
+  const curricula = course.curricula ?? [];
+  const hasCurricula = curricula.length > 0;
+  const activeCur = hasCurricula ? curricula[Math.min(curIdx, curricula.length - 1)] : null;
+  // Несколько направлений показываем вкладками; одно «Unico» — без вкладок.
+  const showTabs = curricula.length > 1;
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-32">
@@ -191,35 +225,52 @@ export default function CoursePage() {
         </>
       )}
 
-      {/* Предметы по годам */}
-      {course.subjects.length > 0 && (
+      {/* Учебный план: по направлениям (curricula) либо плоский список */}
+      {hasCurricula ? (
         <>
           <h3 className="font-serif text-gold text-base font-bold px-6 mt-8 mb-3">
             Учебный план
           </h3>
-          <div className="px-6 flex flex-col gap-4">
-            {[...yearGroups.entries()].map(([year, subs]) => (
-              <div key={String(year)} className="bg-soft-cream border border-navy/20 rounded-2xl p-4">
-                <p className="font-serif text-navy font-bold text-sm mb-3">
-                  {typeof year === 'number' ? `${year}-й год` : year}
-                </p>
-                <div className="flex flex-col gap-2">
-                  {subs.map((s, i) => (
-                    <div key={i} className="flex justify-between items-baseline gap-3">
-                      <p className={
-                        'font-serif text-sm ' +
-                        (s.optional ? 'text-navy/60 italic' : 'text-navy')
-                      }>
-                        {s.name}{s.optional ? ' (по выбору)' : ''}
-                      </p>
-                      <p className="font-serif text-navy/50 text-xs flex-shrink-0">{s.cfu} CFU</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+
+          {showTabs && (
+            <div className="px-6 mb-3 flex gap-2 overflow-x-auto pb-1 -mx-0">
+              {curricula.map((cur, i) => (
+                <button
+                  key={cur.id}
+                  onClick={() => setCurIdx(i)}
+                  className={
+                    'font-serif text-xs whitespace-nowrap rounded-full px-3 py-1.5 border transition-colors ' +
+                    (i === curIdx
+                      ? 'bg-navy text-cream border-navy'
+                      : 'bg-soft-cream text-navy border-navy/20')
+                  }
+                >
+                  {cur.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {activeCur && (
+            <div className="px-6">
+              {activeCur.note && (
+                <p className="font-serif text-navy/60 text-xs italic mb-3">{activeCur.note}</p>
+              )}
+              <YearPlan subjects={activeCur.subjects} />
+            </div>
+          )}
         </>
+      ) : (
+        course.subjects.length > 0 && (
+          <>
+            <h3 className="font-serif text-gold text-base font-bold px-6 mt-8 mb-3">
+              Учебный план
+            </h3>
+            <div className="px-6">
+              <YearPlan subjects={course.subjects} />
+            </div>
+          </>
+        )
       )}
 
       {/* Действия */}

@@ -61,6 +61,14 @@ export interface CourseSubject {
   optional: boolean;
 }
 
+// Направление учебного плана (ИИ-разбор). subjects сгруппированы по годам в UI.
+export interface Curriculum {
+  id: string;
+  name: string;
+  note: string;
+  subjects: CourseSubject[];
+}
+
 // GET /api/courses/{id} и /api/users/me/course — CourseFull
 export interface CourseFull extends CourseCatalog {
   dept_name: string;
@@ -72,6 +80,7 @@ export interface CourseFull extends CourseCatalog {
   difficulty_note: string;
   demand_note: string;
   subjects: CourseSubject[];
+  curricula: Curriculum[];
 }
 
 // GET /api/scholarship — ScholarshipRead
