@@ -144,6 +144,15 @@ export default function SectionPage() {
   const sectionKey = section || 'uni';
   const data = sectionsData[sectionKey];
 
+  // Для тех, у кого программа — Foundation Year, раздел «Университет»
+  // ведёт не на стандартные шаги поступления, а на обзор Foundation Year.
+  const isFoundation = localStorage.getItem('cispr_program') === 'foundation';
+  useEffect(() => {
+    if (isFoundation && sectionKey === 'uni') {
+      navigate('/path/foundation', { replace: true });
+    }
+  }, [isFoundation, sectionKey, navigate]);
+
   const [completed, setCompleted] = useState<string[]>(() => loadCompleted(sectionKey));
 
   // Реальная выбранная программа (из онбординга/настроек) подменяет placeholder

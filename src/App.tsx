@@ -14,6 +14,11 @@ import ChoiceProgramPage from './pages/ChoiceProgramPage';
 import CoursePage from './pages/CoursePage';
 import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
+import FoundationOverviewPage from './pages/FoundationOverviewPage';
+import FoundationSubjectsPage from './pages/FoundationSubjectsPage';
+import FoundationFinancePage from './pages/FoundationFinancePage';
+import FoundationApplyPage from './pages/FoundationApplyPage';
+import FoundationLanguagesPage from './pages/FoundationLanguagesPage';
 
 export default function App() {
   return (
@@ -25,6 +30,11 @@ export default function App() {
       <Route path="/quiz-visa" element={<QuizVisaPage />} />
       <Route path="/quiz-travel" element={<QuizTravelPage />} />
       <Route path="/path" element={<PathPage />} />
+      <Route path="/path/foundation" element={<FoundationOverviewPage />} />
+      <Route path="/path/foundation/subjects" element={<FoundationSubjectsPage />} />
+      <Route path="/path/foundation/finance" element={<FoundationFinancePage />} />
+      <Route path="/path/foundation/apply" element={<FoundationApplyPage />} />
+      <Route path="/path/foundation/languages" element={<FoundationLanguagesPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />

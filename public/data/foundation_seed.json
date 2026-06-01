@@ -1,0 +1,264 @@
+{
+  "meta": {
+    "source": "foundationyear.unipr.it",
+    "academic_year": "2026-2027",
+    "data_policy": "Все поля основаны на офиц. данных UniPR. Список предметов — реальный сертификат FY 2023/2024 (Absolute Beginners track).",
+    "last_updated": "2026-06"
+  },
+  "program": {
+    "id": "foundation_year",
+    "name": "Foundation Year",
+    "name_full": "Corso propedeutico Foundation Year",
+    "duration_months": "10-11",
+    "period": "сентябрь — июнь/июль",
+    "type": "propedeutico",
+    "issued_after_completion": [
+      "Attestato di qualificazione",
+      "Italstudio B1/B2 (сертификат итальянского)"
+    ],
+    "description_ru": "В Италии для поступления в университет нужно 12 лет школы. В России — 11. Foundation Year закрывает этот 12-й год: ты учишь итальянский (от A0 до B1/B2), знакомишься с итальянской культурой и академической средой. С полученным сертификатом ты можешь подаваться на laurea triennale в любой итальянский универ.",
+    "important_note_ru": "Foundation Year — это НЕ университет. Это подготовительный курс. После него ты заново подаёшь документы на laurea triennale.",
+    "official_email": "foundationyear@unipr.it",
+    "official_url": "https://foundationyear.unipr.it"
+  },
+  "tracks": [
+    {
+      "id": "absolute_beginners",
+      "name": "Absolute Beginners",
+      "name_ru": "Абсолютные новички",
+      "italian_level_start": "A0 (с нуля)",
+      "italian_level_end": "B1/B2",
+      "for_whom_ru": "Если ты не знаешь итальянский совсем или знаешь меньше чем A1",
+      "is_default_for_russian": true
+    },
+    {
+      "id": "elementary",
+      "name": "Elementary",
+      "name_ru": "Элементарный",
+      "italian_level_start": "A1/A2",
+      "italian_level_end": "B2",
+      "for_whom_ru": "Если у тебя уже есть базовый итальянский (A1/A2)",
+      "is_default_for_russian": false
+    },
+    {
+      "id": "english_track",
+      "name": "English Track",
+      "name_ru": "Английский трек",
+      "italian_level_start": "не требуется",
+      "italian_level_end": "не требуется",
+      "english_required": "B2",
+      "for_whom_ru": "Если после FY ты идёшь на англоязычный bachelor (например Global Studies, Medicine and Surgery EN)",
+      "is_default_for_russian": false
+    }
+  ],
+  "enrollment_types": [
+    {
+      "id": "early_birds",
+      "name": "Early Birds",
+      "name_ru": "Ранние пташки",
+      "deadline_template": "15 июля",
+      "description_ru": "Подаёшь раньше всех, больше шансов на место, иногда есть скидки/преимущества"
+    },
+    {
+      "id": "regular",
+      "name": "Regular",
+      "name_ru": "Обычный поток",
+      "deadline_template": "15 августа",
+      "description_ru": "Стандартный поток подачи"
+    },
+    {
+      "id": "dante",
+      "name": "Dante (PIFY)",
+      "name_ru": "Программа Dante",
+      "deadline_template": "15 августа",
+      "description_ru": "Программа с Società Dante Alighieri — скидка 20% на курс. Условия и доступность уточняй на офсайте.",
+      "discount_pct": 20
+    },
+    {
+      "id": "medicine_not_admitted",
+      "name": "Non admitted Medicine",
+      "name_ru": "Не поступившие на Medicina",
+      "deadline_template": "30 сентября",
+      "description_ru": "Дополнительный поток для тех, кто не прошёл на Medicina e Chirurgia"
+    }
+  ],
+  "costs": {
+    "currency": "EUR",
+    "tuition_full": 4000,
+    "tuition_dante": 3200,
+    "deposit_pct": 15,
+    "deposit_amount": 600,
+    "deposit_refundable_if_visa_denied": true,
+    "notes_ru": [
+      "4000 € — Curriculum generale (полная стоимость)",
+      "3200 € — программа PIFY (Dante-UniPR), скидка 20%",
+      "Депозит 15% (600 €) после подтверждения зачисления — возвращается если виза не одобрена",
+      "Стоимость документов в РФ (апостиль + перевод + DDV): ~400-500 € сверху"
+    ]
+  },
+  "payment_schedule": {
+    "source": "official_unipr_2026_2027",
+    "note_ru": "Оплата делится на 3 части (rate). Суммы и дедлайны — офиц. данные UniPR на 2026/2027. Итого: 600 + 2600 + 800 = 4000 € (General); 480 + 2080 + 640 = 3200 € (Dante).",
+    "installments": [
+      {
+        "id": "deposit",
+        "label_ru": "1-я rata — 15% (депозит)",
+        "pct": 15,
+        "amount_general": 600,
+        "amount_dante": 480,
+        "when_ru": "после получения письма о зачислении (communication of acceptance)",
+        "refundable_if_visa_denied": true,
+        "deadlines": [
+          {"stream": "Early Birds", "date": "15 июля 2026"},
+          {"stream": "Regular / Dante", "date": "15 августа 2026"},
+          {"stream": "Не поступившие на Medicina", "date": "30 сентября 2026"}
+        ]
+      },
+      {
+        "id": "second",
+        "label_ru": "2-я rata — 65%",
+        "pct": 65,
+        "amount_general": 2600,
+        "amount_dante": 2080,
+        "when_ru": "после Pre-enrolment на Universitaly (по Admission Letter от UniPR)",
+        "refundable_if_visa_denied": false,
+        "deadlines": [
+          {"stream": "Early Birds", "date": "10 сентября 2026"},
+          {"stream": "Regular / Dante / не поступившие на Medicina", "date": "1 октября 2026"}
+        ]
+      },
+      {
+        "id": "third",
+        "label_ru": "3-я rata — 20%",
+        "pct": 20,
+        "amount_general": 800,
+        "amount_dante": 640,
+        "when_ru": "финальная часть оплаты курса",
+        "refundable_if_visa_denied": false,
+        "deadlines": [
+          {"stream": "Early Birds", "date": "1 октября 2026"},
+          {"stream": "Regular / Dante", "date": "22 октября 2026"}
+        ]
+      }
+    ]
+  },
+  "language_requirements": {
+    "by_track": {
+      "absolute_beginners": {
+        "italian": "не требуется (обучение с нуля)",
+        "english": "не требуется для зачисления"
+      },
+      "elementary": {
+        "italian": "A1/A2",
+        "english": "не требуется"
+      },
+      "english_track": {
+        "italian": "не требуется",
+        "english": "B2"
+      }
+    },
+    "accepted_english_b2_certificates": [
+      "IELTS Academic 6.0+",
+      "TOEFL iBT 80+",
+      "Cambridge FCE / CAE / CPE",
+      "BEC Vantage",
+      "TOEIC 785+"
+    ],
+    "duolingo_note_ru": "Duolingo English Test НЕ указан в официальном списке UniPR. Могут принять, могут нет. Обязательно уточни на foundationyear@unipr.it ДО оплаты теста.",
+    "visa_note_ru": "Некоторые консульства Италии могут отдельно требовать сертификат итальянского B2 для визы D — независимо от трека. Уточняй в своём консульстве заранее."
+  },
+  "subjects_by_track": {
+    "absolute_beginners": {
+      "source": "real_certificate_FY_2023_2024",
+      "total_cfu": 68,
+      "list": [
+        {"name": "Corso intensivo di lingua italiana (Absolute Beginners)", "cfu": 6, "modality": "blended", "period": "1° semestre"},
+        {"name": "Introduzione alla città di Parma (solo frequenza)", "cfu": 1, "modality": "in_presenza", "period": "1° semestre", "grading": "attendance"},
+        {"name": "Corso intensivo di lingua italiana II (livello elementare)", "cfu": 8, "modality": "in_presenza", "period": "1° semestre"},
+        {"name": "Critical Thinking", "cfu": 2, "modality": "online", "period": "1° semestre", "grading": "attendance"},
+        {"name": "Corso estensivo di lingua italiana (B+)", "cfu": 4, "modality": "in_presenza", "period": "1° semestre"},
+        {"name": "Introduzione alla lingua italiana per lo studio (elementare)", "cfu": 2, "modality": "in_presenza", "period": "1° semestre"},
+        {"name": "Approfondimento di lingua italiana – sportello B+", "cfu": 2, "modality": "in_presenza", "period": "1° semestre"},
+        {"name": "Introduzione al contesto socio-culturale", "cfu": 2, "modality": "in_presenza", "period": "1° semestre"},
+        {"name": "Storia contemporanea", "cfu": 4, "modality": "blended", "period": "2° semestre"},
+        {"name": "Geografia", "cfu": 4, "modality": "blended", "period": "2° semestre"},
+        {"name": "Comunicazione interculturale", "cfu": 6, "modality": "in_presenza", "period": "2° semestre", "note": "2 модуля по 3 CFU"},
+        {"name": "Corso estensivo Erasmus di lingua italiana (gruppo C)", "cfu": 4, "modality": "in_presenza", "period": "2° semestre"},
+        {"name": "Corso estensivo Erasmus di lingua italiana (gruppo C+)", "cfu": 4, "modality": "in_presenza", "period": "2° semestre"},
+        {"name": "Lingua italiana per lo studio IV", "cfu": 4, "modality": "in_presenza", "period": "2° semestre"},
+        {"name": "Corso preparatorio per la certificazione + Test Italstudio B1/B2", "cfu": 4, "modality": "in_presenza", "period": "2° semestre", "grading": "pass_fail"},
+        {"name": "Teoria e Tecnica Fotografia", "cfu": 9, "modality": "in_presenza", "period": "2° semestre"},
+        {"name": "B4Peace", "cfu": 2, "modality": "in_presenza", "period": "2° semestre"}
+      ]
+    },
+    "elementary": {
+      "source": "official_website_2025_2026",
+      "note": "Точный список предметов трека Elementary будет добавлен после уточнения на офсайте foundationyear.unipr.it. Сейчас доступна только структура Absolute Beginners.",
+      "list": []
+    },
+    "english_track": {
+      "source": "official_website_2025_2026",
+      "note": "Точный список предметов English Track будет добавлен после уточнения на офсайте foundationyear.unipr.it.",
+      "list": []
+    }
+  },
+  "how_studies_work_ru": "Учёба на FY — это серия мини-курсов по 1-2 месяца каждый. После каждого ты сдаёшь экзамен (с возможностью пересдачи). Так весь год, до конца июня. Modalità смешанная: часть в очном формате, часть blended, что-то online. В конце получаешь Attestato + Italstudio.",
+  "steps_to_apply": [
+    {
+      "id": "1_check_prereqs",
+      "title": "Проверь базовые требования",
+      "items": [
+        "Школьный диплом 11 лет обучения",
+        "Если диплома ещё нет (учишься в 11 классе) — пиши на foundationyear@unipr.it, могут принять условно",
+        "Готов потратить 4000 € на курс + ~500 € на документы"
+      ]
+    },
+    {
+      "id": "2_collect_docs",
+      "title": "Собери документы",
+      "items": [
+        "Загранпаспорт (биометрический, с большим запасом срока)",
+        "Школьный диплом + транскрипт оценок (после апостиля и перевода)",
+        "Языковой сертификат (если требуется треком)",
+        "Заполненный модуль-заявка с сайта FY"
+      ]
+    },
+    {
+      "id": "3_apostille_translate",
+      "title": "Апостиль и перевод диплома",
+      "substeps": [
+        {"name": "Апостиль через Рособрнадзор / региональное управление образования", "cost_rub": "13000-14000", "duration_days": "30-45"},
+        {"name": "Перевод диплома + транскрипта на итальянский (аккредитованный переводчик)", "cost_rub": "4000-8000", "duration_days": "3-7"}
+      ],
+      "warnings": [
+        "Делай апостиль ДО перевода, иначе перевод придётся переделывать со штампом апостиля",
+        "Используй переводчика, аккредитованного при Генконсульстве Италии в Москве/СПб"
+      ]
+    },
+    {
+      "id": "4_send_application",
+      "title": "Подай заявку",
+      "description_ru": "Отправь email на foundationyear@unipr.it со всеми документами. В письме укажи: имя, гражданство, тип потока (Early Birds / Regular / Dante), текущий уровень итальянского и английского.",
+      "email_template_id": "fy_application_email"
+    },
+    {
+      "id": "5_wait_response",
+      "title": "Жди ответ",
+      "description_ru": "Ответ придёт на email. После одобрения нужно оплатить 600 € (15% от стоимости) — это закрепляет место. В случае отказа в визе сумма возвращается."
+    }
+  ],
+  "email_templates": {
+    "fy_application_email": {
+      "subject": "Foundation Year application — [Имя Фамилия]",
+      "body_en": "Dear Foundation Year Coordinators,\n\nMy name is [Имя Фамилия], I am [национальность], and I am writing to express my interest in enrolling in the Foundation Year at the University of Parma for the [2027/2028] academic year, in the general curriculum, as a [Early Birds / Regular / Dante] student.\n\nPlease find the required documentation attached:\n1. Modulo di manifestazione di interesse compilato e firmato\n2. Copia del passaporto\n3. Transcript of records dell'ultimo anno di scuola secondaria\n4. Copy of the upper secondary school diploma [with certified Italian translation and Declaration of Value / the Declaration of Value will be submitted at a later stage]\n\nMy current level of Italian is [absolute beginner / A1 / B1] and my level of English is [level].\n\nI remain at your disposal for any further clarification.\n\nKind regards,\n[Имя Фамилия]\n[Номер телефона]"
+    }
+  },
+  "common_pitfalls_ru": [
+    "Не путай апостиль и перевод — апостиль ставится ПЕРВЫМ, потом перевод (со штампом апостиля)",
+    "Дуалинго могут не принять — уточни до оплаты теста",
+    "Дедлайны двигаются каждый год — проверяй на foundationyear.unipr.it перед подачей",
+    "Места в Early Birds разбирают быстро — подавайся в день открытия заявок",
+    "Foundation НЕ даёт степень — после него ты заново подаёшься на laurea",
+    "Депозит 600 € возвращается ТОЛЬКО если виза не одобрена; если ты сама передумала — не возвращается"
+  ]
+}

@@ -37,6 +37,8 @@ export default function LoginPage() {
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
       if (user.course_id) localStorage.setItem('cispr_course_id', user.course_id);
+      // тип программы нужен разделу «Университет» для ветвления на Foundation Year
+      if (user.program_level) localStorage.setItem('cispr_program', user.program_level);
       navigate('/path');
     } catch (e) {
       const msg = e instanceof ApiError ? e.message : 'Не удалось войти';

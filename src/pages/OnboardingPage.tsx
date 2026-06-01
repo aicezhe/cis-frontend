@@ -54,6 +54,10 @@ export default function OnboardingPage() {
       lang: languageToFilter(language),
       dept_id: AREA_TO_DEPT[area],
     });
+    // запоминаем тип программы — по нему раздел «Университет» ветвится
+    // на Foundation Year (для тех, у кого 11 лет школы).
+    const programLevel = levelToProgramLevel(level);
+    if (programLevel) localStorage.setItem('cispr_program', programLevel);
     // пишем уровень/язык в профиль (не блокируем переход при ошибке/без токена)
     try {
       await api.updateProfile({
