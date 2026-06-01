@@ -43,16 +43,23 @@ export default function OnboardingPage() {
   const [area, setArea] = useState('');
   const [ready, setReady] = useState('');
 
+  // Foundation Year — это подготовительный курс, у него нет выбора направления
+  // (департамента) и нет каталога программ. Поэтому шаг «направление»
+  // пропускается, а в конце ведём не в каталог, а сразу в /path.
+  const isFoundation = level === 'Foundation Year';
+  const stepSequence = isFoundation ? [1, 2, 4] : [1, 2, 3, 4];
+
   async function goNext() {
-    if (step < 4) {
-      setStep(step + 1);
+    const idx = stepSequence.indexOf(step);
+    if (idx < stepSequence.length - 1) {
+      setStep(stepSequence[idx + 1]);
       return;
     }
     // сохраняем фильтры для подбора курсов в ChoiceProgramPage
     saveQuizFilters({
       level: levelToFilter(level),
       lang: languageToFilter(language),
-      dept_id: AREA_TO_DEPT[area],
+      dept_id: isFoundation ? undefined : AREA_TO_DEPT[area],
     });
     // запоминаем тип программы — по нему раздел «Университет» ветвится
     // на Foundation Year (для тех, у кого 11 лет школы).
@@ -67,12 +74,14 @@ export default function OnboardingPage() {
     } catch {
       // профиль допишется позже; для прототипа переход важнее
     }
-    navigate('/choice-program');
+    // Foundation минует каталог программ (там нет курсов для выбора).
+    navigate(isFoundation ? '/path' : '/choice-program');
   }
 
   function goBack() {
-    if (step > 1) {
-      setStep(step - 1);
+    const idx = stepSequence.indexOf(step);
+    if (idx > 0) {
+      setStep(stepSequence[idx - 1]);
     } else {
       navigate('/change-stage');
     }
@@ -100,12 +109,12 @@ export default function OnboardingPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3, 4].map((n) => (
+          {stepSequence.map((n, i) => (
             <div
               key={n}
               className={
                 'h-1.5 flex-1 rounded-full ' +
-                (n <= step ? 'bg-navy' : 'bg-gold/40')
+                (i <= stepSequence.indexOf(step) ? 'bg-navy' : 'bg-gold/40')
               }
             />
           ))}
