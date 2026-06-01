@@ -94,11 +94,18 @@ export interface FoundationSubstep {
 export interface FoundationStep {
   id: string;
   title: string;
+  timing_ru?: string;
   items?: string[];
   substeps?: FoundationSubstep[];
   warnings?: string[];
   description_ru?: string;
   email_template_id?: string;
+}
+
+export interface FoundationApplyMeta {
+  target_year_ru: string;
+  dates_disclaimer_ru: string;
+  total_cost_note_ru: string;
 }
 
 export interface FoundationEmailTemplate {
@@ -135,6 +142,7 @@ export interface FoundationSeed {
   language_requirements: FoundationLanguageRequirements;
   subjects_by_track: Record<FoundationTrackId, FoundationSubjectsByTrack>;
   how_studies_work_ru: string;
+  apply_meta: FoundationApplyMeta;
   steps_to_apply: FoundationStep[];
   email_templates: Record<string, FoundationEmailTemplate>;
   common_pitfalls_ru: string[];
