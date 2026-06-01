@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState('');
+  const [country, setCountry] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,8 @@ export default function RegisterPage() {
       const ageNum = parseInt(age);
       return !isNaN(ageNum) && ageNum >= 14 && ageNum <= 100;
     }
-    if (step === 4) {
+    if (step === 4) return country !== '';
+    if (step === 5) {
       return (
         password.trim().length >= 6 &&
         password === passwordRepeat
@@ -76,7 +78,7 @@ export default function RegisterPage() {
       return;
     }
 
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
       return;
     }
@@ -100,6 +102,8 @@ export default function RegisterPage() {
       localStorage.setItem('cispr_email', email.trim());
       localStorage.setItem('cispr_nickname', nickname.trim());
       localStorage.setItem('cispr_age', age);
+      // страна нужна, чтобы подобрать страновой датасет легализации (Foundation)
+      localStorage.setItem('cispr_country', country);
       // возраст уходит в профиль на бэкенд
       try {
         await api.updateProfile({ age: parseInt(age) || null });
@@ -143,7 +147,7 @@ export default function RegisterPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3, 4].map((n) => (
+          {[1, 2, 3, 4, 5].map((n) => (
             <div
               key={n}
               className={
@@ -224,6 +228,39 @@ export default function RegisterPage() {
         )}
 
         {step === 4 && (
+          <>
+            <h1 className="font-serif text-navy text-3xl mb-10 text-center">
+              Из какой ты страны?
+            </h1>
+            <p className="font-serif text-navy/60 text-sm italic text-center mb-8 -mt-6">
+              Подберём процесс легализации документов под твою страну
+            </p>
+            <div className="w-full flex flex-col gap-3">
+              {[
+                { code: 'ru', label: 'Россия' },
+                { code: 'ua', label: 'Украина' },
+                { code: 'by', label: 'Беларусь' },
+                { code: 'kz', label: 'Казахстан' },
+                { code: 'other', label: 'Другая страна' },
+              ].map((opt) => (
+                <button
+                  key={opt.code}
+                  onClick={() => { setCountry(opt.code); setError(''); }}
+                  className={
+                    'font-serif text-lg rounded-2xl py-4 border ' +
+                    (country === opt.code
+                      ? 'bg-navy text-gold border-navy'
+                      : 'bg-cream text-navy border-navy/30')
+                  }
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 5 && (
           <>
             <h1 className="font-serif text-navy text-3xl mb-12 text-center">
               Придумай пароль<br />и повтори его.

@@ -127,6 +127,76 @@ export interface FoundationProgram {
   official_url: string;
 }
 
+export interface LegalizationOption {
+  name: string;
+  description_ru: string;
+  cost_eur: string;
+  duration: string;
+  pros_ru: string[];
+  cons_ru: string[];
+}
+
+export interface LegalizationStep {
+  id: string;
+  title_ru: string;
+  description_ru: string;
+  cost_local?: string;
+  cost_eur_approx?: number;
+  duration_days?: string;
+  warnings_ru?: string[];
+  options?: LegalizationOption[];
+  recommendation_ru?: string;
+}
+
+export interface SpecialStatus {
+  name_ru: string;
+  active: boolean;
+  active_until?: string;
+  description_ru: string;
+  implication_ru: string;
+  alternative_path_steps_ru?: string[];
+  website?: string;
+}
+
+export interface FoundationLegalizationSeed {
+  meta: {
+    country_code: 'ru' | 'ua' | 'by' | 'kz';
+    country_name_ru: string;
+    country_name_local: string;
+    source: string;
+    last_updated: string;
+    data_policy: string;
+  };
+  special_status: SpecialStatus | null;
+  diploma_legalization: {
+    country_in_hague: boolean;
+    procedure_type: 'apostille' | 'consular_legalization';
+    competent_authority: {
+      name: string;
+      name_ru: string;
+      website: string;
+      submit_address_ru: string;
+    };
+    steps: LegalizationStep[];
+  };
+  visa: {
+    type: string;
+    needed_if_no_temporary_protection: boolean;
+    embassy_address: string;
+    embassy_website: string;
+    duration_days_estimate: string;
+    financial_guarantee_eur: string;
+    warnings_ru: string[];
+  };
+  total_cost_estimate: {
+    currency: string;
+    documents_only: string;
+    with_visa: string;
+    course_separately: string;
+  };
+  common_pitfalls_ru: string[];
+}
+
 export interface FoundationSeed {
   meta: {
     source: string;

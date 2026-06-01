@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
-import { useFoundation } from '../hooks/useFoundation';
+import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
 import type { FoundationModality } from '../types/foundation';
@@ -29,6 +29,7 @@ function Corners() {
 export default function FoundationOverviewPage() {
   const navigate = useNavigate();
   const { data, loading, error } = useFoundation();
+  const { legalization } = useMyLegalization();
   const { currency } = useCurrency();
   const fmt = (eur: number) => formatPrice(eur, currency);
   const [expanded, setExpanded] = useState(1);
@@ -467,6 +468,155 @@ export default function FoundationOverviewPage() {
                           ))}
                         </div>
                       </div>
+
+                      {/* Страновой блок: легализация документов под гражданство юзера */}
+                      {legalization && (
+                        <div className="mt-3 flex flex-col gap-3">
+                          <div className="border-t border-navy/15 pt-4">
+                            <h4 className="font-serif text-navy text-xl font-bold">
+                              Легализация документов — {legalization.meta.country_name_ru}
+                            </h4>
+                            <p className="font-serif text-navy/50 text-xs italic mt-0.5">
+                              Источник: {legalization.meta.source}
+                            </p>
+                          </div>
+
+                          {/* Особый статус: UA — временная защита, KZ — CIMEA Central Asia */}
+                          {legalization.special_status?.active && (
+                            <div className="bg-soft-cream border border-gold rounded-xl px-4 py-3">
+                              <p className="font-serif text-gold text-xs italic uppercase tracking-widest">
+                                ⌐ важно ¬
+                              </p>
+                              <h5 className="font-serif text-navy text-lg font-bold mt-1">
+                                {legalization.special_status.name_ru}
+                              </h5>
+                              <p className="font-serif text-navy/80 text-sm mt-2 leading-relaxed">
+                                {legalization.special_status.description_ru}
+                              </p>
+                              <p className="font-serif text-navy text-sm font-bold mt-2 leading-relaxed">
+                                {legalization.special_status.implication_ru}
+                              </p>
+                              {legalization.special_status.alternative_path_steps_ru && (
+                                <ol className="list-decimal pl-5 mt-3 flex flex-col gap-1">
+                                  {legalization.special_status.alternative_path_steps_ru.map((st, i) => (
+                                    <li key={i} className="font-serif text-navy/80 text-sm">{st}</li>
+                                  ))}
+                                </ol>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Шаги легализации */}
+                          {legalization.diploma_legalization.steps.map((step) => (
+                            <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                              <h5 className="font-serif text-navy text-lg font-bold">{step.title_ru}</h5>
+                              <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+
+                              {step.cost_local && (
+                                <div className="flex gap-2 mt-2">
+                                  <span className="font-serif text-navy/60 text-sm">Стоимость:</span>
+                                  <span className="font-serif text-navy text-sm">
+                                    {step.cost_local}
+                                    {step.cost_eur_approx ? <> (~{fmt(step.cost_eur_approx)})</> : null}
+                                  </span>
+                                </div>
+                              )}
+                              {step.duration_days && (
+                                <div className="flex gap-2">
+                                  <span className="font-serif text-navy/60 text-sm">Срок:</span>
+                                  <span className="font-serif text-navy text-sm">{step.duration_days}</span>
+                                </div>
+                              )}
+
+                              {/* Варианты (CIMEA / DDV) */}
+                              {step.options && (
+                                <div className="flex flex-col gap-3 mt-3">
+                                  {step.options.map((opt, i) => (
+                                    <div key={i} className="border-l-2 border-gold pl-3">
+                                      <p className="font-serif text-navy text-base font-bold">{opt.name}</p>
+                                      <p className="font-serif text-navy/70 text-sm mt-1 leading-relaxed">{opt.description_ru}</p>
+                                      <p className="font-serif text-navy/60 text-xs mt-1.5">
+                                        Стоимость: {opt.cost_eur} € · Срок: {opt.duration}
+                                      </p>
+                                      {opt.pros_ru.map((pr, j) => (
+                                        <p key={`p${j}`} className="font-serif text-navy/70 text-xs mt-0.5">＋ {pr}</p>
+                                      ))}
+                                      {opt.cons_ru.map((cn, j) => (
+                                        <p key={`c${j}`} className="font-serif text-navy/50 text-xs mt-0.5">－ {cn}</p>
+                                      ))}
+                                    </div>
+                                  ))}
+                                  {step.recommendation_ru && (
+                                    <p className="font-serif text-gold text-sm italic">💡 {step.recommendation_ru}</p>
+                                  )}
+                                </div>
+                              )}
+
+                              {step.warnings_ru && (
+                                <div className="flex flex-col gap-1.5 mt-3">
+                                  {step.warnings_ru.map((w, i) => (
+                                    <div key={i} className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2">
+                                      <span className="text-gold mt-0.5 text-sm">!</span>
+                                      <p className="font-serif text-navy/80 text-sm">{w}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {/* Виза */}
+                          <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                            <h5 className="font-serif text-navy text-lg font-bold">Виза — {legalization.visa.type}</h5>
+                            <div className="flex flex-col gap-0.5 mt-2">
+                              <p className="font-serif text-navy/80 text-sm">{legalization.visa.embassy_address}</p>
+                              <a href={legalization.visa.embassy_website} target="_blank" rel="noreferrer" className="font-serif text-gold text-sm underline">
+                                {legalization.visa.embassy_website.replace('https://', '')}
+                              </a>
+                              <p className="font-serif text-navy/70 text-sm mt-1">Срок: {legalization.visa.duration_days_estimate}</p>
+                              <p className="font-serif text-navy/70 text-sm">Фингарантия: {legalization.visa.financial_guarantee_eur}</p>
+                            </div>
+                            {legalization.visa.warnings_ru.length > 0 && (
+                              <div className="flex flex-col gap-1.5 mt-2">
+                                {legalization.visa.warnings_ru.map((w, i) => (
+                                  <div key={i} className="flex items-start gap-2">
+                                    <span className="text-gold mt-0.5 text-sm">!</span>
+                                    <p className="font-serif text-navy/80 text-sm">{w}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Итоговая смета */}
+                          <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                            <p className="font-serif text-gold text-sm italic mb-1.5">Примерная смета</p>
+                            <div className="flex flex-col gap-1">
+                              <p className="font-serif text-navy/80 text-sm">Документы: {legalization.total_cost_estimate.documents_only}</p>
+                              <p className="font-serif text-navy/80 text-sm">С визой: {legalization.total_cost_estimate.with_visa}</p>
+                              <p className="font-serif text-navy/80 text-sm">Сам курс: {legalization.total_cost_estimate.course_separately}</p>
+                            </div>
+                          </div>
+
+                          {/* Pitfalls легализации */}
+                          <div className="mt-1">
+                            <p className="font-serif text-gold text-sm italic mb-1.5">Что часто ломается</p>
+                            <div className="flex flex-col gap-1.5">
+                              {legalization.common_pitfalls_ru.map((pf, i) => (
+                                <div key={i} className="flex items-start gap-2">
+                                  <span className="text-gold mt-0.5 text-sm">◆</span>
+                                  <p className="font-serif text-navy/80 text-sm">{pf}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <p className="font-serif text-navy/40 text-[11px] italic mt-1">
+                            Данные обновляются. Перед подачей сверь с официальными источниками:{' '}
+                            {legalization.diploma_legalization.competent_authority.website}, esteri.it.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
