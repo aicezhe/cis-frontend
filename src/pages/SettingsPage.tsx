@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, clearToken, isAuthed } from '../lib/api';
+import { CurrencyPicker } from '../components/CurrencyPicker';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -182,6 +183,14 @@ export default function SettingsPage() {
           <span className="font-serif text-gold text-base">{language}</span>
         </button>
 
+      </div>
+
+      {/* Валюта отображения */}
+      <h3 className="font-serif text-gold text-sm italic px-6 mt-8 mb-2">
+        Валюта
+      </h3>
+      <div className="mx-6">
+        <CurrencyPicker />
       </div>
 
       {/* Действия */}

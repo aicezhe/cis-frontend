@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { useFoundation } from '../hooks/useFoundation';
-import { formatPrice } from '../lib/format';
+import { useCurrency } from '../hooks/useCurrency';
+import { formatPrice } from '../utils/formatPrice';
 import type { FoundationModality } from '../types/foundation';
 
 const MODALITY_LABEL: Record<FoundationModality, string> = {
@@ -10,6 +11,8 @@ const MODALITY_LABEL: Record<FoundationModality, string> = {
   blended: 'смешанно',
   online: 'онлайн',
 };
+
+const CHECKS_KEY = 'cispr_foundation_checks';
 
 // Угловые скобки в стиле раздела «Виза»
 function Corners() {
@@ -26,8 +29,23 @@ function Corners() {
 export default function FoundationOverviewPage() {
   const navigate = useNavigate();
   const { data, loading, error } = useFoundation();
+  const { currency } = useCurrency();
+  const fmt = (eur: number) => formatPrice(eur, currency);
   const [expanded, setExpanded] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [checks, setChecks] = useState<string[]>(() => {
+    const raw = localStorage.getItem(CHECKS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  });
+
+  function toggleCheck(id: string) {
+    setChecks((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(CHECKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+  const isChecked = (id: string) => checks.includes(id);
 
   if (loading) {
     return (
@@ -70,10 +88,21 @@ export default function FoundationOverviewPage() {
   const sections = [
     { id: 1, title: 'Что это и как устроено', sub: 'Суть курса, формат, что получаешь' },
     { id: 2, title: 'Учебный план', sub: `≈${plan.total_cfu ?? 60} CFU за год` },
-    { id: 3, title: 'Стоимость и оплата', sub: `${formatPrice(c.tuition_full, c.currency)} · 3 rate · потоки` },
+    { id: 3, title: 'Стоимость и оплата', sub: `${fmt(c.tuition_full)} · 3 rate · потоки` },
     { id: 4, title: 'Языковые требования', sub: 'Итальянский, английский, сертификаты' },
-    { id: 5, title: 'Как поступить', sub: 'Документы, апостиль, заявка' },
+    { id: 5, title: 'Как поступить', sub: 'Документы, апостиль, заявка, сроки' },
   ];
+
+  // Круглый чекбокс в стиле раздела «Виза»
+  const CheckBox = ({ id }: { id: string }) => (
+    <button onClick={() => toggleCheck(id)} className="w-6 h-6 mt-0.5 flex-shrink-0">
+      {isChecked(id) ? (
+        <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
+      ) : (
+        <div className="w-6 h-6 rounded-full border-2 border-navy/30" />
+      )}
+    </button>
+  );
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -96,7 +125,7 @@ export default function FoundationOverviewPage() {
       <div className="mx-6 mt-6 relative bg-navy rounded-2xl p-5">
         <Corners />
         <p className="font-serif text-gold text-sm italic mb-2 px-2">Важно</p>
-        <p className="font-serif text-cream text-sm leading-relaxed px-2">{p.important_note_ru}</p>
+        <p className="font-serif text-cream text-base leading-relaxed px-2">{p.important_note_ru}</p>
       </div>
 
       <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">
@@ -117,18 +146,17 @@ export default function FoundationOverviewPage() {
             >
               <button
                 onClick={() => setExpanded(isExpanded ? 0 : s.id)}
-                className="w-full flex items-start gap-3 text-left"
+                className="w-full flex items-center gap-3 text-left"
               >
                 <div className="flex-1">
-                  <p className="font-serif text-gold text-sm italic">Раздел {s.id}</p>
-                  <h4 className="font-serif text-navy text-lg font-bold">{s.title}</h4>
-                  <p className="font-serif text-gold text-xs italic mt-0.5">{s.sub}</p>
+                  <h4 className="font-serif text-navy text-xl font-bold">{s.title}</h4>
+                  <p className="font-serif text-gold text-sm italic mt-0.5">{s.sub}</p>
                 </div>
                 <svg
-                  width="14"
-                  height="14"
+                  width="16"
+                  height="16"
                   viewBox="0 0 14 14"
-                  className={'text-navy mt-1 flex-shrink-0 transition-transform ' + (isExpanded ? 'rotate-180' : '')}
+                  className={'text-navy flex-shrink-0 transition-transform ' + (isExpanded ? 'rotate-180' : '')}
                   fill="currentColor"
                 >
                   <path d="M7 10L1 4h12L7 10z" />
@@ -140,18 +168,18 @@ export default function FoundationOverviewPage() {
                   {/* 1. Что это и как устроено */}
                   {s.id === 1 && (
                     <div className="flex flex-col gap-4">
-                      <p className="font-serif text-navy/80 text-sm leading-relaxed">{p.description_ru}</p>
+                      <p className="font-serif text-navy/80 text-base leading-relaxed">{p.description_ru}</p>
                       <div>
-                        <p className="font-serif text-gold text-xs italic mb-1">Как устроена учёба</p>
-                        <p className="font-serif text-navy/80 text-sm leading-relaxed">{data.how_studies_work_ru}</p>
+                        <p className="font-serif text-gold text-sm italic mb-1">Как устроена учёба</p>
+                        <p className="font-serif text-navy/80 text-base leading-relaxed">{data.how_studies_work_ru}</p>
                       </div>
                       <div>
-                        <p className="font-serif text-gold text-xs italic mb-2">После завершения</p>
+                        <p className="font-serif text-gold text-sm italic mb-2">После завершения</p>
                         <div className="flex flex-col gap-1.5">
                           {p.issued_after_completion.map((item, i) => (
                             <div key={i} className="flex items-start gap-2">
                               <span className="text-gold mt-0.5">◆</span>
-                              <p className="font-serif text-navy/80 text-sm">{item}</p>
+                              <p className="font-serif text-navy/80 text-base">{item}</p>
                             </div>
                           ))}
                         </div>
@@ -163,11 +191,11 @@ export default function FoundationOverviewPage() {
                   {s.id === 2 && (
                     <div className="flex flex-col gap-3">
                       <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3 flex justify-between items-center">
-                        <p className="font-serif text-navy text-sm">Всего за год</p>
-                        <p className="font-serif text-gold text-lg font-bold">≈{plan.total_cfu ?? 60} CFU</p>
+                        <p className="font-serif text-navy text-base">Всего за год</p>
+                        <p className="font-serif text-gold text-xl font-bold">≈{plan.total_cfu ?? 60} CFU</p>
                       </div>
                       {plan.total_note_ru && (
-                        <p className="font-serif text-navy/60 text-xs italic">{plan.total_note_ru}</p>
+                        <p className="font-serif text-navy/60 text-sm italic">{plan.total_note_ru}</p>
                       )}
                       {plan.list.map((subj, i) => (
                         <div
@@ -179,87 +207,100 @@ export default function FoundationOverviewPage() {
                         >
                           <div className="flex justify-between items-start gap-3">
                             <h5 className={
-                              'font-serif text-sm font-bold leading-snug flex-1 ' +
+                              'font-serif text-base font-bold leading-snug flex-1 ' +
                               (subj.optional ? 'text-gold' : 'text-navy')
                             }>
                               {subj.name}
                             </h5>
-                            <span className="font-serif text-gold text-sm font-bold flex-shrink-0">{subj.cfu} CFU</span>
+                            <span className="font-serif text-gold text-base font-bold flex-shrink-0">{subj.cfu} CFU</span>
                           </div>
-                          <div className="flex flex-wrap gap-1.5 mt-1.5">
+                          <div className="flex flex-wrap gap-1.5 mt-2">
                             {subj.period && (
-                              <span className="font-serif text-navy/60 text-[11px] bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5">{subj.period}</span>
+                              <span className="font-serif text-navy/60 text-xs bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5">{subj.period}</span>
                             )}
                             {subj.modality && (
-                              <span className="font-serif text-navy/60 text-[11px] bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5">{MODALITY_LABEL[subj.modality]}</span>
+                              <span className="font-serif text-navy/60 text-xs bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5">{MODALITY_LABEL[subj.modality]}</span>
                             )}
                             {subj.optional && (
-                              <span className="font-serif text-gold text-[11px] bg-soft-cream border border-gold/40 rounded-full px-2 py-0.5">по выбору</span>
+                              <span className="font-serif text-gold text-xs bg-soft-cream border border-gold/40 rounded-full px-2 py-0.5">по выбору</span>
                             )}
                           </div>
                           {subj.note && (
-                            <p className="font-serif text-navy/50 text-xs italic mt-1.5">{subj.note}</p>
+                            <p className="font-serif text-navy/50 text-sm italic mt-2">{subj.note}</p>
                           )}
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {/* 3. Стоимость и оплата */}
+                  {/* 3. Стоимость и оплата — с галочками «оплачено» */}
                   {s.id === 3 && (
                     <div className="flex flex-col gap-3">
                       <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3 flex justify-between items-center">
                         <div>
-                          <p className="font-serif text-navy text-sm font-bold">Curriculum generale</p>
-                          <p className="font-serif text-navy/60 text-xs italic">Dante (−20%): {formatPrice(c.tuition_dante, c.currency)}</p>
+                          <p className="font-serif text-navy text-base font-bold">Curriculum generale</p>
+                          <p className="font-serif text-navy/60 text-sm italic">Dante (−20%): {fmt(c.tuition_dante)}</p>
                         </div>
-                        <p className="font-serif text-navy text-lg font-bold">{formatPrice(c.tuition_full, c.currency)}</p>
+                        <p className="font-serif text-navy text-xl font-bold">{fmt(c.tuition_full)}</p>
                       </div>
 
-                      <p className="font-serif text-gold text-xs italic mt-1">Оплата тремя частями (rate)</p>
+                      <p className="font-serif text-gold text-sm italic mt-1">
+                        Оплата тремя частями — отмечай галочкой, когда оплатил
+                      </p>
                       {data.payment_schedule.installments.map((inst) => (
                         <div key={inst.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                          <div className="flex justify-between items-start">
-                            <h5 className="font-serif text-navy text-sm font-bold flex-1">{inst.label_ru}</h5>
-                            <div className="text-right ml-2 flex-shrink-0">
-                              <p className="font-serif text-navy text-sm font-bold">{formatPrice(inst.amount_general, c.currency)}</p>
-                              <p className="font-serif text-gold text-[11px] italic">Dante {formatPrice(inst.amount_dante, c.currency)}</p>
+                          <div className="flex items-start gap-3">
+                            <CheckBox id={`pay-${inst.id}`} />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <h5 className={
+                                  'font-serif text-base font-bold flex-1 ' +
+                                  (isChecked(`pay-${inst.id}`) ? 'text-navy/50 line-through' : 'text-navy')
+                                }>
+                                  {inst.label_ru}
+                                </h5>
+                                <div className="text-right ml-2 flex-shrink-0">
+                                  <p className="font-serif text-navy text-base font-bold">{fmt(inst.amount_general)}</p>
+                                  <p className="font-serif text-gold text-xs italic">Dante {fmt(inst.amount_dante)}</p>
+                                </div>
+                              </div>
+                              {inst.when_ru && <p className="font-serif text-navy/70 text-sm mt-1.5">{inst.when_ru}</p>}
+                              <div className="flex flex-col gap-1 mt-2">
+                                {inst.deadlines.map((d, i) => (
+                                  <div key={i} className="flex justify-between items-baseline gap-2">
+                                    <p className="font-serif text-navy/60 text-xs flex-1">{d.stream}</p>
+                                    <span className="font-serif text-navy text-xs bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5 flex-shrink-0">{d.date}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              {inst.refundable_if_visa_denied && (
+                                <p className="font-serif text-gold text-xs italic mt-1.5">Возвращается при отказе в визе.</p>
+                              )}
                             </div>
                           </div>
-                          {inst.when_ru && <p className="font-serif text-navy/70 text-xs mt-1.5">{inst.when_ru}</p>}
-                          <div className="flex flex-col gap-1 mt-2">
-                            {inst.deadlines.map((d, i) => (
-                              <div key={i} className="flex justify-between items-baseline gap-2">
-                                <p className="font-serif text-navy/60 text-[11px] flex-1">{d.stream}</p>
-                                <span className="font-serif text-navy text-[11px] bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5 flex-shrink-0">до {d.date}</span>
-                              </div>
-                            ))}
-                          </div>
-                          {inst.refundable_if_visa_denied && (
-                            <p className="font-serif text-gold text-[11px] italic mt-1.5">Возвращается при отказе в визе.</p>
-                          )}
                         </div>
                       ))}
+                      <p className="font-serif text-navy/50 text-xs italic">{data.payment_schedule.note_ru}</p>
 
-                      <p className="font-serif text-gold text-xs italic mt-2">Потоки подачи</p>
+                      <p className="font-serif text-gold text-sm italic mt-2">Потоки подачи</p>
                       {data.enrollment_types.map((e) => (
                         <div key={e.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="font-serif text-navy text-sm font-bold">{e.name}</p>
-                              <p className="font-serif text-gold text-[11px] italic">{e.name_ru}</p>
+                              <p className="font-serif text-navy text-base font-bold">{e.name}</p>
+                              <p className="font-serif text-gold text-xs italic">{e.name_ru}</p>
                             </div>
-                            <span className="font-serif text-navy text-[11px] bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5 flex-shrink-0">до {e.deadline_template}</span>
+                            <span className="font-serif text-navy text-xs bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5 flex-shrink-0">до {e.deadline_template}</span>
                           </div>
-                          <p className="font-serif text-navy/70 text-xs mt-1.5">{e.description_ru}</p>
+                          <p className="font-serif text-navy/70 text-sm mt-1.5">{e.description_ru}</p>
                         </div>
                       ))}
 
                       <div className="flex flex-col gap-1.5 mt-1">
                         {c.notes_ru.map((note, i) => (
                           <div key={i} className="flex items-start gap-2">
-                            <span className="text-gold mt-0.5 text-xs">◆</span>
-                            <p className="font-serif text-navy/70 text-xs">{note}</p>
+                            <span className="text-gold mt-0.5 text-sm">◆</span>
+                            <p className="font-serif text-navy/70 text-sm">{note}</p>
                           </div>
                         ))}
                       </div>
@@ -271,77 +312,126 @@ export default function FoundationOverviewPage() {
                     <div className="flex flex-col gap-3">
                       <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3 flex flex-col gap-1">
                         <div className="flex justify-between">
-                          <p className="font-serif text-navy/60 text-sm">Итальянский</p>
-                          <p className="font-serif text-navy text-sm">{lang.italian}</p>
+                          <p className="font-serif text-navy/60 text-base">Итальянский</p>
+                          <p className="font-serif text-navy text-base">{lang.italian}</p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="font-serif text-navy/60 text-sm">Английский</p>
-                          <p className="font-serif text-navy text-sm">{lang.english}</p>
+                          <p className="font-serif text-navy/60 text-base">Английский</p>
+                          <p className="font-serif text-navy text-base">{lang.english}</p>
                         </div>
                       </div>
 
                       <div>
-                        <p className="font-serif text-gold text-xs italic mb-1.5">Если идёшь на англоязычный bachelor — нужен B2:</p>
+                        <p className="font-serif text-gold text-sm italic mb-1.5">Если идёшь на англоязычный bachelor — нужен B2:</p>
                         <div className="flex flex-col gap-1">
                           {lr.accepted_english_b2_certificates.map((cert, i) => (
                             <div key={i} className="flex items-start gap-2">
-                              <span className="text-gold mt-0.5 text-xs">◆</span>
-                              <p className="font-serif text-navy/80 text-sm">{cert}</p>
+                              <span className="text-gold mt-0.5 text-sm">◆</span>
+                              <p className="font-serif text-navy/80 text-base">{cert}</p>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       <div className="bg-cream border border-gold rounded-xl px-4 py-3">
-                        <p className="font-serif text-gold text-xs italic mb-1">Про Duolingo</p>
-                        <p className="font-serif text-navy/80 text-xs leading-relaxed">{lr.duolingo_note_ru}</p>
+                        <p className="font-serif text-gold text-sm italic mb-1">Про Duolingo</p>
+                        <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
                       </div>
                       <div className="bg-cream border border-gold rounded-xl px-4 py-3">
-                        <p className="font-serif text-gold text-xs italic mb-1">Про визу</p>
-                        <p className="font-serif text-navy/80 text-xs leading-relaxed">{lr.visa_note_ru}</p>
+                        <p className="font-serif text-gold text-sm italic mb-1">Про визу</p>
+                        <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.visa_note_ru}</p>
                       </div>
                     </div>
                   )}
 
-                  {/* 5. Как поступить */}
+                  {/* 5. Как поступить — галочки, сроки 2027/28, стоимости */}
                   {s.id === 5 && (
                     <div className="flex flex-col gap-3">
+                      {/* Дисклеймер по срокам + общая стоимость */}
+                      <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                        <p className="font-serif text-gold text-sm italic mb-1">
+                          Ориентир на приём {data.apply_meta.target_year_ru}
+                        </p>
+                        <p className="font-serif text-navy/75 text-sm leading-relaxed">
+                          {data.apply_meta.dates_disclaimer_ru}
+                        </p>
+                        <p className="font-serif text-navy text-sm leading-relaxed mt-2 font-bold">
+                          {data.apply_meta.total_cost_note_ru}
+                        </p>
+                      </div>
+
                       {data.steps_to_apply.map((step, idx) => (
                         <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                          <p className="font-serif text-gold text-xs italic">Шаг {idx + 1}</p>
-                          <h5 className="font-serif text-navy text-sm font-bold mt-0.5">{step.title}</h5>
+                          <p className="font-serif text-gold text-sm italic">Шаг {idx + 1}</p>
+                          <h5 className="font-serif text-navy text-lg font-bold mt-0.5">{step.title}</h5>
+                          {step.timing_ru && (
+                            <span className="inline-block font-serif text-navy text-xs bg-soft-cream border border-gold/40 rounded-full px-2.5 py-1 mt-2">
+                              🕑 {step.timing_ru}
+                            </span>
+                          )}
                           {step.description_ru && (
-                            <p className="font-serif text-navy/80 text-xs mt-1.5 leading-relaxed">{step.description_ru}</p>
+                            <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
                           )}
+
+                          {/* items как чекбоксы */}
                           {step.items && (
-                            <div className="flex flex-col gap-1 mt-2">
-                              {step.items.map((item, i) => (
-                                <div key={i} className="flex items-start gap-2">
-                                  <span className="text-gold mt-0.5 text-xs">◆</span>
-                                  <p className="font-serif text-navy/80 text-xs">{item}</p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          {step.substeps && (
-                            <div className="flex flex-col gap-1.5 mt-2">
-                              {step.substeps.map((sub, i) => (
-                                <div key={i} className="bg-soft-cream border border-navy/15 rounded-lg px-3 py-2">
-                                  <p className="font-serif text-navy text-xs">{sub.name}</p>
-                                  <div className="flex gap-3 mt-0.5">
-                                    {sub.cost_rub && <span className="font-serif text-navy/60 text-[11px]">≈ {sub.cost_rub} ₽</span>}
-                                    {sub.duration_days && <span className="font-serif text-navy/60 text-[11px]">{sub.duration_days} дн.</span>}
+                            <div className="flex flex-col gap-2 mt-3">
+                              {step.items.map((item, i) => {
+                                const cid = `apply-${step.id}-item-${i}`;
+                                return (
+                                  <div key={i} className="flex items-start gap-3">
+                                    <CheckBox id={cid} />
+                                    <p className={
+                                      'font-serif text-base flex-1 ' +
+                                      (isChecked(cid) ? 'text-navy/50 line-through' : 'text-navy/80')
+                                    }>
+                                      {item}
+                                    </p>
                                   </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           )}
+
+                          {/* substeps как чекбоксы со стоимостью */}
+                          {step.substeps && (
+                            <div className="flex flex-col gap-2 mt-3">
+                              {step.substeps.map((sub, i) => {
+                                const cid = `apply-${step.id}-sub-${i}`;
+                                return (
+                                  <div key={i} className="flex items-start gap-3">
+                                    <CheckBox id={cid} />
+                                    <div className="flex-1">
+                                      <p className={
+                                        'font-serif text-base ' +
+                                        (isChecked(cid) ? 'text-navy/50 line-through' : 'text-navy/80')
+                                      }>
+                                        {sub.name}
+                                      </p>
+                                      <div className="flex gap-3 mt-0.5">
+                                        {sub.cost_rub && sub.cost_rub !== '0' && (
+                                          <span className="font-serif text-gold text-xs">≈ {sub.cost_rub} ₽</span>
+                                        )}
+                                        {sub.cost_rub === '0' && (
+                                          <span className="font-serif text-navy/50 text-xs">бесплатно</span>
+                                        )}
+                                        {sub.duration_days && (
+                                          <span className="font-serif text-navy/60 text-xs">{sub.duration_days} дн.</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
                           {step.warnings && (
-                            <div className="flex flex-col gap-1.5 mt-2">
+                            <div className="flex flex-col gap-1.5 mt-3">
                               {step.warnings.map((w, i) => (
                                 <div key={i} className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2">
-                                  <span className="text-gold mt-0.5 text-xs">!</span>
-                                  <p className="font-serif text-navy/80 text-[11px]">{w}</p>
+                                  <span className="text-gold mt-0.5 text-sm">!</span>
+                                  <p className="font-serif text-navy/80 text-sm">{w}</p>
                                 </div>
                               ))}
                             </div>
@@ -351,10 +441,10 @@ export default function FoundationOverviewPage() {
 
                       {emailTemplate && (
                         <div className="bg-navy rounded-xl p-4 mt-1">
-                          <p className="font-serif text-gold text-[11px] italic mb-1">Subject</p>
-                          <p className="font-serif text-cream text-xs mb-3">{emailTemplate.subject}</p>
-                          <p className="font-serif text-gold text-[11px] italic mb-1">Body</p>
-                          <pre className="font-serif text-cream/90 text-[11px] whitespace-pre-wrap leading-relaxed">
+                          <p className="font-serif text-gold text-xs italic mb-1">Subject</p>
+                          <p className="font-serif text-cream text-sm mb-3">{emailTemplate.subject}</p>
+                          <p className="font-serif text-gold text-xs italic mb-1">Body</p>
+                          <pre className="font-serif text-cream/90 text-xs whitespace-pre-wrap leading-relaxed">
 {emailTemplate.body_en}
                           </pre>
                           <button
@@ -367,12 +457,12 @@ export default function FoundationOverviewPage() {
                       )}
 
                       <div className="mt-1">
-                        <p className="font-serif text-gold text-xs italic mb-1.5">Частые ошибки</p>
+                        <p className="font-serif text-gold text-sm italic mb-1.5">Частые ошибки</p>
                         <div className="flex flex-col gap-1.5">
                           {data.common_pitfalls_ru.map((pitfall, i) => (
                             <div key={i} className="flex items-start gap-2">
-                              <span className="text-gold mt-0.5 text-xs">◆</span>
-                              <p className="font-serif text-navy/80 text-xs">{pitfall}</p>
+                              <span className="text-gold mt-0.5 text-sm">◆</span>
+                              <p className="font-serif text-navy/80 text-sm">{pitfall}</p>
                             </div>
                           ))}
                         </div>

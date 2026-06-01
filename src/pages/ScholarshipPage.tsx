@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError, isAuthed } from '../lib/api';
+import { Price } from '../components/Price';
 import type {
   Gender,
   ResidenceStatus,
@@ -140,17 +141,17 @@ export default function ScholarshipPage() {
 
               <p className="font-serif text-gold text-sm italic">Твоя оценка</p>
               <p className="font-serif text-cream text-4xl mt-1">
-                €{comp.total_eur.toLocaleString('ru-RU')}
+                <Price eur={comp.total_eur} />
               </p>
               <p className="font-serif text-cream/70 text-xs mt-1">
-                база €{comp.base_eur.toLocaleString('ru-RU')}
+                база <Price eur={comp.base_eur} />
                 {comp.applicable_bonuses.map((b) => ` + ${b.modifier} (${b.title_ru})`).join('')}
               </p>
               {comp.applicable_bonuses.length > 0 && (
                 <div className="mt-3 flex flex-col gap-1">
                   {comp.applicable_bonuses.map((b) => (
                     <p key={b.code} className="font-serif text-gold text-xs">
-                      + €{b.amount_eur.toLocaleString('ru-RU')} — {b.title_ru}
+                      + <Price eur={b.amount_eur} /> — {b.title_ru}
                     </p>
                   ))}
                 </div>
@@ -229,7 +230,7 @@ export default function ScholarshipPage() {
           {isee != null && (
             <div className="mx-6 mt-8 bg-soft-cream border border-navy/20 rounded-2xl p-4">
               <p className="font-serif text-navy text-sm">
-                Порог ISEE: <span className="font-bold">€{isee.toLocaleString('ru-RU')}</span>
+                Порог ISEE: <span className="font-bold"><Price eur={isee} /></span>
               </p>
               {typeof data.isee_note_ru === 'string' && (
                 <p className="font-serif text-navy/60 text-xs mt-1">{data.isee_note_ru}</p>
