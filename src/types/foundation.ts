@@ -12,6 +12,7 @@ export interface FoundationSubject {
   period?: string;
   grading?: FoundationGrading;
   note?: string;
+  optional?: boolean;
 }
 
 export interface FoundationTrack {
@@ -79,6 +80,7 @@ export interface FoundationLanguageRequirements {
 export interface FoundationSubjectsByTrack {
   source: string;
   total_cfu?: number;
+  total_note_ru?: string;
   note?: string;
   list: FoundationSubject[];
 }

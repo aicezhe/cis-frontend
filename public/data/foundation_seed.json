@@ -170,7 +170,8 @@
   "subjects_by_track": {
     "absolute_beginners": {
       "source": "real_certificate_FY_2023_2024",
-      "total_cfu": 68,
+      "total_cfu": 60,
+      "total_note_ru": "В сумме за год — около 60 CFU. Большую часть составляет итальянский язык; ближе к концу добавляется профильный предмет на выбор.",
       "list": [
         {"name": "Corso intensivo di lingua italiana (Absolute Beginners)", "cfu": 6, "modality": "blended", "period": "1° semestre"},
         {"name": "Introduzione alla città di Parma (solo frequenza)", "cfu": 1, "modality": "in_presenza", "period": "1° semestre", "grading": "attendance"},
@@ -187,8 +188,7 @@
         {"name": "Corso estensivo Erasmus di lingua italiana (gruppo C+)", "cfu": 4, "modality": "in_presenza", "period": "2° semestre"},
         {"name": "Lingua italiana per lo studio IV", "cfu": 4, "modality": "in_presenza", "period": "2° semestre"},
         {"name": "Corso preparatorio per la certificazione + Test Italstudio B1/B2", "cfu": 4, "modality": "in_presenza", "period": "2° semestre", "grading": "pass_fail"},
-        {"name": "Teoria e Tecnica Fotografia", "cfu": 9, "modality": "in_presenza", "period": "2° semestre"},
-        {"name": "B4Peace", "cfu": 2, "modality": "in_presenza", "period": "2° semestre"}
+        {"name": "Ещё один профильный предмет на выбор", "cfu": 3, "period": "2° semestre", "optional": true, "note": "*зависит от года и группы (например фотография, межкультурные проекты и т.п.)"}
       ]
     },
     "elementary": {

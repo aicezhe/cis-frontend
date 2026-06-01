@@ -44,10 +44,10 @@ export default function OnboardingPage() {
   const [ready, setReady] = useState('');
 
   // Foundation Year — это подготовительный курс, у него нет выбора направления
-  // (департамента) и нет каталога программ. Поэтому шаг «направление»
-  // пропускается, а в конце ведём не в каталог, а сразу в /path.
+  // (департамента), нет каталога программ и нет вопроса про «сложную учёбу».
+  // Остаются только уровень + язык, а в конце ведём сразу в /path.
   const isFoundation = level === 'Foundation Year';
-  const stepSequence = isFoundation ? [1, 2, 4] : [1, 2, 3, 4];
+  const stepSequence = isFoundation ? [1, 2] : [1, 2, 3, 4];
 
   async function goNext() {
     const idx = stepSequence.indexOf(step);
