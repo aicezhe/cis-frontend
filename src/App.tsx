@@ -11,6 +11,7 @@ import LauraPage from './pages/LauraPage';
 import MapPage from './pages/MapPage';
 import LoginPage from './pages/LoginPage';
 import ChoiceProgramPage from './pages/ChoiceProgramPage';
+import ChangeCoursePage from './pages/ChangeCoursePage';
 import CoursePage from './pages/CoursePage';
 import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
@@ -32,6 +33,7 @@ export default function App() {
       <Route path="/map" element={<MapPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/choice-program" element={<ChoiceProgramPage />} />
+      <Route path="/change-course" element={<ChangeCoursePage />} />
       <Route path="/course/:id" element={<CoursePage />} />
       <Route path="/scholarship" element={<ScholarshipPage />} />
       <Route path="/settings" element={<SettingsPage />} />

@@ -56,7 +56,7 @@ export default function SettingsPage() {
   }
 
   function handleChangeCourse() {
-    navigate('/choice-program');
+    navigate('/change-course');
   }
 
   const courseName = localStorage.getItem('cispr_course_name');

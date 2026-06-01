@@ -3,6 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff, User } from 'lucide-react';
 import { api, ApiError } from '../lib/api';
 
+function Corners() {
+  const base = 'absolute w-3 h-3 border-gold';
+  return (
+    <>
+      <span className={base + ' top-2 left-2 border-t-2 border-l-2'} />
+      <span className={base + ' top-2 right-2 border-t-2 border-r-2'} />
+      <span className={base + ' bottom-2 left-2 border-b-2 border-l-2'} />
+      <span className={base + ' bottom-2 right-2 border-b-2 border-r-2'} />
+    </>
+  );
+}
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -241,18 +253,18 @@ export default function RegisterPage() {
                 { code: 'ua', label: 'Украина' },
                 { code: 'by', label: 'Беларусь' },
                 { code: 'kz', label: 'Казахстан' },
-                { code: 'other', label: 'Другая страна' },
               ].map((opt) => (
                 <button
                   key={opt.code}
                   onClick={() => { setCountry(opt.code); setError(''); }}
                   className={
-                    'font-serif text-lg rounded-2xl py-4 border ' +
+                    'relative font-serif text-lg rounded-2xl py-4 border ' +
                     (country === opt.code
                       ? 'bg-navy text-gold border-navy'
                       : 'bg-cream text-navy border-navy/30')
                   }
                 >
+                  {country === opt.code && <Corners />}
                   {opt.label}
                 </button>
               ))}

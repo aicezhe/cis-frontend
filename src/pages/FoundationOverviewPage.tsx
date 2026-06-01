@@ -70,7 +70,6 @@ export default function FoundationOverviewPage() {
   const c = data.costs;
   // Единый курс Foundation: берём учебный план Absolute Beginners как основной.
   const plan = data.subjects_by_track.absolute_beginners;
-  const lang = data.language_requirements.by_track.absolute_beginners;
   const lr = data.language_requirements;
   const emailTemplate = data.email_templates['fy_application_email'];
 
@@ -311,15 +310,13 @@ export default function FoundationOverviewPage() {
                   {/* 4. Языковые требования */}
                   {s.id === 4 && (
                     <div className="flex flex-col gap-3">
-                      <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3 flex flex-col gap-1">
-                        <div className="flex justify-between">
-                          <p className="font-serif text-navy/60 text-base">Итальянский</p>
-                          <p className="font-serif text-navy text-base">{lang.italian}</p>
-                        </div>
-                        <div className="flex justify-between">
-                          <p className="font-serif text-navy/60 text-base">Английский</p>
-                          <p className="font-serif text-navy text-base">{lang.english}</p>
-                        </div>
+                      <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                        <p className="font-serif text-navy/80 text-base leading-relaxed">
+                          Зависит от трека: можно зайти{' '}
+                          <span className="text-navy font-bold">с нуля</span>, с базовым итальянским{' '}
+                          <span className="text-navy font-bold">A1/A2</span> либо с английским{' '}
+                          <span className="text-navy font-bold">B2</span>.
+                        </p>
                       </div>
 
                       <div>
@@ -337,10 +334,6 @@ export default function FoundationOverviewPage() {
                       <div className="bg-cream border border-gold rounded-xl px-4 py-3">
                         <p className="font-serif text-gold text-sm italic mb-1">Про Duolingo</p>
                         <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
-                      </div>
-                      <div className="bg-cream border border-gold rounded-xl px-4 py-3">
-                        <p className="font-serif text-gold text-sm italic mb-1">Про визу</p>
-                        <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.visa_note_ru}</p>
                       </div>
                     </div>
                   )}
@@ -565,35 +558,11 @@ export default function FoundationOverviewPage() {
                             </div>
                           ))}
 
-                          {/* Виза */}
-                          <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                            <h5 className="font-serif text-navy text-lg font-bold">Виза — {legalization.visa.type}</h5>
-                            <div className="flex flex-col gap-0.5 mt-2">
-                              <p className="font-serif text-navy/80 text-sm">{legalization.visa.embassy_address}</p>
-                              <a href={legalization.visa.embassy_website} target="_blank" rel="noreferrer" className="font-serif text-gold text-sm underline">
-                                {legalization.visa.embassy_website.replace('https://', '')}
-                              </a>
-                              <p className="font-serif text-navy/70 text-sm mt-1">Срок: {legalization.visa.duration_days_estimate}</p>
-                              <p className="font-serif text-navy/70 text-sm">Фингарантия: {legalization.visa.financial_guarantee_eur}</p>
-                            </div>
-                            {legalization.visa.warnings_ru.length > 0 && (
-                              <div className="flex flex-col gap-1.5 mt-2">
-                                {legalization.visa.warnings_ru.map((w, i) => (
-                                  <div key={i} className="flex items-start gap-2">
-                                    <span className="text-gold mt-0.5 text-sm">!</span>
-                                    <p className="font-serif text-navy/80 text-sm">{w}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Итоговая смета */}
+                          {/* Итоговая смета (виза — отдельный раздел приложения, здесь не дублируем) */}
                           <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
                             <p className="font-serif text-gold text-sm italic mb-1.5">Примерная смета</p>
                             <div className="flex flex-col gap-1">
                               <p className="font-serif text-navy/80 text-sm">Документы: {legalization.total_cost_estimate.documents_only}</p>
-                              <p className="font-serif text-navy/80 text-sm">С визой: {legalization.total_cost_estimate.with_visa}</p>
                               <p className="font-serif text-navy/80 text-sm">Сам курс: {legalization.total_cost_estimate.course_separately}</p>
                             </div>
                           </div>
