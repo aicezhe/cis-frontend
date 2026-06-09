@@ -152,7 +152,7 @@ export default function SectionPage() {
   useEffect(() => {
     if (sectionKey !== 'uni') return;
     if (programType === 'foundation') navigate('/path/foundation', { replace: true });
-    else if (programType === 'laurea' || programType === 'magistrale') navigate('/path/uni/program', { replace: true });
+    else if (programType === 'bachelor' || programType === 'master') navigate('/path/uni/program', { replace: true });
   }, [programType, sectionKey, navigate]);
 
   const [completed, setCompleted] = useState<string[]>(() => loadCompleted(sectionKey));

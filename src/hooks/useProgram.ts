@@ -6,7 +6,7 @@ const _cache: Partial<Record<ProgramType, LaureaSeed>> = {};
 export async function loadProgramSeed(type: ProgramType): Promise<LaureaSeed | null> {
   if (_cache[type]) return _cache[type]!;
   try {
-    const file = type === 'laurea' ? 'laurea_seed.json' : 'magistrale_seed.json';
+    const file = type === 'bachelor' ? 'laurea_seed.json' : 'magistrale_seed.json';
     const r = await fetch(`/data/${file}`);
     if (!r.ok) return null;
     const data = (await r.json()) as LaureaSeed;
@@ -24,7 +24,7 @@ export function useMyProgram(): { program: LaureaSeed | null; programType: Progr
 
   useEffect(() => {
     const stored = localStorage.getItem('cispr_program');
-    if (stored === 'laurea' || stored === 'magistrale') {
+    if (stored === 'bachelor' || stored === 'master') {
       setProgramType(stored);
       loadProgramSeed(stored).then((d) => {
         setData(d);

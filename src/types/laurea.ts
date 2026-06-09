@@ -1,7 +1,8 @@
 // Типы для разделов Бакалавриат и Магистратура.
 // Соответствуют public/data/laurea_seed.json и magistrale_seed.json.
 
-export type ProgramType = 'laurea' | 'magistrale';
+// Значения из levelToProgramLevel() в quiz.ts → localStorage cispr_program
+export type ProgramType = 'bachelor' | 'master';
 
 export interface ApplicationStep {
   id: string;

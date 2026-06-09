@@ -61,7 +61,7 @@ export default function ProgramOverviewPage() {
   }
 
   const p = program.program;
-  const isMag = programType === 'magistrale';
+  const isMag = programType === 'master';
 
   const cards = [
     { title: 'Дедлайны и шаги', sub: 'Что и когда делать', to: '/path/uni/program/steps' },
