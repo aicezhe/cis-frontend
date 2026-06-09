@@ -61,6 +61,15 @@ export default function SettingsPage() {
 
   const courseName = localStorage.getItem('cispr_course_name');
 
+  const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
+  const [country, setCountryState] = useState(localStorage.getItem('cispr_country') || '');
+
+  function handleCountryChange(code: string) {
+    setCountryState(code);
+    localStorage.setItem('cispr_country', code);
+    try { api.updateProfile({ country: code }); } catch { /* non-critical */ }
+  }
+
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-10">
 
@@ -118,7 +127,7 @@ export default function SettingsPage() {
 
         <button
           onClick={handleChangeCourse}
-          className="w-full flex items-center justify-between px-5 py-4"
+          className="w-full flex items-center justify-between px-5 py-4 border-b border-navy/10"
         >
           <div className="text-left min-w-0 pr-3">
             <span className="font-serif text-navy text-base block">Поменять мой курс</span>
@@ -128,6 +137,32 @@ export default function SettingsPage() {
           </div>
           <span className="text-navy/60 text-xl flex-shrink-0">→</span>
         </button>
+
+        {/* Страна — влияет на расчёт расходов и блок легализации документов */}
+        <div className="px-5 py-4">
+          <span className="font-serif text-navy text-base block mb-2">Моя страна</span>
+          <div className="flex gap-2 flex-wrap">
+            {(['ru', 'ua', 'by', 'kz'] as const).map((code) => (
+              <button
+                key={code}
+                onClick={() => handleCountryChange(code)}
+                className={
+                  'font-serif text-sm rounded-xl px-3 py-1.5 border transition-colors ' +
+                  (country === code
+                    ? 'bg-navy text-gold border-navy'
+                    : 'bg-cream text-navy border-navy/25')
+                }
+              >
+                {COUNTRY_LABELS[code]}
+              </button>
+            ))}
+          </div>
+          {country && (
+            <p className="font-serif text-navy/50 text-xs italic mt-2">
+              Влияет на расходы и инструкцию по документам
+            </p>
+          )}
+        </div>
 
       </div>
 

@@ -13,7 +13,38 @@ function loadChecked(): string[] {
 // Блок страновой легализации — встраивается в карточку диплома
 function LegalizationInline() {
   const { legalization, loading } = useMyLegalization();
-  if (loading || !legalization) return null;
+
+  if (loading) {
+    return (
+      <div className="mt-4 border-t border-navy/10 pt-3">
+        <p className="font-serif text-navy/50 text-xs italic">Загрузка данных по стране…</p>
+      </div>
+    );
+  }
+
+  if (!legalization) {
+    // Страна не определена — показываем общий порядок
+    return (
+      <div className="mt-4 border-t border-navy/10 pt-3 flex flex-col gap-2">
+        <p className="font-serif text-gold text-xs italic">Общий порядок легализации</p>
+        <div className="flex flex-col gap-1.5">
+          {[
+            '1. Апостиль документа об образовании — через уполномоченный орган своей страны',
+            '2. Нотариально заверенный перевод на итальянский у аккредитованного переводчика',
+            '3. Признание в Италии: CIMEA (cimea-diplome.it) или DDV через консульство Италии',
+          ].map((s, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-gold text-xs flex-shrink-0 mt-0.5">◆</span>
+              <p className="font-serif text-navy/70 text-xs leading-relaxed">{s}</p>
+            </div>
+          ))}
+        </div>
+        <p className="font-serif text-navy/40 text-[11px] italic">
+          Для точного порядка по твоей стране — выбери страну в Настройках
+        </p>
+      </div>
+    );
+  }
   const leg = legalization.diploma_legalization;
   return (
     <div className="mt-4 border-t border-navy/10 pt-4 flex flex-col gap-3">
