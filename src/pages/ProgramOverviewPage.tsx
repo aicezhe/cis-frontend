@@ -20,12 +20,15 @@ function NavCard({ title, sub, to }: { title: string; sub: string; to: string })
   return (
     <button
       onClick={() => navigate(to)}
-      className="relative w-full bg-navy rounded-2xl p-5 text-left"
+      className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-3 text-left"
     >
-      <Corners />
-      <h4 className="font-serif text-cream text-lg font-bold">{title}</h4>
-      <p className="font-serif text-gold text-sm italic mt-1">{sub}</p>
-      <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gold text-xl">→</span>
+      <div className="flex-1">
+        <h4 className="font-serif text-navy text-xl font-bold">{title}</h4>
+        <p className="font-serif text-gold text-sm italic mt-0.5">{sub}</p>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
+        <path d="M7 10L1 4h12L7 10z" />
+      </svg>
     </button>
   );
 }
@@ -160,8 +163,11 @@ export default function ProgramOverviewPage() {
       {/* Шапка — тип программы */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-right">
-          <h1 className="font-serif text-navy text-3xl font-bold">{p.name_ru}</h1>
-          <p className="font-serif text-gold text-base italic mt-1">{p.name_it}</p>
+          {/* Разбиваем «Бакалавриат» и «(Laurea triennale)» на отдельные строки */}
+          <h1 className="font-serif text-navy text-3xl font-bold">
+            {p.name_ru.replace(/\s*\(.*\)/, '')}
+          </h1>
+          <p className="font-serif text-gold text-lg italic mt-0.5">{p.name_it}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">
             {p.duration_years} {p.duration_years === 2 ? 'года' : 'лет'} · {p.ects_total} CFU · {p.title_after}
           </p>
