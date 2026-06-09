@@ -5,6 +5,9 @@ import iconTravel from '../assets/iconTravel.svg';
 import iconInParma from '../assets/iconInParma.svg';
 import iconTime from '../assets/time sign.svg';
 import TabBar from '../components/TabBar';
+import { useUniCosts } from '../hooks/useCosts';
+import { formatPrice } from '../utils/formatPrice';
+import { useCurrency } from '../hooks/useCurrency';
 
 // ВНИМАНИЕ: это та же структура что в SectionPage — должна совпадать
 // (в будущем вынесем в один файл, пока дублируется)
@@ -192,6 +195,12 @@ function getCurrentStep(sectionKey: string): any {
 
 export default function PathPage() {
   const navigate = useNavigate();
+  const uniCosts = useUniCosts();
+  const { currency } = useCurrency();
+  const fmt = (eur: number) => formatPrice(eur, currency);
+
+  // Динамический бюджет раздела «Универ» — по стране + программе
+  const dynamicUniBudget = uniCosts.loading ? sectionsData.uni.budget : uniCosts.total_eur;
 
   const passed = localStorage.getItem('cispr_passed_quiz') || 'uni';
   const sectionsOrder = ['uni', 'visa', 'travel', 'parma'];
@@ -208,12 +217,13 @@ export default function PathPage() {
   });
 
   // общие расходы — сумма по всем разделам
+  // для uni берём динамический бюджет (по стране + программе), для остальных — статика
   const totalSpent = sections.reduce(
     (sum, s) => sum + getSectionSpent(s.id, s.isCompletedSection),
     0
   );
   const totalBudget = sectionsOrder.reduce(
-    (sum, id) => sum + sectionsData[id].budget,
+    (sum, id) => sum + (id === 'uni' ? dynamicUniBudget : sectionsData[id].budget),
     0
   );
   const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
@@ -340,7 +350,7 @@ export default function PathPage() {
       </h3>
       <div className="mx-6 bg-soft-cream border border-navy/25 rounded-2xl p-5">
         <p className="font-serif text-navy text-lg">
-          €{totalSpent} <span className="text-navy/60 text-sm">из €{totalBudget}</span>
+          {fmt(totalSpent)} <span className="text-navy/60 text-sm">из {fmt(totalBudget)}</span>
         </p>
         <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
           <div
@@ -348,6 +358,31 @@ export default function PathPage() {
             style={{ width: expensesPercent + '%' }}
           />
         </div>
+
+        {/* Разбивка по разделам */}
+        <div className="mt-3 pt-3 border-t border-navy/10 flex flex-col gap-1.5">
+          {sectionsOrder.map((id) => {
+            const budget = id === 'uni' ? dynamicUniBudget : sectionsData[id].budget;
+            const label = sectionsData[id].titleFull;
+            return (
+              <div key={id} className="flex justify-between items-baseline">
+                <p className="font-serif text-navy/60 text-xs">{label}</p>
+                <p className="font-serif text-navy/80 text-xs">{fmt(budget)}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Примечание об Украине (временная защита) */}
+        {uniCosts.has_visa_waiver && (
+          <p className="font-serif text-gold text-xs italic mt-3">
+            ✓ Временная защита ЕС: виза D не нужна — стоимость визы не включена
+          </p>
+        )}
+
+        <p className="font-serif text-navy/40 text-[11px] italic mt-2">
+          Оценки для {uniCosts.country?.toUpperCase()} · меняй валюту в Настройках
+        </p>
       </div>
 
       <TabBar active="path" />

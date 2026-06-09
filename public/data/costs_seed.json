@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "source": "obrnadzor.gov.ru, mon.gov.ua, edu.gov.by, edu.gov.kz, cimea.it, esteri.it, ielts.org, cisiaonline.it",
+    "last_updated": "2026-06",
+    "currency": "EUR",
+    "data_policy": "Стоимости в EUR — приближённые, рассчитаны по курсам на июнь 2026. Актуальные суммы могут отличаться. Все данные из официальных источников."
+  },
+
+  "countries": {
+    "ru": {
+      "name_ru": "Россия",
+      "documents": {
+        "apostille": {
+          "eur": 140,
+          "local": "13 000–14 000 ₽",
+          "duration": "30–45 дней",
+          "note_ru": "Госпошлина 2 500 ₽ + услуги посредника. Рособрнадзор (вузы) или региональное управление образования (школьные аттестаты)"
+        },
+        "translation_to_italian": {
+          "eur": 60,
+          "local": "4 000–8 000 ₽",
+          "duration": "3–7 дней",
+          "note_ru": "Нотариально заверенный перевод у аккредитованного при консульстве Италии переводчика"
+        },
+        "cimea": {
+          "eur": 150,
+          "eur_urgent": 250,
+          "duration": "60 дней (срочно 30)",
+          "note_ru": "Онлайн через cimea-diplome.it. Рекомендуется для России"
+        },
+        "ddv": {
+          "eur": 75,
+          "duration": "60–90 дней",
+          "note_ru": "Dichiarazione di Valore — через Генконсульство Италии. Альтернатива CIMEA"
+        },
+        "language_test_italian_b2": {
+          "eur": 120,
+          "local": "~11 000 ₽",
+          "note_ru": "CILS B2 — экзаменационные центры в Москве, Санкт-Петербурге и других городах"
+        },
+        "language_test_english_b2": {
+          "eur": 200,
+          "local": "~17 000–19 000 ₽",
+          "note_ru": "IELTS Academic — тест-центры IELTS по России"
+        },
+        "passport_biometric": {
+          "eur": 55,
+          "local": "~5 000 ₽",
+          "note_ru": "Биометрический загранпаспорт (если нет или заканчивается)"
+        }
+      },
+      "visa": {
+        "consular_fee": { "eur": 90, "note_ru": "Консульский сбор — национальная виза D" },
+        "service_fee": { "eur": 22, "note_ru": "Сервисный сбор VMS / Almaviva" },
+        "insurance_year": { "eur": 200, "note_ru": "Медстраховка на год — от 150€ до 300€" },
+        "special_status": null
+      }
+    },
+
+    "ua": {
+      "name_ru": "Украина",
+      "documents": {
+        "apostille": {
+          "eur": 20,
+          "local": "850–1 500 ₴",
+          "duration": "5–20 рабочих дней",
+          "note_ru": "МОН Украины — подача через ЦНАП или представителя"
+        },
+        "translation_to_italian": {
+          "eur": 50,
+          "local": "1 500–3 500 ₴",
+          "duration": "3–7 дней",
+          "note_ru": "Нотариально заверенный перевод у аккредитованного при консульстве Италии переводчика"
+        },
+        "cimea": {
+          "eur": 150,
+          "eur_urgent": 250,
+          "duration": "60 дней (срочно 30)",
+          "note_ru": "Онлайн. Для Украины работает стабильно — рекомендуется"
+        },
+        "ddv": {
+          "eur": 60,
+          "duration": "2–4 недели",
+          "note_ru": "DDV — через посольство Италии в Киеве. Уточняй актуальный режим работы"
+        },
+        "language_test_italian_b2": {
+          "eur": 90,
+          "note_ru": "CILS B2 — центры в Варшаве, Риге и других городах ЕС (если не в Украине)"
+        },
+        "language_test_english_b2": {
+          "eur": 190,
+          "note_ru": "IELTS Academic — тест-центры в Польше, Германии и других странах ЕС"
+        },
+        "passport_biometric": {
+          "eur": 30,
+          "note_ru": "Биометрический загранпаспорт Украины"
+        }
+      },
+      "visa": {
+        "consular_fee": { "eur": 90, "note_ru": "Консульский сбор — если нет временной защиты" },
+        "service_fee": { "eur": 20 },
+        "insurance_year": { "eur": 180 },
+        "special_status": {
+          "name_ru": "Временная защита в ЕС",
+          "active": true,
+          "active_until": "2027-03-04",
+          "note_ru": "Граждане Украины со статусом временной защиты НЕ нуждаются в визе D и страховке. Виза = 0€."
+        }
+      }
+    },
+
+    "by": {
+      "name_ru": "Беларусь",
+      "documents": {
+        "apostille": {
+          "eur": 12,
+          "local": "~42 BYN (1 базовая величина)",
+          "duration": "до 15 рабочих дней",
+          "note_ru": "Министерство образования РБ, Минск — лично или через представителя с доверенностью"
+        },
+        "translation_to_italian": {
+          "eur": 70,
+          "local": "150–300 BYN",
+          "duration": "3–7 дней",
+          "note_ru": "Нотариально заверенный перевод у аккредитованного при консульстве Италии переводчика"
+        },
+        "cimea": {
+          "eur": 150,
+          "eur_urgent": 250,
+          "duration": "60 дней (срочно 30)",
+          "note_ru": "Онлайн. Для Беларуси работает без ограничений"
+        },
+        "ddv": {
+          "eur": 60,
+          "duration": "2–6 недель",
+          "note_ru": "DDV — через посольство Италии в Минске. Запись в пиковый сезон может занять 3–6 недель"
+        },
+        "language_test_italian_b2": {
+          "eur": 90,
+          "note_ru": "CILS B2 — центры в Вильнюсе, Варшаве, Риге"
+        },
+        "language_test_english_b2": {
+          "eur": 180,
+          "note_ru": "IELTS Academic — тест-центры Беларуси или ближних стран ЕС"
+        },
+        "passport_biometric": {
+          "eur": 45,
+          "note_ru": "Биометрический загранпаспорт РБ"
+        }
+      },
+      "visa": {
+        "consular_fee": { "eur": 90 },
+        "service_fee": { "eur": 20 },
+        "insurance_year": { "eur": 180 },
+        "special_status": null
+      }
+    },
+
+    "kz": {
+      "name_ru": "Казахстан",
+      "documents": {
+        "apostille": {
+          "eur": 10,
+          "local": "~3 932 ₸ (1 МРП)",
+          "duration": "5–15 рабочих дней",
+          "note_ru": "Через ЦОН или онлайн egov.kz — Комитет МНВО РК"
+        },
+        "translation_to_italian": {
+          "eur": 60,
+          "local": "15 000–30 000 ₸",
+          "duration": "3–7 дней",
+          "note_ru": "Нотариально заверенный перевод у аккредитованного переводчика"
+        },
+        "cimea": {
+          "eur": 150,
+          "eur_urgent": 250,
+          "duration": "60 дней (срочно 30)",
+          "note_ru": "Рекомендуется. Для Казахстана работает CIMEA Central Asia — региональный центр признания"
+        },
+        "ddv": {
+          "eur": 60,
+          "duration": "3–5 недель",
+          "note_ru": "DDV — через посольство Италии в Астане"
+        },
+        "language_test_italian_b2": {
+          "eur": 90,
+          "note_ru": "CILS B2 — центр в Алматы (уточняй актуальный список на cils.it)"
+        },
+        "language_test_english_b2": {
+          "eur": 170,
+          "note_ru": "IELTS Academic — тест-центры Almaty и других городов"
+        },
+        "passport_biometric": {
+          "eur": 30,
+          "note_ru": "Биометрический загранпаспорт РК"
+        }
+      },
+      "visa": {
+        "consular_fee": { "eur": 90 },
+        "service_fee": { "eur": 20 },
+        "insurance_year": { "eur": 170 },
+        "special_status": null
+      }
+    }
+  },
+
+  "programs": {
+    "foundation": {
+      "name_ru": "Foundation Year",
+      "course_fee_eur": 4000,
+      "course_fee_dante_eur": 3200,
+      "deposit_eur": 600,
+      "documents_needed": ["apostille", "translation_to_italian", "cimea"],
+      "language_test_needed": false,
+      "language_test_note_ru": "UniPR проверяет уровень самостоятельно при зачислении — отдельный сертификат не обязателен",
+      "enrollment_min_eur": 0,
+      "note_ru": "Стоимость курса: 4000€ (обычный поток) или 3200€ (Dante). Депозит 600€ возвращается при отказе в визе."
+    },
+    "bachelor": {
+      "name_ru": "Бакалавриат",
+      "course_fee_eur": 0,
+      "documents_needed": ["apostille", "translation_to_italian", "cimea", "language_test_italian_b2"],
+      "documents_optional": ["language_test_english_b2"],
+      "tolc_fee_eur": 30,
+      "imat_fee_eur": 130,
+      "enrollment_min_eur": 156,
+      "note_ru": "Стоимость обучения: 156€/год (no tax area, ISEE ≤27 000€) до 2 500€/год (без ISEE). ISEE parificato оформляется бесплатно через CAF."
+    },
+    "master": {
+      "name_ru": "Магистратура",
+      "course_fee_eur": 0,
+      "documents_needed": ["apostille", "translation_to_italian", "cimea", "language_test_english_b2"],
+      "documents_optional": ["language_test_italian_b2"],
+      "enrollment_min_eur": 156,
+      "note_ru": "Стоимость обучения: аналогично бакалавриату — от 156€ (ISEE) до 2 500€/год."
+    }
+  }
+}
