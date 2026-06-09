@@ -43,11 +43,13 @@ export default function OnboardingPage() {
   const [area, setArea] = useState('');
   const [ready, setReady] = useState('');
 
-  // Foundation Year — это подготовительный курс, у него нет выбора направления
-  // (департамента), нет каталога программ и нет вопроса про «сложную учёбу».
-  // Остаются только уровень + язык, а в конце ведём сразу в /path.
+  // Foundation Year — подготовительный курс, нет выбора направления, ведём в /path.
+  // Бакалавриат + English — только 3 программы, выбор направления не нужен,
+  // сразу в каталог с фильтром level=laurea&lang=en.
   const isFoundation = level === 'Foundation Year';
-  const stepSequence = isFoundation ? [1, 2] : [1, 2, 3, 4];
+  const isEnglishBachelor = level === 'Бакалавриат' && language === 'Английский';
+  const skipArea = isFoundation || isEnglishBachelor;
+  const stepSequence = skipArea ? [1, 2] : [1, 2, 3, 4];
 
   async function goNext() {
     const idx = stepSequence.indexOf(step);
@@ -59,10 +61,9 @@ export default function OnboardingPage() {
     saveQuizFilters({
       level: levelToFilter(level),
       lang: languageToFilter(language),
-      dept_id: isFoundation ? undefined : AREA_TO_DEPT[area],
+      dept_id: skipArea ? undefined : AREA_TO_DEPT[area],
     });
     // запоминаем тип программы — по нему раздел «Университет» ветвится
-    // на Foundation Year (для тех, у кого 11 лет школы).
     const programLevel = levelToProgramLevel(level);
     if (programLevel) localStorage.setItem('cispr_program', programLevel);
     // пишем уровень/язык в профиль (не блокируем переход при ошибке/без токена)
@@ -74,7 +75,7 @@ export default function OnboardingPage() {
     } catch {
       // профиль допишется позже; для прототипа переход важнее
     }
-    // Foundation минует каталог программ (там нет курсов для выбора).
+    // Foundation → /path (нет каталога). Все остальные → /choice-program.
     navigate(isFoundation ? '/path' : '/choice-program');
   }
 

@@ -31,6 +31,10 @@ export default function ChoiceProgramPage() {
   const [broadened, setBroadened] = useState(false); // показали без фильтра кафедры
   const [saving, setSaving] = useState(false);
 
+  // Пришли с English Bachelor — показываем все программы сразу без «выбери другое»
+  const filters = loadQuizFilters();
+  const isEnglishBachelor = filters.level === 'laurea' && filters.lang === 'en';
+
   // Загружаем курсы по фильтрам квиза. Если по кафедре пусто — расширяем выбор.
   useEffect(() => {
     let cancelled = false;
@@ -143,14 +147,16 @@ export default function ChoiceProgramPage() {
       </h1>
       <p className="font-serif text-gold text-sm italic text-center mb-10 z-10">
         {loading
-          ? 'подбираем под твой тест...'
+          ? 'загружаем программы...'
           : error
             ? 'ошибка загрузки'
-            : showAll
-              ? 'выбери любую из списка'
-              : broadened
-                ? 'по твоему направлению пусто — вот другие'
-                : 'на основе твоего теста'}
+            : isEnglishBachelor
+              ? 'все англоязычные программы бакалавриата'
+              : showAll
+                ? 'выбери любую из списка'
+                : broadened
+                  ? 'по твоему направлению пусто — вот другие'
+                  : 'на основе твоего теста'}
       </p>
 
       {/* Состояние ошибки */}
@@ -225,7 +231,7 @@ export default function ChoiceProgramPage() {
         </div>
       )}
 
-      {!loading && !error && !showAll && courses.length > 3 && (
+      {!loading && !error && !showAll && !isEnglishBachelor && courses.length > 3 && (
         <button
           onClick={showFullList}
           className="font-serif text-cream text-sm underline mt-6 z-10"
