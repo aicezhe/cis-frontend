@@ -144,14 +144,16 @@ export default function SectionPage() {
   const sectionKey = section || 'uni';
   const data = sectionsData[sectionKey];
 
-  // Для тех, у кого программа — Foundation Year, раздел «Университет»
-  // ведёт не на стандартные шаги поступления, а на обзор Foundation Year.
-  const isFoundation = localStorage.getItem('cispr_program') === 'foundation';
+  // Раздел «Университет» ветвится по cispr_program:
+  //   foundation → /path/foundation
+  //   laurea / magistrale → /path/uni/program (новый гайд поступления)
+  //   иначе → показываем текущую SectionPage (старый плейсхолдер)
+  const programType = localStorage.getItem('cispr_program');
   useEffect(() => {
-    if (isFoundation && sectionKey === 'uni') {
-      navigate('/path/foundation', { replace: true });
-    }
-  }, [isFoundation, sectionKey, navigate]);
+    if (sectionKey !== 'uni') return;
+    if (programType === 'foundation') navigate('/path/foundation', { replace: true });
+    else if (programType === 'laurea' || programType === 'magistrale') navigate('/path/uni/program', { replace: true });
+  }, [programType, sectionKey, navigate]);
 
   const [completed, setCompleted] = useState<string[]>(() => loadCompleted(sectionKey));
 

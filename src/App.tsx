@@ -16,6 +16,12 @@ import CoursePage from './pages/CoursePage';
 import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
 import FoundationOverviewPage from './pages/FoundationOverviewPage';
+import ProgramOverviewPage from './pages/ProgramOverviewPage';
+import ProgramStepsPage from './pages/ProgramStepsPage';
+import ProgramDocumentsPage from './pages/ProgramDocumentsPage';
+import ProgramFinancePage from './pages/ProgramFinancePage';
+import ProgramLanguagesPage from './pages/ProgramLanguagesPage';
+import NumeroChiusoPage from './pages/NumeroChiusoPage';
 
 export default function App() {
   return (
@@ -28,6 +34,12 @@ export default function App() {
       <Route path="/quiz-travel" element={<QuizTravelPage />} />
       <Route path="/path" element={<PathPage />} />
       <Route path="/path/foundation" element={<FoundationOverviewPage />} />
+      <Route path="/path/uni/program" element={<ProgramOverviewPage />} />
+      <Route path="/path/uni/program/steps" element={<ProgramStepsPage />} />
+      <Route path="/path/uni/program/documents" element={<ProgramDocumentsPage />} />
+      <Route path="/path/uni/program/finance" element={<ProgramFinancePage />} />
+      <Route path="/path/uni/program/languages" element={<ProgramLanguagesPage />} />
+      <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />

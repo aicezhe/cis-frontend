@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "program_type": "laurea",
+    "source": "unipr.it, apply.unipr.it",
+    "academic_year": "2026-2027",
+    "last_updated": "2026-06",
+    "data_policy": "Все поля основаны на офиц. данных UniPR 2026/2027."
+  },
+  "program": {
+    "name_ru": "Бакалавриат (Laurea triennale)",
+    "name_it": "Laurea triennale",
+    "duration_years": 3,
+    "duration_special_cases": {
+      "ciclo_unico_5y": ["Giurisprudenza", "Farmacia", "Chimica e tecnologia farmaceutiche"],
+      "ciclo_unico_6y": ["Medicina e Chirurgia", "Odontoiatria", "Medicina veterinaria"]
+    },
+    "ects_total": 180,
+    "ects_total_ciclo_unico": "300 (5 anni) / 360 (6 anni)",
+    "title_after": "Dottore",
+    "description_ru": "Бакалавриат в Италии — первый цикл высшего образования. После 3 лет получаешь diploma di laurea (180 CFU). Это даёт право поступать в магистратуру или работать. Программы ciclo unico (Медицина, Юриспруденция, Фармация и др.) длятся 5-6 лет и сразу дают уровень магистра.",
+    "important_notes_ru": [
+      "Для non-EU нужен школьный диплом ЗА 12 ЛЕТ обучения. Если у тебя 11 лет (Россия/Беларусь/Украина/Казахстан) — сначала нужен Foundation Year или 1 год вуза в своей стране.",
+      "Программы делятся на 'libero accesso' (свободный) и 'numero chiuso' (с тестом). Numero chiuso — Medicina, Architettura, профессии здравоохранения и др."
+    ]
+  },
+  "platforms": {
+    "english_taught": {
+      "name": "DreamApply",
+      "url": "https://apply.unipr.it",
+      "description_ru": "Платформа подачи на англоязычные программы UniPR. Можно подать сразу до 3 программ."
+    },
+    "italian_taught": {
+      "name": "DreamApply",
+      "url": "https://apply.unipr.it",
+      "description_ru": "С 2026/2027 подача на италоязычные бакалаврские программы тоже через DreamApply для non-EU студентов."
+    }
+  },
+  "deadlines_2026_2027": {
+    "application_window": "24 февраля 2026 – 24 апреля 2026",
+    "universitaly_preenrolment": "до 15 июля 2026",
+    "enrolment_opens": "14 июля 2026",
+    "enrolment_deadline_first_year": "до 31 января 2027 (для опоздавших по причине визы)",
+    "warnings_ru": [
+      "Подавайся как можно раньше — есть лимит мест для non-EU по каждому курсу",
+      "Numero chiuso программы имеют ОТДЕЛЬНЫЕ дедлайны — смотри конкретный bando курса"
+    ]
+  },
+  "documents_required": [
+    {
+      "id": "passport",
+      "name_ru": "Загранпаспорт",
+      "details_ru": "Срок действия минимум 2 года вперёд. Лучше биометрический."
+    },
+    {
+      "id": "school_diploma",
+      "name_ru": "Школьный диплом",
+      "details_ru": "Апостилированный (или легализованный через консульство Италии) + переведённый на итальянский. Минимум 12 лет обучения.",
+      "linked_to_country_seed": true
+    },
+    {
+      "id": "transcript",
+      "name_ru": "Транскрипт оценок",
+      "details_ru": "Оценки за последние 3 года школы. Апостиль + перевод аналогично диплому."
+    },
+    {
+      "id": "language_cert",
+      "name_ru": "Сертификат языка",
+      "details_ru": "B2 итальянского (для италоязычных программ) ИЛИ B2 английского (для англоязычных)."
+    },
+    {
+      "id": "recognition",
+      "name_ru": "Признание квалификации",
+      "details_ru": "CIMEA Statement of Verification (рекомендуется) или Dichiarazione di Valore (DDV) от итальянского консульства.",
+      "linked_to_country_seed": true
+    },
+    {
+      "id": "test_score",
+      "name_ru": "Результат теста (для numero chiuso)",
+      "details_ru": "Только для программ с ограничением мест. IMAT/TOLC-MED для Медицины, TOLC-A для Архитектуры.",
+      "optional": true
+    },
+    {
+      "id": "cv",
+      "name_ru": "Резюме (CV)",
+      "details_ru": "Не всегда обязательно, но желательно — особенно для конкурсного зачисления.",
+      "optional": true
+    }
+  ],
+  "language_requirements": {
+    "italian_taught_courses": {
+      "level": "B2",
+      "accepted_certificates": [
+        "CILS B2",
+        "CELI 3",
+        "PLIDA B2",
+        "Roma Tre B2",
+        "UniPR Italian Language Test (бесплатный, через CLA)"
+      ],
+      "exemption_for_fy": "Сертификат Italstudio B2 из Foundation Year UniPR засчитывается автоматически."
+    },
+    "english_taught_courses": {
+      "level": "B2",
+      "accepted_certificates": [
+        "IELTS Academic 6.0+",
+        "TOEFL iBT 80+",
+        "Cambridge FCE / CAE / CPE",
+        "BEC Vantage",
+        "TOEIC 785+",
+        "UniPR English Language Test (бесплатный, через CLA)"
+      ]
+    },
+    "duolingo_note_ru": "Duolingo English Test не указан в офиц. списке UniPR. Уточняй у координатора курса до оплаты теста."
+  },
+  "tuition_fees": {
+    "currency": "EUR",
+    "model": "ISEE-based",
+    "explanation_ru": "В Италии стоимость учёбы зависит от доходов семьи. Считается ISEE — индекс экономической ситуации семьи. Для non-EU из стран без ISEE используется ISEE parificato (рассчитывается через CAF в Италии бесплатно).",
+    "no_tax_area": {
+      "isee_threshold_eur": 27000,
+      "amount_eur": 156,
+      "components_ru": "Региональный налог 140 € + виртуальная марка 16 €. Это вся плата за год."
+    },
+    "without_isee": {
+      "amount_eur_min": 1500,
+      "amount_eur_max": 2500,
+      "note_ru": "Если не подал ISEE/parificato — автоматически попадаешь в высшую группу."
+    },
+    "scholarships": {
+      "ergo_borsa": {
+        "name": "ER.GO Borsa di studio",
+        "max_amount_eur": 7072,
+        "for_whom": "Студенты с низким доходом семьи (ISEE до ~26 000 €), fuori sede"
+      }
+    }
+  },
+  "application_steps": [
+    {
+      "id": "1_choose_program",
+      "title_ru": "Выбери программу",
+      "description_ru": "До 3 программ можно подать через DreamApply одновременно. Проверь язык преподавания, есть ли numero chiuso, требования к подготовке.",
+      "duration_ru": "1-2 недели на исследование",
+      "cost_eur": 0,
+      "tip_ru": "Используй раздел «Каталог курсов» в CIS.PR — там 107 программ UniPR с описанием и шкалами актуальности."
+    },
+    {
+      "id": "2_legalize_diploma",
+      "title_ru": "Легализуй школьный диплом",
+      "description_ru": "Апостиль + перевод + CIMEA или DDV. Точные шаги зависят от твоей страны — смотри блок «Легализация документов».",
+      "linked_to_country_seed": true,
+      "duration_ru": "1-3 месяца",
+      "cost_eur": "200-300"
+    },
+    {
+      "id": "3_apply_dreamapply",
+      "title_ru": "Подай заявку через DreamApply",
+      "description_ru": "Регистрируешься на apply.unipr.it, выбираешь программу(ы), загружаешь все документы.",
+      "platform_url": "https://apply.unipr.it",
+      "duration_ru": "1 день (если документы готовы)",
+      "cost_eur": 0,
+      "warnings_ru": [
+        "Подавайся как можно раньше — есть лимит мест для non-EU",
+        "Можно выбрать до 3 программ одновременно"
+      ]
+    },
+    {
+      "id": "4_wait_evaluation",
+      "title_ru": "Жди оценку квалификации",
+      "description_ru": "UniPR проверит твои документы и пришлёт результат: одобрение, запрос доп. документов или отказ.",
+      "duration_ru": "2-6 недель"
+    },
+    {
+      "id": "5_numero_chiuso_test",
+      "title_ru": "Сдай тест (только для numero chiuso)",
+      "description_ru": "Если программа с ограничением мест — нужно сдать тест: IMAT (Медицина EN), TOLC-MED (Медицина IT), TOLC-A (Архитектура), TOLC-E (Экономика). Записываешься через CISIA.",
+      "platform_url": "https://www.cisiaonline.it",
+      "duration_ru": "тест 1-2 часа, подготовка 2-6 месяцев",
+      "cost_eur": "30-130",
+      "skip_if_libero_accesso": true,
+      "tip_ru": "TOLC можно сдавать несколько раз — берётся лучший результат. Доступен TOLC@CASA (дистанционно)."
+    },
+    {
+      "id": "6_acceptance_letter",
+      "title_ru": "Получи Acceptance Letter",
+      "description_ru": "После одобрения и сдачи теста (если требуется) — получаешь Acceptance Letter от UniPR. Этот документ нужен для визы.",
+      "duration_ru": "1-2 недели после теста"
+    },
+    {
+      "id": "7_universitaly",
+      "title_ru": "Pre-enrolment на Universitaly",
+      "description_ru": "Регистрируешься на universitaly.it, выбираешь UniPR + свою программу, загружаешь Acceptance Letter и документы. Это обязательно для визы.",
+      "platform_url": "https://www.universitaly.it",
+      "duration_ru": "1-2 недели на одобрение",
+      "deadline_ru": "до 15 июля 2026",
+      "next_step_ru": "После одобрения → раздел Виза"
+    }
+  ],
+  "common_pitfalls_ru": [
+    "12 лет школы — строгое требование. Если у тебя 11 лет — без Foundation Year или 1 года вуза не примут.",
+    "Подавайся в день открытия (24 февраля 2026) — места разбирают быстро.",
+    "Не путай TOLC и IMAT — это разные тесты для разных программ.",
+    "Сделай ISEE parificato через CAF в Италии сразу после приезда — сэкономит 1500-2500 € в год.",
+    "Документы нужны минимум на трёх языках: оригинал, итальянский перевод, апостиль с переводом."
+  ],
+  "useful_links": {
+    "official": "https://www.unipr.it/en/students-and-students-extra-ue",
+    "dream_apply": "https://apply.unipr.it",
+    "universitaly": "https://www.universitaly.it",
+    "cisia_tolc": "https://www.cisiaonline.it",
+    "imat": "https://www.universitaly.it/imat",
+    "cimea": "https://cimea-diplome.it",
+    "ergo_scholarship": "https://www.er-go.it",
+    "tuition_info": "https://www.unipr.it/en/amounts-of-taxes-and-contributions"
+  }
+}

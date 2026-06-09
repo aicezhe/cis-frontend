@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "program_type": "magistrale",
+    "source": "unipr.it, apply.unipr.it",
+    "academic_year": "2026-2027",
+    "last_updated": "2026-06",
+    "data_policy": "Все поля основаны на офиц. данных UniPR 2026/2027."
+  },
+  "program": {
+    "name_ru": "Магистратура (Laurea magistrale)",
+    "name_it": "Laurea magistrale",
+    "duration_years": 2,
+    "ects_total": 120,
+    "title_after": "Dottore magistrale",
+    "description_ru": "Магистратура в Италии — второй цикл, 2 года, 120 CFU. После неё ты получаешь право поступать в докторантуру (PhD) или работать на позициях, требующих master-level квалификации.",
+    "important_notes_ru": [
+      "Для поступления нужен Bachelor — минимум 3 года высшего образования (180 ECTS).",
+      "Pre-evaluation curricular — UniPR проверит ПРЕДМЕТЫ твоего бакалаврского диплома на соответствие требованиям магистерской программы. Это уникальный шаг, которого нет в бакалавриате.",
+      "Если у тебя бак не из той области — могут потребовать recupero requisiti curriculari: восстановление недостающих CFU через single courses перед поступлением.",
+      "Некоторые программы (IBD, FSM, Communication Engineering) имеют admission test или interview."
+    ]
+  },
+  "platforms": {
+    "english_taught": {
+      "name": "DreamApply",
+      "url": "https://apply.unipr.it",
+      "description_ru": "Главная платформа подачи на англоязычные магистерские программы UniPR."
+    },
+    "italian_taught": {
+      "name": "ESSE3 + Pre-evaluation",
+      "url": "https://unipr.esse3.cineca.it",
+      "description_ru": "Для италоязычных магистерских программ — подача через ESSE3 после pre-evaluation. Точная процедура зависит от программы — смотри страницу курса на corsi.unipr.it."
+    }
+  },
+  "deadlines_2026_2027": {
+    "application_window_english": "15 января 2026 – 6 апреля 2026 (первая волна для non-EU с визой)",
+    "second_window": "4 июня – 26 июня 2026 (только для отдельных курсов)",
+    "italian_courses_window": "Зависит от программы. Чаще: 15 января – 15 марта или 15 января – 7 апреля 2026.",
+    "universitaly_preenrolment": "до 15 июля 2026",
+    "enrolment_deadline": "до 19 декабря 2025 или до 31 марта 2026 — зависит от программы",
+    "warnings_ru": [
+      "У каждой магистерской программы СВОИ дедлайны — обязательно проверь страницу твоей программы на apply.unipr.it",
+      "Подавайся в первую волну — больше времени на recupero CFU если понадобится"
+    ]
+  },
+  "documents_required": [
+    {
+      "id": "passport",
+      "name_ru": "Загранпаспорт",
+      "details_ru": "Срок действия минимум 2 года вперёд."
+    },
+    {
+      "id": "bachelor_diploma",
+      "name_ru": "Диплом бакалавра",
+      "details_ru": "Апостилированный + переведённый на итальянский. Минимум 3 года высшего образования (180 ECTS).",
+      "linked_to_country_seed": true
+    },
+    {
+      "id": "transcript_bachelor",
+      "name_ru": "Транскрипт бакалавра с предметами",
+      "details_ru": "Список ВСЕХ предметов с количеством ECTS и оценками — критично для pre-evaluation. Чем подробнее, тем лучше.",
+      "critical": true
+    },
+    {
+      "id": "diploma_supplement",
+      "name_ru": "Diploma Supplement",
+      "details_ru": "Если есть в твоём вузе — обязательно приложи. Упрощает pre-evaluation.",
+      "optional": true
+    },
+    {
+      "id": "language_cert",
+      "name_ru": "Сертификат языка",
+      "details_ru": "B2 итальянского ИЛИ B2 английского — в зависимости от языка программы."
+    },
+    {
+      "id": "recognition",
+      "name_ru": "CIMEA Statement of Verification",
+      "details_ru": "Для магистратуры CIMEA — основной и рекомендуемый путь признания диплома. DDV принимается, но процесс дольше.",
+      "linked_to_country_seed": true
+    },
+    {
+      "id": "cv",
+      "name_ru": "Резюме (CV)",
+      "details_ru": "Обязательно. Особенно важно для конкурсного отбора."
+    },
+    {
+      "id": "motivation_letter",
+      "name_ru": "Мотивационное письмо",
+      "details_ru": "Требуется для ряда программ (IBD, FSM, MUNER). Уточни на странице твоей программы.",
+      "optional": true
+    },
+    {
+      "id": "directors_statement",
+      "name_ru": "Director's Statement (если бак на английском)",
+      "details_ru": "Официальное письмо от твоего вуза о том, что обучение велось на английском языке. Заменяет языковой сертификат.",
+      "optional": true
+    },
+    {
+      "id": "interview_or_test",
+      "name_ru": "Результат теста или интервью",
+      "details_ru": "Только для конкретных программ. Например IBD требует интервью при среднем балле 90-95%.",
+      "optional": true
+    }
+  ],
+  "language_requirements": {
+    "italian_taught_courses": {
+      "level": "B2",
+      "accepted_certificates": [
+        "CILS B2",
+        "CELI 3",
+        "PLIDA B2",
+        "Roma Tre B2",
+        "UniPR Italian Language Test (бесплатный, через CLA)"
+      ]
+    },
+    "english_taught_courses": {
+      "level": "B2",
+      "accepted_certificates": [
+        "IELTS Academic 6.0+",
+        "TOEFL iBT 80+",
+        "Cambridge FCE / CAE / CPE",
+        "Pearson PTE Academic",
+        "TOEIC 785+",
+        "UniPR English Language Test (бесплатный, через CLA)"
+      ],
+      "exemption_ru": "Если bachelor преподавался полностью на английском — сертификат не нужен (Director's Statement от твоего вуза)."
+    }
+  },
+  "tuition_fees": {
+    "currency": "EUR",
+    "model": "ISEE-based",
+    "explanation_ru": "Те же правила что и для бакалавриата. ISEE/ISEE parificato определяет стоимость. С низким ISEE — только 156 € регионального налога в год.",
+    "no_tax_area": {
+      "isee_threshold_eur": 27000,
+      "amount_eur": 156
+    },
+    "without_isee": {
+      "amount_eur_min": 1500,
+      "amount_eur_max": 2500,
+      "note_ru": "Если не подал ISEE/parificato — попадаешь в максимальную группу."
+    },
+    "scholarships": {
+      "ergo_borsa": {
+        "name": "ER.GO Borsa di studio",
+        "max_amount_eur": 7072,
+        "for_whom": "Студенты с низким доходом семьи (ISEE до ~26 000 €), fuori sede"
+      }
+    }
+  },
+  "application_steps": [
+    {
+      "id": "1_choose_program",
+      "title_ru": "Выбери программу",
+      "description_ru": "Магистерских программ в UniPR 51. Проверь язык, требования по бакалавру (LM-classe), наличие admission test или interview.",
+      "duration_ru": "1-2 недели на исследование",
+      "cost_eur": 0,
+      "tip_ru": "В каталоге CIS.PR можно отфильтровать программы уровня magistrale."
+    },
+    {
+      "id": "2_check_curricular_match",
+      "title_ru": "Проверь соответствие своего бакалавра",
+      "description_ru": "Каждая программа требует определённых CFU в научных секторах. Если бак не из той области — нужен recupero requisiti curriculari (дополнительные курсы перед поступлением).",
+      "duration_ru": "1 неделя на анализ",
+      "cost_eur": 0,
+      "tip_ru": "Сравни свой транскрипт с requsiti curricolari программы. Не уверен — пиши на email координатора программы.",
+      "warning_ru": "Recupero CFU удлиняет твой путь на 6-12 месяцев. Иногда проще выбрать более близкую программу."
+    },
+    {
+      "id": "3_legalize_diploma",
+      "title_ru": "Легализуй диплом бакалавра",
+      "description_ru": "Апостиль + перевод + CIMEA (рекомендуется) или DDV. Точные шаги зависят от твоей страны — смотри блок «Легализация документов».",
+      "linked_to_country_seed": true,
+      "duration_ru": "1-3 месяца",
+      "cost_eur": "200-300"
+    },
+    {
+      "id": "4_pre_evaluation",
+      "title_ru": "Подай документы на pre-evaluation",
+      "description_ru": "На DreamApply (EN) или ESSE3 (IT) загружаешь транскрипт, диплом, CV, мотивационное письмо (если нужно), CIMEA. Комиссия проверяет соответствие твоего бака требованиям программы.",
+      "platform_url": "https://apply.unipr.it",
+      "duration_ru": "2-6 недель ожидание",
+      "cost_eur": 0,
+      "warnings_ru": [
+        "Pre-evaluation — это НЕ финальное зачисление. Это проверка ДО подачи на визу.",
+        "Если запросили recupero CFU — у тебя есть 2 пути: сделать его удалённо перед учёбой, или выбрать другую программу."
+      ]
+    },
+    {
+      "id": "5_acceptance",
+      "title_ru": "Получи Acceptance Letter",
+      "description_ru": "После одобрения квалификации получаешь Acceptance Letter от UniPR. Это ключевой документ для визы.",
+      "duration_ru": "1-2 недели после pre-evaluation"
+    },
+    {
+      "id": "6_interview_or_test",
+      "title_ru": "Пройди интервью / тест (если требуется)",
+      "description_ru": "Для отдельных программ (IBD, FSM, MUNER и др.) — онлайн-интервью или специальный тест. Обычно на английском, 30-60 минут.",
+      "skip_if_not_required": true,
+      "duration_ru": "30-60 минут",
+      "cost_eur": 0
+    },
+    {
+      "id": "7_universitaly",
+      "title_ru": "Pre-enrolment на Universitaly",
+      "description_ru": "Регистрируешься на universitaly.it, прикрепляешь Acceptance Letter и всю документацию. Обязательный шаг для визы.",
+      "platform_url": "https://www.universitaly.it",
+      "duration_ru": "1-2 недели на одобрение",
+      "deadline_ru": "до 15 июля 2026",
+      "next_step_ru": "Дальше → раздел Виза"
+    }
+  ],
+  "common_pitfalls_ru": [
+    "Главное — pre-evaluation. Если твой бак «не из той области» — могут отказать или попросить recupero CFU. Проверь требования ДО подачи.",
+    "У каждой магистратуры разные дедлайны — иди на страницу СВОЕЙ программы на corsi.unipr.it.",
+    "CIMEA для магистратуры — почти must. DDV принимают, но занимает дольше.",
+    "Если бак на английском — потребуют Director's Statement от твоего вуза. Заказывай заранее.",
+    "Recupero CFU удлиняет твой путь на 6-12 месяцев. Иногда дешевле выбрать более близкую магистратуру."
+  ],
+  "useful_links": {
+    "dream_apply": "https://apply.unipr.it",
+    "esse3": "https://unipr.esse3.cineca.it",
+    "universitaly": "https://www.universitaly.it",
+    "cimea": "https://cimea-diplome.it",
+    "courses_catalog": "https://corsi.unipr.it/it/scegli-il-tuo-corso/magistrali"
+  }
+}

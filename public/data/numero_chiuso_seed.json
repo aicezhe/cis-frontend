@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "source": "unipr.it, cisiaonline.it, universitaly.it",
+    "academic_year": "2026-2027",
+    "data_policy": "Программы UniPR с ограничением мест и требованиями к тестам."
+  },
+  "numero_chiuso_programs": [
+    {
+      "course_id": "cdlm-mc",
+      "course_name": "Medicina e Chirurgia (IT)",
+      "test": "TOLC-MED",
+      "test_provider": "CISIA",
+      "test_url": "https://www.cisiaonline.it",
+      "test_cost_eur": 30,
+      "test_when": "Февраль–июль (несколько сессий)",
+      "passing_score": "Рейтинг по национальной шкале — зависит от количества мест для non-EU"
+    },
+    {
+      "course_id": "cdlm-ms",
+      "course_name": "Medicine and Surgery (EN)",
+      "test": "IMAT",
+      "test_provider": "Universitaly + Cambridge Assessment",
+      "test_url": "https://www.universitaly.it/imat",
+      "test_cost_eur": 130,
+      "test_when": "Сентябрь (одна сессия в год)",
+      "passing_score": "Рейтинг по 100-балльной шкале — количество мест для non-EU фиксировано"
+    },
+    {
+      "course_id": "cdlm-opd",
+      "course_name": "Odontoiatria e protesi dentaria",
+      "test": "TOLC-MED",
+      "test_provider": "CISIA",
+      "test_url": "https://www.cisiaonline.it",
+      "test_cost_eur": 30,
+      "test_when": "Февраль–июль"
+    },
+    {
+      "course_id": "cdlm-mv",
+      "course_name": "Medicina veterinaria",
+      "test": "TOLC-AV",
+      "test_provider": "CISIA",
+      "test_url": "https://www.cisiaonline.it",
+      "test_cost_eur": 30,
+      "test_when": "Февраль–июль"
+    },
+    {
+      "course_id": "cdl-sa",
+      "course_name": "Architettura rigenerazione sostenibilità",
+      "test": "TOLC-A",
+      "test_provider": "CISIA",
+      "test_url": "https://www.cisiaonline.it",
+      "test_cost_eur": 30,
+      "test_when": "Февраль–июль"
+    },
+    {
+      "course_id": "cdl-infe",
+      "course_name": "Infermieristica (и другие professioni sanitarie)",
+      "test": "Национальный тест для professioni sanitarie",
+      "test_provider": "MUR / UniPR",
+      "test_cost_eur": 30,
+      "test_when": "Сентябрь"
+    },
+    {
+      "course_id": "cdlm-ada",
+      "course_name": "Amministrazione e direzione aziendale (magistrale)",
+      "test": "Admission test / interview",
+      "test_provider": "UniPR direct",
+      "test_when": "Уточнять на странице программы"
+    }
+  ],
+  "general_info_ru": {
+    "what_is_numero_chiuso": "Программы с ограничением мест. Чтобы поступить — недостаточно соответствовать требованиям, нужно сдать тест и попасть в рейтинг.",
+    "how_to_prepare_ru": [
+      "Скачай официальные guidelines теста с CISIA или Universitaly",
+      "Используй прошлогодние тесты — они доступны бесплатно",
+      "Для IMAT есть платные курсы подготовки (300–2000 €), но многое можно сделать самостоятельно",
+      "TOLC можно сдавать несколько раз — засчитывается лучший результат"
+    ],
+    "where_to_take_ru": {
+      "tolc_at_home": "TOLC@CASA — сдать дистанционно. Нужен стабильный интернет и веб-камера.",
+      "tolc_in_centers": "Тест-центры CISIA по всему миру — в том числе в ряде городов СНГ. Проверь актуальный список на cisiaonline.it.",
+      "imat_in_centers": "IMAT — только в авторизованных тест-центрах. Список на universitaly.it/imat."
+    }
+  }
+}
