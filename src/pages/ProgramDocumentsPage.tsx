@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyProgram } from '../hooks/useProgram';
+import { useMyLegalization } from '../hooks/useFoundation';
 import type { RequiredDocument } from '../types/laurea';
 
 const DOCS_KEY = 'cispr_docs_checklist';
@@ -9,52 +10,237 @@ function loadChecked(): string[] {
   try { return JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); } catch { return []; }
 }
 
+// Блок страновой легализации — встраивается в карточку диплома
+function LegalizationInline() {
+  const { legalization, loading } = useMyLegalization();
+  if (loading || !legalization) return null;
+  const leg = legalization.diploma_legalization;
+  return (
+    <div className="mt-4 border-t border-navy/10 pt-4 flex flex-col gap-3">
+      <p className="font-serif text-gold text-xs italic">
+        Порядок для {legalization.meta.country_name_ru}
+        <span className="text-navy/40 ml-1">(источник: {legalization.meta.source})</span>
+      </p>
+
+      {/* Тип легализации */}
+      <div className="bg-cream border border-navy/10 rounded-xl px-3 py-2">
+        <p className="font-serif text-navy text-xs font-bold">
+          {leg.country_in_hague ? '✓ Гаагская конвенция — апостиль' : 'Консульская легализация'}
+        </p>
+        <p className="font-serif text-navy/60 text-xs mt-0.5">
+          Уполномоченный орган: {leg.competent_authority.name_ru}
+        </p>
+        {leg.competent_authority.website && (
+          <a
+            href={leg.competent_authority.website}
+            target="_blank"
+            rel="noreferrer"
+            className="font-serif text-gold text-xs underline mt-0.5 inline-block"
+          >
+            {leg.competent_authority.website.replace('https://', '')} ↗
+          </a>
+        )}
+      </div>
+
+      {/* Шаги легализации */}
+      {leg.steps.map((step, i) => (
+        <div key={step.id} className="bg-cream border border-navy/10 rounded-xl px-3 py-3">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-5 h-5 rounded-full bg-navy flex items-center justify-center text-cream text-[10px] flex-shrink-0">
+              {i + 1}
+            </span>
+            <p className="font-serif text-navy text-sm font-bold">{step.title_ru}</p>
+          </div>
+          <p className="font-serif text-navy/70 text-xs leading-relaxed pl-7">{step.description_ru}</p>
+
+          {(step.cost_local || step.cost_eur_approx) && (
+            <p className="font-serif text-navy/60 text-xs pl-7 mt-1">
+              💰 {step.cost_local}{step.cost_eur_approx ? ` (~${step.cost_eur_approx} €)` : ''}
+              {step.duration_days ? ` · ⏱ ${step.duration_days}` : ''}
+            </p>
+          )}
+
+          {step.options && step.options.length > 0 && (
+            <div className="pl-7 mt-2 flex flex-col gap-1.5">
+              {step.options.map((opt, j) => (
+                <div key={j} className="border-l-2 border-gold pl-2">
+                  <p className="font-serif text-navy text-xs font-bold">{opt.name}</p>
+                  <p className="font-serif text-navy/60 text-xs">{opt.cost_eur} € · {opt.duration}</p>
+                  {opt.pros_ru.map((pr, k) => (
+                    <p key={k} className="font-serif text-navy/60 text-[11px]">＋ {pr}</p>
+                  ))}
+                  {opt.cons_ru.map((cn, k) => (
+                    <p key={k} className="font-serif text-navy/40 text-[11px]">－ {cn}</p>
+                  ))}
+                </div>
+              ))}
+              {step.recommendation_ru && (
+                <p className="font-serif text-gold text-xs italic">💡 {step.recommendation_ru}</p>
+              )}
+            </div>
+          )}
+
+          {step.warnings_ru && step.warnings_ru.length > 0 && (
+            <div className="pl-7 mt-2 flex flex-col gap-1">
+              {step.warnings_ru.map((w, k) => (
+                <div key={k} className="flex items-start gap-1.5 bg-soft-cream border border-gold/50 rounded-lg px-2 py-1.5">
+                  <span className="text-gold text-xs flex-shrink-0">!</span>
+                  <p className="font-serif text-navy/70 text-[11px] leading-relaxed">{w}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+
+      {/* Частые ошибки */}
+      {legalization.common_pitfalls_ru.length > 0 && (
+        <div className="bg-soft-cream border border-gold/30 rounded-xl px-3 py-3">
+          <p className="font-serif text-gold text-xs italic mb-2">Частые ошибки при легализации</p>
+          <div className="flex flex-col gap-1.5">
+            {legalization.common_pitfalls_ru.map((p, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <span className="text-gold text-xs flex-shrink-0 mt-0.5">◆</span>
+                <p className="font-serif text-navy/70 text-xs leading-relaxed">{p}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Расширенное описание по id документа
+const EXTRA_DETAILS: Record<string, { steps?: string[]; tip?: string }> = {
+  language_cert: {
+    steps: [
+      'Для итальянского: CILS, CELI, PLIDA, Roma Tre — или бесплатный тест UniPR (CLA)',
+      'Для английского: IELTS 6.0+, TOEFL iBT 80+, Cambridge FCE/CAE/CPE, TOEIC 785+',
+      'UniPR Language Test сдаётся бесплатно через CLA — можно после приезда',
+    ],
+    tip: 'Если бакалавриат был полностью на английском — попроси у своего вуза Director\'s Statement (заменяет сертификат)',
+  },
+  recognition: {
+    steps: [
+      'CIMEA Statement of Verification — быстрее и проще, рекомендуется',
+      'Dichiarazione di Valore (DDV) — через итальянское консульство в твоей стране, занимает дольше',
+      'Для magistrale CIMEA предпочтительнее — комиссия лучше понимает структуру документа',
+    ],
+    tip: 'CIMEA можно заказать онлайн на cimea-diplome.it. DDV — в консульстве Италии лично.',
+  },
+  transcript_bachelor: {
+    steps: [
+      'Запроси в своём вузе транскрипт со всеми дисциплинами, оценками и количеством часов/кредитов',
+      'Если вуз выдаёт Diploma Supplement — обязательно возьми',
+      'Переведи на итальянский у аккредитованного переводчика',
+      'Апостилируй аналогично диплому',
+    ],
+    tip: 'Чем подробнее транскрипт — тем проще пройдёт pre-evaluation. Комиссия смотрит именно на названия предметов.',
+  },
+  cv: {
+    steps: [
+      'Формат Europass (europass.europa.eu) — предпочтительный для Италии',
+      'Укажи образование, языки, опыт (если есть), дополнительные курсы',
+      'Язык: итальянский или английский в зависимости от программы',
+    ],
+  },
+  motivation_letter: {
+    steps: [
+      'Объясни почему хочешь поступить именно на эту программу и именно в UniPR',
+      'Свяжи свой бакалавриат с выбранной магистратурой',
+      'Упомяни профессиональные планы и как программа помогает их реализовать',
+      'Объём: 300-500 слов, язык программы',
+    ],
+    tip: 'Мотивационное письмо особенно важно при конкурсном отборе (IBD, FSM, MUNER).',
+  },
+};
+
 function DocCard({ doc, checked, toggle }: {
   doc: RequiredDocument;
   checked: boolean;
   toggle: () => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const isDiploma = doc.linked_to_country_seed;
+  const extra = EXTRA_DETAILS[doc.id];
+
   return (
     <div className={
-      'flex items-start gap-3 bg-soft-cream border rounded-2xl px-4 py-4 ' +
+      'bg-soft-cream border rounded-2xl px-4 py-4 ' +
       (doc.critical ? 'border-gold/60' : 'border-navy/20') +
       (checked ? ' opacity-60' : '')
     }>
-      <button onClick={toggle} className="w-6 h-6 mt-0.5 flex-shrink-0">
-        {checked ? (
-          <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
-        ) : (
-          <div className={
-            'w-6 h-6 rounded-full border-2 ' +
-            (doc.critical ? 'border-gold' : 'border-navy/30')
-          } />
-        )}
-      </button>
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <p className={
-            'font-serif text-base font-bold ' +
-            (checked ? 'text-navy/50 line-through' : 'text-navy')
-          }>
-            {doc.name_ru}
-          </p>
-          {doc.critical && (
-            <span className="font-serif text-[10px] text-gold border border-gold/60 rounded-full px-2 py-0.5 leading-none">
-              важно
-            </span>
+      <div className="flex items-start gap-3">
+        <button onClick={toggle} className="w-6 h-6 mt-0.5 flex-shrink-0">
+          {checked ? (
+            <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
+          ) : (
+            <div className={
+              'w-6 h-6 rounded-full border-2 ' +
+              (doc.critical ? 'border-gold' : 'border-navy/30')
+            } />
           )}
-          {doc.optional && (
-            <span className="font-serif text-[10px] text-navy/50 border border-navy/20 rounded-full px-2 py-0.5 leading-none">
-              по ситуации
-            </span>
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className={
+              'font-serif text-base font-bold ' +
+              (checked ? 'text-navy/50 line-through' : 'text-navy')
+            }>
+              {doc.name_ru}
+            </p>
+            {doc.critical && (
+              <span className="font-serif text-[10px] text-gold border border-gold/60 rounded-full px-2 py-0.5 leading-none flex-shrink-0">
+                важно
+              </span>
+            )}
+            {doc.optional && (
+              <span className="font-serif text-[10px] text-navy/50 border border-navy/20 rounded-full px-2 py-0.5 leading-none flex-shrink-0">
+                по ситуации
+              </span>
+            )}
+          </div>
+
+          <p className="font-serif text-navy/70 text-sm leading-relaxed mt-1">{doc.details_ru}</p>
+
+          {/* Дополнительные шаги из EXTRA_DETAILS */}
+          {extra?.steps && (
+            <div className="mt-2 flex flex-col gap-1">
+              {extra.steps.map((s, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="text-gold text-xs mt-0.5 flex-shrink-0">◆</span>
+                  <p className="font-serif text-navy/70 text-xs leading-relaxed">{s}</p>
+                </div>
+              ))}
+            </div>
           )}
+          {extra?.tip && (
+            <div className="mt-2 bg-cream border border-navy/10 rounded-xl px-3 py-2">
+              <p className="font-serif text-navy/60 text-xs">💡 {extra.tip}</p>
+            </div>
+          )}
+
+          {/* Кнопка «Подробнее» для диплома — показывает страновую легализацию */}
+          {isDiploma && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="mt-3 flex items-center gap-1.5 font-serif text-gold text-xs"
+            >
+              <span>{expanded ? 'Скрыть' : 'Показать'} порядок легализации по стране</span>
+              <svg
+                width="12" height="12" viewBox="0 0 14 14"
+                className={'transition-transform ' + (expanded ? 'rotate-180' : '')}
+                fill="currentColor"
+              >
+                <path d="M7 10L1 4h12L7 10z" />
+              </svg>
+            </button>
+          )}
+
+          {isDiploma && expanded && <LegalizationInline />}
         </div>
-        <p className="font-serif text-navy/70 text-sm leading-relaxed mt-1">{doc.details_ru}</p>
-        {doc.linked_to_country_seed && (
-          <p className="font-serif text-gold text-xs italic mt-1">
-            ↳ Порядок зависит от страны — смотри блок «Легализация документов»
-          </p>
-        )}
       </div>
     </div>
   );
