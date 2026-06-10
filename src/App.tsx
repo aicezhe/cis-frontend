@@ -22,6 +22,7 @@ import ProgramDocumentsPage from './pages/ProgramDocumentsPage';
 import ProgramFinancePage from './pages/ProgramFinancePage';
 import ProgramLanguagesPage from './pages/ProgramLanguagesPage';
 import NumeroChiusoPage from './pages/NumeroChiusoPage';
+import IseeDocumentsPage from './pages/IseeDocumentsPage';
 
 export default function App() {
   return (
@@ -40,6 +41,8 @@ export default function App() {
       <Route path="/path/uni/program/finance" element={<ProgramFinancePage />} />
       <Route path="/path/uni/program/languages" element={<ProgramLanguagesPage />} />
       <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
+      <Route path="/path/uni/program/isee" element={<IseeDocumentsPage />} />
+      <Route path="/path/parma/isee" element={<IseeDocumentsPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />

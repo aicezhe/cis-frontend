@@ -95,6 +95,21 @@ export default function ProgramFinancePage() {
         </>
       )}
 
+      {/* ISEE parificato */}
+      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">ISEE parificato</p>
+      <button
+        onClick={() => navigate('/path/uni/program/isee')}
+        className="relative mx-6 bg-navy rounded-2xl px-5 py-4 text-left w-[calc(100%-3rem)]"
+      >
+        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
+        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
+        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
+        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
+        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ документы ¬</p>
+        <p className="font-serif text-cream text-lg leading-snug">Как собрать документы для ISEE</p>
+        <p className="font-serif text-cream/60 text-sm mt-1">Персональная схема под твою семью</p>
+      </button>
+
       {/* Совет */}
       <div className="mx-6 mt-5 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
         <p className="font-serif text-gold text-sm italic mb-2">💡 Как сэкономить</p>

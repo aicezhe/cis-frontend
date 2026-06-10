@@ -465,6 +465,17 @@ export default function SectionPage() {
                       >
                         Открыть стипендию ER.GO
                       </button>
+                      <div className="border-t border-navy/10 pt-3">
+                        <p className="font-serif text-navy/60 text-xs italic mb-2">
+                          Для ER.GO нужен ISEE parificato — вот как его собрать:
+                        </p>
+                        <button
+                          onClick={() => navigate('/path/parma/isee')}
+                          className="w-full font-serif text-cream bg-navy rounded-xl py-3 text-sm"
+                        >
+                          Документы для ISEE parificato →
+                        </button>
+                      </div>
                     </div>
                   ) : sectionKey === 'uni' && step.num === 1 ? (
                     (() => {
