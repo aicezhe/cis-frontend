@@ -21,5 +21,13 @@ export const CURRENCIES: Record<CurrencyCode, CurrencyInfo> = {
 export const DEFAULT_CURRENCY: CurrencyCode = "EUR";
 export const LS_CURRENCY_KEY = "cispr_currency";
 
+// Страна → локальная валюта (применяется автоматически при входе в раздел "Универ")
+export const COUNTRY_CURRENCY_MAP: Partial<Record<string, CurrencyCode>> = {
+  ru: "RUB",
+  ua: "UAH",
+  by: "BYN",
+  kz: "KZT",
+};
+
 // TODO v2: автообновление курсов через https://api.frankfurter.app/latest?from=EUR
 // Сейчас курсы статичные — обновлять вручную при значительных изменениях.

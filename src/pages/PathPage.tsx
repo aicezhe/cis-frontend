@@ -8,6 +8,7 @@ import TabBar from '../components/TabBar';
 import { useUniCosts } from '../hooks/useCosts';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
+import { COUNTRY_CURRENCY_MAP } from '../config/currencies';
 
 // ВНИМАНИЕ: это та же структура что в SectionPage — должна совпадать
 // (в будущем вынесем в один файл, пока дублируется)
@@ -196,7 +197,7 @@ function getCurrentStep(sectionKey: string): any {
 export default function PathPage() {
   const navigate = useNavigate();
   const uniCosts = useUniCosts();
-  const { currency } = useCurrency();
+  const { currency, setCurrency } = useCurrency();
   const fmt = (eur: number) => formatPrice(eur, currency);
 
   // Динамический бюджет раздела «Универ» — по стране + программе
@@ -294,7 +295,15 @@ export default function PathPage() {
           return (
             <button
               key={section.id}
-              onClick={() => navigate('/path/' + section.id)}
+              onClick={() => {
+                if (section.id === 'uni') {
+                  const country = localStorage.getItem('cispr_country') || '';
+                  setCurrency(COUNTRY_CURRENCY_MAP[country] ?? 'EUR');
+                } else {
+                  setCurrency('EUR');
+                }
+                navigate('/path/' + section.id);
+              }}
               className={
                 'relative rounded-2xl p-4 h-44 flex flex-col border ' +
                 (isDone
