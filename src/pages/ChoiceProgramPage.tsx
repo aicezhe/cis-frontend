@@ -224,6 +224,7 @@ export default function ChoiceProgramPage() {
                 }>
                   {course.lang === 'en' ? 'English' : 'Italiano'}
                   {course.is_stem ? ' · STEM' : ''}
+                  {course.accesso === 'programmato' ? ' · Numero chiuso' : ''}
                 </span>
               </button>
             );

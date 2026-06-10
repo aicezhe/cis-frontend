@@ -32,30 +32,81 @@ export interface RequiredDocument {
   optional?: boolean;
 }
 
-export interface NumeroChiusoProgram {
-  course_id: string;
-  course_name: string;
-  test: string;
-  test_provider?: string;
-  test_url?: string;
-  test_cost_eur?: number;
-  test_when?: string;
-  passing_score?: string;
+// --- Новые типы для numero_chiuso_seed.json (v2, 2026) ---
+
+export interface TestSection {
+  name_ru: string;
+  questions: number;
+}
+
+export interface TestStructure {
+  total_questions: number;
+  sections?: TestSection[];
+  duration_min: number;
+  english_section?: string;
+  language?: string;
+  note_ru?: string;
+}
+
+export interface TestEntry {
+  id: string;
+  name: string;
+  for_ru: string;
+  structure: TestStructure;
+  scoring_ru: string;
+  where_ru: string;
+  cost_eur: number;
+  provider: string;
+  url: string;
+  passing_ru?: string;
+  note_ru?: string;
+  is_new_2026?: boolean;
+}
+
+export interface AccessTypeInfo {
+  name_ru: string;
+  description_ru: string;
+  key_point_ru: string;
 }
 
 export interface NumeroChiusoSeed {
-  meta: { source: string; academic_year: string; data_policy: string };
-  numero_chiuso_programs: NumeroChiusoProgram[];
-  general_info_ru: {
-    what_is_numero_chiuso: string;
-    how_to_prepare_ru: string[];
-    where_to_take_ru: {
-      tolc_at_home: string;
-      tolc_in_centers: string;
-      imat_in_centers: string;
-    };
+  meta: {
+    source: string;
+    academic_year: string;
+    data_policy: string;
+    important_2026_change_ru: string;
+  };
+  access_types_explained: {
+    libero_accesso: AccessTypeInfo;
+    numero_chiuso: AccessTypeInfo;
+  };
+  tests: TestEntry[];
+  how_to_take_ru: {
+    tolc_casa_vs_uni: string;
+    can_retake: string;
+    where_cis_countries: string;
+    preparation_ru: string;
   };
 }
+
+// --- Типы для twelfth_year_options ---
+
+export interface TwelfthYearOption {
+  id: string;
+  name_ru: string;
+  description_ru: string;
+  documents_ru: string[];
+  best_for_ru: string;
+}
+
+export interface TwelfthYearOptions {
+  title_ru: string;
+  explanation_ru: string;
+  options: TwelfthYearOption[];
+  note_ru: string;
+}
+
+// --- Основной тип LaureaSeed ---
 
 export interface LaureaSeed {
   meta: {
@@ -113,6 +164,12 @@ export interface LaureaSeed {
     }>;
   };
   application_steps: ApplicationStep[];
+  twelfth_year_options?: TwelfthYearOptions;
+  scholarship_section?: {
+    title_ru: string;
+    status: string;
+    note_ru: string;
+  };
   common_pitfalls_ru: string[];
   useful_links: Record<string, string>;
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyProgram } from '../hooks/useProgram';
 import { useMyLegalization } from '../hooks/useFoundation';
-import type { RequiredDocument } from '../types/laurea';
+import type { RequiredDocument, TwelfthYearOptions } from '../types/laurea';
 
 const DOCS_KEY = 'cispr_docs_checklist';
 
@@ -187,6 +187,59 @@ const EXTRA_DETAILS: Record<string, { steps?: string[]; tip?: string }> = {
   },
 };
 
+// Блок «12-й год» — только для бакалавриата
+function TwelfthYearBlock({ data }: { data: TwelfthYearOptions }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="bg-cream border border-gold/30 rounded-2xl px-4 py-3">
+        <p className="font-serif text-gold text-sm italic mb-1">{data.title_ru}</p>
+        <p className="font-serif text-navy/70 text-sm leading-relaxed">{data.explanation_ru}</p>
+      </div>
+      {data.options.map((opt) => {
+        const isOpen = openId === opt.id;
+        return (
+          <div key={opt.id} className="bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
+            <button
+              onClick={() => setOpenId(isOpen ? null : opt.id)}
+              className="w-full px-4 py-4 flex items-start gap-3 text-left"
+            >
+              <div className="flex-1">
+                <p className="font-serif text-navy text-base font-bold">{opt.name_ru}</p>
+                <p className="font-serif text-navy/60 text-xs mt-0.5 leading-relaxed">{opt.description_ru}</p>
+              </div>
+              <svg
+                width="14" height="14" viewBox="0 0 14 14"
+                className={'text-navy flex-shrink-0 mt-1 transition-transform ' + (isOpen ? 'rotate-180' : '')}
+                fill="currentColor"
+              >
+                <path d="M7 10L1 4h12L7 10z" />
+              </svg>
+            </button>
+            {isOpen && (
+              <div className="px-4 pb-4 border-t border-navy/10 pt-3 flex flex-col gap-2">
+                <p className="font-serif text-navy/50 text-xs italic">Документы для этого пути:</p>
+                {opt.documents_ru.map((doc, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-gold text-xs mt-0.5 flex-shrink-0">◆</span>
+                    <p className="font-serif text-navy/80 text-xs leading-relaxed">{doc}</p>
+                  </div>
+                ))}
+                <div className="mt-1 bg-cream border border-navy/10 rounded-xl px-3 py-2">
+                  <p className="font-serif text-navy/60 text-xs">
+                    <span className="text-gold">→</span> {opt.best_for_ru}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <p className="font-serif text-navy/40 text-[11px] italic px-1">{data.note_ru}</p>
+    </div>
+  );
+}
+
 function DocCard({ doc, checked, toggle }: {
   doc: RequiredDocument;
   checked: boolean;
@@ -279,7 +332,7 @@ function DocCard({ doc, checked, toggle }: {
 
 export default function ProgramDocumentsPage() {
   const navigate = useNavigate();
-  const { program, loading } = useMyProgram();
+  const { program, programType, loading } = useMyProgram();
   const [checked, setChecked] = useState<string[]>(loadChecked);
 
   function toggle(id: string) {
@@ -330,6 +383,18 @@ export default function ProgramDocumentsPage() {
           />
         ))}
       </div>
+
+      {/* 12-й год образования — только для бакалавриата */}
+      {programType === 'bachelor' && program.twelfth_year_options && (
+        <>
+          <p className="font-serif text-gold text-sm italic px-6 mt-8 mb-3">
+            12 лет образования — как закрыть
+          </p>
+          <div className="px-6">
+            <TwelfthYearBlock data={program.twelfth_year_options} />
+          </div>
+        </>
+      )}
 
       <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
         Актуальный список документов — проверяй на apply.unipr.it перед подачей

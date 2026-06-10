@@ -4,6 +4,13 @@ import { useMyProgram } from '../hooks/useProgram';
 import { api } from '../lib/api';
 import type { CourseFull } from '../types/api';
 
+// Нормативный total CFU по типу программы — не сумма распарсенных предметов
+const TARGET_CFU: Record<string, number> = {
+  triennale: 180,
+  magistrale: 120,
+  ciclo_unico: 300,
+};
+
 function Corners() {
   return (
     <>
@@ -55,33 +62,41 @@ function CourseSubjectsList({ course }: { course: CourseFull }) {
     byYear.get(key)!.push(s);
   }
 
-  const totalCfu = subjects.reduce((sum, s) => sum + s.cfu, 0);
+  const targetCfu = TARGET_CFU[course.level];
 
   return (
     <div className="mt-4 flex flex-col gap-3">
-      {[...byYear.entries()].map(([year, subs]) => (
-        <div key={String(year)} className="bg-cream border border-navy/10 rounded-xl px-4 py-3">
-          <p className="font-serif text-navy/60 text-xs italic mb-2">
-            {typeof year === 'number' ? `${year}-й год` : 'Предметы'}
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {subs.map((s, i) => (
-              <div key={i} className="flex justify-between items-baseline gap-3">
-                <p className={
-                  'font-serif text-sm ' +
-                  (s.optional ? 'text-navy/50 italic' : 'text-navy/80')
-                }>
-                  {s.name}{s.optional ? ' (по выбору)' : ''}
-                </p>
-                <span className="font-serif text-navy/40 text-xs flex-shrink-0">{s.cfu} CFU</span>
-              </div>
-            ))}
+      {[...byYear.entries()].map(([year, subs]) => {
+        const hasOptional = subs.some(s => s.optional);
+        return (
+          <div key={String(year)} className="bg-cream border border-navy/10 rounded-xl px-4 py-3">
+            <p className="font-serif text-navy/60 text-xs italic mb-2">
+              {typeof year === 'number' ? `${year}-й год` : 'Предметы'}
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {subs.map((s, i) => (
+                <div key={i} className="flex justify-between items-baseline gap-3">
+                  <p className={
+                    'font-serif text-sm ' +
+                    (s.optional ? 'text-navy/50 italic' : 'text-navy/80')
+                  }>
+                    {s.name}{s.optional ? ' (по выбору)' : ''}
+                  </p>
+                  <span className="font-serif text-navy/40 text-xs flex-shrink-0">{s.cfu} CFU</span>
+                </div>
+              ))}
+            </div>
+            {hasOptional && (
+              <p className="font-serif text-navy/40 text-[11px] italic mt-1.5">
+                * предметы по выбору — записывается только один вариант
+              </p>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
       <div className="flex justify-between items-center px-1">
-        <p className="font-serif text-navy/50 text-xs italic">Итого</p>
-        <p className="font-serif text-navy text-sm font-bold">{totalCfu} CFU</p>
+        <p className="font-serif text-navy/50 text-xs italic">Всего по программе</p>
+        <p className="font-serif text-navy text-sm font-bold">{targetCfu ?? '—'} CFU</p>
       </div>
       <button
         onClick={() => navigate('/course/' + course.id)}
@@ -201,7 +216,7 @@ export default function ProgramOverviewPage() {
                 className="w-full flex items-center justify-between mt-3 pt-3 border-t border-navy/10"
               >
                 <p className="font-serif text-navy/70 text-sm">
-                  Учебный план{course ? ` · ${(course.curricula?.[0]?.subjects ?? course.subjects).reduce((s, x) => s + x.cfu, 0)} CFU` : ''}
+                  Учебный план{course ? ` · ${TARGET_CFU[course.level] ?? (course.curricula?.[0]?.subjects ?? course.subjects).reduce((s, x) => s + x.cfu, 0)} CFU` : ''}
                 </p>
                 <svg
                   width="14" height="14" viewBox="0 0 14 14"

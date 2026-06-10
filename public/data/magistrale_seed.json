@@ -57,9 +57,10 @@
     },
     {
       "id": "transcript_bachelor",
-      "name_ru": "Транскрипт бакалавра с предметами",
-      "details_ru": "Список ВСЕХ предметов с количеством ECTS и оценками — критично для pre-evaluation. Чем подробнее, тем лучше.",
-      "critical": true
+      "name_ru": "Транскрипт оценок (бакалавриат)",
+      "details_ru": "Транскрипт ВСЕХ сданных университетских экзаменов бакалавриата — с оценками, CFU/ECTS и (если есть) кодами SSD. НЕ школьные оценки. Это нужно для pre-evaluation. Апостиль + перевод.",
+      "critical": true,
+      "linked_to_country_seed": true
     },
     {
       "id": "diploma_supplement",
@@ -216,6 +217,13 @@
     "Если бак на английском — потребуют Director's Statement от твоего вуза. Заказывай заранее.",
     "Recupero CFU удлиняет твой путь на 6-12 месяцев. Иногда дешевле выбрать более близкую магистратуру."
   ],
+  "scholarship_section": {
+    "title_ru": "Стипендия ER.GO",
+    "status": "placeholder",
+    "note_ru": "Документы и схема сбора будут добавлены. Базовые суммы — в разделе Стоимость и стипендия.",
+    "where_for_laurea_magistrale": "Этот раздел (Университет)",
+    "where_for_foundation": "Раздел Жизнь в Парме"
+  },
   "useful_links": {
     "dream_apply": "https://apply.unipr.it",
     "esse3": "https://unipr.esse3.cineca.it",

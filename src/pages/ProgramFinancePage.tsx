@@ -88,6 +88,9 @@ export default function ProgramFinancePage() {
             >
               Рассчитать мою стипендию ER.GO →
             </button>
+            <p className="font-serif text-navy/40 text-[11px] italic mt-2">
+              Подробная схема сбора документов для ER.GO — в разработке.
+            </p>
           </div>
         </>
       )}

@@ -1,85 +1,215 @@
 {
   "meta": {
-    "source": "unipr.it, cisiaonline.it, universitaly.it",
+    "source": "cisiaonline.it, universitaly.it, unipr.it",
     "academic_year": "2026-2027",
-    "data_policy": "Программы UniPR с ограничением мест и требованиями к тестам."
+    "data_policy": "Структура тестов проверена по CISIA на 2026. Проходные баллы не фиксированы — зависят от рейтинга и числа мест каждый год.",
+    "important_2026_change_ru": "ВАЖНО: с 2026/2027 CISIA закрыл старые англоязычные тесты (English TOLC-E/I/F). Вместо них новый CEnT-S (CISIA English Test - Sciences) для англоязычных научных программ."
   },
-  "numero_chiuso_programs": [
+
+  "access_types_explained": {
+    "libero_accesso": {
+      "name_ru": "Свободный доступ (libero accesso)",
+      "description_ru": "Большинство программ UniPR. Тест НЕ для отбора — поступить может каждый, кто соответствует требованиям (диплом, язык). Может быть TOLC как 'verifica' (проверка знаний): если балл низкий — тебя ВСЁ РАВНО зачислят, но дадут OFA (дополнительные обязательства — досдать предмет на 1 курсе). Тест не мешает поступлению, только показывает пробелы.",
+      "key_point_ru": "Libero = тебя возьмут. TOLC тут не барьер, а диагностика."
+    },
+    "numero_chiuso": {
+      "name_ru": "Ограниченный доступ (numero chiuso / programmato)",
+      "description_ru": "Программы с лимитом мест. Тест ОТБОРОЧНЫЙ: формируется рейтинг, поступают только те, кто набрал достаточно баллов и попал в число мест. Если не прошёл — не зачислят, нужно пересдавать в следующем году или выбрать другую программу.",
+      "key_point_ru": "Chiuso = конкурс. Балл теста решает, возьмут тебя или нет."
+    }
+  },
+
+  "tests": [
     {
-      "course_id": "cdlm-mc",
-      "course_name": "Medicina e Chirurgia (IT)",
-      "test": "TOLC-MED",
-      "test_provider": "CISIA",
-      "test_url": "https://www.cisiaonline.it",
-      "test_cost_eur": 30,
-      "test_when": "Февраль–июль (несколько сессий)",
-      "passing_score": "Рейтинг по национальной шкале — зависит от количества мест для non-EU"
+      "id": "tolc_med",
+      "name": "TOLC-MED",
+      "for_ru": "Медицина и хирургия (итал.), Стоматология (Odontoiatria)",
+      "structure": {
+        "total_questions": 50,
+        "sections": [
+          {"name_ru": "Биология", "questions": 23},
+          {"name_ru": "Химия", "questions": 15},
+          {"name_ru": "Физика и математика", "questions": 12}
+        ],
+        "english_section": "плюс отдельная секция английского (не влияет на основной балл)",
+        "duration_min": 90
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA (дома, нужна камера) или TOLC@UNI (в центре). Несколько сессий февраль–июль.",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it",
+      "passing_ru": "Проходной не фиксирован — национальный рейтинг по местам"
     },
     {
-      "course_id": "cdlm-ms",
-      "course_name": "Medicine and Surgery (EN)",
-      "test": "IMAT",
-      "test_provider": "Universitaly + Cambridge Assessment",
-      "test_url": "https://www.universitaly.it/imat",
-      "test_cost_eur": 130,
-      "test_when": "Сентябрь (одна сессия в год)",
-      "passing_score": "Рейтинг по 100-балльной шкале — количество мест для non-EU фиксировано"
+      "id": "imat",
+      "name": "IMAT",
+      "for_ru": "Medicine and Surgery (англоязычная медицина)",
+      "structure": {
+        "total_questions": 60,
+        "sections": [
+          {"name_ru": "Чтение и логика (reading skills, logical reasoning)", "questions": 4},
+          {"name_ru": "Биология", "questions": 23},
+          {"name_ru": "Химия", "questions": 15},
+          {"name_ru": "Физика и математика", "questions": 18}
+        ],
+        "duration_min": 90,
+        "language": "полностью на английском"
+      },
+      "scoring_ru": "Верный +1,5, неверный −0,4, пропуск 0",
+      "where_ru": "Только в авторизованных тест-центрах (не дома). Обычно сентябрь.",
+      "cost_eur": 130,
+      "provider": "Universitaly + Cambridge Assessment",
+      "url": "https://www.universitaly.it/imat",
+      "passing_ru": "Национальный рейтинг по местам"
     },
     {
-      "course_id": "cdlm-opd",
-      "course_name": "Odontoiatria e protesi dentaria",
-      "test": "TOLC-MED",
-      "test_provider": "CISIA",
-      "test_url": "https://www.cisiaonline.it",
-      "test_cost_eur": 30,
-      "test_when": "Февраль–июль"
+      "id": "tolc_i",
+      "name": "TOLC-I",
+      "for_ru": "Инженерные программы (Ingegneria), часть Информатики",
+      "structure": {
+        "total_questions": 50,
+        "sections": [
+          {"name_ru": "Математика", "questions": 20},
+          {"name_ru": "Логика", "questions": 10},
+          {"name_ru": "Науки (физика, химия)", "questions": 10},
+          {"name_ru": "Понимание текста", "questions": 10}
+        ],
+        "english_section": "плюс секция английского отдельно",
+        "duration_min": 110
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI. Можно пересдавать, берётся лучший результат.",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it",
+      "note_ru": "У UniPR инженерные программы часто LIBERO ACCESSO — TOLC-I как verifica (диагностика), не барьер. Проверь конкретную программу."
     },
     {
-      "course_id": "cdlm-mv",
-      "course_name": "Medicina veterinaria",
-      "test": "TOLC-AV",
-      "test_provider": "CISIA",
-      "test_url": "https://www.cisiaonline.it",
-      "test_cost_eur": 30,
-      "test_when": "Февраль–июль"
+      "id": "tolc_e",
+      "name": "TOLC-E",
+      "for_ru": "Экономика (Economia e management) и статистика",
+      "structure": {
+        "total_questions": 36,
+        "sections": [
+          {"name_ru": "Логика", "questions": 13},
+          {"name_ru": "Понимание текста", "questions": 10},
+          {"name_ru": "Математика", "questions": 13}
+        ],
+        "english_section": "плюс секция английского",
+        "duration_min": 90
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it",
+      "note_ru": "У UniPR Economia обычно LIBERO ACCESSO — тест как verifica."
     },
     {
-      "course_id": "cdl-sa",
-      "course_name": "Architettura rigenerazione sostenibilità",
-      "test": "TOLC-A",
-      "test_provider": "CISIA",
-      "test_url": "https://www.cisiaonline.it",
-      "test_cost_eur": 30,
-      "test_when": "Февраль–июль"
+      "id": "tolc_s",
+      "name": "TOLC-S",
+      "for_ru": "Научные программы (Biologia, Chimica, Scienze, Matematica, Fisica, Informatica, Biotecnologie)",
+      "structure": {
+        "total_questions": 55,
+        "sections": [
+          {"name_ru": "Математика базовая", "questions": 20},
+          {"name_ru": "Рассуждение, понимание, задачи", "questions": 15},
+          {"name_ru": "Биология", "questions": 5},
+          {"name_ru": "Химия", "questions": 5},
+          {"name_ru": "Физика", "questions": 5},
+          {"name_ru": "Науки о Земле", "questions": 5}
+        ],
+        "english_section": "плюс 30 вопросов английского отдельно",
+        "duration_min": 110
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it"
     },
     {
-      "course_id": "cdl-infe",
-      "course_name": "Infermieristica (и другие professioni sanitarie)",
-      "test": "Национальный тест для professioni sanitarie",
-      "test_provider": "MUR / UniPR",
-      "test_cost_eur": 30,
-      "test_when": "Сентябрь"
+      "id": "tolc_b",
+      "name": "TOLC-B",
+      "for_ru": "Биология и биотехнологии",
+      "structure": {
+        "total_questions": 50,
+        "sections": [
+          {"name_ru": "Математика базовая", "questions": 20},
+          {"name_ru": "Биология", "questions": 10},
+          {"name_ru": "Физика", "questions": 10},
+          {"name_ru": "Химия", "questions": 10}
+        ],
+        "english_section": "плюс 30 вопросов английского",
+        "duration_min": 110
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it"
     },
     {
-      "course_id": "cdlm-ada",
-      "course_name": "Amministrazione e direzione aziendale (magistrale)",
-      "test": "Admission test / interview",
-      "test_provider": "UniPR direct",
-      "test_when": "Уточнять на странице программы"
+      "id": "tolc_av",
+      "name": "TOLC-AV",
+      "for_ru": "Ветеринария (Medicina veterinaria)",
+      "structure": {
+        "total_questions": 50,
+        "note_ru": "Структура близка к TOLC-MED: биология, химия, физика/математика",
+        "duration_min": 90
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI, обычно весна-лето",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it"
+    },
+    {
+      "id": "tolc_su",
+      "name": "TOLC-SU",
+      "for_ru": "Гуманитарные программы (часть курсов Discipline Umanistiche)",
+      "structure": {
+        "total_questions": 50,
+        "sections": [
+          {"name_ru": "Понимание текста и итальянский язык", "questions": 30},
+          {"name_ru": "Знания из школьной программы", "questions": 10},
+          {"name_ru": "Логическое рассуждение", "questions": 10}
+        ],
+        "english_section": "плюс секция английского",
+        "duration_min": 90
+      },
+      "scoring_ru": "Верный +1, неверный −0,25, пропуск 0",
+      "where_ru": "TOLC@CASA или TOLC@UNI",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it",
+      "note_ru": "У UniPR гуманитарные часто libero accesso"
+    },
+    {
+      "id": "cent_s",
+      "name": "CEnT-S (новый с 2026)",
+      "for_ru": "Англоязычные научные программы (заменил English TOLC-S/I/E с 2026/2027)",
+      "structure": {
+        "note_ru": "Новый тест CISIA на английском для международных научных программ. Структура близка к научным TOLC, полностью на английском.",
+        "language": "полностью английский",
+        "total_questions": 0,
+        "duration_min": 0
+      },
+      "scoring_ru": "Аналогично TOLC — уточняй syllabus на cisiaonline.it",
+      "where_ru": "TOLC@CASA или TOLC@UNI",
+      "cost_eur": 30,
+      "provider": "CISIA",
+      "url": "https://www.cisiaonline.it",
+      "note_ru": "Если поступаешь на англоязычную научную/инженерную программу — теперь это CEnT-S, а не старый English TOLC. Проверь требования своей программы.",
+      "is_new_2026": true
     }
   ],
-  "general_info_ru": {
-    "what_is_numero_chiuso": "Программы с ограничением мест. Чтобы поступить — недостаточно соответствовать требованиям, нужно сдать тест и попасть в рейтинг.",
-    "how_to_prepare_ru": [
-      "Скачай официальные guidelines теста с CISIA или Universitaly",
-      "Используй прошлогодние тесты — они доступны бесплатно",
-      "Для IMAT есть платные курсы подготовки (300–2000 €), но многое можно сделать самостоятельно",
-      "TOLC можно сдавать несколько раз — засчитывается лучший результат"
-    ],
-    "where_to_take_ru": {
-      "tolc_at_home": "TOLC@CASA — сдать дистанционно. Нужен стабильный интернет и веб-камера.",
-      "tolc_in_centers": "Тест-центры CISIA по всему миру — в том числе в ряде городов СНГ. Проверь актуальный список на cisiaonline.it.",
-      "imat_in_centers": "IMAT — только в авторизованных тест-центрах. Список на universitaly.it/imat."
-    }
+
+  "how_to_take_ru": {
+    "tolc_casa_vs_uni": "TOLC@CASA — сдаёшь дома (нужен компьютер, веб-камера, стабильный интернет, тихая комната). TOLC@UNI — в университетском центре. Результат одинаковый.",
+    "can_retake": "TOLC можно пересдавать несколько раз — для рейтинга берётся ЛУЧШИЙ результат. (IMAT — обычно один раз в год).",
+    "where_cis_countries": "TOLC@CASA доступен из любой страны. Тест-центры CISIA есть в ряде стран — проверь актуальный список на cisiaonline.it. IMAT сдаётся только в авторизованных центрах.",
+    "preparation_ru": "На портале CISIA есть бесплатный syllabus и пробные тесты. Прошлогодние варианты доступны бесплатно. Платные курсы (особенно для IMAT) есть, но многое реально подготовить самому."
   }
 }
