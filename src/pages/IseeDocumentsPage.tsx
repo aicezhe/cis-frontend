@@ -233,7 +233,8 @@ export default function IseeDocumentsPage() {
   }
 
   // ── собрать итоговый список ──
-  function collectResult() {
+  // стрелочная константа, а не function declaration — иначе TS теряет narrowing isee
+  const collectResult = () => {
     type DocItem = { doc: string; note?: string; cost?: string };
     const familyDocs: DocItem[] = [
       { doc: isee.family_cert.document_ru, note: isee.family_cert.note_ru, cost: isee.family_cert.cost_ru },
@@ -266,7 +267,7 @@ export default function IseeDocumentsPage() {
     const costMax = totalDocs * (lc.apostille_max_eur + lc.translation_max_eur);
 
     return { familyDocs, perPerson, totalDocs, costMin, costMax };
-  }
+  };
 
   const result = allAnswered ? collectResult() : null;
   const sch = isee.scholarship_estimate;
