@@ -1,18 +1,20 @@
-export interface IseeSubBranch {
-  case_ru: string;
-  documents_ru: string[];
+export interface ShowIf {
+  branch: string;
+  option: string;
 }
 
 export interface IseeOption {
   id: string;
   label_ru: string;
   documents_ru: string[];
-  sub_branches?: IseeSubBranch[];
+  note_ru?: string;
+  cost_ru?: string;
 }
 
 export interface IseeBranch {
   id: string;
   question_ru: string;
+  show_if?: ShowIf;
   options: IseeOption[];
 }
 
@@ -27,6 +29,7 @@ export interface IseeCategory {
   icon: string;
   description_ru: string;
   base_document_ru: string;
+  base_cost_ru?: string;
   decision_tree: IseeDecisionTree;
 }
 
@@ -39,9 +42,11 @@ export interface IseeSeed {
   };
   intro_ru: {
     what_is_ru: string;
+    family_definition_ru: string;
     who_counts_ru: string;
     where_ru: string;
     key_rule_ru: string;
+    cost_hint_ru?: string;
   };
   categories: IseeCategory[];
   final_steps_ru: string[];
