@@ -1,80 +1,128 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIsee } from '../hooks/useIsee';
-import type { IseeCategory, IseeBranch } from '../types/isee';
+import { Price } from '../components/Price';
+import type { IseeSeed, IseePersonQuestion, IseeDocOption } from '../types/isee';
 
-// ── helpers ───────────────────────────────────────────────────────────────────
+// ── модель человека в опроснике ───────────────────────────────────────────────
 
-function getVisibleBranches(cat: IseeCategory, sel: Record<string, string>): IseeBranch[] {
-  return cat.decision_tree.branches.filter((b) => {
-    if (!b.show_if) return true;
-    return sel[`${cat.id}.${b.show_if.branch}`] === b.show_if.option;
+interface Person {
+  key: string;
+  label: string;
+  removable: boolean;
+  adult: boolean;
+}
+
+interface Member {
+  uid: number;
+  typeId: string;
+  adult: boolean;
+}
+
+type PersonAnswers = Record<string, Record<string, string>>;
+
+function buildRoster(isee: IseeSeed, parentsChoice: string, members: Member[]): Person[] {
+  const roster: Person[] = [{ key: 'me', label: 'Ты (студент)', removable: false, adult: true }];
+  if (parentsChoice === 'both') {
+    roster.push({ key: 'mom', label: 'Мама', removable: false, adult: true });
+    roster.push({ key: 'dad', label: 'Папа', removable: false, adult: true });
+  } else if (parentsChoice === 'one') {
+    roster.push({ key: 'parent', label: 'Родитель', removable: false, adult: true });
+  }
+  const counts: Record<string, number> = {};
+  for (const m of members) {
+    counts[m.typeId] = (counts[m.typeId] || 0) + 1;
+    const type = isee.members_step.member_types.find((t) => t.id === m.typeId);
+    const base = type?.label_ru || 'Член семьи';
+    const sameType = members.filter((x) => x.typeId === m.typeId).length;
+    roster.push({
+      key: `m${m.uid}`,
+      label: sameType > 1 ? `${base} ${counts[m.typeId]}` : base,
+      removable: true,
+      adult: m.adult,
+    });
+  }
+  return roster;
+}
+
+// вопросы, обязательные для человека с учётом follow-up (ипотека)
+function requiredQuestions(isee: IseeSeed, answers: Record<string, string> | undefined): IseePersonQuestion[] {
+  return isee.person_questions.filter((q) => {
+    if (!q.is_follow_up) return true;
+    // mortgage показываем только если по недвижимости выбрана опция с follow_up === q.id
+    for (const main of isee.person_questions) {
+      const chosen = answers?.[main.id];
+      if (!chosen) continue;
+      const opt = main.options.find((o) => o.id === chosen);
+      if (opt?.follow_up === q.id) return true;
+    }
+    return false;
   });
 }
 
-// ── Overview accordion ────────────────────────────────────────────────────────
+// ── карточка человека ─────────────────────────────────────────────────────────
 
-function CategoryAccordion({ category }: { category: IseeCategory }) {
-  const [open, setOpen] = useState(false);
+function PersonCard({
+  person, isee, answers, onAnswer, onRemove, open, onToggle,
+}: {
+  person: Person;
+  isee: IseeSeed;
+  answers: Record<string, string> | undefined;
+  onAnswer: (qId: string, optId: string) => void;
+  onRemove?: () => void;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const qs = requiredQuestions(isee, answers);
+  const answered = qs.filter((q) => !!answers?.[q.id]).length;
+  const done = answered === qs.length;
 
   return (
-    <div className="mb-3">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full relative bg-navy text-cream rounded-2xl px-5 py-4 text-left flex justify-between items-center"
-      >
-        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-        <span className="absolute top-3 right-8 w-3 h-3 border-t-2 border-r-2 border-gold" />
-        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-        <span className="absolute bottom-3 right-8 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <span className="font-serif text-lg ml-2">{category.title_ru}</span>
-        <span className="text-gold text-xl flex-shrink-0">{open ? '−' : '+'}</span>
-      </button>
+    <div className={
+      'rounded-2xl border overflow-hidden ' +
+      (done ? 'border-gold/60 bg-soft-cream' : 'border-navy/20 bg-soft-cream')
+    }>
+      <div className="w-full px-4 py-3.5 flex items-center gap-3">
+        <button onClick={onToggle} className="flex-1 flex items-center gap-3 text-left">
+          <span className={done ? 'text-gold' : 'text-navy/30'}>{done ? '✓' : '◆'}</span>
+          <span className="font-serif text-navy text-base font-bold flex-1">{person.label}</span>
+          <span className={'font-serif text-xs ' + (done ? 'text-gold' : 'text-navy/40')}>
+            {answered}/{qs.length}
+          </span>
+          <svg
+            width="14" height="14" viewBox="0 0 14 14"
+            className={'text-navy transition-transform ' + (open ? 'rotate-180' : '')}
+            fill="currentColor"
+          >
+            <path d="M7 10L1 4h12L7 10z" />
+          </svg>
+        </button>
+        {onRemove && (
+          <button onClick={onRemove} className="text-navy/40 text-lg px-1" aria-label="Убрать">
+            ×
+          </button>
+        )}
+      </div>
 
       {open && (
-        <div className="bg-soft-cream border border-navy/15 rounded-b-2xl px-5 py-4 -mt-1">
-          <p className="font-serif text-navy/70 text-sm mb-3 leading-relaxed">{category.description_ru}</p>
-
-          {/* Base doc — always required */}
-          {category.base_document_ru && (
-            <div className="bg-cream border border-gold/40 rounded-xl px-4 py-3 mb-4">
-              <p className="font-serif text-navy/50 text-[10px] uppercase tracking-widest mb-1">Всегда нужен</p>
-              <p className="font-serif text-navy text-sm">{category.base_document_ru}</p>
-              {category.base_cost_ru && (
-                <p className="font-serif text-gold/80 text-[11px] italic mt-1">{category.base_cost_ru}</p>
-              )}
-            </div>
-          )}
-
-          {category.decision_tree.per_person_ru && (
-            <div className="flex gap-2 mb-3 bg-gold/10 border border-gold/40 rounded-xl px-3 py-2">
-              <span className="text-gold flex-shrink-0 text-sm">⚠</span>
-              <p className="font-serif text-navy/80 text-xs leading-relaxed">{category.decision_tree.per_person_ru}</p>
-            </div>
-          )}
-
-          {category.decision_tree.branches.map((branch) => (
-            <div key={branch.id} className="mb-4">
-              <p className="font-serif text-navy text-sm font-bold mb-1.5">
-                {branch.show_if && (
-                  <span className="font-serif text-gold text-[11px] font-normal mr-1">↳ если применимо: </span>
-                )}
-                {branch.question_ru}
-              </p>
-              <div className="flex flex-col gap-2">
-                {branch.options.map((opt) => (
-                  <div key={opt.id} className="border-l-2 border-gold/50 pl-3 py-0.5">
-                    <p className="font-serif text-navy text-sm font-medium">{opt.label_ru}</p>
-                    {opt.note_ru && (
-                      <p className="font-serif text-navy/50 text-xs italic mt-0.5 leading-relaxed">{opt.note_ru}</p>
-                    )}
-                    {opt.documents_ru.filter(Boolean).map((d, i) => (
-                      <p key={i} className="font-serif text-navy/65 text-xs leading-relaxed mt-0.5">— {d}</p>
-                    ))}
-                    {opt.cost_ru && (
-                      <p className="font-serif text-gold/80 text-[11px] italic mt-0.5">{opt.cost_ru}</p>
-                    )}
-                  </div>
+        <div className="px-4 pb-4 border-t border-navy/10 pt-3 flex flex-col gap-4">
+          {qs.map((q) => (
+            <div key={q.id}>
+              <p className="font-serif text-navy text-sm font-bold mb-2">{q.question_ru}</p>
+              <div className="flex flex-col gap-1.5">
+                {q.options.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => onAnswer(q.id, opt.id)}
+                    className={
+                      'w-full text-left rounded-xl px-3.5 py-2.5 font-serif text-sm transition-all border ' +
+                      (answers?.[q.id] === opt.id
+                        ? 'bg-navy text-cream border-navy'
+                        : 'bg-cream text-navy border-navy/15')
+                    }
+                  >
+                    {opt.label_ru}
+                  </button>
                 ))}
               </div>
             </div>
@@ -85,13 +133,71 @@ function CategoryAccordion({ category }: { category: IseeCategory }) {
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
+// ── обзорный режим: все документы статично ───────────────────────────────────
+
+function OverviewDocs({ isee }: { isee: IseeSeed }) {
+  const renderOpt = (opt: IseeDocOption) => (
+    <div key={opt.id} className="border-l-2 border-gold/50 pl-3 py-0.5">
+      <p className="font-serif text-navy text-sm font-medium">{opt.label_ru}</p>
+      {opt.note_ru && <p className="font-serif text-navy/50 text-xs italic mt-0.5">{opt.note_ru}</p>}
+      {opt.documents_ru.map((d, i) => (
+        <p key={i} className="font-serif text-navy/65 text-xs leading-relaxed mt-0.5">— {d}</p>
+      ))}
+      {opt.cost_ru && <p className="font-serif text-gold/80 text-[11px] italic mt-0.5">{opt.cost_ru}</p>}
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Базовая справка */}
+      <div className="bg-cream border border-gold/40 rounded-xl px-4 py-3">
+        <p className="font-serif text-navy/50 text-[10px] uppercase tracking-widest mb-1">Всегда нужна — одна на семью</p>
+        <p className="font-serif text-navy text-sm">{isee.family_cert.document_ru}</p>
+        <p className="font-serif text-gold/80 text-[11px] italic mt-1">{isee.family_cert.cost_ru}</p>
+      </div>
+
+      {/* Родители */}
+      <div className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-4">
+        <p className="font-serif text-navy text-sm font-bold mb-2">{isee.parents_step.question_ru}</p>
+        <div className="flex flex-col gap-2">
+          {isee.parents_step.options.map(renderOpt)}
+        </div>
+        <p className="font-serif text-navy text-sm font-bold mt-4 mb-2">{isee.parents_step.reason_question_ru}</p>
+        <div className="flex flex-col gap-2">
+          {isee.parents_step.reasons.map(renderOpt)}
+        </div>
+      </div>
+
+      {/* Вопросы по каждому человеку */}
+      <div className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-4">
+        <p className="font-serif text-gold text-xs italic mb-3">Для КАЖДОГО члена семьи 18+ (включая тебя):</p>
+        {isee.person_questions.map((q) => (
+          <div key={q.id} className="mb-4 last:mb-0">
+            <p className="font-serif text-navy text-sm font-bold mb-2">{q.question_ru}</p>
+            <div className="flex flex-col gap-2">
+              {q.options.filter((o) => o.documents_ru.length > 0).map(renderOpt)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── главная страница ──────────────────────────────────────────────────────────
+
+let nextUid = 1;
 
 export default function IseeDocumentsPage() {
   const navigate = useNavigate();
   const { isee, loading } = useIsee();
-  const [mode, setMode] = useState<'overview' | 'builder'>('overview');
-  const [selections, setSelections] = useState<Record<string, string>>({});
+
+  const [mode, setMode] = useState<'overview' | 'builder'>('builder');
+  const [parentsChoice, setParentsChoice] = useState('');
+  const [parentsReason, setParentsReason] = useState('');
+  const [members, setMembers] = useState<Member[]>([]);
+  const [personAnswers, setPersonAnswers] = useState<PersonAnswers>({});
+  const [openPerson, setOpenPerson] = useState<string>('me');
 
   if (loading) {
     return (
@@ -102,55 +208,73 @@ export default function IseeDocumentsPage() {
   }
   if (!isee) return null;
 
-  // Only check visible branches (respects show_if)
-  const allAnswered = isee.categories.every((cat) =>
-    getVisibleBranches(cat, selections).every((b) => !!selections[`${cat.id}.${b.id}`])
-  );
+  const roster = buildRoster(isee, parentsChoice, members);
+  const adults = roster.filter((p) => p.adult);
+  const minors = roster.filter((p) => !p.adult);
 
-  // Build personalised document list
-  const collectDocuments = () => {
-    return isee.categories.map((cat) => {
-      const items: Array<{ doc: string; note: string; cost: string }> = [];
+  const parentsDone = !!parentsChoice && (parentsChoice !== 'one' || !!parentsReason);
+  const personsDone = adults.every((p) => {
+    const qs = requiredQuestions(isee, personAnswers[p.key]);
+    return qs.every((q) => !!personAnswers[p.key]?.[q.id]);
+  });
+  const allAnswered = parentsDone && personsDone;
 
-      if (cat.base_document_ru) {
-        items.push({ doc: cat.base_document_ru, note: '', cost: cat.base_cost_ru || '' });
-      }
+  function addMember(typeId: string, adult: boolean) {
+    setMembers((m) => [...m, { uid: nextUid++, typeId, adult }]);
+  }
 
-      for (const branch of cat.decision_tree.branches) {
-        // Respect show_if — skip if condition not met
-        if (branch.show_if) {
-          const condKey = `${cat.id}.${branch.show_if.branch}`;
-          if (selections[condKey] !== branch.show_if.option) continue;
-        }
+  function removeMember(uid: number) {
+    setMembers((m) => m.filter((x) => x.uid !== uid));
+    setPersonAnswers((a) => {
+      const copy = { ...a };
+      delete copy[`m${uid}`];
+      return copy;
+    });
+  }
 
-        const key = `${cat.id}.${branch.id}`;
-        const chosen = selections[key];
+  // ── собрать итоговый список ──
+  function collectResult() {
+    type DocItem = { doc: string; note?: string; cost?: string };
+    const familyDocs: DocItem[] = [
+      { doc: isee.family_cert.document_ru, note: isee.family_cert.note_ru, cost: isee.family_cert.cost_ru },
+    ];
+
+    const parentOpt = isee.parents_step.options.find((o) => o.id === parentsChoice);
+    parentOpt?.documents_ru.forEach((d) => familyDocs.push({ doc: d, cost: parentOpt.cost_ru }));
+    if (parentsChoice === 'one' && parentsReason) {
+      const reason = isee.parents_step.reasons.find((r) => r.id === parentsReason);
+      reason?.documents_ru.forEach((d) => familyDocs.push({ doc: d, cost: reason.cost_ru }));
+    }
+
+    const perPerson = adults.map((p) => {
+      const docs: DocItem[] = [];
+      const qs = requiredQuestions(isee, personAnswers[p.key]);
+      for (const q of qs) {
+        const chosen = personAnswers[p.key]?.[q.id];
         if (!chosen) continue;
-
-        const opt = branch.options.find((o) => o.id === chosen);
-        if (!opt) continue;
-
-        const validDocs = opt.documents_ru.filter(Boolean);
-        validDocs.forEach((d, i) => {
-          items.push({
-            doc: d,
-            note: i === 0 ? (opt.note_ru || '') : '',
-            cost: i === 0 ? (opt.cost_ru || '') : '',
-          });
+        const opt = q.options.find((o) => o.id === chosen);
+        opt?.documents_ru.forEach((d, i) => {
+          docs.push({ doc: d, note: i === 0 ? opt.note_ru : undefined, cost: i === 0 ? opt.cost_ru : undefined });
         });
       }
-
-      return { category: cat.title_ru, items };
+      return { person: p.label, docs };
     });
-  };
 
-  const docBlocks = allAnswered ? collectDocuments() : [];
-  const totalDocs = docBlocks.reduce((s, b) => s + b.items.filter((i) => i.doc).length, 0);
+    const totalDocs = familyDocs.length + perPerson.reduce((s, x) => s + x.docs.length, 0);
+    const lc = isee.legalization_cost;
+    const costMin = totalDocs * (lc.apostille_min_eur + lc.translation_min_eur);
+    const costMax = totalDocs * (lc.apostille_max_eur + lc.translation_max_eur);
+
+    return { familyDocs, perPerson, totalDocs, costMin, costMax };
+  }
+
+  const result = allAnswered ? collectResult() : null;
+  const sch = isee.scholarship_estimate;
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
 
-      {/* Header */}
+      {/* Хедер */}
       <div className="px-6 pt-12 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>
         <div>
@@ -159,29 +283,23 @@ export default function IseeDocumentsPage() {
         </div>
       </div>
 
-      {/* Family definition — always visible, both modes */}
+      {/* Кто в семье */}
       <div className="mx-6 mt-5 bg-gold/10 border border-gold/50 rounded-2xl px-5 py-4">
         <p className="font-serif text-navy text-sm font-bold mb-1.5">Кто входит в «семью» для ISEE?</p>
         <p className="font-serif text-navy/80 text-sm leading-relaxed">{isee.intro_ru.family_definition_ru}</p>
       </div>
 
-      {/* What is ISEE — overview only */}
-      {mode === 'overview' && (
-        <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-          <p className="font-serif text-navy/80 text-sm leading-relaxed mb-2">{isee.intro_ru.what_is_ru}</p>
-          <p className="font-serif text-navy/70 text-sm leading-relaxed mb-2">{isee.intro_ru.who_counts_ru}</p>
-          <p className="font-serif text-navy/70 text-sm leading-relaxed mb-3">{isee.intro_ru.where_ru}</p>
-          <div className="bg-cream border border-navy/10 rounded-xl px-3 py-2">
-            <p className="font-serif text-navy/80 text-xs font-bold leading-relaxed">{isee.intro_ru.key_rule_ru}</p>
-          </div>
-          {isee.intro_ru.cost_hint_ru && (
-            <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">{isee.intro_ru.cost_hint_ru}</p>
-          )}
-        </div>
-      )}
-
-      {/* Mode switcher */}
+      {/* Переключатель */}
       <div className="px-6 mt-5 flex gap-2">
+        <button
+          onClick={() => setMode('builder')}
+          className={
+            'flex-1 rounded-xl py-3 font-serif text-sm transition-all ' +
+            (mode === 'builder' ? 'bg-navy text-cream' : 'bg-soft-cream text-navy border border-navy/20')
+          }
+        >
+          Собрать мой список
+        </button>
         <button
           onClick={() => setMode('overview')}
           className={
@@ -191,95 +309,151 @@ export default function IseeDocumentsPage() {
         >
           Все документы
         </button>
-        <button
-          onClick={() => setMode('builder')}
-          className={
-            'flex-1 rounded-xl py-3 font-serif text-sm transition-all ' +
-            (mode === 'builder' ? 'bg-navy text-cream' : 'bg-soft-cream text-navy border border-navy/20')
-          }
-        >
-          Мой список
-        </button>
       </div>
 
       {/* ── OVERVIEW ── */}
       {mode === 'overview' && (
         <div className="px-6 mt-5">
-          <p className="font-serif text-gold text-sm italic mb-3">3 категории документов</p>
-          {isee.categories.map((cat) => (
-            <CategoryAccordion key={cat.id} category={cat} />
-          ))}
+          <div className="bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4 mb-4">
+            <p className="font-serif text-navy/80 text-sm leading-relaxed mb-2">{isee.intro_ru.what_is_ru}</p>
+            <p className="font-serif text-navy/70 text-sm leading-relaxed">{isee.intro_ru.where_ru}</p>
+          </div>
+          <OverviewDocs isee={isee} />
         </div>
       )}
 
       {/* ── BUILDER ── */}
       {mode === 'builder' && (
-        <div className="px-6 mt-5">
-          <p className="font-serif text-gold text-sm italic mb-4">
-            Ответь на вопросы — список сформируется внизу
+        <div className="px-6 mt-6">
+
+          {/* Шаг 1: родители */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="font-serif text-gold font-bold">1.</span>
+            <p className="font-serif text-navy text-base font-bold">{isee.parents_step.question_ru}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            {isee.parents_step.options.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => { setParentsChoice(opt.id); if (opt.id !== 'one') setParentsReason(''); }}
+                className={
+                  'w-full text-left rounded-xl px-4 py-3 font-serif text-sm transition-all border ' +
+                  (parentsChoice === opt.id
+                    ? 'bg-navy text-cream border-navy'
+                    : 'bg-soft-cream text-navy border-navy/20')
+                }
+              >
+                {opt.label_ru}
+              </button>
+            ))}
+          </div>
+
+          {parentsChoice === 'one' && (
+            <div className="mt-4">
+              <p className="font-serif text-gold text-[11px] italic mb-1">↳ уточни:</p>
+              <p className="font-serif text-navy text-sm font-bold mb-2">{isee.parents_step.reason_question_ru}</p>
+              <div className="flex flex-col gap-2">
+                {isee.parents_step.reasons.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setParentsReason(r.id)}
+                    className={
+                      'w-full text-left rounded-xl px-4 py-3 font-serif text-sm transition-all border ' +
+                      (parentsReason === r.id
+                        ? 'bg-navy text-cream border-navy'
+                        : 'bg-soft-cream text-navy border-navy/20')
+                    }
+                  >
+                    {r.label_ru}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Шаг 2: остальные прописанные */}
+          <div className="flex items-center gap-2 mt-8 mb-1">
+            <span className="font-serif text-gold font-bold">2.</span>
+            <p className="font-serif text-navy text-base font-bold">{isee.members_step.title_ru}</p>
+          </div>
+          <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">{isee.members_step.note_ru}</p>
+
+          <div className="flex flex-wrap gap-2">
+            {isee.members_step.member_types.map((t) => (
+              <div key={t.id} className="flex rounded-full border border-navy/25 overflow-hidden">
+                <button
+                  onClick={() => addMember(t.id, true)}
+                  className="font-serif text-navy text-xs px-3 py-2 bg-soft-cream"
+                >
+                  + {t.label_ru}
+                </button>
+                <button
+                  onClick={() => addMember(t.id, false)}
+                  className="font-serif text-navy/50 text-[10px] px-2 py-2 bg-cream border-l border-navy/15"
+                  title="Младше 18 лет"
+                >
+                  &lt;18
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="font-serif text-navy/40 text-[10px] italic mt-1.5">
+            Кнопка «&lt;18» — для членов семьи младше 18 (документы по ним не нужны)
           </p>
 
-          {isee.categories.map((cat) => {
-            const vis = getVisibleBranches(cat, selections);
-            const answeredCount = vis.filter((b) => !!selections[`${cat.id}.${b.id}`]).length;
-            const isDone = answeredCount === vis.length;
-
-            return (
-              <div key={cat.id} className="mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={isDone ? 'text-gold' : 'text-navy/40'}>◆</span>
-                  <h2 className="font-serif text-navy text-lg font-bold flex-1">{cat.title_ru}</h2>
-                  <span className={
-                    'font-serif text-xs ' +
-                    (isDone ? 'text-gold' : 'text-navy/40')
-                  }>
-                    {answeredCount}/{vis.length}
+          {minors.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {members.filter((m) => !m.adult).map((m) => {
+                const t = isee.members_step.member_types.find((x) => x.id === m.typeId);
+                return (
+                  <span key={m.uid} className="inline-flex items-center gap-1.5 font-serif text-navy/60 text-xs bg-cream border border-navy/15 rounded-full px-3 py-1.5">
+                    {t?.label_ru} (младше 18)
+                    <button onClick={() => removeMember(m.uid)} className="text-navy/40">×</button>
                   </span>
-                </div>
-                <p className="font-serif text-navy/60 text-xs mb-3 leading-relaxed">{cat.description_ru}</p>
+                );
+              })}
+            </div>
+          )}
 
-                {cat.decision_tree.per_person_ru && (
-                  <div className="flex gap-2 mb-3 bg-gold/10 border border-gold/40 rounded-xl px-3 py-2">
-                    <span className="text-gold flex-shrink-0 text-sm">⚠</span>
-                    <p className="font-serif text-navy/80 text-xs leading-relaxed">{cat.decision_tree.per_person_ru}</p>
-                  </div>
-                )}
+          {/* Шаг 3: вопросы по каждому 18+ */}
+          {parentsDone && (
+            <>
+              <div className="flex items-center gap-2 mt-8 mb-1">
+                <span className="font-serif text-gold font-bold">3.</span>
+                <p className="font-serif text-navy text-base font-bold">Теперь — про каждого (18+)</p>
+              </div>
+              <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">
+                Доходы, счета и имущество — отдельно по каждому взрослому из твоей семьи.
+              </p>
 
-                {vis.map((branch) => {
-                  const key = `${cat.id}.${branch.id}`;
-                  const chosen = selections[key];
+              <div className="flex flex-col gap-3">
+                {adults.map((p) => {
+                  const member = p.removable ? members.find((m) => `m${m.uid}` === p.key) : undefined;
                   return (
-                    <div key={branch.id} className="mb-4">
-                      {branch.show_if && (
-                        <p className="font-serif text-gold text-[11px] italic mb-1">↳ уточни:</p>
-                      )}
-                      <p className="font-serif text-navy text-sm font-bold mb-2">{branch.question_ru}</p>
-                      <div className="flex flex-col gap-2">
-                        {branch.options.map((opt) => (
-                          <button
-                            key={opt.id}
-                            onClick={() => setSelections((s) => ({ ...s, [key]: opt.id }))}
-                            className={
-                              'w-full text-left rounded-xl px-4 py-3 font-serif text-sm transition-all border ' +
-                              (chosen === opt.id
-                                ? 'bg-navy text-cream border-navy'
-                                : 'bg-soft-cream text-navy border-navy/20')
-                            }
-                          >
-                            {opt.label_ru}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <PersonCard
+                      key={p.key}
+                      person={p}
+                      isee={isee}
+                      answers={personAnswers[p.key]}
+                      open={openPerson === p.key}
+                      onToggle={() => setOpenPerson(openPerson === p.key ? '' : p.key)}
+                      onAnswer={(qId, optId) =>
+                        setPersonAnswers((a) => ({
+                          ...a,
+                          [p.key]: { ...a[p.key], [qId]: optId },
+                        }))
+                      }
+                      onRemove={member ? () => removeMember(member.uid) : undefined}
+                    />
                   );
                 })}
               </div>
-            );
-          })}
+            </>
+          )}
 
-          {/* Result block */}
+          {/* Шаг 4: результат */}
           <div className={
-            'relative rounded-2xl p-5 mt-2 transition-all ' +
+            'relative rounded-2xl p-5 mt-8 transition-all ' +
             (allAnswered ? 'bg-navy' : 'bg-navy/30')
           }>
             {allAnswered && (
@@ -295,56 +469,123 @@ export default function IseeDocumentsPage() {
               ⌐ твой список документов ¬
             </p>
 
-            {!allAnswered ? (
+            {!allAnswered && (
               <p className="font-serif text-cream/50 text-sm italic">
-                Ответь на все вопросы выше — список сформируется здесь
+                {!parentsDone
+                  ? 'Ответь про родителей — и продолжим'
+                  : 'Ответь на вопросы по каждому человеку — список сформируется здесь'}
               </p>
-            ) : (
+            )}
+
+            {result && (
               <>
-                <p className="font-serif text-cream/50 text-xs mb-4">
-                  Итого документов: {totalDocs}
+                <p className="font-serif text-cream/60 text-xs mb-4">
+                  Итого документов: {result.totalDocs} · легализация примерно{' '}
+                  <span className="text-gold"><Price eur={result.costMin} /> – <Price eur={result.costMax} /></span>
                 </p>
 
-                {docBlocks.map((block, bi) => (
-                  <div key={bi} className="mb-5">
-                    <h3 className="font-serif text-cream text-sm font-bold uppercase tracking-wide mb-2 opacity-70">
-                      {block.category}
-                    </h3>
-                    <div className="flex flex-col gap-3">
-                      {block.items.map((item, ii) => (
-                        <div key={ii} className="flex gap-2 items-start">
-                          <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-serif text-cream/90 text-xs leading-relaxed">{item.doc}</p>
-                            {item.note && (
-                              <p className="font-serif text-cream/45 text-[11px] italic mt-0.5 leading-relaxed">
-                                {item.note}
-                              </p>
-                            )}
-                            {item.cost && (
-                              <p className="font-serif text-gold/70 text-[11px] mt-0.5 leading-relaxed">
-                                {item.cost}
-                              </p>
-                            )}
-                          </div>
+                {/* Семейные документы */}
+                <div className="mb-5">
+                  <h3 className="font-serif text-cream/70 text-sm font-bold uppercase tracking-wide mb-2">
+                    На всю семью
+                  </h3>
+                  <div className="flex flex-col gap-2.5">
+                    {result.familyDocs.map((item, i) => (
+                      <div key={i} className="flex gap-2 items-start">
+                        <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-serif text-cream/90 text-xs leading-relaxed">{item.doc}</p>
+                          {item.cost && <p className="font-serif text-gold/70 text-[11px] mt-0.5">{item.cost}</p>}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* По каждому человеку */}
+                {result.perPerson.map((block, bi) => (
+                  <div key={bi} className="mb-5">
+                    <h3 className="font-serif text-cream/70 text-sm font-bold uppercase tracking-wide mb-2">
+                      {block.person}
+                    </h3>
+                    {block.docs.length === 0 ? (
+                      <p className="font-serif text-cream/40 text-xs italic">Документы не требуются</p>
+                    ) : (
+                      <div className="flex flex-col gap-2.5">
+                        {block.docs.map((item, ii) => (
+                          <div key={ii} className="flex gap-2 items-start">
+                            <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-serif text-cream/90 text-xs leading-relaxed">{item.doc}</p>
+                              {item.note && (
+                                <p className="font-serif text-cream/45 text-[11px] italic mt-0.5">{item.note}</p>
+                              )}
+                              {item.cost && <p className="font-serif text-gold/70 text-[11px] mt-0.5">{item.cost}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
 
-                <div className="border-t border-cream/20 pt-3 mt-1">
-                  <p className="font-serif text-cream/40 text-[11px] italic">
-                    Каждый документ: апостиль + перевод на итальянский
+                {minors.length > 0 && (
+                  <p className="font-serif text-cream/40 text-[11px] italic mb-4">
+                    Члены семьи младше 18 ({minors.length}) — просто в справке о составе семьи, документы не нужны.
                   </p>
+                )}
+
+                <div className="border-t border-cream/20 pt-3">
+                  <p className="font-serif text-cream/40 text-[11px] italic">{isee.legalization_cost.note_ru}</p>
                 </div>
               </>
             )}
           </div>
+
+          {/* Стипендия — после результата */}
+          {allAnswered && (
+            <div className="bg-soft-cream border border-gold/50 rounded-2xl px-5 py-4 mt-4">
+              <p className="font-serif text-gold text-sm italic mb-2">{sch.title_ru}</p>
+              <p className="font-serif text-navy/70 text-xs leading-relaxed mb-3">{sch.threshold_note_ru}</p>
+              <div className="flex flex-col gap-2 mb-3">
+                {sch.amounts.map((a) => (
+                  <div
+                    key={a.id}
+                    className={
+                      'flex justify-between items-center rounded-xl px-4 py-2.5 ' +
+                      (a.is_default ? 'bg-navy' : 'bg-cream border border-navy/10')
+                    }
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className={'font-serif text-xs leading-snug ' + (a.is_default ? 'text-cream' : 'text-navy/70')}>
+                        {a.label_ru}
+                      </p>
+                      {a.note_ru && (
+                        <p className={'font-serif text-[10px] italic ' + (a.is_default ? 'text-gold' : 'text-navy/40')}>
+                          {a.note_ru}
+                        </p>
+                      )}
+                    </div>
+                    <p className={'font-serif text-base font-bold flex-shrink-0 ml-3 ' + (a.is_default ? 'text-gold' : 'text-navy')}>
+                      до <Price eur={a.amount_eur} />
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">{sch.bonuses_note_ru}</p>
+              <button
+                onClick={() => navigate('/scholarship')}
+                className="w-full font-serif text-navy bg-gold rounded-full py-2.5 text-sm"
+              >
+                Рассчитать мою стипендию точнее →
+              </button>
+              <p className="font-serif text-navy/40 text-[10px] italic mt-2">{sch.source_note_ru}</p>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Final steps + tips — always */}
+      {/* Финальные шаги + советы */}
       <div className="mx-6 mt-6 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
         <p className="font-serif text-gold text-sm italic mb-3">Что делать дальше</p>
         <ol className="flex flex-col gap-2">
@@ -370,7 +611,7 @@ export default function IseeDocumentsPage() {
       </div>
 
       <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
-        Требования актуальны на 2026/2027 — уточняй на unipr.it/en/tuition-fees
+        Требования актуальны на 2026/2027 — уточняй на unipr.it и er-go.it
       </p>
     </div>
   );

@@ -1,36 +1,31 @@
-export interface ShowIf {
-  branch: string;
-  option: string;
-}
-
-export interface IseeOption {
+export interface IseeDocOption {
   id: string;
   label_ru: string;
   documents_ru: string[];
   note_ru?: string;
   cost_ru?: string;
+  needs_reason?: boolean;
+  follow_up?: string;
 }
 
-export interface IseeBranch {
+export interface IseePersonQuestion {
   id: string;
   question_ru: string;
-  show_if?: ShowIf;
-  options: IseeOption[];
+  is_follow_up?: boolean;
+  options: IseeDocOption[];
 }
 
-export interface IseeDecisionTree {
-  per_person_ru?: string;
-  branches: IseeBranch[];
-}
-
-export interface IseeCategory {
+export interface IseeMemberType {
   id: string;
-  title_ru: string;
-  icon: string;
-  description_ru: string;
-  base_document_ru: string;
-  base_cost_ru?: string;
-  decision_tree: IseeDecisionTree;
+  label_ru: string;
+}
+
+export interface IseeScholarshipAmount {
+  id: string;
+  label_ru: string;
+  amount_eur: number;
+  is_default?: boolean;
+  note_ru?: string;
 }
 
 export interface IseeSeed {
@@ -43,12 +38,41 @@ export interface IseeSeed {
   intro_ru: {
     what_is_ru: string;
     family_definition_ru: string;
-    who_counts_ru: string;
     where_ru: string;
     key_rule_ru: string;
-    cost_hint_ru?: string;
   };
-  categories: IseeCategory[];
+  family_cert: {
+    document_ru: string;
+    cost_ru: string;
+    note_ru: string;
+  };
+  parents_step: {
+    question_ru: string;
+    options: IseeDocOption[];
+    reason_question_ru: string;
+    reasons: IseeDocOption[];
+  };
+  members_step: {
+    title_ru: string;
+    note_ru: string;
+    member_types: IseeMemberType[];
+  };
+  person_questions: IseePersonQuestion[];
+  legalization_cost: {
+    apostille_min_eur: number;
+    apostille_max_eur: number;
+    translation_min_eur: number;
+    translation_max_eur: number;
+    note_ru: string;
+  };
+  scholarship_estimate: {
+    title_ru: string;
+    isee_threshold_eur: number;
+    threshold_note_ru: string;
+    amounts: IseeScholarshipAmount[];
+    bonuses_note_ru: string;
+    source_note_ru: string;
+  };
   final_steps_ru: string[];
   tips_ru: string[];
 }
