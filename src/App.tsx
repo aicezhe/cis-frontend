@@ -23,6 +23,9 @@ import ProgramFinancePage from './pages/ProgramFinancePage';
 import ProgramLanguagesPage from './pages/ProgramLanguagesPage';
 import NumeroChiusoPage from './pages/NumeroChiusoPage';
 import IseeDocumentsPage from './pages/IseeDocumentsPage';
+import VisaOverviewPage from './pages/VisaOverviewPage';
+import VisaStepsPage from './pages/VisaStepsPage';
+import VisaRejectionsPage from './pages/VisaRejectionsPage';
 
 export default function App() {
   return (
@@ -43,6 +46,9 @@ export default function App() {
       <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
       <Route path="/path/uni/program/isee" element={<IseeDocumentsPage />} />
       <Route path="/path/parma/isee" element={<IseeDocumentsPage />} />
+      <Route path="/path/visa" element={<VisaOverviewPage />} />
+      <Route path="/path/visa/steps" element={<VisaStepsPage />} />
+      <Route path="/path/visa/rejections" element={<VisaRejectionsPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />

@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState('');
   const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +42,8 @@ export default function RegisterPage() {
       return !isNaN(ageNum) && ageNum >= 14 && ageNum <= 100;
     }
     if (step === 4) return country !== '';
-    if (step === 5) {
+    if (step === 5) return city.trim() !== '';
+    if (step === 6) {
       return (
         password.trim().length >= 6 &&
         password === passwordRepeat
@@ -90,7 +92,7 @@ export default function RegisterPage() {
       return;
     }
 
-    if (step < 5) {
+    if (step < 6) {
       setStep(step + 1);
       return;
     }
@@ -116,6 +118,8 @@ export default function RegisterPage() {
       localStorage.setItem('cispr_age', age);
       // страна нужна, чтобы подобрать страновой датасет легализации (Foundation)
       localStorage.setItem('cispr_country', country);
+      // город нужен для автоопределения консульского округа (раздел Виза)
+      localStorage.setItem('cispr_city', city.trim());
       // возраст уходит в профиль на бэкенд
       try {
         await api.updateProfile({ age: parseInt(age) || null });
@@ -159,7 +163,7 @@ export default function RegisterPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3, 4, 5].map((n) => (
+          {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
               className={
@@ -273,6 +277,29 @@ export default function RegisterPage() {
         )}
 
         {step === 5 && (
+          <>
+            <h1 className="font-serif text-navy text-3xl mb-10 text-center">
+              Из какого ты города?
+            </h1>
+            <p className="font-serif text-navy/60 text-sm italic text-center mb-8 -mt-6">
+              Определим твой консульский округ для подачи на визу
+            </p>
+            <div className="w-full flex items-center border border-navy rounded-2xl px-5 py-4 mb-6">
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => { setCity(e.target.value); setError(''); }}
+                onKeyDown={handleKeyDown}
+                placeholder="Москва"
+                autoComplete="off"
+                className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
+              />
+              <User size={20} className="text-navy" />
+            </div>
+          </>
+        )}
+
+        {step === 6 && (
           <>
             <h1 className="font-serif text-navy text-3xl mb-12 text-center">
               Придумай пароль<br />и повтори его.

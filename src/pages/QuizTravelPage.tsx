@@ -20,17 +20,19 @@ export default function QuizTravelPage() {
   const [hasCard, setHasCard] = useState('');
   const [hasHousing, setHasHousing] = useState('');
   const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
+
+  // город теперь спрашивается в регистрации (cispr_city)
+  function finish(saveAddress: boolean) {
+    localStorage.setItem('cispr_passed_quiz', 'travel');
+    if (saveAddress && address) localStorage.setItem('cispr_address', address);
+    navigate('/path');
+  }
 
   function goNext() {
-    if (step < 3) {
+    if (step < 2) {
       setStep(step + 1);
     } else {
-      console.log('Квиз Travel:', { hasCard, hasHousing, address, city });
-      localStorage.setItem('cispr_passed_quiz', 'travel');
-      if (address) localStorage.setItem('cispr_address', address);
-      if (city) localStorage.setItem('cispr_city', city);
-      navigate('/path');
+      finish(true);
     }
   }
 
@@ -42,14 +44,6 @@ export default function QuizTravelPage() {
     }
   }
 
-  // переход с шага 2 к 3 с возможным сохранением адреса
-  function goNextFromHousing(saveAddress: boolean) {
-    if (!saveAddress) {
-      setAddress('');
-    }
-    setStep(3);
-  }
-
   function canGoNext() {
     if (step === 1) return hasCard !== '';
     if (step === 2) {
@@ -59,7 +53,6 @@ export default function QuizTravelPage() {
       if (hasHousing === 'Да') return address.trim() !== '';
       return false;
     }
-    if (step === 3) return city.trim() !== '';
     return false;
   }
 
@@ -77,7 +70,7 @@ export default function QuizTravelPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3].map((n) => (
+          {[1, 2].map((n) => (
             <div
               key={n}
               className={
@@ -178,7 +171,7 @@ export default function QuizTravelPage() {
             {/* Кнопки в зависимости от ответа */}
             {hasHousing === 'Нет' && (
               <button
-                onClick={() => setStep(3)}
+                onClick={() => finish(false)}
                 className="font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 bg-navy"
               >
                 ДАЛЕЕ
@@ -188,13 +181,13 @@ export default function QuizTravelPage() {
             {hasHousing === 'Да' && (
               <div className="w-full flex gap-3 mt-6">
                 <button
-                  onClick={() => goNextFromHousing(false)}
+                  onClick={() => finish(false)}
                   className="flex-1 font-serif text-navy text-base rounded-full px-6 py-3 border-2 border-navy"
                 >
                   Пропустить
                 </button>
                 <button
-                  onClick={() => goNextFromHousing(true)}
+                  onClick={() => finish(true)}
                   disabled={address.trim() === ''}
                   className={
                     'flex-1 font-serif text-cream text-base rounded-full px-6 py-3 ' +
@@ -207,33 +200,6 @@ export default function QuizTravelPage() {
                 </button>
               </div>
             )}
-          </>
-        )}
-
-        {/* ВОПРОС 3 — ГОРОД */}
-        {step === 3 && (
-          <>
-            <h1 className="font-serif text-navy text-3xl text-center mb-8">
-              Из какого ты города?
-            </h1>
-            <input
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Москва"
-              autoComplete="off"
-              className="w-full font-sans text-navy text-lg bg-cream border border-navy rounded-2xl px-5 py-4 outline-none"
-            />
-            <button
-              onClick={goNext}
-              disabled={!nextEnabled}
-              className={
-                'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
-                (nextEnabled ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
-              }
-            >
-              ДАЛЕЕ
-            </button>
           </>
         )}
 
