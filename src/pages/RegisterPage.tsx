@@ -93,7 +93,8 @@ export default function RegisterPage() {
     }
 
     if (step < 6) {
-      setStep(step + 1);
+      // город спрашиваем только у России (для консульского округа) — остальным шаг 5 пропускаем
+      setStep(step === 4 && country !== 'ru' ? 6 : step + 1);
       return;
     }
     setLoading(true);
@@ -118,8 +119,12 @@ export default function RegisterPage() {
       localStorage.setItem('cispr_age', age);
       // страна нужна, чтобы подобрать страновой датасет легализации (Foundation)
       localStorage.setItem('cispr_country', country);
-      // город нужен для автоопределения консульского округа (раздел Виза)
-      localStorage.setItem('cispr_city', city.trim());
+      // город нужен для автоопределения консульского округа (раздел Виза, только РФ)
+      if (country === 'ru' && city.trim()) {
+        localStorage.setItem('cispr_city', city.trim());
+      } else {
+        localStorage.removeItem('cispr_city');
+      }
       // возраст уходит в профиль на бэкенд
       try {
         await api.updateProfile({ age: parseInt(age) || null });
@@ -139,7 +144,7 @@ export default function RegisterPage() {
   function goBack() {
     setError('');
     if (step > 1) {
-      setStep(step - 1);
+      setStep(step === 6 && country !== 'ru' ? 4 : step - 1);
     } else {
       navigate('/');
     }
@@ -163,7 +168,7 @@ export default function RegisterPage() {
       <div className="flex items-center gap-3 px-6 mt-10">
         <button onClick={goBack} className="text-navy text-2xl">←</button>
         <div className="flex gap-2 flex-1">
-          {[1, 2, 3, 4, 5, 6].map((n) => (
+          {(country === 'ru' ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 6]).map((n) => (
             <div
               key={n}
               className={
