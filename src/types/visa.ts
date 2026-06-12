@@ -127,6 +127,13 @@ export interface VisaUaSeed {
     };
     links: Array<{ label: string; url: string }>;
   };
+  power_of_attorney_ru: {
+    title_ru: string;
+    why_ru: string;
+    how_ru: string[];
+    include_ru: string[];
+    warning_ru: string;
+  };
   tips_ru: string[];
 }
 

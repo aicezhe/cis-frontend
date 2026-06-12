@@ -243,6 +243,41 @@ export default function VisaUkrainePage() {
         )}
       </div>
 
+      {/* Доверенность перед отъездом */}
+      {visa.power_of_attorney_ru && (
+        <>
+          <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{visa.power_of_attorney_ru.title_ru}</p>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            <p className="font-serif text-navy/80 text-sm leading-relaxed mb-3">{visa.power_of_attorney_ru.why_ru}</p>
+
+            <p className="font-serif text-gold text-xs italic mb-2">Как сделать</p>
+            <div className="flex flex-col gap-1.5 mb-3">
+              {visa.power_of_attorney_ru.how_ru.map((h, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <span className="font-serif text-gold text-xs font-bold flex-shrink-0 mt-0.5 w-4">{i + 1}.</span>
+                  <p className="font-serif text-navy/75 text-sm leading-relaxed">{h}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="font-serif text-gold text-xs italic mb-2">Какие полномочия вписать</p>
+            <div className="flex flex-col gap-1.5 mb-3">
+              {visa.power_of_attorney_ru.include_ru.map((d, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                  <p className="font-serif text-navy/75 text-sm leading-relaxed">{d}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gold/10 border border-gold/60 rounded-xl px-3.5 py-2.5 flex gap-2">
+              <span className="text-gold flex-shrink-0 text-sm">⚠</span>
+              <p className="font-serif text-navy/80 text-xs leading-relaxed">{visa.power_of_attorney_ru.warning_ru}</p>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Советы */}
       <div className="mx-6 mt-6 bg-gold/10 border border-gold/40 rounded-2xl px-5 py-4">
         <p className="font-serif text-gold text-sm italic mb-3">Главное</p>
