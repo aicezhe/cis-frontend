@@ -26,6 +26,12 @@ import IseeDocumentsPage from './pages/IseeDocumentsPage';
 import VisaOverviewPage from './pages/VisaOverviewPage';
 import VisaStepsPage from './pages/VisaStepsPage';
 import VisaRejectionsPage from './pages/VisaRejectionsPage';
+import RelocationOverviewPage from './pages/RelocationOverviewPage';
+import TravelRoutesPage from './pages/TravelRoutesPage';
+import AfterArrivalPage from './pages/AfterArrivalPage';
+import CodiceFiscalePage from './pages/CodiceFiscalePage';
+import PermessoPage from './pages/PermessoPage';
+import LociRoutesView from './pages/LociRoutesView';
 
 export default function App() {
   return (
@@ -49,6 +55,12 @@ export default function App() {
       <Route path="/path/visa" element={<VisaOverviewPage />} />
       <Route path="/path/visa/steps" element={<VisaStepsPage />} />
       <Route path="/path/visa/rejections" element={<VisaRejectionsPage />} />
+      <Route path="/path/travel" element={<RelocationOverviewPage />} />
+      <Route path="/path/travel/routes" element={<TravelRoutesPage />} />
+      <Route path="/path/travel/after" element={<AfterArrivalPage />} />
+      <Route path="/path/travel/codice-fiscale" element={<CodiceFiscalePage />} />
+      <Route path="/path/travel/permesso" element={<PermessoPage />} />
+      <Route path="/loci/routes" element={<LociRoutesView />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
       <Route path="/map" element={<MapPage />} />

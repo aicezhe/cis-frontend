@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "description": "Типичные маршруты переезда для визуализации на LOCI (дуги-самолётики, линии автобусов и т.п.)"
+  },
+  "routes_by_country": {
+    "ru": [
+      {
+        "id": "ru_third_country",
+        "name_ru": "Через третьи страны (для переезда)",
+        "safe": true,
+        "requires_permit": false,
+        "legs": [
+          { "from": "Россия (твой город)", "to": "Стамбул / Белград / Ереван", "mode": "plane", "note_ru": "Прямой рейс в третью страну" },
+          { "from": "Третья страна", "to": "Болонья / Милан", "mode": "plane", "note_ru": "Прямой въезд в ЕС" },
+          { "from": "Аэропорт", "to": "Парма", "mode": "train", "note_ru": "Marconi Express + региональный поезд" }
+        ],
+        "cost_estimate_ru": "25 000–60 000 ₽ перелёты + ~22 € транспорт до Пармы"
+      },
+      {
+        "id": "ru_tallinn",
+        "name_ru": "Через Таллин → Милан (только с ВНЖ)",
+        "safe": false,
+        "requires_permit": true,
+        "warning_ru": "ТОЛЬКО для тех у кого уже есть ВНЖ",
+        "legs": [
+          { "from": "Россия", "to": "Таллин", "mode": "bus", "note_ru": "Автобус/машина до Эстонии" },
+          { "from": "Таллин", "to": "Милан", "mode": "plane" },
+          { "from": "Милан", "to": "Парма", "mode": "train" }
+        ]
+      },
+      {
+        "id": "ru_belarus_poland",
+        "name_ru": "Через Беларусь и Польшу (лучше с ВНЖ)",
+        "safe": false,
+        "requires_permit": true,
+        "warning_ru": "Лучше только с ВНЖ",
+        "legs": [
+          { "from": "Россия", "to": "Беларусь", "mode": "bus" },
+          { "from": "Беларусь", "to": "Польша", "mode": "bus" },
+          { "from": "Польша", "to": "Италия", "mode": "plane_or_bus" }
+        ]
+      }
+    ],
+    "ua": [
+      {
+        "id": "ua_placeholder",
+        "name_ru": "Маршрут из Украины",
+        "safe": true,
+        "requires_permit": false,
+        "note_ru": "Данные уточняются. Обычно через Польшу/Молдову наземным транспортом до ближайшего аэропорта ЕС, затем в Болонью/Милан.",
+        "legs": []
+      }
+    ],
+    "by": [
+      {
+        "id": "by_placeholder",
+        "name_ru": "Маршрут из Беларуси",
+        "safe": true,
+        "requires_permit": false,
+        "note_ru": "Данные уточняются. Обычно через Польшу/Литву.",
+        "legs": []
+      }
+    ],
+    "kz": [
+      {
+        "id": "kz_placeholder",
+        "name_ru": "Маршрут из Казахстана",
+        "safe": true,
+        "requires_permit": false,
+        "note_ru": "Данные уточняются. Прямые/стыковочные рейсы в Стамбул/Дубай → Болонья/Милан.",
+        "legs": []
+      }
+    ]
+  },
+  "transport_icons": {
+    "plane": "✈",
+    "train": "🚆",
+    "bus": "🚌",
+    "car": "🚗",
+    "plane_or_bus": "✈/🚌"
+  }
+}
