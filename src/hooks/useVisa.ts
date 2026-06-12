@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
-import type { VisaSeed } from '../types/visa';
+import type { VisaSeed, VisaUaSeed } from '../types/visa';
+
+// страны, у которых seed в формате VisaSeed (виза D по-русски)
+const D_VISA_COUNTRIES = ['ru'];
 
 const _cache: Record<string, VisaSeed | null> = {};
 
 export function useVisa() {
   const country = localStorage.getItem('cispr_country') || 'ru';
-  const [data, setData] = useState<VisaSeed | null>(_cache[country] ?? null);
-  const [loading, setLoading] = useState(!(country in _cache));
+  const supported = D_VISA_COUNTRIES.includes(country);
+  const [data, setData] = useState<VisaSeed | null>(supported ? _cache[country] ?? null : null);
+  const [loading, setLoading] = useState(supported && !(country in _cache));
 
   useEffect(() => {
-    if (country in _cache) return;
+    if (!supported || country in _cache) return;
     fetch(`/data/visa_${country}_seed.json`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -21,9 +25,31 @@ export function useVisa() {
         _cache[country] = null;
         setLoading(false);
       });
-  }, [country]);
+  }, [country, supported]);
 
   return { visa: data, loading, country };
+}
+
+// Украина: свой формат seed (безвиз + permesso / временная защита)
+let _uaCache: VisaUaSeed | null = null;
+
+export function useVisaUa() {
+  const [data, setData] = useState<VisaUaSeed | null>(_uaCache);
+  const [loading, setLoading] = useState(!_uaCache);
+
+  useEffect(() => {
+    if (_uaCache) return;
+    fetch('/data/visa_ua_seed.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        _uaCache = d;
+        setData(d);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  return { visa: data, loading };
 }
 
 // Определение консульского округа по городу/региону из cispr_city

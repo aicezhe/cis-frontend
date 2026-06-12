@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { useVisa, getConsularDistrict } from '../hooks/useVisa';
+import VisaUkrainePage from './VisaUkrainePage';
 
 function Corners() {
   return (
@@ -14,6 +15,13 @@ function Corners() {
 }
 
 export default function VisaOverviewPage() {
+  const country = localStorage.getItem('cispr_country') || 'ru';
+  // у Украины свой трек: безвиз + permesso / временная защита, без визы D
+  if (country === 'ua') return <VisaUkrainePage />;
+  return <VisaRuOverview />;
+}
+
+function VisaRuOverview() {
   const navigate = useNavigate();
   const { visa, loading } = useVisa();
 

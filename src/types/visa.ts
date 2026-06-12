@@ -69,6 +69,67 @@ export interface VisaDistrict {
   note_ru: string;
 }
 
+// ── Украина: безвиз + permesso / временная защита ────────────────────────────
+
+export interface VisaUaStep {
+  id: string;
+  title_ru: string;
+  description_ru: string;
+  link_to_section_ru?: string;
+  url?: string;
+}
+
+export interface VisaUaBorderCategory {
+  id: string;
+  label_ru: string;
+  status_ru: string;
+  level: 'ok' | 'warn' | 'hard';
+  details_ru: string[];
+  conclusion_ru?: string;
+}
+
+export interface VisaUaSeed {
+  meta: {
+    country_code: string;
+    country_name_ru: string;
+    source: string;
+    academic_year: string;
+    last_updated: string;
+    data_policy: string;
+  };
+  intro_ru: {
+    visa_free_ru: string;
+    two_paths_ru: string;
+    same_uni_part_ru: string;
+  };
+  study_path: {
+    title_ru: string;
+    description_ru: string;
+    steps: VisaUaStep[];
+  };
+  border_rules: {
+    title_ru: string;
+    intro_ru: string;
+    categories: VisaUaBorderCategory[];
+    disclaimer_ru: string;
+  };
+  temporary_protection: {
+    title_ru: string;
+    what_ru: string;
+    gives_ru: string[];
+    who_ru: string[];
+    first_step_ru: string;
+    how_to_apply_ru: {
+      where_ru: string;
+      documents_ru: string[];
+      process_ru: string[];
+      moving_note_ru: string;
+    };
+    links: Array<{ label: string; url: string }>;
+  };
+  tips_ru: string[];
+}
+
 export interface VisaSeed {
   meta: {
     country_code: string;
