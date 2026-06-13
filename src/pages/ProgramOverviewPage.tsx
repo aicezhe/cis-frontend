@@ -11,6 +11,39 @@ const TARGET_CFU: Record<string, number> = {
   ciclo_unico: 300,
 };
 
+// Ключевые термины в «Важно знать» подсвечиваем золотым,
+// чтобы взгляд цеплялся за смысл, а не за стену текста.
+const HIGHLIGHT_TERMS = [
+  'LIBERO ACCESSO',
+  'NUMERO CHIUSO',
+  'libero accesso',
+  'numero chiuso',
+  'Foundation Year',
+  'non-EU',
+  'OFA',
+  'TOLC',
+  'verifica',
+  'ciclo unico',
+  'diploma di laurea',
+  'laurea magistrale',
+  '12 ЛЕТ',
+  '12 лет',
+  '11 лет',
+];
+
+function renderHighlights(text: string) {
+  const escaped = HIGHLIGHT_TERMS.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  // длинные термины первыми, чтобы «LIBERO ACCESSO» не съел «LIBERO»
+  escaped.sort((a, b) => b.length - a.length);
+  const pattern = new RegExp(`(${escaped.join('|')})`, 'g');
+  const parts = text.split(pattern);
+  return parts.map((part, i) =>
+    HIGHLIGHT_TERMS.includes(part)
+      ? <span key={i} className="text-gold font-semibold">{part}</span>
+      : <span key={i}>{part}</span>
+  );
+}
+
 function Corners() {
   return (
     <>
@@ -259,14 +292,16 @@ export default function ProgramOverviewPage() {
 
       {/* Важные заметки */}
       {p.important_notes_ru.length > 0 && (
-        <div className="mx-6 mt-4 relative bg-navy rounded-2xl p-5">
+        <div className="mx-6 mt-4 relative bg-navy rounded-2xl px-5 py-5">
           <Corners />
-          <p className="font-serif text-gold text-xs italic uppercase tracking-widest mb-3 px-2">Важно знать</p>
-          <div className="flex flex-col gap-3 px-2">
+          <p className="font-serif text-gold text-[11px] italic uppercase tracking-[0.18em] mb-4 pl-1">Важно знать</p>
+          <div className="flex flex-col gap-4">
             {p.important_notes_ru.map((note, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <span className="text-gold mt-0.5 flex-shrink-0">◆</span>
-                <p className="font-serif text-cream text-sm leading-relaxed">{note}</p>
+              <div key={i} className="flex items-start gap-3">
+                <span className="text-gold text-[10px] mt-1.5 flex-shrink-0">◆</span>
+                <p className="font-sans text-cream/90 text-[13px] leading-[1.7]">
+                  {renderHighlights(note)}
+                </p>
               </div>
             ))}
           </div>
