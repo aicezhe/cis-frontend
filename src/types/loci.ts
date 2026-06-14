@@ -1,4 +1,6 @@
-export type LociCategoryId = 'all' | 'study' | 'housing' | 'docs' | 'shop' | 'life' | 'transport';
+export type LociCategoryId =
+  | 'all' | 'study' | 'housing' | 'docs' | 'health'
+  | 'shop' | 'chemist' | 'mall' | 'life' | 'transport';
 
 export interface LociCategory {
   id: LociCategoryId;
@@ -17,6 +19,11 @@ export interface LociPlace {
   tier?: 'cheap' | 'mid' | 'premium';
 }
 
+export interface LociTierInfo {
+  label_ru: string;
+  color: string;
+}
+
 export interface LociPlacesSeed {
   meta: {
     city: string;
@@ -26,5 +33,6 @@ export interface LociPlacesSeed {
     note: string;
   };
   categories: LociCategory[];
+  tier_legend?: Record<'cheap' | 'mid' | 'premium', LociTierInfo>;
   places: LociPlace[];
 }

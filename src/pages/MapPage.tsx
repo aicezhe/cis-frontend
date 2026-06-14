@@ -7,22 +7,26 @@ import TabBar from '../components/TabBar';
 import { useLociPlaces } from '../hooks/useLociPlaces';
 import type { LociCategoryId, LociPlace } from '../types/loci';
 
-// ── эмодзи-маркер, обёрнутый в каплю с золотой обводкой ──────────────────────
+// Цвет канта маркера: магазины — по ценовой категории, остальное — золото.
+function borderColorFor(place: LociPlace): string {
+  if (place.category === 'shop' && place.tier) {
+    if (place.tier === 'cheap') return '#3a6d40';
+    if (place.tier === 'premium') return '#a8332a';
+  }
+  if (place.category === 'health') return '#a8332a';
+  return '#c1a050';
+}
+
+// ── эмодзи-маркер, обёрнутый в каплю с цветной обводкой ──────────────────────
 // Стандартные пины leaflet ломаются с бандлером (битые относительные урлы
 // картинок), поэтому используем divIcon с инлайн-HTML.
-function makeIcon(emoji: string, tier?: LociPlace['tier']) {
-  const tierColor =
-    tier === 'cheap' ? '#3a6d40' :
-    tier === 'premium' ? '#a8332a' :
-    null;
-
-  // капля как в дизайне: navy фон, gold кант, эмодзи в центре
+function makeIcon(emoji: string, place: LociPlace) {
   return L.divIcon({
     html: `
       <div style="
         width: 34px; height: 34px;
         background: #1c2a48;
-        border: 2px solid ${tierColor ?? '#c1a050'};
+        border: 2px solid ${borderColorFor(place)};
         border-radius: 50% 50% 50% 0;
         transform: rotate(-45deg);
         box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -114,7 +118,7 @@ export default function MapPage() {
               <Marker
                 key={place.id}
                 position={[place.lat, place.lng]}
-                icon={makeIcon(emojiFor[place.category] || '•', place.tier)}
+                icon={makeIcon(emojiFor[place.category] || '•', place)}
               >
                 <Popup>
                   <div className="font-serif" style={{ minWidth: 200 }}>
@@ -152,8 +156,23 @@ export default function MapPage() {
         )}
       </div>
 
+      {/* Tier-легенда — показываем когда выбраны магазины или «Все» */}
+      {data?.tier_legend && (activeCat === 'all' || activeCat === 'shop') && (
+        <div className="px-6 mt-3 flex justify-center items-center gap-3 flex-wrap">
+          {(Object.entries(data.tier_legend) as Array<[string, { label_ru: string; color: string }]>).map(([k, v]) => (
+            <div key={k} className="flex items-center gap-1.5">
+              <span
+                className="inline-block w-3 h-3 rounded-full border-2"
+                style={{ borderColor: v.color, background: '#1c2a48' }}
+              />
+              <span className="font-serif text-navy/60 text-[11px]">{v.label_ru}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Подсказка */}
-      <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-3">
+      <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-2 mb-1">
         Карта © OpenStreetMap. Маршруты открываются в Google Maps.
       </p>
 

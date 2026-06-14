@@ -3,158 +3,211 @@
     "city": "Parma",
     "center_lat": 44.8015,
     "center_lng": 10.3279,
-    "default_zoom": 14,
-    "note": "Координаты POI — приблизительные, привязаны к названным адресам. Уточняй визуально на карте и поправляй здесь."
+    "default_zoom": 13,
+    "note": "POI собраны из OSM (Overpass) и проверенных пользователем Google Maps ссылок."
   },
   "categories": [
     { "id": "all", "label_ru": "Все", "emoji": "•" },
     { "id": "study", "label_ru": "Учёба", "emoji": "🎓" },
     { "id": "housing", "label_ru": "Жильё", "emoji": "🏠" },
     { "id": "docs", "label_ru": "Документы", "emoji": "📄" },
+    { "id": "health", "label_ru": "Здоровье", "emoji": "🏥" },
     { "id": "shop", "label_ru": "Магазины", "emoji": "🛒" },
+    { "id": "chemist", "label_ru": "Дрогерия", "emoji": "🧴" },
+    { "id": "mall", "label_ru": "Торговые центры", "emoji": "🛍" },
     { "id": "life", "label_ru": "Жизнь", "emoji": "🍽" },
     { "id": "transport", "label_ru": "Транспорт", "emoji": "🚆" }
   ],
+  "tier_legend": {
+    "cheap": { "label_ru": "эконом", "color": "#3a6d40" },
+    "mid": { "label_ru": "средний", "color": "#c1a050" },
+    "premium": { "label_ru": "выше среднего", "color": "#a8332a" }
+  },
   "places": [
     {
-      "id": "uni_main",
+      "id": "uni_sede_centrale",
       "name": "Università di Parma — Sede Centrale",
       "category": "study",
       "address": "Strada dell'Università 12",
-      "lat": 44.7998,
-      "lng": 10.3215,
-      "note_ru": "Главный кампус. Сюда за справками и в Segreteria."
+      "lat": 44.8007, "lng": 10.3254,
+      "note_ru": "Главный исторический корпус. Segreteria, ректорат."
     },
     {
-      "id": "uni_campus",
+      "id": "uni_campus_scienze",
       "name": "Campus Universitario (Scienze)",
       "category": "study",
       "address": "Parco Area delle Scienze",
-      "lat": 44.7657,
-      "lng": 10.3120,
-      "note_ru": "Кампус научных факультетов (Inžener, Scienze, Architettura)."
+      "lat": 44.7652, "lng": 10.3183,
+      "note_ru": "Кампус научных факультетов (Scienze, Ingegneria, Architettura, Farmacia)."
     },
+
     {
       "id": "ergo_dorm_grossardi",
       "name": "Casa dello Studente ER.GO — Grossardi",
       "category": "housing",
       "address": "Vicolo Grossardi 4",
-      "lat": 44.7958,
-      "lng": 10.3300,
+      "lat": 44.8034, "lng": 10.3195,
       "note_ru": "Бюджетное общежитие ER.GO. Заявка отдельно от стипендии."
     },
     {
       "id": "joivy_campus",
       "name": "Joivy Campus Parma",
       "category": "housing",
-      "address": "Via Emilia Est, Parma",
-      "lat": 44.7935,
-      "lng": 10.3705,
-      "note_ru": "Студенческое жильё, 550-800 €/мес. Англоговорящий персонал, рядом супермаркет."
+      "address": "Via Po 124",
+      "lat": 44.7901, "lng": 10.3186,
+      "note_ru": "Студенческое жильё, 550–800 €/мес. Англоговорящий персонал, проверь адрес перед заездом."
     },
+
     {
-      "id": "questura",
-      "name": "Questura di Parma",
+      "id": "questura_immigrazione",
+      "name": "Questura di Parma — Ufficio Immigrazione",
       "category": "docs",
-      "address": "Borgo della Posta 14",
-      "lat": 44.8023,
-      "lng": 10.3315,
+      "address": "Via Chiavari 15",
+      "lat": 44.7859, "lng": 10.3059,
       "note_ru": "Сюда по записи с ricevuta за permesso di soggiorno."
     },
     {
       "id": "agenzia_entrate",
       "name": "Agenzia delle Entrate — Parma",
       "category": "docs",
-      "address": "Via dei Mercati 19/A",
-      "lat": 44.7920,
-      "lng": 10.3190,
-      "note_ru": "Codice fiscale: форма AA4/8 + загранпаспорт. Бесплатно."
+      "address": "Strada Quarta 6/1c",
+      "lat": 44.7942, "lng": 10.3583,
+      "note_ru": "Codice fiscale (форма AA4/8). Здесь же меняешь резиденцию (после получения carta d'identità)."
     },
     {
-      "id": "poste_centrale",
-      "name": "Poste Italiane — Parma Centro",
+      "id": "comune_carta_identita",
+      "name": "Direzionale Uffici Comunali (Comune)",
       "category": "docs",
-      "address": "Via Pisacane 1",
-      "lat": 44.8009,
-      "lng": 10.3278,
-      "note_ru": "Здесь берёшь KIT для permesso и отправляешь конверт (120 €)."
+      "address": "Largo Torello de Strada 11/a",
+      "lat": 44.8078, "lng": 10.3331,
+      "note_ru": "Здесь делают carta d'identità — на ней потом строится первоначальная резиденция."
     },
     {
-      "id": "mercato_ghiaia",
-      "name": "Mercato della Ghiaia",
-      "category": "shop",
-      "address": "Piazzale della Ghiaia",
-      "lat": 44.8028,
-      "lng": 10.3250,
-      "tier": "cheap",
-      "note_ru": "Городской рынок. Дешёвые свежие продукты, особенно по утрам."
+      "id": "house_of_health_pintor",
+      "name": "House of Health Pintor",
+      "category": "docs",
+      "address": "Via Pintor Giaime 1",
+      "lat": 44.7961, "lng": 10.3187,
+      "note_ru": "Здесь оформляют tessera sanitaria (карта национальной системы здравоохранения)."
+    },
+
+    {
+      "id": "pronto_soccorso_ospedale",
+      "name": "Pronto Soccorso — Ospedale di Parma",
+      "category": "health",
+      "address": "Viale Antonio Gramsci 14",
+      "lat": 44.8022, "lng": 10.3096,
+      "note_ru": "Бесплатная неотложная помощь. Идёшь напрямую, без записи."
+    },
+
+    {
+      "id": "mall_la_galleria",
+      "name": "La Galleria",
+      "category": "mall",
+      "address": "Via Emilia Est 7B",
+      "lat": 44.7982, "lng": 10.3404,
+      "note_ru": "Торговый центр восточнее центра — одежда, электроника, фудкорт."
     },
     {
-      "id": "lidl_parma",
-      "name": "Lidl Parma",
-      "category": "shop",
-      "address": "Via Trento 33",
-      "lat": 44.8088,
-      "lng": 10.3358,
-      "tier": "cheap",
-      "note_ru": "Эконом-категория. Базовая еда, бытовая химия."
+      "id": "mall_euro_torri",
+      "name": "Euro Torri",
+      "category": "mall",
+      "address": "Via Rocco Bormioli 33/A",
+      "lat": 44.8202, "lng": 10.3375,
+      "note_ru": "Крупный торговый центр на северо-востоке."
     },
     {
-      "id": "eurospin_parma",
-      "name": "Eurospin Parma",
-      "category": "shop",
-      "address": "Via Emilia Ovest",
-      "lat": 44.8090,
-      "lng": 10.3000,
-      "tier": "cheap",
-      "note_ru": "Самый дешёвый итальянский дискаунтер."
+      "id": "helen_store",
+      "name": "Helen Store",
+      "category": "mall",
+      "address": "Strada Massimo D'Azeglio 26/A",
+      "lat": 44.8029, "lng": 10.3205,
+      "note_ru": "Китайский магазин — найти можно всякую всячину: посуду, мелочёвку, бытовое."
     },
-    {
-      "id": "conad_centro",
-      "name": "Conad City Parma Centro",
-      "category": "shop",
-      "address": "Via Mazzini 12",
-      "lat": 44.8013,
-      "lng": 10.3286,
-      "tier": "mid",
-      "note_ru": "Средний ценник, удобно в центре."
-    },
-    {
-      "id": "esselunga_parma",
-      "name": "Esselunga Parma",
-      "category": "shop",
-      "address": "Via Traversetolo 65",
-      "lat": 44.7872,
-      "lng": 10.3580,
-      "tier": "premium",
-      "note_ru": "Дороже среднего, но качество и выбор лучше всего."
-    },
+
+    { "id": "shop_lidl_lepido", "name": "Lidl — Via Emilio Lepido", "category": "shop", "address": "Via Emilio Lepido 48A", "lat": 44.7892, "lng": 10.3693, "tier": "cheap" },
+    { "id": "shop_lidl_la_spezia", "name": "Lidl — Via La Spezia", "category": "shop", "address": "Via La Spezia 187", "lat": 44.7843, "lng": 10.2918, "tier": "cheap" },
+    { "id": "shop_lidl_venezia", "name": "Lidl — Via Venezia", "category": "shop", "address": "Via Venezia 38a", "lat": 44.8133, "lng": 10.3382, "tier": "cheap" },
+    { "id": "shop_lidl_4", "name": "Lidl — северо-восток", "category": "shop", "address": "Parma", "lat": 44.8081, "lng": 10.2841, "tier": "cheap" },
+    { "id": "shop_lidl_5", "name": "Lidl — центр-запад", "category": "shop", "address": "Parma", "lat": 44.8053, "lng": 10.3054, "tier": "cheap" },
+
+    { "id": "shop_eurospin_langhirano", "name": "Eurospin — Strada Langhirano", "category": "shop", "address": "Strada Langhirano 150", "lat": 44.7724, "lng": 10.3244, "tier": "cheap" },
+    { "id": "shop_eurospin_2", "name": "Eurospin — юго-запад", "category": "shop", "address": "Parma", "lat": 44.7873, "lng": 10.3014, "tier": "cheap" },
+
+    { "id": "shop_aldi_cicerone", "name": "ALDI — Via Cicerone", "category": "shop", "address": "Via Marco Tullio Cicerone 3a", "lat": 44.7908, "lng": 10.3651, "tier": "cheap" },
+    { "id": "shop_aldi_2", "name": "ALDI — север", "category": "shop", "address": "Parma", "lat": 44.8282, "lng": 10.3391, "tier": "cheap" },
+
+    { "id": "shop_md_bach", "name": "MD — Via J. S. Bach", "category": "shop", "address": "Via Johann Sebastian Bach", "lat": 44.7816, "lng": 10.3559, "tier": "cheap" },
+    { "id": "shop_penny", "name": "PENNY Market", "category": "shop", "address": "Parma", "lat": 44.8124, "lng": 10.3380, "tier": "cheap" },
+
+    { "id": "shop_ins_1", "name": "In's Mercato — север", "category": "shop", "address": "Parma", "lat": 44.8057, "lng": 10.3378, "tier": "cheap" },
+    { "id": "shop_ins_2", "name": "In's Mercato — юг", "category": "shop", "address": "Parma", "lat": 44.7774, "lng": 10.3317, "tier": "cheap" },
+    { "id": "shop_ins_3", "name": "In's Mercato — Strada dei Mercati", "category": "shop", "address": "Strada dei Mercati 8", "lat": 44.8142, "lng": 10.3128, "tier": "cheap" },
+
+    { "id": "shop_conad_ghiaia", "name": "Conad — Piazza Ghiaia", "category": "shop", "address": "Piazza Ghiaia", "lat": 44.8035, "lng": 10.3250, "tier": "mid", "note_ru": "Прямо у городского рынка." },
+    { "id": "shop_conad_city_22_luglio", "name": "Conad City — 22 Luglio", "category": "shop", "address": "Strada Ventidue Luglio 27/c", "lat": 44.7983, "lng": 10.3312, "tier": "mid" },
+    { "id": "shop_conad_city_riccio", "name": "Conad City — Borgo Riccio", "category": "shop", "address": "Borgo Riccio da Parma 52/b", "lat": 44.7980, "lng": 10.3310, "tier": "mid" },
+    { "id": "shop_conad_city_visconti", "name": "Conad City — Largo Visconti", "category": "shop", "address": "Largo Luchino Visconti 1a", "lat": 44.7970, "lng": 10.3019, "tier": "mid" },
+    { "id": "shop_conad_giovenale", "name": "Conad — Via Giovenale", "category": "shop", "address": "Via Giovenale 2 A", "lat": 44.7891, "lng": 10.3669, "tier": "mid" },
+    { "id": "shop_conad_parri", "name": "Conad — Largo Parri", "category": "shop", "address": "Largo Ferruccio Parri 37 E", "lat": 44.7858, "lng": 10.3524, "tier": "mid" },
+    { "id": "shop_conad_schreiber", "name": "Conad — Via Schreiber", "category": "shop", "address": "Via Bruno Schreiber 15e", "lat": 44.7669, "lng": 10.3189, "tier": "mid" },
+    { "id": "shop_conad_parigi", "name": "Conad — Via Parigi", "category": "shop", "address": "Via Parigi 25a", "lat": 44.7983, "lng": 10.3554, "tier": "mid" },
+    { "id": "shop_conad_roveda", "name": "Conad — Largo Roveda", "category": "shop", "address": "Largo Giovanni Roveda 5a", "lat": 44.8133, "lng": 10.2726, "tier": "mid" },
+
+    { "id": "shop_pam", "name": "Pam", "category": "shop", "address": "Parma", "lat": 44.7950, "lng": 10.3034, "tier": "mid" },
+    { "id": "shop_carrefour_alessandro", "name": "Carrefour Express — Vicolo Sant'Alessandro", "category": "shop", "address": "Vicolo Sant'Alessandro 6/a", "lat": 44.8026, "lng": 10.3270, "tier": "mid", "note_ru": "Самый центр — удобно в первые дни." },
+    { "id": "shop_unes_bocchi", "name": "Unes — Largo Bocchi", "category": "shop", "address": "Largo Fausto Bocchi 9a", "lat": 44.7994, "lng": 10.3415, "tier": "mid" },
+    { "id": "shop_coop", "name": "Coop", "category": "shop", "address": "Parma", "lat": 44.8054, "lng": 10.3064, "tier": "mid" },
+    { "id": "shop_sigma", "name": "Sigma", "category": "shop", "address": "Parma", "lat": 44.8056, "lng": 10.3112, "tier": "mid" },
+    { "id": "shop_famila", "name": "Famila", "category": "shop", "address": "Parma", "lat": 44.7637, "lng": 10.3229, "tier": "mid" },
+    { "id": "shop_crai", "name": "Crai", "category": "shop", "address": "Parma", "lat": 44.8549, "lng": 10.3083, "tier": "mid" },
+
+    { "id": "shop_esselunga_pertini", "name": "Esselunga — Via Pertini", "category": "shop", "address": "Via Sandro Pertini 14a", "lat": 44.7824, "lng": 10.3455, "tier": "premium" },
+    { "id": "shop_esselunga_colajanni", "name": "Esselunga — Via Colajanni", "category": "shop", "address": "Via Napoleone Colajanni", "lat": 44.8105, "lng": 10.2927, "tier": "premium" },
+    { "id": "shop_esselunga_verdi", "name": "Esselunga — Via Verdi", "category": "shop", "address": "Via Giuseppe Verdi 5", "lat": 44.8066, "lng": 10.3280, "tier": "premium" },
+    { "id": "shop_esselunga_emilia_est", "name": "Esselunga — Via Emilia Est", "category": "shop", "address": "Via Emilia Est 230/A", "lat": 44.7937, "lng": 10.3575, "tier": "premium" },
+    { "id": "shop_ipercoop_1", "name": "Ipercoop — север", "category": "shop", "address": "Parma", "lat": 44.8230, "lng": 10.3383, "tier": "premium" },
+    { "id": "shop_ipercoop_2", "name": "Ipercoop — юг", "category": "shop", "address": "Parma", "lat": 44.7774, "lng": 10.3431, "tier": "premium" },
+    { "id": "shop_naturasi", "name": "NaturaSì (bio)", "category": "shop", "address": "Parma", "lat": 44.7936, "lng": 10.3551, "tier": "premium", "note_ru": "Биомагазин — органические продукты, дорого." },
+
+    { "id": "chem_tigota_montanara", "name": "Tigotà — Strada Montanara", "category": "chemist", "address": "Strada Montanara", "lat": 44.7807, "lng": 10.3210, "note_ru": "Дрогерия — бытовая химия, косметика, недорого." },
+    { "id": "chem_tigota_garibaldi", "name": "Tigotà — Strada Garibaldi", "category": "chemist", "address": "Strada Giuseppe Garibaldi 65/a", "lat": 44.8070, "lng": 10.3294 },
+    { "id": "chem_tigota_fleming", "name": "Tigotà — Via Fleming", "category": "chemist", "address": "Via Alessandro Fleming", "lat": 44.8057, "lng": 10.3051 },
+    { "id": "chem_tigota_dazeglio", "name": "Tigotà — Strada D'Azeglio", "category": "chemist", "address": "Strada Massimo D'Azeglio 43/b", "lat": 44.8032, "lng": 10.3197 },
+    { "id": "chem_tigota_emilia_est", "name": "Tigotà — Via Emilia Est", "category": "chemist", "address": "Via Emilia Est", "lat": 44.7954, "lng": 10.3504 },
+    { "id": "chem_tigota_platone", "name": "Tigotà — Via Platone", "category": "chemist", "address": "Via Platone", "lat": 44.7869, "lng": 10.3596 },
+
     {
       "id": "parma_centrale",
       "name": "Stazione Parma Centrale",
       "category": "transport",
       "address": "Piazzale Carlo Alberto Dalla Chiesa",
-      "lat": 44.8125,
-      "lng": 10.3287,
-      "note_ru": "Главный вокзал — отсюда поезда в Болонью/Милан/Рим."
-    },
-    {
-      "id": "cinema_astra",
-      "name": "Cinema Astra",
-      "category": "life",
-      "address": "Piazzale Volta 3",
-      "lat": 44.8020,
-      "lng": 10.3225,
-      "note_ru": "Студенческий кинотеатр."
+      "lat": 44.8127, "lng": 10.3289,
+      "note_ru": "Главный вокзал — поезда в Болонью/Милан/Рим."
     },
     {
       "id": "piazza_garibaldi",
       "name": "Piazza Garibaldi",
       "category": "life",
       "address": "Piazza Garibaldi",
-      "lat": 44.8015,
-      "lng": 10.3279,
-      "note_ru": "Главная площадь — точка отсчёта центра."
+      "lat": 44.8015, "lng": 10.3279,
+      "note_ru": "Главная площадь Пармы — точка отсчёта центра."
+    },
+    {
+      "id": "mercato_ghiaia",
+      "name": "Mercato della Ghiaia",
+      "category": "life",
+      "address": "Piazzale della Ghiaia",
+      "lat": 44.8035, "lng": 10.3250,
+      "note_ru": "Городской рынок. Свежие продукты, недорого, особенно по утрам."
+    },
+    {
+      "id": "cinema_astra",
+      "name": "Cinema Astra",
+      "category": "life",
+      "address": "Piazzale Volta 3",
+      "lat": 44.7916, "lng": 10.3256,
+      "note_ru": "Студенческий кинотеатр."
     }
   ]
 }
