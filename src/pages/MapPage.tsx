@@ -1,27 +1,67 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+
 import TabBar from '../components/TabBar';
+import { useLociPlaces } from '../hooks/useLociPlaces';
+import type { LociCategoryId, LociPlace } from '../types/loci';
 
-const categories = ['Все', 'Учёба', 'Жильё', 'Документы', 'Жизнь'];
+// ── эмодзи-маркер, обёрнутый в каплю с золотой обводкой ──────────────────────
+// Стандартные пины leaflet ломаются с бандлером (битые относительные урлы
+// картинок), поэтому используем divIcon с инлайн-HTML.
+function makeIcon(emoji: string, tier?: LociPlace['tier']) {
+  const tierColor =
+    tier === 'cheap' ? '#3a6d40' :
+    tier === 'premium' ? '#a8332a' :
+    null;
 
-// моковые места с координатами в процентах от карты
-const places = [
-  { id: 1, name: 'Università di Parma', category: 'Учёба', address: "Strada dell'Università 12", note: 'Главный кампус. Сюда за справками и в Segreteria.', x: 48, y: 34, type: 'navy' },
-  { id: 2, name: 'Общежитие ER.GO', category: 'Жильё', address: 'Vicolo Grossardi 4', note: 'Бюджетный вариант жилья для студентов.', x: 24, y: 52, type: 'gold' },
-  { id: 3, name: 'Questura di Parma', category: 'Документы', address: 'Borgo della Posta 14', note: 'Сюда за permesso di soggiorno.', x: 70, y: 58, type: 'navy' },
-  { id: 4, name: 'Mercato della Ghiaia', category: 'Жизнь', address: 'Piazzale della Ghiaia', note: 'Городской рынок, дешёвые продукты.', x: 60, y: 24, type: 'gold' },
-  { id: 5, name: 'Cinema Astra', category: 'Жизнь', address: 'Piazzale Volta 3', note: 'Студенческий кинотеатр.', x: 34, y: 72, type: 'navy' },
-];
+  // капля как в дизайне: navy фон, gold кант, эмодзи в центре
+  return L.divIcon({
+    html: `
+      <div style="
+        width: 34px; height: 34px;
+        background: #1c2a48;
+        border: 2px solid ${tierColor ?? '#c1a050'};
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        display: flex; align-items: center; justify-content: center;
+      ">
+        <span style="transform: rotate(45deg); font-size: 16px; line-height: 1;">
+          ${emoji}
+        </span>
+      </div>
+    `,
+    className: 'loci-marker',
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -30],
+  });
+}
+
+function googleMapsRoute(to: LociPlace) {
+  const origin = encodeURIComponent('Parma Centrale, Parma, Italy');
+  const dest = encodeURIComponent(`${to.address}, Parma, Italy`);
+  return `https://www.google.com/maps/dir/${origin}/${dest}`;
+}
 
 export default function MapPage() {
-  const [activeCategory, setActiveCategory] = useState('Все');
-  const [selectedId, setSelectedId] = useState(1);
+  const { data, loading } = useLociPlaces();
+  const [activeCat, setActiveCat] = useState<LociCategoryId>('all');
 
-  // фильтр по категории
-  const filtered = activeCategory === 'Все'
-    ? places
-    : places.filter(p => p.category === activeCategory);
+  const categories = data?.categories ?? [];
+  const filtered = useMemo<LociPlace[]>(() => {
+    if (!data) return [];
+    return activeCat === 'all' ? data.places : data.places.filter((p) => p.category === activeCat);
+  }, [data, activeCat]);
 
-  const selected = places.find(p => p.id === selectedId);
+  // эмодзи категории по id — для маркеров
+  const emojiFor = useMemo(() => {
+    const m: Record<string, string> = {};
+    categories.forEach((c) => { m[c.id] = c.emoji; });
+    return m;
+  }, [categories]);
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-24">
@@ -38,100 +78,84 @@ export default function MapPage() {
       <div className="flex gap-2 px-6 pb-3 overflow-x-auto no-scrollbar">
         {categories.map((cat) => (
           <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
+            key={cat.id}
+            onClick={() => setActiveCat(cat.id)}
             className={
               'font-serif text-sm px-4 py-2 rounded-full border whitespace-nowrap flex-shrink-0 ' +
-              (activeCategory === cat
+              (activeCat === cat.id
                 ? 'bg-navy text-gold border-navy'
                 : 'bg-soft-cream text-navy border-navy/20')
             }
           >
-            {cat}
+            {cat.emoji} {cat.label_ru}
           </button>
         ))}
       </div>
 
       {/* Карта */}
-      <div className="mx-4 mt-2 flex-1 relative rounded-3xl border border-navy/20 bg-soft-cream overflow-hidden">
-
-        {/* схематичные улицы и река */}
-        <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-          <g stroke="rgba(28,42,72,0.10)" strokeWidth="6" fill="none">
-            <line x1="0" y1="120" x2="400" y2="90" />
-            <line x1="0" y1="260" x2="400" y2="300" />
-            <line x1="0" y1="420" x2="400" y2="380" />
-            <line x1="90" y1="0" x2="120" y2="600" />
-            <line x1="240" y1="0" x2="210" y2="600" />
-          </g>
-          <path
-            d="M -20 40 Q 120 180 180 280 Q 240 380 200 600"
-            stroke="rgba(28,42,72,0.10)"
-            strokeWidth="14"
-            fill="none"
-          />
-        </svg>
-
-        {/* метки */}
-        {filtered.map((place) => {
-          const isSelected = place.id === selectedId;
-          return (
-            <button
-              key={place.id}
-              onClick={() => setSelectedId(place.id)}
-              className="absolute"
-              style={{
-                left: `${place.x}%`,
-                top: `${place.y}%`,
-                transform: 'translate(-50%, -100%)',
-              }}
-            >
-              <div
-                className={
-                  'rounded-tl-full rounded-tr-full rounded-bl-full flex items-center justify-center shadow-lg ' +
-                  (isSelected ? 'w-11 h-11' : 'w-8 h-8') + ' ' +
-                  (place.type === 'navy' ? 'bg-navy' : 'bg-gold') + ' ' +
-                  (isSelected ? 'ring-4 ring-gold/40' : '')
-                }
-                style={{ transform: 'rotate(-45deg)' }}
-              >
-                <span
-                  className="text-cream text-xs"
-                  style={{ transform: 'rotate(45deg)' }}
-                >
-                  {place.category === 'Учёба' && '🎓'}
-                  {place.category === 'Жильё' && '🏠'}
-                  {place.category === 'Документы' && '📄'}
-                  {place.category === 'Жизнь' && '🍽'}
-                </span>
-              </div>
-            </button>
-          );
-        })}
-
-        {/* Карточка выбранного места */}
-        {selected && (
-          <div className="absolute left-3 right-3 bottom-3 bg-soft-cream border border-navy/20 rounded-2xl p-4 shadow-xl">
-            <span className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-gold" />
-            <span className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-gold" />
-            <span className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-gold" />
-            <span className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-gold" />
-
-            <span className="inline-block font-serif text-gold text-xs border border-gold rounded-full px-2 py-0.5 mb-2">
-              {selected.category}
-            </span>
-            <h3 className="font-serif text-navy text-lg font-bold">{selected.name}</h3>
-            <p className="font-serif text-navy/60 text-xs mt-0.5">{selected.address}</p>
-
-            <div className="flex justify-between items-end mt-3 gap-3">
-              <p className="font-serif text-navy/70 text-xs italic flex-1">{selected.note}</p>
-              <span className="font-serif text-navy text-sm font-bold whitespace-nowrap">
-                Маршрут →
-              </span>
-            </div>
+      <div className="mx-4 mt-2 flex-1 relative rounded-3xl border border-navy/20 overflow-hidden min-h-[60vh]">
+        {loading || !data ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-soft-cream">
+            <p className="font-serif text-navy/60 italic">Загрузка карты…</p>
           </div>
+        ) : (
+          <MapContainer
+            center={[data.meta.center_lat, data.meta.center_lng]}
+            zoom={data.meta.default_zoom}
+            scrollWheelZoom={true}
+            style={{ height: '100%', width: '100%' }}
+          >
+            <TileLayer
+              attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={19}
+            />
+            {filtered.map((place) => (
+              <Marker
+                key={place.id}
+                position={[place.lat, place.lng]}
+                icon={makeIcon(emojiFor[place.category] || '•', place.tier)}
+              >
+                <Popup>
+                  <div className="font-serif" style={{ minWidth: 200 }}>
+                    <p className="text-navy text-base font-bold leading-snug">{place.name}</p>
+                    <p className="text-navy/60 text-xs mt-1">{place.address}</p>
+                    {place.note_ru && (
+                      <p className="text-navy/75 text-xs italic mt-2 leading-relaxed">{place.note_ru}</p>
+                    )}
+                    {place.tier && (
+                      <p className="text-[10px] uppercase tracking-widest mt-2"
+                        style={{
+                          color:
+                            place.tier === 'cheap' ? '#3a6d40' :
+                            place.tier === 'premium' ? '#a8332a' :
+                            '#7a6a3a',
+                        }}
+                      >
+                        {place.tier === 'cheap' ? 'эконом' : place.tier === 'premium' ? 'выше среднего' : 'средний'}
+                      </p>
+                    )}
+                    <a
+                      href={googleMapsRoute(place)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block mt-3 text-center bg-navy text-cream text-xs rounded-full px-3 py-2 no-underline"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Маршрут от Parma Centrale →
+                    </a>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
         )}
       </div>
+
+      {/* Подсказка */}
+      <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-3">
+        Карта © OpenStreetMap. Маршруты открываются в Google Maps.
+      </p>
 
       <TabBar active="loci" />
 

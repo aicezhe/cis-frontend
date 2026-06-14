@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "city": "Parma",
+    "center_lat": 44.8015,
+    "center_lng": 10.3279,
+    "default_zoom": 14,
+    "note": "Координаты POI — приблизительные, привязаны к названным адресам. Уточняй визуально на карте и поправляй здесь."
+  },
+  "categories": [
+    { "id": "all", "label_ru": "Все", "emoji": "•" },
+    { "id": "study", "label_ru": "Учёба", "emoji": "🎓" },
+    { "id": "housing", "label_ru": "Жильё", "emoji": "🏠" },
+    { "id": "docs", "label_ru": "Документы", "emoji": "📄" },
+    { "id": "shop", "label_ru": "Магазины", "emoji": "🛒" },
+    { "id": "life", "label_ru": "Жизнь", "emoji": "🍽" },
+    { "id": "transport", "label_ru": "Транспорт", "emoji": "🚆" }
+  ],
+  "places": [
+    {
+      "id": "uni_main",
+      "name": "Università di Parma — Sede Centrale",
+      "category": "study",
+      "address": "Strada dell'Università 12",
+      "lat": 44.7998,
+      "lng": 10.3215,
+      "note_ru": "Главный кампус. Сюда за справками и в Segreteria."
+    },
+    {
+      "id": "uni_campus",
+      "name": "Campus Universitario (Scienze)",
+      "category": "study",
+      "address": "Parco Area delle Scienze",
+      "lat": 44.7657,
+      "lng": 10.3120,
+      "note_ru": "Кампус научных факультетов (Inžener, Scienze, Architettura)."
+    },
+    {
+      "id": "ergo_dorm_grossardi",
+      "name": "Casa dello Studente ER.GO — Grossardi",
+      "category": "housing",
+      "address": "Vicolo Grossardi 4",
+      "lat": 44.7958,
+      "lng": 10.3300,
+      "note_ru": "Бюджетное общежитие ER.GO. Заявка отдельно от стипендии."
+    },
+    {
+      "id": "joivy_campus",
+      "name": "Joivy Campus Parma",
+      "category": "housing",
+      "address": "Via Emilia Est, Parma",
+      "lat": 44.7935,
+      "lng": 10.3705,
+      "note_ru": "Студенческое жильё, 550-800 €/мес. Англоговорящий персонал, рядом супермаркет."
+    },
+    {
+      "id": "questura",
+      "name": "Questura di Parma",
+      "category": "docs",
+      "address": "Borgo della Posta 14",
+      "lat": 44.8023,
+      "lng": 10.3315,
+      "note_ru": "Сюда по записи с ricevuta за permesso di soggiorno."
+    },
+    {
+      "id": "agenzia_entrate",
+      "name": "Agenzia delle Entrate — Parma",
+      "category": "docs",
+      "address": "Via dei Mercati 19/A",
+      "lat": 44.7920,
+      "lng": 10.3190,
+      "note_ru": "Codice fiscale: форма AA4/8 + загранпаспорт. Бесплатно."
+    },
+    {
+      "id": "poste_centrale",
+      "name": "Poste Italiane — Parma Centro",
+      "category": "docs",
+      "address": "Via Pisacane 1",
+      "lat": 44.8009,
+      "lng": 10.3278,
+      "note_ru": "Здесь берёшь KIT для permesso и отправляешь конверт (120 €)."
+    },
+    {
+      "id": "mercato_ghiaia",
+      "name": "Mercato della Ghiaia",
+      "category": "shop",
+      "address": "Piazzale della Ghiaia",
+      "lat": 44.8028,
+      "lng": 10.3250,
+      "tier": "cheap",
+      "note_ru": "Городской рынок. Дешёвые свежие продукты, особенно по утрам."
+    },
+    {
+      "id": "lidl_parma",
+      "name": "Lidl Parma",
+      "category": "shop",
+      "address": "Via Trento 33",
+      "lat": 44.8088,
+      "lng": 10.3358,
+      "tier": "cheap",
+      "note_ru": "Эконом-категория. Базовая еда, бытовая химия."
+    },
+    {
+      "id": "eurospin_parma",
+      "name": "Eurospin Parma",
+      "category": "shop",
+      "address": "Via Emilia Ovest",
+      "lat": 44.8090,
+      "lng": 10.3000,
+      "tier": "cheap",
+      "note_ru": "Самый дешёвый итальянский дискаунтер."
+    },
+    {
+      "id": "conad_centro",
+      "name": "Conad City Parma Centro",
+      "category": "shop",
+      "address": "Via Mazzini 12",
+      "lat": 44.8013,
+      "lng": 10.3286,
+      "tier": "mid",
+      "note_ru": "Средний ценник, удобно в центре."
+    },
+    {
+      "id": "esselunga_parma",
+      "name": "Esselunga Parma",
+      "category": "shop",
+      "address": "Via Traversetolo 65",
+      "lat": 44.7872,
+      "lng": 10.3580,
+      "tier": "premium",
+      "note_ru": "Дороже среднего, но качество и выбор лучше всего."
+    },
+    {
+      "id": "parma_centrale",
+      "name": "Stazione Parma Centrale",
+      "category": "transport",
+      "address": "Piazzale Carlo Alberto Dalla Chiesa",
+      "lat": 44.8125,
+      "lng": 10.3287,
+      "note_ru": "Главный вокзал — отсюда поезда в Болонью/Милан/Рим."
+    },
+    {
+      "id": "cinema_astra",
+      "name": "Cinema Astra",
+      "category": "life",
+      "address": "Piazzale Volta 3",
+      "lat": 44.8020,
+      "lng": 10.3225,
+      "note_ru": "Студенческий кинотеатр."
+    },
+    {
+      "id": "piazza_garibaldi",
+      "name": "Piazza Garibaldi",
+      "category": "life",
+      "address": "Piazza Garibaldi",
+      "lat": 44.8015,
+      "lng": 10.3279,
+      "note_ru": "Главная площадь — точка отсчёта центра."
+    }
+  ]
+}
