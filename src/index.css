@@ -14,3 +14,19 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Leaflet: Tailwind preflight ставит img { max-width:100% } и убивает тайлы.
+   Лечим переопределением внутри контейнера. */
+.leaflet-container img,
+.leaflet-container img.leaflet-tile,
+.leaflet-container .leaflet-marker-icon,
+.leaflet-container .leaflet-marker-shadow {
+  max-width: none !important;
+  max-height: none !important;
+  height: auto;
+}
+/* Эмодзи-маркер на divIcon — без фона */
+.loci-marker {
+  background: transparent !important;
+  border: none !important;
+}

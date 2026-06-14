@@ -96,10 +96,13 @@ export default function MapPage() {
         ))}
       </div>
 
-      {/* Карта */}
-      <div className="mx-4 mt-2 flex-1 relative rounded-3xl border border-navy/20 overflow-hidden min-h-[60vh]">
+      {/* Карта — высота фиксирована, иначе Leaflet не понимает размер контейнера */}
+      <div
+        className="mx-4 mt-2 relative rounded-3xl border border-navy/20 overflow-hidden bg-soft-cream"
+        style={{ height: 'calc(100vh - 260px)', minHeight: 420 }}
+      >
         {loading || !data ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-soft-cream">
+          <div className="absolute inset-0 flex items-center justify-center">
             <p className="font-serif text-navy/60 italic">Загрузка карты…</p>
           </div>
         ) : (
