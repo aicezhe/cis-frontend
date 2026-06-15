@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 
 import TabBar from '../components/TabBar';
 import { useLociPlaces } from '../hooks/useLociPlaces';
+import { openRouteFromCurrentLocation } from '../utils/openInMaps';
 import type { LociCategoryId, LociPlace } from '../types/loci';
 
 // Цвет канта маркера: магазины — по ценовой категории, остальное — золото.
@@ -142,15 +143,24 @@ export default function MapPage() {
                         {place.tier === 'cheap' ? 'эконом' : place.tier === 'premium' ? 'выше среднего' : 'средний'}
                       </p>
                     )}
-                    <a
-                      href={googleMapsRoute(place)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block mt-3 text-center bg-navy text-cream text-xs rounded-full px-3 py-2 no-underline"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      Маршрут от Parma Centrale →
-                    </a>
+                    <div className="flex flex-col gap-1.5 mt-3">
+                      <button
+                        onClick={() => openRouteFromCurrentLocation(place.lat, place.lng, place.name, 'walking')}
+                        className="bg-navy text-cream text-xs rounded-full px-3 py-2 cursor-pointer"
+                        style={{ border: 'none' }}
+                      >
+                        Маршрут от моей локации →
+                      </button>
+                      <a
+                        href={googleMapsRoute(place)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block text-center border text-xs rounded-full px-3 py-2 no-underline"
+                        style={{ textDecoration: 'none', borderColor: '#1c2a48', color: '#1c2a48' }}
+                      >
+                        От Parma Centrale
+                      </a>
+                    </div>
                   </div>
                 </Popup>
               </Marker>

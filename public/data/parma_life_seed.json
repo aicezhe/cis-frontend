@@ -1,0 +1,280 @@
+{
+  "meta": {
+    "source": "comune.parma.it, sielteid.it, unipr.it, foundationyear.unipr.it, tep.pr.it, esn.org",
+    "last_updated": "2026-06",
+    "data_policy": "Данные проверены на 2026. Цены, сроки и адреса меняются — везде пометка проверять на офиц. сайте."
+  },
+
+  "intro_ru": {
+    "what_ru": "Этот раздел — про жизнь в Парме после переезда: документы для интеграции, здоровье, работа, учёба дальше, досуг.",
+    "order_ru": "Логичный порядок первых месяцев: residenza → tessera sanitaria → carta d'identità (CIE) → SPID → банк → работа."
+  },
+
+  "subsections": [
+    {
+      "id": "cie",
+      "icon": "🪪",
+      "title_ru": "Carta d'identità (CIE)",
+      "subtitle_ru": "Электронное удостоверение личности",
+      "foundation_only": false,
+      "what_ru": "Электронное удостоверение личности (Carta d'Identità Elettronica). Нужна для доступа к госуслугам, бесплатного SPID, как ID внутри Италии.",
+      "why_ru": [
+        "Удостоверение личности внутри Италии (вместо ношения паспорта)",
+        "Бесплатный доступ к SPID (цифровая личность для всех госуслуг)",
+        "Замена SPID для доступа к госуслугам напрямую (через NFC-чип)",
+        "Нужна для многих бюрократических процедур"
+      ],
+      "important_for_foreigners_ru": [
+        "CIE для иностранца НЕ действительна для выезда (espatrio) — это только удостоверение личности внутри Италии",
+        "Срок действия привязан к сроку permesso di soggiorno (обычно совпадает, не дольше)"
+      ],
+      "documents_ru": [
+        "Действующий паспорт",
+        "Permesso di soggiorno (или ricevuta продления, если в процессе обновления)",
+        "Codice fiscale / tessera sanitaria",
+        "1 фототессера (недавняя, белый фон, без головных уборов)",
+        "Старая carta d'identità (если есть и истекает); при утере/краже — denuncia из Polizia/Carabinieri"
+      ],
+      "cost_eur": 22,
+      "procedure_ru": [
+        "Только по записи (appuntamento) в Sportelli Polifunzionali del DUC, L.go Torello de Strada 11/A",
+        "Запись через сайт comune.parma.it (раздел Agenda appuntamenti)",
+        "Карта приходит по почте от Poligrafico dello Stato в течение ~6 дней после подачи на указанный адрес"
+      ],
+      "warning_ru": "Сейчас сроки ожидания записи ~30 дней — все меняют старые бумажные удостоверения до дедлайна 3 августа 2026. Записывайся заранее.",
+      "links": [
+        { "label": "comune.parma.it", "url": "https://www.comune.parma.it" }
+      ]
+    },
+
+    {
+      "id": "spid",
+      "icon": "🔐",
+      "title_ru": "SPID",
+      "subtitle_ru": "Цифровая личность для всех госуслуг",
+      "foundation_only": false,
+      "what_ru": "SPID — единый цифровой доступ ко всем госуслугам Италии (как Госуслуги в РФ). Один логин/пароль для INPS, Agenzia delle Entrate, регион, комуна, запись к врачу SSN, регистрация договора аренды, налоговые сервисы.",
+      "functionality_ru": [
+        "Запись к врачу через SSN",
+        "Регистрация договора аренды (contratto di locazione)",
+        "Доступ к налоговым сервисам Agenzia delle Entrate",
+        "Доступ к INPS, региональным и муниципальным сервисам",
+        "Подача заявок на стипендии, льготы"
+      ],
+      "free_option_ru": "Бесплатно через SielteID — обновляется автоматически каждые 2 года без затрат. Бесплатно при идентификации через CIE (нужна CIE с NFC). Распознавание через вебкамеру — платное (10-25 €), поэтому используй CIE.",
+      "requirements_ru": [
+        "Итальянский документ (carta d'identità / CIE)",
+        "Tessera sanitaria или codice fiscale",
+        "Резиденция в Италии (для иностранцев)"
+      ],
+      "note_ru": "Альтернатива PosteID с 2026 платный (~6 €/год со 2-го года). SielteID остаётся бесплатным — рекомендуем его.",
+      "laura_help_ru": "Лаура может помочь с регистрацией SPID шаг за шагом.",
+      "links": [
+        { "label": "sielteid.it", "url": "https://www.sielteid.it" },
+        { "label": "spid.gov.it", "url": "https://www.spid.gov.it" }
+      ]
+    },
+
+    {
+      "id": "tessera_sanitaria",
+      "icon": "🏥",
+      "title_ru": "Tessera Sanitaria",
+      "subtitle_ru": "Медкарта итальянской системы здравоохранения",
+      "foundation_only": false,
+      "what_ru": "Карта национальной системы здравоохранения. Даёт право на бесплатную итальянскую медицину + работает как codice fiscale. Также позволяет покупать сигареты в ночных автоматах.",
+      "free_option_ru": "Можно получить БЕСПЛАТНО если ты официально работаешь И учишься.",
+      "documents_ru": [
+        "Permesso di soggiorno (или ricevuta на продление если скоро заканчивается)",
+        "Договор аренды или carta d'identità (лучше всё сразу)",
+        "Контракт на работу + продление если есть (ВАЖНО: в контракте не больше 20 часов работы, т.к. ты студент)",
+        "Iscrizione — бумага о зачислении на курс университета",
+        "Busta paga — расчётный лист",
+        "Паспорт"
+      ],
+      "procedure_ru": "Прийти, занять очередь, в окошке сказать что хочешь сделать tessera, показать все документы.",
+      "where_ru": "Отделение ASL/AUSL Parma (адреса — на карте LOCI или на ausl.pr.it)",
+      "note_ru": "Без работы студент тоже может оформить SSN, но обычно платно (~150 €/год). С официальной работой — бесплатно.",
+      "links": [
+        { "label": "ausl.pr.it", "url": "https://www.ausl.pr.it" }
+      ]
+    },
+
+    {
+      "id": "work",
+      "icon": "💼",
+      "title_ru": "Как найти работу",
+      "subtitle_ru": "CV, контракты, лимит 20 ч/нед",
+      "foundation_only": false,
+      "intro_ru": "Не бойся, что плохо знаешь итальянский. Главное — правильно себя презентовать и подаваться везде.",
+      "steps_ru": [
+        "Сделай CV — например на makefreecv.com (бесплатно)",
+        "Без опыта — подавайся в общепит (бары, рестораны, кафе) везде где можешь",
+        "С опытом в IT/онлайн — подавайся через LinkedIn на англоязычные позиции"
+      ],
+      "contracts_ru": {
+        "title_ru": "Как работают контракты",
+        "types_ru": [
+          "Contratto a chiamata (по вызову) — работаешь когда зовут, частый вариант для студентов в общепите",
+          "Contratto a tempo determinato — срочный контракт на период",
+          "Contratto part-time — частичная занятость"
+        ],
+        "student_limit_ru": "ВАЖНО: студент с permesso по учёбе может работать максимум 20 часов в неделю (1040 часов в год). В контракте не должно быть больше 20 ч/нед.",
+        "avg_hourly_eur_min": 7,
+        "avg_hourly_eur_max": 9,
+        "avg_monthly_eur_min": 600,
+        "avg_monthly_eur_max": 800,
+        "avg_hours_ru": "Студенты обычно работают 15-20 ч/нед, совмещая с учёбой."
+      },
+      "tip_ru": "С опытом работы в IT всегда есть шанс на удалёнку или англоязычную позицию — не недооценивай LinkedIn.",
+      "links": [
+        { "label": "makefreecv.com", "url": "https://makefreecv.com" },
+        { "label": "linkedin.com", "url": "https://www.linkedin.com" }
+      ]
+    },
+
+    {
+      "id": "ergo_foundation",
+      "icon": "💶",
+      "title_ru": "Стипендия ER.GO (Foundation)",
+      "subtitle_ru": "Для студентов Foundation Year",
+      "foundation_only": true,
+      "what_ru": "Foundation-студенты тоже могут претендовать на поддержку ER.GO. Базовые суммы и условия — те же, что для laurea. Главное условие: ISEE parificato ≤ 25 000 €.",
+      "link_to_isee": "/path/parma/isee",
+      "link_to_scholarship": "/scholarship",
+      "note_ru": "Подробная схема сбора документов для ISEE — на отдельной странице. Калькулятор стипендии — на странице ER.GO."
+    },
+
+    {
+      "id": "fy_to_bachelor",
+      "icon": "🎓",
+      "title_ru": "Переход с Foundation на бакалавриат",
+      "subtitle_ru": "Что делать после окончания FY",
+      "foundation_only": true,
+      "intro_ru": "Переход из Foundation Year Пармы на бакалавриат Пармы — относительно простой процесс. Главное — сдать финальный тест итальянского и иметь нужные кредиты.",
+      "requirements_ru": [
+        "Сдать финальный тест итальянского языка (сертификация B1/B2)",
+        "Набрать нужное количество кредитов FY"
+      ],
+      "language_logic_ru": {
+        "b2_ru": "Если сдал итальянский на B2 — доп. курсы НЕ нужны, можешь сразу поступать.",
+        "b1_ru": "Если сдал на B1 — нужно в сентябре ходить на дополнительные курсы итальянского."
+      },
+      "process_ru": [
+        "Выбери программу бакалавриата. Если свободный доступ (libero) — это чисто бюрократия. Если закрытый (numero chiuso с тестом) — нужно выиграть конкурс.",
+        "Подайся через сайт университета на бакалавриат, заполнив заявку",
+        "Отнеси в университет необходимые документы лично"
+      ],
+      "documents_ru": [
+        "Аттестат о среднем образовании (легализованный, который хранится у тебя)",
+        "Сертификат Foundation Year (Attestato di qualificazione)",
+        "Сертификат итальянского B1/B2",
+        "Транскрипт FY с кредитами"
+      ],
+      "important_ru": "После прохождения FY раздел Университет в приложении обнуляется — ты проходишь тест выбора уровня заново (теперь как бакалавриат) и получаешь требования для поступления на laurea.",
+      "official_note_ru": "Точные требования и список документов могут меняться — проверь на unipr.it и уточни у координаторов FY (foundationyear@unipr.it).",
+      "trigger_action": "switch_to_bachelor"
+    },
+
+    {
+      "id": "transport",
+      "icon": "🚌",
+      "title_ru": "Транспорт по Парме",
+      "subtitle_ru": "TEP, велик, поезда в соседние города",
+      "foundation_only": false,
+      "blocks_ru": [
+        {
+          "title_ru": "TEP — городские автобусы",
+          "description_ru": "Студенческий abbonamento значительно дешевле обычного. Оформляется на tep.pr.it или в точках продаж.",
+          "url": "https://www.tep.pr.it"
+        },
+        {
+          "title_ru": "Велосипед",
+          "description_ru": "Парма — велогород, плоский рельеф. Велик — удобный и дешёвый способ. Есть bike-sharing."
+        },
+        {
+          "title_ru": "Поезда в соседние города",
+          "description_ru": "Болонья (~9 €, 1 ч), Милан (~12 €, 1.5 ч), Модена (~5 €, 30 мин) — удобно на выходные. Приложение Trenìt!"
+        }
+      ],
+      "note_ru": "Точные цены абонементов TEP — на офиц. сайте, зависят от зон и типа."
+    },
+
+    {
+      "id": "language_sport",
+      "icon": "🇮🇹",
+      "title_ru": "Язык и спорт",
+      "subtitle_ru": "CLA и CUS — курсы и секции UniPR",
+      "foundation_only": false,
+      "blocks_ru": [
+        {
+          "title_ru": "CLA — Centro Linguistico di Ateneo",
+          "description_ru": "Курсы итальянского для студентов, в т.ч. подготовка к B2. Часто бесплатные или дешёвые для зачисленных студентов.",
+          "url": "https://cla.unipr.it"
+        },
+        {
+          "title_ru": "CUS Parma — Centro Universitario Sportivo",
+          "description_ru": "Спортивные курсы и секции для студентов по льготным ценам: зал, командные виды, бассейн.",
+          "url": "https://www.cusparma.it"
+        }
+      ]
+    },
+
+    {
+      "id": "erasmus",
+      "icon": "🌍",
+      "title_ru": "Erasmus и ESN",
+      "subtitle_ru": "Обмен, ESN-карта, скидки",
+      "foundation_only": false,
+      "blocks_ru": [
+        {
+          "title_ru": "Erasmus+",
+          "description_ru": "Программа обмена ЕС — можешь поехать на семестр/год в другой европейский университет с сохранением стипендии + грант на мобильность. Подаёшься через международный офис UniPR.",
+          "url": "https://www.unipr.it/erasmus"
+        },
+        {
+          "title_ru": "ESN Parma (Erasmus Student Network)",
+          "description_ru": "Студенческая организация для международных студентов. ESN-карта даёт скидки на транспорт, поездки, события, бары. Организуют поездки, вечеринки, языковые обмены — лучший способ влиться.",
+          "url": "https://parma.esn.it"
+        }
+      ]
+    },
+
+    {
+      "id": "social_life",
+      "icon": "🎉",
+      "title_ru": "Социальная жизнь",
+      "subtitle_ru": "События, бары, рынки",
+      "foundation_only": false,
+      "status": "mobile_version",
+      "mobile_version_note_ru": "Актуальные события и социальная фича появятся в мобильной версии приложения (живая обновляемая лента).",
+      "static_tips_ru": [
+        { "label_ru": "Рынок Ghiaia — продукты, одежда" },
+        { "label_ru": "Cinema Astra — кино" },
+        { "label_ru": "Студенческие бары в центре (Парма — студенческий город)" },
+        { "label_ru": "CIS community Telegram", "url": "https://t.me/parmacisstudenti" }
+      ]
+    },
+
+    {
+      "id": "support",
+      "icon": "💛",
+      "title_ru": "Когда тяжело",
+      "subtitle_ru": "Психологическая поддержка и комьюнити",
+      "foundation_only": false,
+      "description_ru": "Переезд в другую страну — это стресс, и это нормально. Если тяжело — есть поддержка.",
+      "resources_ru": [
+        {
+          "name_ru": "UniPR Counseling (психологическая поддержка)",
+          "description_ru": "Университет Пармы предоставляет студентам бесплатную психологическую поддержку — консультации с психологом.",
+          "url": "https://www.unipr.it/servizi/servizi-lo-studente/supporto-psicologico"
+        },
+        {
+          "name_ru": "CIS community",
+          "description_ru": "Сообщество русскоязычных студентов в Парме — здесь поймут, потому что прошли то же самое.",
+          "url": "https://t.me/parmacisstudenti"
+        }
+      ],
+      "note_ru": "Просить помощь — нормально. Ты не один проходишь через это."
+    }
+  ]
+}

@@ -32,6 +32,8 @@ import AfterArrivalPage from './pages/AfterArrivalPage';
 import CodiceFiscalePage from './pages/CodiceFiscalePage';
 import PermessoPage from './pages/PermessoPage';
 import LociRoutesView from './pages/LociRoutesView';
+import ParmaLifeOverviewPage from './pages/ParmaLifeOverviewPage';
+import ParmaSubsectionPage from './pages/ParmaSubsectionPage';
 
 export default function App() {
   return (
@@ -60,6 +62,8 @@ export default function App() {
       <Route path="/path/travel/after" element={<AfterArrivalPage />} />
       <Route path="/path/travel/codice-fiscale" element={<CodiceFiscalePage />} />
       <Route path="/path/travel/permesso" element={<PermessoPage />} />
+      <Route path="/path/parma" element={<ParmaLifeOverviewPage />} />
+      <Route path="/path/parma/:subsection" element={<ParmaSubsectionPage />} />
       <Route path="/loci/routes" element={<LociRoutesView />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
