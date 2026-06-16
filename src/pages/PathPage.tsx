@@ -373,9 +373,13 @@ export default function PathPage() {
           {sectionsOrder.map((id) => {
             const budget = id === 'uni' ? dynamicUniBudget : sectionsData[id].budget;
             const label = sectionsData[id].titleFull;
+            // «В Парме» — это годовой расход на жизнь после переезда (а не на разовое мероприятие)
+            const perYear = id === 'parma';
             return (
               <div key={id} className="flex justify-between items-baseline">
-                <p className="font-serif text-navy/60 text-xs">{label}</p>
+                <p className="font-serif text-navy/60 text-xs">
+                  {label}{perYear ? ' · в год' : ''}
+                </p>
                 <p className="font-serif text-navy/80 text-xs">{fmt(budget)}</p>
               </div>
             );
