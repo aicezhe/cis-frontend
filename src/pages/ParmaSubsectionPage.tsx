@@ -195,12 +195,11 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
 
-      {/* Cost (number) */}
+      {/* Cost (number) — компактный chip в едином стиле с остальными ценами */}
       {sec.cost_eur != null && (
-        <div className="mx-6 mt-4 relative bg-navy rounded-2xl p-5">
-          <Corners />
-          <p className="font-serif text-gold text-xs italic">стоимость</p>
-          <p className="font-serif text-cream text-3xl font-bold mt-1">
+        <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-xl px-4 py-3 flex justify-between items-center">
+          <p className="font-serif text-gold text-xs italic">Стоимость</p>
+          <p className="font-serif text-navy text-base font-bold">
             <Price eur={sec.cost_eur} />
           </p>
         </div>
@@ -341,6 +340,12 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
             <div key={i} className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-3.5">
               <p className="font-serif text-navy text-base font-bold">{b.title_ru}</p>
               <p className="font-serif text-navy/70 text-sm leading-relaxed mt-1">{b.description_ru}</p>
+              {b.tip_ru && (
+                <div className="bg-cream border border-gold/40 rounded-lg px-3 py-2 mt-2">
+                  <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-0.5">Совет</p>
+                  <p className="font-serif text-navy/75 text-xs leading-relaxed">{b.tip_ru}</p>
+                </div>
+              )}
               {b.url && (
                 <a
                   href={b.url}

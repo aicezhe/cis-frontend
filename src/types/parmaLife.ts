@@ -7,6 +7,7 @@ export interface ParmaBlock {
   title_ru: string;
   description_ru: string;
   url?: string;
+  tip_ru?: string;
 }
 
 export interface ParmaContracts {
