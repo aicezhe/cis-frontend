@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { useParmaLife } from '../hooks/useParmaLife';
+import { ParmaIcon } from '../components/ParmaIcon';
 
 export default function ParmaLifeOverviewPage() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export default function ParmaLifeOverviewPage() {
             onClick={() => navigate(`/path/parma/${sec.id}`)}
             className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-4 text-left"
           >
-            <span className="text-2xl flex-shrink-0">{sec.icon}</span>
+            <ParmaIcon id={sec.id} className="w-7 h-7 text-navy/75 flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-serif text-navy text-lg font-bold leading-tight">{sec.title_ru}</h4>
               {sec.subtitle_ru && (

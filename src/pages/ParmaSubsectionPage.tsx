@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useParmaLife } from '../hooks/useParmaLife';
 import { Price } from '../components/Price';
+import { ParmaIcon } from '../components/ParmaIcon';
 import type { ParmaSubsection } from '../types/parmaLife';
 
 function Corners() {
@@ -112,9 +113,9 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
 
       {/* Mobile version status */}
       {sec.status === 'mobile_version' && sec.mobile_version_note_ru && (
-        <div className="mx-6 mt-4 bg-soft-cream border border-gold/40 rounded-2xl px-4 py-3 flex gap-3">
-          <span className="text-gold text-lg flex-shrink-0">📱</span>
-          <p className="font-serif text-navy/80 text-sm leading-relaxed italic">{sec.mobile_version_note_ru}</p>
+        <div className="mx-6 mt-4 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
+          <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1.5">скоро в мобильной версии</p>
+          <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.mobile_version_note_ru}</p>
         </div>
       )}
 
@@ -407,7 +408,8 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
       {/* Tip */}
       {sec.tip_ru && (
         <div className="mx-6 mt-4 bg-gold/10 border border-gold/40 rounded-2xl px-4 py-3">
-          <p className="font-serif text-navy/80 text-sm leading-relaxed">💡 {sec.tip_ru}</p>
+          <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">Совет</p>
+          <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.tip_ru}</p>
         </div>
       )}
 
@@ -491,7 +493,7 @@ export default function ParmaSubsectionPage() {
       <div className="px-6 pt-12 flex items-center gap-4">
         <button onClick={() => navigate('/path/parma')} className="text-navy text-2xl">←</button>
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <span className="text-2xl flex-shrink-0">{sec.icon}</span>
+          <ParmaIcon id={sec.id} className="w-7 h-7 text-navy/75 flex-shrink-0" />
           <div className="min-w-0">
             <h1 className="font-serif text-navy text-2xl font-bold leading-tight">{sec.title_ru}</h1>
             {sec.subtitle_ru && (
