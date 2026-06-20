@@ -65,8 +65,13 @@ export default function RegisterPage() {
           setError('Этот email уже зарегистрирован');
           return;
         }
-      } catch {
-        // сеть/сервер недоступны — не блокируем шаг, финальная проверка будет при регистрации
+      } catch (e) {
+        // 422 — бэкенд считает формат email некорректным (например, плохой домен)
+        if (e instanceof ApiError && e.status === 422) {
+          setError('Этот email не похож на настоящий — проверь домен');
+          return;
+        }
+        // прочее (сеть, 5xx) — не блокируем, провалидируем при финале
       } finally {
         setChecking(false);
       }
@@ -133,9 +138,21 @@ export default function RegisterPage() {
       }
       navigate('/change-stage');
     } catch (e) {
-      const msg = e instanceof ApiError ? e.message : 'Не удалось зарегистрироваться';
-      // частый случай — email уже занят
-      setError(/exist|занят|registered|409/i.test(msg) ? 'Этот email уже зарегистрирован' : msg);
+      const raw = e instanceof ApiError ? e.message : 'Не удалось зарегистрироваться';
+      // Pydantic ошибка валидации (длинный JSON) — детектим по упоминанию полей
+      // и возвращаем юзера на нужный шаг с понятным текстом.
+      if (/email|@-sign|top-level domain/i.test(raw)) {
+        setError('Этот email не похож на настоящий — проверь домен');
+        setStep(1);
+      } else if (/exist|занят|registered|409/i.test(raw)) {
+        setError('Этот email уже зарегистрирован');
+        setStep(1);
+      } else if (/username|nickname/i.test(raw)) {
+        setError('Что-то не так с никнеймом — попробуй другой');
+        setStep(2);
+      } else {
+        setError('Не удалось зарегистрироваться. Проверь данные и попробуй ещё раз.');
+      }
     } finally {
       setLoading(false);
     }
