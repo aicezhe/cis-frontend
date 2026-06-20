@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
 import { ApiError, isAuthed } from '../lib/api';
 import {
@@ -220,20 +221,21 @@ export default function LauraPage() {
           const isLaura = msg.from === 'laura';
           const isEmpty = msg.text.length === 0;
           const bubbleClass =
-            'max-w-[80%] rounded-2xl px-4 py-3 ' +
+            'max-w-[85%] rounded-2xl px-4 py-3 ' +
             (isLaura
               ? 'self-start bg-soft-cream border border-navy/15'
               : 'self-end bg-navy');
-          const textClass =
-            'font-serif text-sm leading-relaxed whitespace-pre-wrap break-words ' +
-            (isLaura ? 'text-navy' : 'text-cream');
 
           return (
             <div key={msg.id} className={bubbleClass}>
               {isEmpty && isLaura ? (
                 <TypingDots />
+              ) : isLaura ? (
+                <LauraMarkdown text={msg.text} />
               ) : (
-                <p className={textClass}>{msg.text}</p>
+                <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap break-words text-cream">
+                  {msg.text}
+                </p>
               )}
             </div>
           );
@@ -273,6 +275,61 @@ export default function LauraPage() {
       </div>
 
       <TabBar active="laura" />
+    </div>
+  );
+}
+
+// ── Markdown в Лауриных пузырях: жирный gold, ссылки gold-подчёркнутые, аккуратные списки ──
+function LauraMarkdown({ text }: { text: string }) {
+  const navigate = useNavigate();
+  return (
+    <div className="font-serif text-sm text-navy leading-relaxed break-words space-y-2">
+      <ReactMarkdown
+        components={{
+          // абзацы без лишних отступов между, тонко
+          p: ({ children }) => <p className="leading-relaxed">{children}</p>,
+          // жирный — навайно-золотой акцент
+          strong: ({ children }) => <strong className="font-bold text-navy">{children}</strong>,
+          em: ({ children }) => <em className="italic text-navy/80">{children}</em>,
+          // списки — небольшие отступы, символы маркеров мягкие
+          ul: ({ children }) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-5 space-y-1">{children}</ol>,
+          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+          // заголовки тонкие — это чат, не статья
+          h1: ({ children }) => <p className="font-bold text-base">{children}</p>,
+          h2: ({ children }) => <p className="font-bold">{children}</p>,
+          h3: ({ children }) => <p className="font-bold">{children}</p>,
+          // ссылки: внутренние /path/... — клик через navigate; внешние — открываем в новой вкладке
+          a: ({ href, children }) => {
+            if (!href) return <span>{children}</span>;
+            const isInternal = href.startsWith('/');
+            if (isInternal) {
+              return (
+                <button
+                  type="button"
+                  onClick={() => navigate(href)}
+                  className="text-gold underline cursor-pointer"
+                >
+                  {children}
+                </button>
+              );
+            }
+            return (
+              <a href={href} target="_blank" rel="noreferrer" className="text-gold underline break-all">
+                {children}
+              </a>
+            );
+          },
+          // встроенный код — моноширинный с лёгким фоном
+          code: ({ children }) => (
+            <code className="font-mono text-xs bg-cream border border-navy/10 rounded px-1 py-0.5">
+              {children}
+            </code>
+          ),
+        }}
+      >
+        {text}
+      </ReactMarkdown>
     </div>
   );
 }
