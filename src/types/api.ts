@@ -16,6 +16,7 @@ export interface User {
   course_id: string | null;
   gender: string | null;
   residence_status: string | null;
+  avatar_b64: string | null;
   created_at: string;
 }
 
@@ -37,6 +38,7 @@ export interface OnboardingPatch {
   course_id?: string | null;
   gender?: Gender | null;
   residence_status?: ResidenceStatus | null;
+  avatar_b64?: string | null;
 }
 
 // GET /api/courses — CourseCatalog

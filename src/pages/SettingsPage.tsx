@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, clearToken, isAuthed } from '../lib/api';
 import { CurrencyPicker } from '../components/CurrencyPicker';
+import { Avatar } from '../components/Avatar';
+import { cacheAvatar, fileToAvatarB64, loadCachedAvatar } from '../lib/avatar';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -15,6 +17,10 @@ export default function SettingsPage() {
   const [email, setEmail] = useState(
     localStorage.getItem('cispr_email') || 'anna@gmail.com',
   );
+  const [avatar, setAvatar] = useState<string | null>(loadCachedAvatar());
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // подтягиваем актуальный профиль с бэкенда
   useEffect(() => {
@@ -26,6 +32,8 @@ export default function SettingsPage() {
         if (cancelled) return;
         setNickname(u.username);
         setEmail(u.email);
+        setAvatar(u.avatar_b64 || null);
+        cacheAvatar(u.avatar_b64 || null);
         localStorage.setItem('cispr_nickname', u.username);
         localStorage.setItem('cispr_email', u.email);
       })
@@ -36,6 +44,40 @@ export default function SettingsPage() {
       cancelled = true;
     };
   }, []);
+
+  async function handleAvatarPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarError(null);
+    setAvatarUploading(true);
+    try {
+      const b64 = await fileToAvatarB64(file);
+      // оптимистично — показываем сразу, потом подтверждаем на бэке
+      setAvatar(b64);
+      cacheAvatar(b64);
+      await api.updateProfile({ avatar_b64: b64 });
+    } catch (err) {
+      setAvatarError(err instanceof Error ? err.message : 'Не удалось загрузить аватар');
+    } finally {
+      setAvatarUploading(false);
+      // сбрасываем input, чтобы можно было выбрать тот же файл снова
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  async function handleAvatarRemove() {
+    setAvatarError(null);
+    setAvatarUploading(true);
+    try {
+      setAvatar(null);
+      cacheAvatar(null);
+      await api.updateProfile({ avatar_b64: null });
+    } catch (err) {
+      setAvatarError(err instanceof Error ? err.message : 'Не удалось удалить аватар');
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
 
   function handleLogout() {
     clearToken();
@@ -81,12 +123,59 @@ export default function SettingsPage() {
 
       {/* Профиль */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6 flex items-center gap-4">
-        <div className="w-20 h-20 rounded-full bg-cream border border-navy/30 flex items-center justify-center text-3xl">
-          👤
-        </div>
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={avatarUploading}
+          className="relative group flex-shrink-0"
+          aria-label="Сменить аватар"
+        >
+          <Avatar src={avatar} name={nickname} size={80} className="border border-navy/30" />
+          {/* Тёмная подсказка при наведении / тапе */}
+          <span
+            className={
+              'absolute inset-0 rounded-full flex items-center justify-center bg-navy/60 transition-opacity ' +
+              (avatarUploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100')
+            }
+          >
+            <span className="font-serif text-cream text-[10px] uppercase tracking-widest">
+              {avatarUploading ? '...' : 'сменить'}
+            </span>
+          </span>
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarPick}
+          className="hidden"
+        />
         <div className="flex-1 min-w-0">
           <h2 className="font-serif text-navy text-2xl font-bold truncate">{nickname}</h2>
           <p className="font-serif text-gold text-sm italic truncate">{email}</p>
+          <div className="flex gap-3 mt-1.5">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={avatarUploading}
+              className="font-serif text-navy/60 text-xs underline disabled:opacity-50"
+            >
+              {avatar ? 'заменить фото' : 'загрузить фото'}
+            </button>
+            {avatar && (
+              <button
+                onClick={handleAvatarRemove}
+                disabled={avatarUploading}
+                className="font-serif text-xs underline disabled:opacity-50"
+                style={{ color: '#a8332a' }}
+              >
+                убрать
+              </button>
+            )}
+          </div>
+          {avatarError && (
+            <p className="font-serif text-xs italic mt-1" style={{ color: '#a8332a' }}>
+              {avatarError}
+            </p>
+          )}
         </div>
       </div>
 
