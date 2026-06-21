@@ -81,20 +81,35 @@ export function NewsWidget() {
       </div>
 
       {loading && (
-        <div className="mx-6 rounded-2xl bg-soft-cream animate-pulse" style={{ aspectRatio: '5 / 4' }} />
+        <div
+          className="mx-6 rounded-2xl bg-soft-cream border border-navy/10 flex items-center justify-center"
+          style={{ height: 190 }}
+        >
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+        </div>
       )}
 
       {!loading && error && (
-        <div className="mx-6 rounded-2xl border border-navy/10 bg-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
-          <p className="font-serif text-navy/50 text-sm italic">
+        <div
+          className="mx-6 rounded-2xl border border-navy/10 bg-cream flex items-center justify-center px-6"
+          style={{ height: 190 }}
+        >
+          <p className="font-serif text-navy/55 text-sm italic text-center">
             Не удалось загрузить — проверь интернет.
           </p>
         </div>
       )}
 
       {!loading && !error && items.length === 0 && (
-        <div className="mx-6 rounded-2xl border border-navy/10 bg-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
-          <p className="font-serif text-navy/50 text-sm italic">
+        <div
+          className="mx-6 rounded-2xl border border-navy/10 bg-cream flex items-center justify-center px-6"
+          style={{ height: 190 }}
+        >
+          <p className="font-serif text-navy/55 text-sm italic text-center">
             Пока пусто — собираем свежие материалы.
           </p>
         </div>
@@ -142,7 +157,7 @@ function NewsCard({ item, onOpen }: { item: NewsItem; onOpen: () => void }) {
     <button
       onClick={onOpen}
       className="relative snap-center flex-shrink-0 w-full rounded-2xl overflow-hidden text-left active:scale-[0.99] transition-transform bg-cream border border-navy/10"
-      style={{ aspectRatio: '5 / 4' }}
+      style={{ height: 190 }}
     >
       {/* Цветная левая полоса — единственный акцент */}
       <div
@@ -150,41 +165,34 @@ function NewsCard({ item, onOpen }: { item: NewsItem; onOpen: () => void }) {
         style={{ backgroundColor: color }}
       />
 
-      <div className="relative h-full flex flex-col justify-between p-6 pl-8">
-        {/* Верх: источник + дата (как метаданные журнала) */}
+      <div className="relative h-full flex flex-col justify-between p-4 pl-5">
+        {/* Верх: источник + дата */}
         <div className="flex items-baseline justify-between gap-3">
           <p
-            className="font-serif text-[10px] uppercase tracking-[0.25em] truncate"
+            className="font-serif text-[9px] uppercase tracking-[0.25em] truncate"
             style={{ color }}
           >
             {item.source}
           </p>
           {item.published_at && (
-            <p className="font-serif text-navy/40 text-[10px] flex-shrink-0">
+            <p className="font-serif text-navy/40 text-[9px] flex-shrink-0">
               {fmtDate(item.published_at)}
             </p>
           )}
         </div>
 
-        {/* Центр: большой заголовок serif как в журналах */}
-        <h3 className="font-serif text-navy text-2xl leading-[1.15] line-clamp-4 my-2">
+        {/* Центр: заголовок serif */}
+        <h3 className="font-serif text-navy text-base leading-[1.2] line-clamp-3 my-1">
           {item.title}
         </h3>
 
-        {/* Низ: тонкая разделительная линия + "читать" */}
-        <div>
-          {item.summary && (
-            <p className="font-serif text-navy/55 text-xs leading-snug line-clamp-2 mb-3">
-              {item.summary}
-            </p>
-          )}
-          <div className="flex items-center justify-between">
-            <span
-              className="block h-px flex-1 mr-3"
-              style={{ background: 'rgba(28, 42, 72, 0.15)' }}
-            />
-            <p className="font-serif text-navy/70 text-[11px] italic">читать →</p>
-          </div>
+        {/* Низ: разделитель + читать */}
+        <div className="flex items-center justify-between mt-1">
+          <span
+            className="block h-px flex-1 mr-3"
+            style={{ background: 'rgba(28, 42, 72, 0.15)' }}
+          />
+          <p className="font-serif text-navy/70 text-[10px] italic">читать →</p>
         </div>
       </div>
     </button>

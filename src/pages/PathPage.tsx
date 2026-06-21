@@ -262,20 +262,24 @@ export default function PathPage() {
                 (isLast ? '' : 'border-b border-navy/10')
               }
             >
-              {/* Иконка в круглом контейнере */}
+              {/* Иконка-акцент в круглом контейнере.
+                  Done: navy с золотой иконкой. Активный: cream с золотой иконкой и золотой обводкой.
+                  Золотой цвет — единственный устойчивый акцент бренда, его и держим. */}
               <div
                 className={
-                  'w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ' +
-                  (isDone ? 'bg-navy' : 'bg-cream border border-navy/15')
+                  'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ' +
+                  (isDone ? 'bg-navy border border-gold/40' : 'bg-cream border border-gold/40')
                 }
               >
                 <img
                   src={section.icon}
                   alt=""
-                  className="w-6 h-6"
-                  style={isDone
-                    ? { filter: 'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)' }
-                    : undefined}
+                  className="w-7 h-7"
+                  style={{
+                    // Подкрашиваем SVG в gold (#c1a050) — для контраста на любом фоне
+                    filter:
+                      'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)',
+                  }}
                 />
               </div>
 
