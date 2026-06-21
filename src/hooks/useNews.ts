@@ -1,45 +1,50 @@
 import { useEffect, useState } from 'react';
-import type { NewsItem, NewsSeed } from '../types/news';
+import { API_BASE } from '../lib/api';
+import type { NewsCategory, NewsItem } from '../types/news';
 
-let _cache: NewsSeed | null = null;
+// Кэш на время сессии (по категории) — чтоб не дёргать бэк при переключении таба.
+const _cache: Partial<Record<NewsCategory, NewsItem[]>> = {};
 
-export function useNews(count = 3) {
-  const [today, setToday] = useState<NewsItem[]>([]);
-  const [all, setAll] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(!_cache);
+export type NewsState = {
+  items: NewsItem[];
+  loading: boolean;
+  error: string | null;
+};
+
+export function useNews(category: NewsCategory, limit = 10): NewsState {
+  const [items, setItems] = useState<NewsItem[]>(_cache[category] || []);
+  const [loading, setLoading] = useState(!_cache[category]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const apply = (seed: NewsSeed) => {
-      setAll(seed.items);
-      setToday(pickTodaysItems(seed.items, count));
+    if (_cache[category]) {
+      setItems(_cache[category]!);
       setLoading(false);
-    };
-    if (_cache) {
-      apply(_cache);
       return;
     }
-    fetch('/data/news_seed.json')
-      .then((r) => r.json())
-      .then((d: NewsSeed) => {
-        _cache = d;
-        apply(d);
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetch(`${API_BASE}/api/news?category=${category}&limit=${limit}`)
+      .then((r) => {
+        if (!r.ok) throw new Error('Не удалось загрузить');
+        return r.json() as Promise<NewsItem[]>;
       })
-      .catch(() => setLoading(false));
-  }, [count]);
+      .then((data) => {
+        if (cancelled) return;
+        _cache[category] = data;
+        setItems(data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : 'Ошибка сети');
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [category, limit]);
 
-  return { today, all, loading };
-}
-
-// Детерминированный выбор N материалов на сегодня — одинаков для всех юзеров
-// в один день, но меняется каждый календарный день.
-export function pickTodaysItems(items: NewsItem[], n: number): NewsItem[] {
-  if (items.length === 0) return [];
-  const dayNum = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-  const step = Math.max(1, Math.floor(items.length / n));
-  const result: NewsItem[] = [];
-  for (let i = 0; i < n; i++) {
-    const idx = (dayNum + i * step) % items.length;
-    result.push(items[idx]);
-  }
-  return result;
+  return { items, loading, error };
 }
