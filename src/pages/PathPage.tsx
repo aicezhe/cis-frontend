@@ -257,7 +257,7 @@ export default function PathPage() {
                 navigate('/path/' + section.id);
               }}
               className={
-                'relative rounded-2xl p-4 h-44 flex flex-col border ' +
+                'relative rounded-2xl px-4 pt-4 pb-4 h-36 flex flex-col justify-between border ' +
                 (isDone
                   ? 'bg-navy border-navy'
                   : 'bg-soft-cream border-navy/25')
@@ -270,31 +270,38 @@ export default function PathPage() {
                   <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
                   <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
                   <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-                  {/* Чекмарка-индикатор «пройдено» */}
-                  <div className="absolute top-4 left-4 w-6 h-6 rounded-full border border-gold flex items-center justify-center z-10">
-                    <span className="text-gold text-xs">✓</span>
-                  </div>
                 </>
               )}
 
-              <img
-                src={section.icon}
-                alt={section.title}
-                className="absolute top-3 right-3 w-10 h-10"
-                style={isDone
-                  ? { filter: 'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)' }
-                  : undefined}
-              />
+              {/* Верхний ряд: чекмарка + иконка раздела */}
+              <div className="flex items-center justify-between">
+                {isDone ? (
+                  <div className="w-5 h-5 rounded-full border border-gold flex items-center justify-center">
+                    <span className="text-gold text-[10px] leading-none">✓</span>
+                  </div>
+                ) : (
+                  <span className="w-5 h-5" />
+                )}
+                <img
+                  src={section.icon}
+                  alt={section.title}
+                  className="w-8 h-8"
+                  style={isDone
+                    ? { filter: 'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)' }
+                    : undefined}
+                />
+              </div>
 
-              <div className="mt-auto text-left">
+              {/* Нижний блок: название + прогресс */}
+              <div className="text-left">
                 <h4 className={
-                  'font-serif text-lg font-bold mb-2 ' +
+                  'font-serif text-base font-bold mb-1.5 ' +
                   (isDone ? 'text-cream' : 'text-navy')
                 }>
                   {section.title}
                 </h4>
                 <div className={
-                  'h-1.5 rounded-full overflow-hidden ' +
+                  'h-1 rounded-full overflow-hidden ' +
                   (isDone ? 'bg-cream/20' : 'bg-navy/15')
                 }>
                   <div
@@ -303,8 +310,8 @@ export default function PathPage() {
                   />
                 </div>
                 <p className={
-                  'font-serif text-sm mt-1 ' +
-                  (isDone ? 'text-cream/80' : 'text-navy')
+                  'font-serif text-xs mt-1 ' +
+                  (isDone ? 'text-cream/70' : 'text-navy/70')
                 }>
                   {section.progress}%
                 </p>
