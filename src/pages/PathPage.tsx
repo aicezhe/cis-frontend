@@ -5,6 +5,8 @@ import iconTravel from '../assets/iconTravel.svg';
 import iconInParma from '../assets/iconInParma.svg';
 import TabBar from '../components/TabBar';
 import { NewsWidget } from '../components/NewsWidget';
+import { Avatar } from '../components/Avatar';
+import { loadCachedAvatar } from '../lib/avatar';
 import { useUniCosts } from '../hooks/useCosts';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
@@ -224,10 +226,22 @@ export default function PathPage() {
         </div>
         <button
           onClick={() => navigate('/settings')}
-          className="w-14 h-14 rounded-full bg-soft-cream border border-navy/30 flex items-center justify-center text-2xl"
+          className="rounded-full border border-navy/25 overflow-hidden flex-shrink-0"
+          aria-label="Профиль"
         >
-          👤
+          <Avatar
+            src={loadCachedAvatar()}
+            name={localStorage.getItem('cispr_nickname') || 'A'}
+            size={48}
+          />
         </button>
+      </div>
+
+      {/* Тонкий разделитель — отделяет шапку аккаунта от контента */}
+      <div className="mx-6 mt-5 flex items-center gap-3">
+        <span className="flex-1 h-px bg-navy/15" />
+        <span className="w-1 h-1 rounded-full bg-gold/70" />
+        <span className="flex-1 h-px bg-navy/15" />
       </div>
 
       {/* Виджет «Сегодня почитать» — 3 материала из мира международной учёбы,
