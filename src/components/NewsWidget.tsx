@@ -51,18 +51,18 @@ export function NewsWidget() {
 
   return (
     <>
-      {/* Хедер раздела с табами */}
-      <div className="flex items-end justify-between px-6 mt-7 mb-3">
-        <h2 className="font-serif text-navy text-2xl font-bold leading-none">
+      {/* Хедер раздела — тонкая navy-таблетка с золотой обводкой */}
+      <div className="flex items-center justify-between px-6 mt-7 mb-3">
+        <span className="inline-block font-serif text-gold text-sm bg-navy border border-gold/70 rounded-full px-4 py-1">
           Актуальное
-        </h2>
+        </span>
         <div className="flex gap-0">
           {TABS.map((t, i) => (
             <button
               key={t.id}
               onClick={() => setCat(t.id)}
               className={
-                'font-serif text-xs px-3 py-1.5 transition-colors ' +
+                'font-serif text-xs px-3 py-1 transition-colors ' +
                 (i === 0 ? 'rounded-l-full' : 'rounded-r-full') + ' ' +
                 (cat === t.id
                   ? 'bg-navy text-cream'
