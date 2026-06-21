@@ -6,6 +6,7 @@ import iconInParma from '../assets/iconInParma.svg';
 import TabBar from '../components/TabBar';
 import { NewsWidget } from '../components/NewsWidget';
 import { Avatar } from '../components/Avatar';
+import { SectionIcon } from '../components/SectionIcon';
 import { loadCachedAvatar } from '../lib/avatar';
 import { useUniCosts } from '../hooks/useCosts';
 import { formatPrice } from '../utils/formatPrice';
@@ -219,8 +220,8 @@ export default function PathPage() {
 
       <div className="flex items-center justify-between px-6 pt-12">
         <div>
-          <p className="font-serif text-gold text-lg italic">Bentornata,</p>
-          <h1 className="font-serif text-navy text-4xl">
+          <p className="font-serif text-gold text-sm italic tracking-wide">Bentornata,</p>
+          <h1 className="font-serif text-navy text-3xl leading-tight">
             {localStorage.getItem('cispr_nickname') || 'Aicezhe'}
           </h1>
         </div>
@@ -248,10 +249,7 @@ export default function PathPage() {
           меняются каждый день детерминированно по дате */}
       <NewsWidget />
 
-      <h3
-        className="font-serif text-navy text-2xl font-bold text-center mt-8 mb-5"
-        style={{ WebkitTextStroke: '0.6px #c1a050' }}
-      >
+      <h3 className="font-serif text-navy text-xl text-center mt-8 mb-4">
         Твой путь
       </h3>
 
@@ -279,25 +277,15 @@ export default function PathPage() {
                 (isLast ? '' : 'border-b border-navy/10')
               }
             >
-              {/* Иконка-акцент в круглом контейнере.
-                  Done: navy с золотой иконкой. Активный: cream с золотой иконкой и золотой обводкой.
-                  Золотой цвет — единственный устойчивый акцент бренда, его и держим. */}
+              {/* Иконка-акцент в круглом контейнере: тонкие линии золотом.
+                  Done: navy фон. Активный: cream фон. Обводка золотая в обоих. */}
               <div
                 className={
                   'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ' +
                   (isDone ? 'bg-navy border border-gold/40' : 'bg-cream border border-gold/40')
                 }
               >
-                <img
-                  src={section.icon}
-                  alt=""
-                  className="w-7 h-7"
-                  style={{
-                    // Подкрашиваем SVG в gold (#c1a050) — для контраста на любом фоне
-                    filter:
-                      'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)',
-                  }}
-                />
+                <SectionIcon id={section.id as 'uni' | 'visa' | 'travel' | 'parma'} className="w-6 h-6 text-gold" />
               </div>
 
               {/* Контент: название + прогресс-бар + проценты */}

@@ -51,12 +51,9 @@ export function NewsWidget() {
 
   return (
     <>
-      {/* Хедер: тонкий navy-текст с золотой обводкой букв */}
+      {/* Хедер раздела */}
       <div className="flex items-center justify-between px-6 mt-7 mb-3">
-        <h2
-          className="font-serif text-navy text-2xl font-bold leading-none"
-          style={{ WebkitTextStroke: '0.6px #c1a050' }}
-        >
+        <h2 className="font-serif text-navy text-xl leading-none">
           Актуальное
         </h2>
         <div className="flex gap-0">
