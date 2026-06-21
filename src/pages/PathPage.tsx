@@ -248,11 +248,12 @@ export default function PathPage() {
           меняются каждый день детерминированно по дате */}
       <NewsWidget />
 
-      <div className="text-center mt-8 mb-5">
-        <span className="inline-block font-serif text-gold text-sm bg-navy border border-gold/70 rounded-full px-4 py-1">
-          Твой путь
-        </span>
-      </div>
+      <h3
+        className="font-serif text-navy text-2xl font-bold text-center mt-8 mb-5"
+        style={{ WebkitTextStroke: '0.6px #c1a050' }}
+      >
+        Твой путь
+      </h3>
 
       {/* Этапы пути — вертикальный список с прогресс-баром.
           Решение: 4 квадрата 2×2 сжимали контент и выглядели игрушечно;

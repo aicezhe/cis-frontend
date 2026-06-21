@@ -51,11 +51,14 @@ export function NewsWidget() {
 
   return (
     <>
-      {/* Хедер раздела — тонкая navy-таблетка с золотой обводкой */}
+      {/* Хедер: тонкий navy-текст с золотой обводкой букв */}
       <div className="flex items-center justify-between px-6 mt-7 mb-3">
-        <span className="inline-block font-serif text-gold text-sm bg-navy border border-gold/70 rounded-full px-4 py-1">
+        <h2
+          className="font-serif text-navy text-2xl font-bold leading-none"
+          style={{ WebkitTextStroke: '0.6px #c1a050' }}
+        >
           Актуальное
-        </span>
+        </h2>
         <div className="flex gap-0">
           {TABS.map((t, i) => (
             <button
