@@ -238,12 +238,13 @@ export default function PathPage() {
         Твой путь
       </h3>
 
-      <div className="grid grid-cols-2 gap-4 px-6">
-        {sections.map((section) => {
+      {/* Этапы пути — вертикальный список с прогресс-баром.
+          Решение: 4 квадрата 2×2 сжимали контент и выглядели игрушечно;
+          горизонтальные строки дают воздух и фокус на прогрессе. */}
+      <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
+        {sections.map((section, i) => {
           const isDone = section.status === 'done';
-          // Done = navy с золотыми уголками (в едином стиле приложения).
-          // Активные/не пройденные = светлый soft-cream.
-          // Золотым иконку красим всегда — а текст инвертируем по фону.
+          const isLast = i === sections.length - 1;
           return (
             <button
               key={section.id}
@@ -257,65 +258,58 @@ export default function PathPage() {
                 navigate('/path/' + section.id);
               }}
               className={
-                'relative rounded-2xl px-4 pt-4 pb-4 h-36 flex flex-col justify-between border ' +
-                (isDone
-                  ? 'bg-navy border-navy'
-                  : 'bg-soft-cream border-navy/25')
+                'w-full flex items-center gap-4 px-4 py-3.5 text-left active:bg-cream transition-colors ' +
+                (isLast ? '' : 'border-b border-navy/10')
               }
             >
-              {isDone && (
-                <>
-                  {/* Золотые уголки в стиле "Важно знать"/визы */}
-                  <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-                  <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-                  <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-                  <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-                </>
-              )}
-
-              {/* Верхний ряд: чекмарка + иконка раздела */}
-              <div className="flex items-center justify-between">
-                {isDone ? (
-                  <div className="w-5 h-5 rounded-full border border-gold flex items-center justify-center">
-                    <span className="text-gold text-[10px] leading-none">✓</span>
-                  </div>
-                ) : (
-                  <span className="w-5 h-5" />
-                )}
+              {/* Иконка в круглом контейнере */}
+              <div
+                className={
+                  'w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ' +
+                  (isDone ? 'bg-navy' : 'bg-cream border border-navy/15')
+                }
+              >
                 <img
                   src={section.icon}
-                  alt={section.title}
-                  className="w-8 h-8"
+                  alt=""
+                  className="w-6 h-6"
                   style={isDone
                     ? { filter: 'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)' }
                     : undefined}
                 />
               </div>
 
-              {/* Нижний блок: название + прогресс */}
-              <div className="text-left">
-                <h4 className={
-                  'font-serif text-base font-bold mb-1.5 ' +
-                  (isDone ? 'text-cream' : 'text-navy')
-                }>
-                  {section.title}
-                </h4>
-                <div className={
-                  'h-1 rounded-full overflow-hidden ' +
-                  (isDone ? 'bg-cream/20' : 'bg-navy/15')
-                }>
+              {/* Контент: название + прогресс-бар + проценты */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline justify-between gap-3 mb-1.5">
+                  <h4 className="font-serif text-navy text-base font-bold">{section.title}</h4>
+                  <p
+                    className={
+                      'font-serif text-xs flex-shrink-0 ' +
+                      (isDone ? 'text-gold font-bold' : 'text-navy/50')
+                    }
+                  >
+                    {isDone ? '✓ пройдено' : `${section.progress}%`}
+                  </p>
+                </div>
+                <div className="h-1 rounded-full bg-navy/10 overflow-hidden">
                   <div
                     className={'h-full rounded-full transition-all duration-500 ' + (isDone ? 'bg-gold' : 'bg-navy')}
                     style={{ width: section.progress + '%' }}
                   />
                 </div>
-                <p className={
-                  'font-serif text-xs mt-1 ' +
-                  (isDone ? 'text-cream/70' : 'text-navy/70')
-                }>
-                  {section.progress}%
-                </p>
               </div>
+
+              {/* Шеврон */}
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                className="text-navy/40 flex-shrink-0 -rotate-90"
+                fill="currentColor"
+              >
+                <path d="M7 10L1 4h12L7 10z" />
+              </svg>
             </button>
           );
         })}

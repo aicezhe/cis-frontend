@@ -7,7 +7,7 @@ const TABS: { id: NewsCategory; label_ru: string }[] = [
   { id: 'italy', label_ru: 'Италия' },
 ];
 
-const VISIBLE_COUNT = 5; // сколько листать в свайпе
+const VISIBLE_COUNT = 5;
 
 function fmtDate(iso: string | null): string {
   if (!iso) return '';
@@ -17,6 +17,11 @@ function fmtDate(iso: string | null): string {
   } catch {
     return '';
   }
+}
+
+// Цвет акцента левой полосы — по категории. Намёк на «раздел» в журнале.
+function accentColor(cat: NewsCategory): string {
+  return cat === 'italy' ? '#a8332a' : '#3a6d40';
 }
 
 export function NewsWidget() {
@@ -37,7 +42,6 @@ export function NewsWidget() {
     return () => el.removeEventListener('scroll', onScroll);
   }, [items.length]);
 
-  // На смене категории — скроллим в начало
   useEffect(() => {
     scrollRef.current?.scrollTo({ left: 0 });
     setActiveIdx(0);
@@ -47,19 +51,27 @@ export function NewsWidget() {
 
   return (
     <>
-      {/* Header + tabs */}
-      <div className="flex items-center justify-between px-6 mt-6 mb-3">
-        <p className="font-serif text-gold text-xs italic uppercase tracking-[0.2em]">
-          Сегодня почитать
-        </p>
-        <div className="flex gap-1 bg-soft-cream border border-navy/15 rounded-full p-0.5">
-          {TABS.map((t) => (
+      {/* Magazine-style мини-хедер с табами */}
+      <div className="flex items-end justify-between px-6 mt-7 mb-3">
+        <div>
+          <p className="font-serif text-navy/40 text-[10px] uppercase tracking-[0.25em] mb-0.5">
+            № today
+          </p>
+          <h2 className="font-serif text-navy text-xl italic leading-none">
+            Magazine
+          </h2>
+        </div>
+        <div className="flex gap-0">
+          {TABS.map((t, i) => (
             <button
               key={t.id}
               onClick={() => setCat(t.id)}
               className={
-                'font-serif text-[11px] px-3 py-1 rounded-full transition-colors ' +
-                (cat === t.id ? 'bg-navy text-cream' : 'text-navy/60')
+                'font-serif text-xs px-3 py-1.5 transition-colors ' +
+                (i === 0 ? 'rounded-l-full' : 'rounded-r-full') + ' ' +
+                (cat === t.id
+                  ? 'bg-navy text-cream'
+                  : 'bg-transparent text-navy/50 border border-navy/20')
               }
             >
               {t.label_ru}
@@ -68,23 +80,22 @@ export function NewsWidget() {
         </div>
       </div>
 
-      {/* Загрузка / ошибка / пусто / контент */}
       {loading && (
-        <div className="mx-6 rounded-3xl bg-soft-cream animate-pulse" style={{ aspectRatio: '5 / 4' }} />
+        <div className="mx-6 rounded-2xl bg-soft-cream animate-pulse" style={{ aspectRatio: '5 / 4' }} />
       )}
 
       {!loading && error && (
-        <div className="mx-6 rounded-3xl border border-navy/15 bg-soft-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
-          <p className="font-serif text-navy/60 text-sm italic mb-3">
-            Не удалось загрузить новости. Проверь интернет.
+        <div className="mx-6 rounded-2xl border border-navy/10 bg-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
+          <p className="font-serif text-navy/50 text-sm italic">
+            Не удалось загрузить — проверь интернет.
           </p>
         </div>
       )}
 
       {!loading && !error && items.length === 0 && (
-        <div className="mx-6 rounded-3xl border border-navy/15 bg-soft-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
-          <p className="font-serif text-navy/60 text-sm italic">
-            Пока пусто — собираем свежие материалы. Зайди позже.
+        <div className="mx-6 rounded-2xl border border-navy/10 bg-cream p-6 text-center" style={{ aspectRatio: '5 / 4' }}>
+          <p className="font-serif text-navy/50 text-sm italic">
+            Пока пусто — собираем свежие материалы.
           </p>
         </div>
       )}
@@ -93,7 +104,7 @@ export function NewsWidget() {
         <div className="relative">
           <div
             ref={scrollRef}
-            className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3 px-6 pb-1"
+            className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3 px-6 pb-2"
             style={{ scrollBehavior: 'smooth' }}
           >
             {items.map((item) => (
@@ -101,14 +112,15 @@ export function NewsWidget() {
             ))}
           </div>
 
+          {/* Точки-индикатор СНИЗУ по центру (а не сбоку — менее «iOS-копия», более журнальное) */}
           {items.length > 1 && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 pointer-events-none">
+            <div className="flex justify-center gap-1.5 mt-2 px-6">
               {items.map((_, i) => (
                 <span
                   key={i}
                   className={
-                    'block w-1.5 h-1.5 rounded-full transition-all ' +
-                    (i === activeIdx ? 'bg-cream' : 'bg-cream/35')
+                    'block h-1 rounded-full transition-all ' +
+                    (i === activeIdx ? 'w-5 bg-navy' : 'w-1 bg-navy/25')
                   }
                 />
               ))}
@@ -122,58 +134,66 @@ export function NewsWidget() {
   );
 }
 
-// ── Большая свайп-карточка ──────────────────────────────────────────────────
+// ── Карточка в журнальном стиле: cream BG, цветная левая полоса, крупная типографика ──
 function NewsCard({ item, onOpen }: { item: NewsItem; onOpen: () => void }) {
+  const color = accentColor(item.category);
+
   return (
     <button
       onClick={onOpen}
-      className="relative snap-center flex-shrink-0 w-full rounded-3xl overflow-hidden text-left active:scale-[0.99] transition-transform"
-      style={{
-        aspectRatio: '5 / 4',
-        background: 'linear-gradient(135deg, #1c2a48 0%, #243558 55%, #1c2a48 100%)',
-      }}
+      className="relative snap-center flex-shrink-0 w-full rounded-2xl overflow-hidden text-left active:scale-[0.99] transition-transform bg-cream border border-navy/10"
+      style={{ aspectRatio: '5 / 4' }}
     >
-      <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-      <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-      <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-      <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
+      {/* Цветная левая полоса — единственный акцент */}
+      <div
+        className="absolute top-0 bottom-0 left-0 w-1.5"
+        style={{ backgroundColor: color }}
+      />
 
-      <span
-        aria-hidden
-        className="absolute -bottom-12 -right-10 font-serif text-gold/10 select-none pointer-events-none"
-        style={{ fontSize: '180px', lineHeight: 1 }}
-      >
-        ¬
-      </span>
-
-      <div className="relative h-full flex flex-col justify-between p-6">
-        <div className="flex items-center justify-between">
-          <p className="font-serif text-gold text-[10px] uppercase tracking-[0.25em]">
+      <div className="relative h-full flex flex-col justify-between p-6 pl-8">
+        {/* Верх: источник + дата (как метаданные журнала) */}
+        <div className="flex items-baseline justify-between gap-3">
+          <p
+            className="font-serif text-[10px] uppercase tracking-[0.25em] truncate"
+            style={{ color }}
+          >
             {item.source}
           </p>
           {item.published_at && (
-            <p className="font-serif text-cream/40 text-[10px]">{fmtDate(item.published_at)}</p>
+            <p className="font-serif text-navy/40 text-[10px] flex-shrink-0">
+              {fmtDate(item.published_at)}
+            </p>
           )}
         </div>
 
+        {/* Центр: большой заголовок serif как в журналах */}
+        <h3 className="font-serif text-navy text-2xl leading-[1.15] line-clamp-4 my-2">
+          {item.title}
+        </h3>
+
+        {/* Низ: тонкая разделительная линия + "читать" */}
         <div>
-          <h3 className="font-serif text-cream text-xl font-bold leading-snug mb-2 line-clamp-4">
-            {item.title}
-          </h3>
           {item.summary && (
-            <p className="font-serif text-cream/60 text-xs leading-snug line-clamp-3">
+            <p className="font-serif text-navy/55 text-xs leading-snug line-clamp-2 mb-3">
               {item.summary}
             </p>
           )}
-          <p className="font-serif text-gold text-xs mt-3 opacity-80">читать →</p>
+          <div className="flex items-center justify-between">
+            <span
+              className="block h-px flex-1 mr-3"
+              style={{ background: 'rgba(28, 42, 72, 0.15)' }}
+            />
+            <p className="font-serif text-navy/70 text-[11px] italic">читать →</p>
+          </div>
         </div>
       </div>
     </button>
   );
 }
 
-// ── Bottom-sheet с полным summary + ссылкой на источник ────────────────────
+// ── Bottom-sheet ────────────────────────────────────────────────────────────
 function NewsModal({ item, onClose }: { item: NewsItem; onClose: () => void }) {
+  const color = accentColor(item.category);
   return (
     <div
       className="fixed inset-0 z-50 bg-navy/60 flex items-end justify-center"
@@ -189,7 +209,7 @@ function NewsModal({ item, onClose }: { item: NewsItem; onClose: () => void }) {
 
         <div className="px-6 pb-6 pt-2 overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
-            <p className="font-serif text-gold text-[10px] uppercase tracking-widest">
+            <p className="font-serif text-[10px] uppercase tracking-widest" style={{ color }}>
               {item.source}
             </p>
             {item.published_at && (
