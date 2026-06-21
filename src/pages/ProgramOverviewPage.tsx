@@ -210,7 +210,7 @@ export default function ProgramOverviewPage() {
 
       {/* Шапка — тип программы */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-right">
+        <div className="text-center">
           {/* Разбиваем «Бакалавриат» и «(Laurea triennale)» на отдельные строки */}
           <h1 className="font-serif text-navy text-3xl font-bold">
             {p.name_ru.replace(/\s*\(.*\)/, '')}
