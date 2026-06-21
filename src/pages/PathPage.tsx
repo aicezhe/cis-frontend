@@ -234,7 +234,7 @@ export default function PathPage() {
           меняются каждый день детерминированно по дате */}
       <NewsWidget />
 
-      <h3 className="font-serif text-gold text-2xl font-bold text-center mt-8 mb-5">
+      <h3 className="font-serif text-navy text-2xl font-bold text-center mt-8 mb-5">
         Твой путь
       </h3>
 

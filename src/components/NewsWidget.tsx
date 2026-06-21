@@ -51,16 +51,11 @@ export function NewsWidget() {
 
   return (
     <>
-      {/* Magazine-style мини-хедер с табами */}
+      {/* Хедер раздела с табами */}
       <div className="flex items-end justify-between px-6 mt-7 mb-3">
-        <div>
-          <p className="font-serif text-navy/40 text-[10px] uppercase tracking-[0.25em] mb-0.5">
-            № today
-          </p>
-          <h2 className="font-serif text-navy text-xl italic leading-none">
-            Magazine
-          </h2>
-        </div>
+        <h2 className="font-serif text-navy text-2xl font-bold leading-none">
+          Актуальное
+        </h2>
         <div className="flex gap-0">
           {TABS.map((t, i) => (
             <button
