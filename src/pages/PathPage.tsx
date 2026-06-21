@@ -3,8 +3,8 @@ import iconUni from '../assets/iconUni.svg';
 import iconVisa from '../assets/iconVisa.svg';
 import iconTravel from '../assets/iconTravel.svg';
 import iconInParma from '../assets/iconInParma.svg';
-import iconTime from '../assets/time sign.svg';
 import TabBar from '../components/TabBar';
+import { NewsWidget } from '../components/NewsWidget';
 import { useUniCosts } from '../hooks/useCosts';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
@@ -177,23 +177,6 @@ function getSectionProgress(sectionKey: string, isCompletedSection: boolean): nu
   return total === 0 ? 0 : Math.round((done / total) * 100);
 }
 
-// первый невыполненный шаг
-function getCurrentStep(sectionKey: string): any {
-  const completed = loadCompleted(sectionKey);
-  const data = sectionsData[sectionKey];
-  for (const step of data.steps) {
-    if (step.substeps.length === 0) {
-      if (!completed.includes(getItemId(sectionKey, step.num))) return step;
-    } else {
-      const allDone = step.substeps.every((_: any, i: number) =>
-        completed.includes(getItemId(sectionKey, step.num, i))
-      );
-      if (!allDone) return step;
-    }
-  }
-  return null;
-}
-
 export default function PathPage() {
   const navigate = useNavigate();
   const uniCosts = useUniCosts();
@@ -229,21 +212,6 @@ export default function PathPage() {
   );
   const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
 
-  // карточка "Сейчас важно" — первый невыполненный шаг, начиная с текущего
-  // раздела по квизу (разделы до passedIndex считаются пройденными, их шаги
-  // в localStorage могут быть не отмечены — их нельзя показывать как актуальные)
-  let currentStep: any = null;
-  let currentSectionData: any = sectionsData[passed];
-  for (let i = Math.max(0, passedIndex); i < sectionsOrder.length; i++) {
-    const sectionKey = sectionsOrder[i];
-    const step = getCurrentStep(sectionKey);
-    if (step) {
-      currentStep = step;
-      currentSectionData = sectionsData[sectionKey];
-      break;
-    }
-  }
-
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
 
@@ -262,28 +230,9 @@ export default function PathPage() {
         </button>
       </div>
 
-      {/* Карточка "Сейчас важно" — динамическая */}
-      {currentStep && (
-        <div className="mx-6 mt-8 relative bg-navy rounded-3xl p-6">
-          <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-          <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-          <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-          <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-
-          <span className="inline-block font-serif text-gold text-xs border border-gold rounded-full px-3 py-1 mb-4">
-            {currentSectionData.title}
-          </span>
-
-          <h2 className="font-serif text-cream text-2xl">
-            {currentStep.title}
-          </h2>
-
-          <div className="flex items-center gap-2 mt-3">
-            <img src={iconTime} alt="" className="w-4 h-4" />
-            <p className="font-serif text-gold text-sm">{currentStep.deadline}</p>
-          </div>
-        </div>
-      )}
+      {/* Виджет «Сегодня почитать» — 3 материала из мира международной учёбы,
+          меняются каждый день детерминированно по дате */}
+      <NewsWidget />
 
       <h3 className="font-serif text-gold text-2xl font-bold text-center mt-8 mb-5">
         Твой путь
@@ -292,6 +241,9 @@ export default function PathPage() {
       <div className="grid grid-cols-2 gap-4 px-6">
         {sections.map((section) => {
           const isDone = section.status === 'done';
+          // Done = navy с золотыми уголками (в едином стиле приложения).
+          // Активные/не пройденные = светлый soft-cream.
+          // Золотым иконку красим всегда — а текст инвертируем по фону.
           return (
             <button
               key={section.id}
@@ -307,14 +259,22 @@ export default function PathPage() {
               className={
                 'relative rounded-2xl p-4 h-44 flex flex-col border ' +
                 (isDone
-                  ? 'bg-gold border-gold'
+                  ? 'bg-navy border-navy'
                   : 'bg-soft-cream border-navy/25')
               }
             >
               {isDone && (
-                <div className="absolute top-3 left-3 w-7 h-7 rounded-full bg-navy flex items-center justify-center z-10">
-                  <span className="text-gold text-base">✓</span>
-                </div>
+                <>
+                  {/* Золотые уголки в стиле "Важно знать"/визы */}
+                  <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
+                  <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
+                  <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
+                  <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
+                  {/* Чекмарка-индикатор «пройдено» */}
+                  <div className="absolute top-4 left-4 w-6 h-6 rounded-full border border-gold flex items-center justify-center z-10">
+                    <span className="text-gold text-xs">✓</span>
+                  </div>
+                </>
               )}
 
               <img
@@ -322,7 +282,7 @@ export default function PathPage() {
                 alt={section.title}
                 className="absolute top-3 right-3 w-10 h-10"
                 style={isDone
-                  ? { filter: 'brightness(0) saturate(100%) invert(97%) sepia(8%) saturate(394%) hue-rotate(7deg) brightness(99%) contrast(93%)' }
+                  ? { filter: 'brightness(0) saturate(100%) invert(72%) sepia(46%) saturate(478%) hue-rotate(2deg) brightness(91%) contrast(85%)' }
                   : undefined}
               />
 
@@ -335,16 +295,16 @@ export default function PathPage() {
                 </h4>
                 <div className={
                   'h-1.5 rounded-full overflow-hidden ' +
-                  (isDone ? 'bg-cream/40' : 'bg-navy/15')
+                  (isDone ? 'bg-cream/20' : 'bg-navy/15')
                 }>
                   <div
-                    className={'h-full rounded-full transition-all duration-500 ' + (isDone ? 'bg-cream' : 'bg-navy')}
+                    className={'h-full rounded-full transition-all duration-500 ' + (isDone ? 'bg-gold' : 'bg-navy')}
                     style={{ width: section.progress + '%' }}
                   />
                 </div>
                 <p className={
                   'font-serif text-sm mt-1 ' +
-                  (isDone ? 'text-cream' : 'text-navy')
+                  (isDone ? 'text-cream/80' : 'text-navy')
                 }>
                   {section.progress}%
                 </p>
