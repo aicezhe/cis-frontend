@@ -270,11 +270,11 @@
         },
         {
           "title_ru": "Супермаркеты — средний",
-          "description_ru": "Conad, Conad City, Coop, Pam, Carrefour Express, Unes. Шире ассортимент, итальянские бренды, есть свежее мясо/рыба. Conad City удобно расположены в центре. Средний чек на неделю — 35-50 €."
+          "description_ru": "Conad, Conad City, Coop, Esselunga. Шире ассортимент, итальянские бренды, есть свежее мясо/рыба. Conad City удобно расположены в центре. Esselunga — большой выбор и стабильное качество. Средний чек на неделю — 35-50 €."
         },
         {
           "title_ru": "Супермаркеты — выше среднего",
-          "description_ru": "Esselunga, Ipercoop, NaturaSì. Лучшее качество и выбор, фермерские продукты, био. NaturaSì — органика, ощутимо дороже. Имеет смысл когда хочется особенного или для гостей."
+          "description_ru": "Pam, Carrefour Express, Unes, Ipercoop, NaturaSì. Премиум-ассортимент, итальянские бренды, фермерские продукты, био. Pam и Carrefour Express — удобно в центре, но цены выше. NaturaSì — органика, ощутимо дороже. Имеет смысл когда хочется особенного или для гостей."
         },
         {
           "title_ru": "Mercato della Ghiaia",
@@ -297,7 +297,7 @@
           "description_ru": "Euro Torri (Via Bormioli, 33/A — северо-восток) и La Galleria (Via Emilia Est, 7B). Одежда, электроника, обувь, фудкорт. Доехать на TEP-автобусе."
         }
       ],
-      "tip_ru": "Лучшая стратегия: основные продукты в Lidl или Eurospin (дёшево и сердито), фрукты-овощи на Ghiaia, особенное — в Esselunga. Бытовое и мелочёвку — в Helen Store."
+      "tip_ru": "Лучшая стратегия: основные продукты в Lidl, Eurospin или Conad (дёшево и сердито), фрукты-овощи на Ghiaia, особенное и био — в NaturaSì или Pam. Бытовое и мелочёвку — в Helen Store."
     },
     {
       "id": "sim_operators",
