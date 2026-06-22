@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import TabBar from '../components/TabBar';
 import { useLociPlaces } from '../hooks/useLociPlaces';
 import { openRouteFromCurrentLocation } from '../utils/openInMaps';
+import { loadHomeAddress } from '../lib/homeAddress';
 import type { LociCategoryId, LociPlace } from '../types/loci';
 
 // Цвет канта маркера: магазины — по ценовой категории, остальное — золото.
@@ -131,18 +132,6 @@ export default function MapPage() {
                     {place.note_ru && (
                       <p className="text-navy/75 text-xs italic mt-2 leading-relaxed">{place.note_ru}</p>
                     )}
-                    {place.tier && (
-                      <p className="text-[10px] uppercase tracking-widest mt-2"
-                        style={{
-                          color:
-                            place.tier === 'cheap' ? '#3a6d40' :
-                            place.tier === 'premium' ? '#a8332a' :
-                            '#7a6a3a',
-                        }}
-                      >
-                        {place.tier === 'cheap' ? 'эконом' : place.tier === 'premium' ? 'выше среднего' : 'средний'}
-                      </p>
-                    )}
                     <div className="flex flex-col gap-1.5 mt-3">
                       <button
                         onClick={() => openRouteFromCurrentLocation(place.lat, place.lng, place.name, 'walking')}
@@ -165,24 +154,52 @@ export default function MapPage() {
                 </Popup>
               </Marker>
             ))}
+
+            {/* Метка «мой дом» — отдельная, всегда поверх остальных */}
+            {(() => {
+              const home = loadHomeAddress();
+              if (!home) return null;
+              return (
+                <Marker
+                  position={[home.lat, home.lng]}
+                  icon={L.divIcon({
+                    html: `
+                      <div style="
+                        width: 38px; height: 38px;
+                        background: #c1a050;
+                        border: 2px solid #1c2a48;
+                        border-radius: 50% 50% 50% 0;
+                        transform: rotate(-45deg);
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        display: flex; align-items: center; justify-content: center;
+                      ">
+                        <span style="transform: rotate(45deg); font-size: 16px; color: #1c2a48;">★</span>
+                      </div>`,
+                    className: 'loci-marker',
+                    iconSize: [38, 38],
+                    iconAnchor: [19, 38],
+                    popupAnchor: [0, -34],
+                  })}
+                >
+                  <Popup>
+                    <div className="font-serif" style={{ minWidth: 200 }}>
+                      <p className="text-gold text-[10px] uppercase tracking-widest">⌐ мой дом ¬</p>
+                      <p className="text-navy text-sm mt-1 leading-snug">{home.address}</p>
+                      <button
+                        onClick={() => openRouteFromCurrentLocation(home.lat, home.lng, home.address, 'walking')}
+                        className="bg-navy text-cream text-xs rounded-full px-3 py-2 cursor-pointer mt-3 w-full"
+                        style={{ border: 'none' }}
+                      >
+                        Маршрут от моей локации →
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })()}
           </MapContainer>
         )}
       </div>
-
-      {/* Tier-легенда — показываем когда выбраны магазины или «Все» */}
-      {data?.tier_legend && (activeCat === 'all' || activeCat === 'shop') && (
-        <div className="px-6 mt-3 flex justify-center items-center gap-3 flex-wrap">
-          {(Object.entries(data.tier_legend) as Array<[string, { label_ru: string; color: string }]>).map(([k, v]) => (
-            <div key={k} className="flex items-center gap-1.5">
-              <span
-                className="inline-block w-3 h-3 rounded-full border-2"
-                style={{ borderColor: v.color, background: '#1c2a48' }}
-              />
-              <span className="font-serif text-navy/60 text-[11px]">{v.label_ru}</span>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Подсказка */}
       <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-2 mb-1">

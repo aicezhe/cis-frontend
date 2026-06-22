@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
-import { useRelocation, openRouteToHome } from '../hooks/useRelocation';
+import { useRelocation } from '../hooks/useRelocation';
+import { HomeAddressInput } from '../components/HomeAddressInput';
 
 export default function RelocationOverviewPage() {
   const navigate = useNavigate();
   const { relocation, loading } = useRelocation();
-  const [address, setAddress] = useState(localStorage.getItem('cispr_home_address') || '');
 
   if (loading) {
     return (
@@ -40,13 +39,6 @@ export default function RelocationOverviewPage() {
         <TabBar active="path" />
       </div>
     );
-  }
-
-  function goHomeRoute() {
-    const a = address.trim();
-    if (!a) return;
-    localStorage.setItem('cispr_home_address', a);
-    openRouteToHome(a);
   }
 
   const cards = [
@@ -92,30 +84,9 @@ export default function RelocationOverviewPage() {
         <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
       </button>
 
-      {/* Маршрут от вокзала до дома */}
-      <div className="mx-6 mt-4 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy text-sm font-bold mb-1">Маршрут от вокзала до дома</p>
-        <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">
-          {relocation.arrival_routes.route_to_home_ru}
-        </p>
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Strada Farini 12"
-          autoComplete="off"
-          className="w-full font-sans text-navy text-base bg-cream border border-navy/30 rounded-xl px-4 py-3 outline-none"
-        />
-        <button
-          onClick={goHomeRoute}
-          disabled={!address.trim()}
-          className={
-            'w-full mt-3 font-serif text-cream rounded-full py-2.5 text-sm ' +
-            (address.trim() ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
-          }
-        >
-          Маршрут от вокзала →
-        </button>
+      {/* Адрес дома — общий компонент с геокодингом и меткой на карте */}
+      <div className="mx-6 mt-4">
+        <HomeAddressInput />
       </div>
 
       {/* Навигация */}

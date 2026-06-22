@@ -124,6 +124,26 @@ export function ParmaIcon({ id, className = 'w-7 h-7 text-navy/70' }: Props) {
         </Wrap>
       );
 
+    case 'shops_services':
+      // Корзина покупателя
+      return (
+        <Wrap className={className}>
+          <path d="M3 5h2l2.5 11.5a2 2 0 0 0 2 1.5h7.5a2 2 0 0 0 2-1.5L21 8H6" />
+          <circle cx="10" cy="20.5" r="1" />
+          <circle cx="17" cy="20.5" r="1" />
+        </Wrap>
+      );
+
+    case 'sim_operators':
+      // Сотовый телефон с сигналом
+      return (
+        <Wrap className={className}>
+          <rect x="7" y="3" width="10" height="18" rx="2" />
+          <line x1="11" y1="18" x2="13" y2="18" />
+          <path d="M19 8l1.5 1.5a4 4 0 0 1 0 5L19 16" />
+        </Wrap>
+      );
+
     default:
       return (
         <Wrap className={className}>

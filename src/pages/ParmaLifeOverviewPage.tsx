@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { useParmaLife } from '../hooks/useParmaLife';
 import { ParmaIcon } from '../components/ParmaIcon';
+import { HomeAddressInput } from '../components/HomeAddressInput';
 
 export default function ParmaLifeOverviewPage() {
   const navigate = useNavigate();
@@ -52,8 +53,13 @@ export default function ParmaLifeOverviewPage() {
         <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
         <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
         <p className="font-serif text-cream text-lg">Места Пармы на карте</p>
-        <p className="font-serif text-cream/60 text-sm mt-1">Комуна, Questura, ASL, магазины — с маршрутом</p>
+        <p className="font-serif text-cream/60 text-sm mt-1">Корпуса UniPR, документы, здоровье, жильё</p>
       </button>
+
+      {/* Мой адрес — фиксируется на карте Loci */}
+      <div className="mx-6 mt-4">
+        <HomeAddressInput />
+      </div>
 
       {/* Карточки подразделов */}
       <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">Что нужно знать</h3>
