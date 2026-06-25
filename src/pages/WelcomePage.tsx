@@ -42,25 +42,31 @@ export default function WelcomePage() {
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
-      {/* HERO: Ciao + слоган + описание — занимают верх */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-24 mb-8">
+      {/* HERO: Ciao + слоган + описание — единый блок с правильным ритмом.
+          Принципы: каждый следующий уровень меньше и тише; интервалы пропорциональны размеру шрифта. */}
+      <div className="relative z-10 flex flex-col items-center text-center mt-20">
         <h1
-          className="font-serif text-cream leading-none mb-8 italic"
+          className="font-serif text-cream leading-none italic"
           style={{
-            fontSize: 'clamp(64px, 22vw, 96px)',
+            fontSize: 'clamp(60px, 20vw, 88px)',
             fontWeight: 200,
             letterSpacing: '0.08em',
           }}
         >
           Ciao!
         </h1>
-        <p className="font-serif text-navy text-xl font-semibold leading-snug">
+
+        {/* Тонкая золотая чёрточка-разделитель — связывает Ciao и слоган */}
+        <span className="block w-10 h-px bg-gold/60 mt-6 mb-6" />
+
+        <p className="font-serif text-navy text-lg font-semibold leading-tight">
           Путь в Парму —
         </p>
-        <p className="font-serif text-gold text-xl italic leading-snug">
+        <p className="font-serif text-gold text-lg italic leading-tight mt-1">
           через тернии, но не в одиночку.
         </p>
-        <p className="font-serif text-navy/70 text-sm mt-5 max-w-xs">
+
+        <p className="font-serif text-navy/60 text-sm leading-relaxed mt-4 max-w-[260px]">
           Структура, ответы, поддержка для русскоязычных студентов.
         </p>
       </div>
