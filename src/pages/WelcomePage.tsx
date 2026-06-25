@@ -51,7 +51,7 @@ export default function WelcomePage() {
             letterSpacing: '0.04em',
           }}
         >
-          Путь&nbsp;в&nbsp;Парму&nbsp;—
+          Путь&nbsp;в&nbsp;Парму
         </p>
         <p className="font-serif text-cream italic text-lg leading-snug text-center mt-2">
           через тернии, но не в одиночку.
