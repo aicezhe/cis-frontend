@@ -33,23 +33,23 @@ export default function WelcomePage() {
       {/* Тонкая золотая полоса сверху — как акцент бренда */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold/60" />
 
-      {/* Силуэт зданий — фоновый watermark снизу, не доминирует */}
+      {/* Силуэт зданий — фоновый watermark прижат к самому низу */}
       <img
         src={skyline}
         alt=""
         aria-hidden
-        className="absolute bottom-12 left-0 right-0 w-full pointer-events-none select-none"
+        className="absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none"
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
       {/* HERO: Ciao + слоган + описание — занимают верх */}
       <div className="relative z-10 flex flex-col items-center text-center mt-24 mb-8">
         <h1
-          className="font-serif text-cream leading-none mb-8"
+          className="font-serif text-cream leading-none mb-8 italic"
           style={{
             fontSize: 'clamp(64px, 22vw, 96px)',
-            fontWeight: 300,
-            letterSpacing: '0.06em',
+            fontWeight: 200,
+            letterSpacing: '0.08em',
           }}
         >
           Ciao!
@@ -82,8 +82,9 @@ export default function WelcomePage() {
         </button>
       </div>
 
-      {/* Заполнитель снизу — оставляем место под здания-watermark */}
-      <div className="flex-1 min-h-[120px]" />
+      {/* Заполнитель снизу — побольше, чтобы здания шли в самом низу,
+          а кнопка сидела выше с воздухом */}
+      <div className="flex-1 min-h-[180px]" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
       <div className="relative z-10 h-0.5 bg-gold/60 mb-4" />
