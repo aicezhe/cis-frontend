@@ -45,16 +45,16 @@ export default function WelcomePage() {
       {/* HERO: слоган — главный визуальный акцент */}
       <div className="relative z-10 flex flex-col items-center text-center mt-36">
         <p
-          className="font-serif text-navy text-3xl font-bold leading-tight"
-          style={{ letterSpacing: '0.04em' }}
+          className="font-serif text-navy font-bold leading-tight"
+          style={{
+            fontSize: 'clamp(36px, 10vw, 46px)',
+            letterSpacing: '0.04em',
+          }}
         >
           Путь&nbsp;в&nbsp;Парму&nbsp;—
         </p>
-        <p
-          className="font-serif text-cream italic leading-tight mt-2"
-          style={{ fontSize: 'clamp(28px, 8vw, 36px)' }}
-        >
-          через тернии,<br />но не в одиночку.
+        <p className="font-serif text-cream italic text-lg leading-snug mt-1">
+          через тернии, но не в одиночку.
         </p>
 
         {/* Золотая чёрточка-разделитель */}
