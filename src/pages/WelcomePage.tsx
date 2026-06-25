@@ -43,8 +43,15 @@ export default function WelcomePage() {
       />
 
       {/* HERO: Ciao + слоган + описание — занимают верх */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-24 mb-10">
-        <h1 className="font-serif text-cream text-6xl leading-none mb-10">
+      <div className="relative z-10 flex flex-col items-center text-center mt-24 mb-8">
+        <h1
+          className="font-serif text-cream leading-none mb-8"
+          style={{
+            fontSize: 'clamp(64px, 22vw, 96px)',
+            fontWeight: 300,
+            letterSpacing: '0.06em',
+          }}
+        >
           Ciao!
         </h1>
         <p className="font-serif text-navy text-xl font-semibold leading-snug">
@@ -58,8 +65,9 @@ export default function WelcomePage() {
         </p>
       </div>
 
-      {/* CTA: основной — войти, второстепенный — текст-ссылка регистрация */}
-      <div className="relative z-10 flex flex-col items-center mt-auto mb-12 w-full max-w-xs mx-auto">
+      {/* CTA: основной — войти, второстепенный — текст-ссылка регистрация.
+          Подняли выше: чтобы не сидела на здании, а зависала над ним с воздухом. */}
+      <div className="relative z-10 flex flex-col items-center mt-6 w-full max-w-xs mx-auto">
         <button
           onClick={() => navigate('/login')}
           className="w-full font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm active:scale-[0.98] transition-transform"
@@ -73,6 +81,9 @@ export default function WelcomePage() {
           Впервые здесь? Создать аккаунт →
         </button>
       </div>
+
+      {/* Заполнитель снизу — оставляем место под здания-watermark */}
+      <div className="flex-1 min-h-[120px]" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
       <div className="relative z-10 h-0.5 bg-gold/60 mb-4" />
