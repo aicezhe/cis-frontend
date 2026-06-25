@@ -42,19 +42,22 @@ export default function WelcomePage() {
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
-      {/* HERO: слоган — теперь главный визуальный акцент (Ciao убран) */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-28">
-        <p className="font-serif text-navy text-3xl font-bold leading-tight">
-          Путь в Парму —
+      {/* HERO: слоган — главный визуальный акцент */}
+      <div className="relative z-10 flex flex-col items-center text-center mt-36">
+        <p
+          className="font-serif text-navy text-3xl font-bold leading-tight"
+          style={{ letterSpacing: '0.04em' }}
+        >
+          Путь&nbsp;в&nbsp;Парму&nbsp;—
         </p>
         <p
-          className="font-serif text-gold italic leading-tight mt-2"
+          className="font-serif text-cream italic leading-tight mt-2"
           style={{ fontSize: 'clamp(28px, 8vw, 36px)' }}
         >
           через тернии,<br />но не в одиночку.
         </p>
 
-        {/* Тонкая золотая чёрточка-разделитель перед описанием */}
+        {/* Золотая чёрточка-разделитель */}
         <span className="block w-10 h-px bg-gold/60 mt-7 mb-5" />
 
         <p className="font-serif text-navy/60 text-sm leading-relaxed max-w-[260px]">
@@ -62,11 +65,11 @@ export default function WelcomePage() {
         </p>
       </div>
 
-      {/* Заполнитель: толкает CTA ниже к зданиям */}
-      <div className="flex-1 min-h-[100px]" />
+      {/* Заполнитель: толкает CTA вниз, но оставляет место */}
+      <div className="flex-1 min-h-[40px]" />
 
       {/* CTA: войти — primary, регистрация — secondary link */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto mb-8">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
         <button
           onClick={() => navigate('/login')}
           className="w-full font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm active:scale-[0.98] transition-transform"
@@ -81,8 +84,8 @@ export default function WelcomePage() {
         </button>
       </div>
 
-      {/* Резерв снизу под здания-watermark */}
-      <div className="min-h-[140px]" />
+      {/* Резерв снизу под здания-watermark — больше, чтобы CTA поднялась */}
+      <div className="min-h-[220px]" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
       <div className="relative z-10 h-0.5 bg-gold/60 mb-4" />
