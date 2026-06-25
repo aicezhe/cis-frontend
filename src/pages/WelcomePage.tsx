@@ -43,24 +43,24 @@ export default function WelcomePage() {
       />
 
       {/* HERO: слоган — главный визуальный акцент */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-36">
+      <div className="relative z-10 flex flex-col items-center text-center mt-36 px-6">
         <p
-          className="font-serif text-navy font-bold leading-tight"
+          className="font-serif text-navy font-bold leading-tight text-center"
           style={{
-            fontSize: 'clamp(36px, 10vw, 46px)',
+            fontSize: 'clamp(1.8rem, 7vw, 2.8rem)',
             letterSpacing: '0.04em',
           }}
         >
           Путь&nbsp;в&nbsp;Парму&nbsp;—
         </p>
-        <p className="font-serif text-cream italic text-lg leading-snug mt-1">
+        <p className="font-serif text-cream italic text-lg leading-snug text-center mt-2">
           через тернии, но не в одиночку.
         </p>
 
         {/* Золотая чёрточка-разделитель */}
-        <span className="block w-10 h-px bg-gold/60 mt-7 mb-5" />
+        <span className="block bg-gold/60" style={{ width: 40, height: 1, marginTop: 16, marginLeft: 'auto', marginRight: 'auto' }} />
 
-        <p className="font-serif text-navy/60 text-sm leading-relaxed max-w-[260px]">
+        <p className="font-serif text-navy/60 text-sm leading-relaxed text-center mt-6 max-w-[260px]">
           Структура, ответы, поддержка для русскоязычных студентов.
         </p>
       </div>
