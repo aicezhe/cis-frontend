@@ -43,7 +43,7 @@ export default function WelcomePage() {
       />
 
       {/* HERO: слоган — главный визуальный акцент */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-36 px-6">
+      <div className="relative z-10 flex flex-col items-center text-center mt-48 px-6">
         <p
           className="font-serif text-navy font-bold leading-tight text-center"
           style={{
@@ -65,8 +65,8 @@ export default function WelcomePage() {
         </p>
       </div>
 
-      {/* Заполнитель: толкает CTA вниз, но оставляет место */}
-      <div className="flex-1 min-h-[40px]" />
+      {/* Заполнитель: совсем небольшой — пустого центра не хотим */}
+      <div className="flex-1 min-h-[16px]" />
 
       {/* CTA: войти — primary, регистрация — secondary link */}
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
