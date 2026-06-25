@@ -42,38 +42,31 @@ export default function WelcomePage() {
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
-      {/* HERO: Ciao + слоган + описание — единый блок с правильным ритмом.
-          Принципы: каждый следующий уровень меньше и тише; интервалы пропорциональны размеру шрифта. */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-20">
-        <h1
-          className="font-serif text-cream leading-none italic"
-          style={{
-            fontSize: 'clamp(60px, 20vw, 88px)',
-            fontWeight: 200,
-            letterSpacing: '0.08em',
-          }}
-        >
-          Ciao!
-        </h1>
-
-        {/* Тонкая золотая чёрточка-разделитель — связывает Ciao и слоган */}
-        <span className="block w-10 h-px bg-gold/60 mt-6 mb-6" />
-
-        <p className="font-serif text-navy text-lg font-semibold leading-tight">
+      {/* HERO: слоган — теперь главный визуальный акцент (Ciao убран) */}
+      <div className="relative z-10 flex flex-col items-center text-center mt-28">
+        <p className="font-serif text-navy text-3xl font-bold leading-tight">
           Путь в Парму —
         </p>
-        <p className="font-serif text-gold text-lg italic leading-tight mt-1">
-          через тернии, но не в одиночку.
+        <p
+          className="font-serif text-gold italic leading-tight mt-2"
+          style={{ fontSize: 'clamp(28px, 8vw, 36px)' }}
+        >
+          через тернии,<br />но не в одиночку.
         </p>
 
-        <p className="font-serif text-navy/60 text-sm leading-relaxed mt-4 max-w-[260px]">
+        {/* Тонкая золотая чёрточка-разделитель перед описанием */}
+        <span className="block w-10 h-px bg-gold/60 mt-7 mb-5" />
+
+        <p className="font-serif text-navy/60 text-sm leading-relaxed max-w-[260px]">
           Структура, ответы, поддержка для русскоязычных студентов.
         </p>
       </div>
 
-      {/* CTA: основной — войти, второстепенный — текст-ссылка регистрация.
-          Подняли выше: чтобы не сидела на здании, а зависала над ним с воздухом. */}
-      <div className="relative z-10 flex flex-col items-center mt-6 w-full max-w-xs mx-auto">
+      {/* Заполнитель: толкает CTA ниже к зданиям */}
+      <div className="flex-1 min-h-[100px]" />
+
+      {/* CTA: войти — primary, регистрация — secondary link */}
+      <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto mb-8">
         <button
           onClick={() => navigate('/login')}
           className="w-full font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm active:scale-[0.98] transition-transform"
@@ -88,9 +81,8 @@ export default function WelcomePage() {
         </button>
       </div>
 
-      {/* Заполнитель снизу — побольше, чтобы здания шли в самом низу,
-          а кнопка сидела выше с воздухом */}
-      <div className="flex-1 min-h-[180px]" />
+      {/* Резерв снизу под здания-watermark */}
+      <div className="min-h-[140px]" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
       <div className="relative z-10 h-0.5 bg-gold/60 mb-4" />
