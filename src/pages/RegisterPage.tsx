@@ -136,7 +136,7 @@ export default function RegisterPage() {
       } catch {
         // не критично для регистрации — профиль допишется позже в онбординге
       }
-      navigate('/change-stage');
+      setStep(7);  // показываем экран "проверь почту"
     } catch (e) {
       const raw = e instanceof ApiError ? e.message : 'Не удалось зарегистрироваться';
       // Pydantic ошибка валидации (длинный JSON) — детектим по упоминанию полей
@@ -182,20 +182,22 @@ export default function RegisterPage() {
         </span>
       </div>
 
-      <div className="flex items-center gap-3 px-6 mt-10">
-        <button onClick={goBack} className="text-navy text-2xl">←</button>
-        <div className="flex gap-2 flex-1">
-          {(country === 'ru' ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 6]).map((n) => (
-            <div
-              key={n}
-              className={
-                'h-1.5 flex-1 rounded-full ' +
-                (n <= step ? 'bg-navy' : 'bg-gold/40')
-              }
-            />
-          ))}
+      {step < 7 && (
+        <div className="flex items-center gap-3 px-6 mt-10">
+          <button onClick={goBack} className="text-navy text-2xl">←</button>
+          <div className="flex gap-2 flex-1">
+            {(country === 'ru' ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 6]).map((n) => (
+              <div
+                key={n}
+                className={
+                  'h-1.5 flex-1 rounded-full ' +
+                  (n <= step ? 'bg-navy' : 'bg-gold/40')
+                }
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex flex-col items-center mt-32 px-8">
 
@@ -321,6 +323,28 @@ export default function RegisterPage() {
           </>
         )}
 
+        {step === 7 && (
+          <div className="flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-navy/10 flex items-center justify-center mb-6">
+              <Mail size={28} className="text-navy" />
+            </div>
+            <h1 className="font-serif text-navy text-3xl mb-4">Проверь почту</h1>
+            <p className="font-serif text-navy/60 text-sm leading-relaxed mb-2">
+              Мы отправили письмо на
+            </p>
+            <p className="font-serif text-navy font-bold text-base mb-6">{email}</p>
+            <p className="font-serif text-navy/50 text-xs leading-relaxed mb-10">
+              Нажми на ссылку в письме, чтобы подтвердить аккаунт. Можешь сделать это потом — приложение уже открыто.
+            </p>
+            <button
+              onClick={() => navigate('/change-stage')}
+              className="font-serif text-cream bg-navy rounded-full px-10 py-3 text-base"
+            >
+              Продолжить
+            </button>
+          </div>
+        )}
+
         {step === 6 && (
           <>
             <h1 className="font-serif text-navy text-3xl mb-12 text-center">
@@ -374,22 +398,24 @@ export default function RegisterPage() {
           </>
         )}
 
-        {error && (
+        {step < 7 && error && (
           <p className="font-serif text-sm italic mt-4 text-center" style={{ color: '#a8332a' }}>
             {error}
           </p>
         )}
 
-        <button
-          onClick={goNext}
-          disabled={!nextEnabled || loading || checking}
-          className={
-            'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
-            (nextEnabled && !loading && !checking ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
-          }
-        >
-          {loading || checking ? '...' : 'ДАЛЕЕ'}
-        </button>
+        {step < 7 && (
+          <button
+            onClick={goNext}
+            disabled={!nextEnabled || loading || checking}
+            className={
+              'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
+              (nextEnabled && !loading && !checking ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
+            }
+          >
+            {loading || checking ? '...' : 'ДАЛЕЕ'}
+          </button>
+        )}
 
       </div>
 
