@@ -80,7 +80,8 @@ export default function LauraPage() {
         isFirstMessage.current = true;
       }
     } catch {
-      // сеть или 401 — показываем пустой чат
+      // таблица ещё не создана или сеть — работаем без сохранения
+      setMessages([INITIAL_GREETING]);
     } finally {
       setChatsLoading(false);
     }
@@ -149,7 +150,7 @@ export default function LauraPage() {
   // ── основная функция: отправить сообщение + стрим ответ ──
   async function sendMessage(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || isStreaming || !activeChatId) return;
+    if (!trimmed || isStreaming) return;
 
     setError(null);
 
@@ -174,7 +175,7 @@ export default function LauraPage() {
         );
       }
 
-      // Сохраняем в БД
+      // Сохраняем в БД (если чат создан)
       if (lauraText && activeChatId) {
         const cid = activeChatId;
         void appendMessages(cid, [
