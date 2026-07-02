@@ -3,7 +3,7 @@
 export type MessageRole = 'user' | 'laura';
 
 export type Message = {
-  id: number;
+  id: string | number;  // number для локальных, UUID-string для загруженных из БД
   from: MessageRole;
   text: string;
   ts?: number;
