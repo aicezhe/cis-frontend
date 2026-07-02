@@ -15,6 +15,8 @@ import ChangeCoursePage from './pages/ChangeCoursePage';
 import CoursePage from './pages/CoursePage';
 import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import ChangeEmailPage from './pages/ChangeEmailPage';
 import FoundationOverviewPage from './pages/FoundationOverviewPage';
 import ProgramOverviewPage from './pages/ProgramOverviewPage';
 import ProgramStepsPage from './pages/ProgramStepsPage';
@@ -74,6 +76,8 @@ export default function App() {
       <Route path="/course/:id" element={<CoursePage />} />
       <Route path="/scholarship" element={<ScholarshipPage />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/settings/change-password" element={<ChangePasswordPage />} />
+      <Route path="/settings/change-email" element={<ChangeEmailPage />} />
     </Routes>
   );
 }

@@ -8,8 +8,9 @@ import { cacheAvatar, fileToAvatarB64, loadCachedAvatar } from '../lib/avatar';
 export default function SettingsPage() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState(true);
-  const [geolocation, setGeolocation] = useState(false);
-  const [language, setLanguage] = useState('Русский');
+  const [geolocation, setGeolocation] = useState(
+    !!(localStorage.getItem('cispr_geo_lat') && localStorage.getItem('cispr_geo_lng'))
+  );
 
   const [nickname, setNickname] = useState(
     localStorage.getItem('cispr_nickname') || 'Aicezhe',
@@ -185,12 +186,18 @@ export default function SettingsPage() {
       </h3>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
 
-        <button className="w-full flex items-center justify-between px-5 py-4 border-b border-navy/10">
+        <button
+          onClick={() => navigate('/settings/change-password')}
+          className="w-full flex items-center justify-between px-5 py-4 border-b border-navy/10"
+        >
           <span className="font-serif text-navy text-base">Сменить пароль</span>
           <span className="text-navy/60 text-xl">→</span>
         </button>
 
-        <button className="w-full flex items-center justify-between px-5 py-4">
+        <button
+          onClick={() => navigate('/settings/change-email')}
+          className="w-full flex items-center justify-between px-5 py-4"
+        >
           <span className="font-serif text-navy text-base">Изменить почту</span>
           <span className="text-navy/60 text-xl">→</span>
         </button>
@@ -277,13 +284,28 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between px-5 py-4 border-b border-navy/10">
+        <div className="flex items-center justify-between px-5 py-4">
           <div>
             <span className="font-serif text-navy text-base block">Геолокация</span>
             <span className="font-serif text-gold text-xs italic">для карты Loci</span>
           </div>
           <button
-            onClick={() => setGeolocation(!geolocation)}
+            onClick={() => {
+              if (geolocation) {
+                localStorage.removeItem('cispr_geo_lat');
+                localStorage.removeItem('cispr_geo_lng');
+                setGeolocation(false);
+              } else {
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => {
+                    localStorage.setItem('cispr_geo_lat', String(pos.coords.latitude));
+                    localStorage.setItem('cispr_geo_lng', String(pos.coords.longitude));
+                    setGeolocation(true);
+                  },
+                  () => { /* user denied — toggle stays off */ }
+                );
+              }
+            }}
             className={
               'w-12 h-7 rounded-full relative transition-colors ' +
               (geolocation ? 'bg-navy' : 'bg-navy/20')
@@ -295,17 +317,6 @@ export default function SettingsPage() {
             } />
           </button>
         </div>
-
-        <button
-          onClick={() => {
-            const next = language === 'Русский' ? 'Italiano' : language === 'Italiano' ? 'English' : 'Русский';
-            setLanguage(next);
-          }}
-          className="w-full flex items-center justify-between px-5 py-4"
-        >
-          <span className="font-serif text-navy text-base">Язык</span>
-          <span className="font-serif text-gold text-base">{language}</span>
-        </button>
 
       </div>
 
