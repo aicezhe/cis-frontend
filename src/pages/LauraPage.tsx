@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
 import { ApiError, isAuthed } from '../lib/api';
-import { INITIAL_GREETING, getLauraProfile, streamLaura } from '../lib/laura';
+import { INITIAL_GREETING, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
+import { Paperclip, X, FileText, Image as ImageIcon } from 'lucide-react';
 import {
   type Chat,
   appendMessages,
@@ -55,8 +56,38 @@ export default function LauraPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [attachment, setAttachment] = useState<LauraAttachment | null>(null);
+  const [attachmentLoading, setAttachmentLoading] = useState(false);
+
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const ALLOWED_ATTACHMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+  async function handleAttachmentPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (!file) return;
+    setError(null);
+    if (!ALLOWED_ATTACHMENT_TYPES.includes(file.type)) {
+      setError('Поддерживаются PDF и изображения (JPEG, PNG, GIF, WebP)');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      setError('Файл больше 15 МБ — выбери поменьше');
+      return;
+    }
+    setAttachmentLoading(true);
+    try {
+      const att = await fileToAttachment(file);
+      setAttachment(att);
+    } catch {
+      setError('Не удалось прочитать файл');
+    } finally {
+      setAttachmentLoading(false);
+    }
+  }
   const urlQHandled = useRef(false);
   const isFirstMessage = useRef(true);
 
@@ -154,13 +185,20 @@ export default function LauraPage() {
 
     setError(null);
 
-    const userMsg: Message = { id: Date.now(), from: 'user', text: trimmed, ts: Date.now() };
+    const userMsg: Message = {
+      id: Date.now(),
+      from: 'user',
+      text: attachment ? `${trimmed}\n\n📎 ${attachment.filename}` : trimmed,
+      ts: Date.now(),
+    };
     const lauraMsgId = Date.now() + 1;
     const lauraMsg: Message = { id: lauraMsgId, from: 'laura', text: '', ts: Date.now() };
 
     const historyForRequest = [...messages, userMsg];
+    const attachmentForRequest = attachment;
     setMessages([...historyForRequest, lauraMsg]);
     setInput('');
+    setAttachment(null);
     autoGrow(inputRef.current);
     setIsStreaming(true);
 
@@ -168,7 +206,7 @@ export default function LauraPage() {
 
     try {
       const profile = getLauraProfile();
-      for await (const chunk of streamLaura(historyForRequest, profile)) {
+      for await (const chunk of streamLaura(historyForRequest, profile, attachmentForRequest)) {
         lauraText += chunk;
         setMessages((prev) =>
           prev.map((m) => (m.id === lauraMsgId ? { ...m, text: m.text + chunk } : m)),
@@ -421,13 +459,45 @@ export default function LauraPage() {
 
       {/* Input */}
       <div className="px-4 pb-4 flex-shrink-0">
+        {attachment && (
+          <div className="flex items-center gap-2 bg-soft-cream border border-navy/20 rounded-2xl px-4 py-2 mb-2">
+            {attachment.media_type === 'application/pdf' ? (
+              <FileText size={16} className="text-navy/60 flex-shrink-0" />
+            ) : (
+              <ImageIcon size={16} className="text-navy/60 flex-shrink-0" />
+            )}
+            <span className="font-serif text-navy text-xs truncate flex-1">{attachment.filename}</span>
+            <button
+              onClick={() => setAttachment(null)}
+              className="text-navy/40 hover:text-navy flex-shrink-0"
+              aria-label="Убрать файл"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
         <div className="flex items-end gap-2 bg-soft-cream border border-navy/20 rounded-3xl px-5 py-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf,image/jpeg,image/png,image/gif,image/webp"
+            onChange={handleAttachmentPick}
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isStreaming || chatsLoading || attachmentLoading}
+            className="text-navy/50 hover:text-navy flex-shrink-0 disabled:opacity-40"
+            aria-label="Прикрепить файл"
+          >
+            <Paperclip size={18} />
+          </button>
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
             onKeyDown={handleKeyDown}
-            placeholder={isStreaming ? 'Лаура отвечает…' : 'Спроси что-нибудь…'}
+            placeholder={isStreaming ? 'Лаура отвечает…' : attachmentLoading ? 'Загружаю файл…' : 'Спроси что-нибудь…'}
             disabled={isStreaming || chatsLoading}
             rows={1}
             autoComplete="off"

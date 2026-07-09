@@ -58,6 +58,12 @@ export function getLauraProfile(): LauraProfile {
 // Тело запроса к бэку — массив сообщений в формате Anthropic + опциональный профиль.
 type BackendMessage = { role: 'user' | 'assistant'; content: string };
 
+export interface LauraAttachment {
+  filename: string;
+  media_type: string;
+  data_b64: string;
+}
+
 function toBackendMessages(messages: Message[]): BackendMessage[] {
   return messages.map((m) => ({
     role: m.from === 'user' ? 'user' : 'assistant',
@@ -65,15 +71,31 @@ function toBackendMessages(messages: Message[]): BackendMessage[] {
   }));
 }
 
+/** Прочитать File → base64 (без "data:...;base64," префикса) + определить media_type. */
+export async function fileToAttachment(file: File): Promise<LauraAttachment> {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('Не удалось прочитать файл'));
+    reader.readAsDataURL(file);
+  });
+  const b64 = dataUrl.split(',')[1] ?? '';
+  return { filename: file.name, media_type: file.type, data_b64: b64 };
+}
+
 /**
  * Стримит ответ Лауры. Возвращает async-итератор по текстовым чанкам.
  * Использовать через `for await (const chunk of streamLaura(...)) { ... }`.
+ *
+ * `attachment` (если есть) прикрепляется только к последнему (текущему) сообщению —
+ * разово, без сохранения на сервере.
  *
  * Throws ApiError при HTTP-ошибках (401 → надо логиниться, 429 → лимит, 503 → выключена).
  */
 export async function* streamLaura(
   messages: Message[],
   profile?: LauraProfile,
+  attachment?: LauraAttachment | null,
 ): AsyncGenerator<string, void, void> {
   const token = getToken();
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -87,6 +109,7 @@ export async function* streamLaura(
       body: JSON.stringify({
         messages: toBackendMessages(messages),
         profile: profile ?? null,
+        attachment: attachment ?? null,
       }),
     });
   } catch {
