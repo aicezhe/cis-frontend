@@ -17,7 +17,7 @@ import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import ChangeEmailPage from './pages/ChangeEmailPage';
-import VerifyEmailPage from './pages/VerifyEmailPage';
+import VerifyCodePage from './pages/VerifyCodePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import FoundationOverviewPage from './pages/FoundationOverviewPage';
@@ -81,7 +81,7 @@ export default function App() {
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/settings/change-password" element={<ChangePasswordPage />} />
       <Route path="/settings/change-email" element={<ChangeEmailPage />} />
-      <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/verify-code" element={<VerifyCodePage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
     </Routes>

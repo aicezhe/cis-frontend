@@ -43,6 +43,10 @@ export default function LoginPage() {
       navigate('/path');
     } catch (e) {
       const msg = e instanceof ApiError ? e.message : 'Не удалось войти';
+      if (msg === 'EMAIL_NOT_VERIFIED') {
+        navigate('/verify-code', { state: { email: email.trim(), mode: 'login' } });
+        return;
+      }
       setError(/401|invalid|incorrect|неверн/i.test(msg) ? 'Неверный email или пароль' : msg);
     } finally {
       setLoading(false);

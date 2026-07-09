@@ -145,16 +145,19 @@ export const api = {
     });
   },
 
-  // Регистрация + автологин: возвращает токен и юзера
-  async registerAndLogin(
-    email: string,
-    username: string,
-    password: string,
-  ): Promise<{ user: User; token: string }> {
-    const user = await this.register(email, username, password);
-    const { access_token } = await this.login(email, password);
-    setToken(access_token);
-    return { user, token: access_token };
+  // Код подтверждения регистрации — обязателен, без него аккаунт не активен
+  async verifyRegistrationCode(email: string, code: string): Promise<TokenResponse> {
+    return request<TokenResponse>('/api/v1/auth/verify-registration', {
+      method: 'POST',
+      body: { email, code },
+    });
+  },
+
+  async resendVerificationCode(email: string): Promise<{ ok: boolean }> {
+    return request<{ ok: boolean }>('/api/v1/auth/resend-verification', {
+      method: 'POST',
+      body: { email },
+    });
   },
 
   // --- Courses (/api) ---

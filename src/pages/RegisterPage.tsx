@@ -104,40 +104,15 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      await api.registerAndLogin(email.trim(), nickname.trim(), password);
-      // новый аккаунт начинает с чистого листа: убираем прогресс/стадию/курс,
-      // оставшиеся от предыдущих сессий (иначе в кабинете всплывают ложные 100%)
-      [
-        'cispr_passed_quiz',
-        'cispr_course_id',
-        'cispr_course_name',
-        'cispr_quiz_level',
-        'cispr_quiz_lang',
-        'cispr_quiz_dept',
-        'cispr_avatar',
-      ].forEach((k) => localStorage.removeItem(k));
-      Object.keys(localStorage)
-        .filter((k) => k.startsWith('cispr_done_'))
-        .forEach((k) => localStorage.removeItem(k));
-      // сохраняем для мгновенного отображения в шапке/настройках
-      localStorage.setItem('cispr_email', email.trim());
-      localStorage.setItem('cispr_nickname', nickname.trim());
-      localStorage.setItem('cispr_age', age);
-      // страна нужна, чтобы подобрать страновой датасет легализации (Foundation)
-      localStorage.setItem('cispr_country', country);
-      // город нужен для автоопределения консульского округа (раздел Виза, только РФ)
-      if (country === 'ru' && city.trim()) {
-        localStorage.setItem('cispr_city', city.trim());
-      } else {
-        localStorage.removeItem('cispr_city');
-      }
-      // возраст уходит в профиль на бэкенд
-      try {
-        await api.updateProfile({ age: parseInt(age) || null });
-      } catch {
-        // не критично для регистрации — профиль допишется позже в онбординге
-      }
-      setStep(7);  // показываем экран "проверь почту"
+      await api.register(email.trim(), nickname.trim(), password);
+      // регистрация ещё не завершена — аккаунт неактивен, пока не введён код из письма
+      navigate('/verify-code', {
+        state: {
+          email: email.trim(),
+          mode: 'register',
+          registerData: { nickname: nickname.trim(), age, country, city },
+        },
+      });
     } catch (e) {
       const raw = e instanceof ApiError ? e.message : 'Не удалось зарегистрироваться';
       // Pydantic ошибка валидации (длинный JSON) — детектим по упоминанию полей
@@ -189,22 +164,20 @@ export default function RegisterPage() {
         </span>
       </div>
 
-      {step < 7 && (
-        <div className="flex items-center gap-3 px-6 mt-10">
-          <button onClick={goBack} className="text-navy text-2xl">←</button>
-          <div className="flex gap-2 flex-1">
-            {(country === 'ru' ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 6]).map((n) => (
-              <div
-                key={n}
-                className={
-                  'h-1.5 flex-1 rounded-full ' +
-                  (n <= step ? 'bg-navy' : 'bg-gold/40')
-                }
-              />
-            ))}
-          </div>
+      <div className="flex items-center gap-3 px-6 mt-10">
+        <button onClick={goBack} className="text-navy text-2xl">←</button>
+        <div className="flex gap-2 flex-1">
+          {(country === 'ru' ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 6]).map((n) => (
+            <div
+              key={n}
+              className={
+                'h-1.5 flex-1 rounded-full ' +
+                (n <= step ? 'bg-navy' : 'bg-gold/40')
+              }
+            />
+          ))}
         </div>
-      )}
+      </div>
 
       <div className="flex flex-col items-center mt-32 px-8">
 
@@ -330,28 +303,6 @@ export default function RegisterPage() {
           </>
         )}
 
-        {step === 7 && (
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-navy/10 flex items-center justify-center mb-6">
-              <Mail size={28} className="text-navy" />
-            </div>
-            <h1 className="font-serif text-navy text-3xl mb-4">Проверь почту</h1>
-            <p className="font-serif text-navy/60 text-sm leading-relaxed mb-2">
-              Мы отправили письмо на
-            </p>
-            <p className="font-serif text-navy font-bold text-base mb-6">{email}</p>
-            <p className="font-serif text-navy/50 text-xs leading-relaxed mb-10">
-              Нажми на ссылку в письме, чтобы подтвердить аккаунт. Можешь сделать это потом — приложение уже открыто.
-            </p>
-            <button
-              onClick={() => navigate('/change-stage')}
-              className="font-serif text-cream bg-navy rounded-full px-10 py-3 text-base"
-            >
-              Продолжить
-            </button>
-          </div>
-        )}
-
         {step === 6 && (
           <>
             <h1 className="font-serif text-navy text-3xl mb-12 text-center">
@@ -405,24 +356,22 @@ export default function RegisterPage() {
           </>
         )}
 
-        {step < 7 && error && (
+        {error && (
           <p className="font-serif text-sm italic mt-4 text-center" style={{ color: '#a8332a' }}>
             {error}
           </p>
         )}
 
-        {step < 7 && (
-          <button
-            onClick={goNext}
-            disabled={!nextEnabled || loading || checking}
-            className={
-              'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
-              (nextEnabled && !loading && !checking ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
-            }
-          >
-            {loading || checking ? '...' : 'ДАЛЕЕ'}
-          </button>
-        )}
+        <button
+          onClick={goNext}
+          disabled={!nextEnabled || loading || checking}
+          className={
+            'font-serif text-cream text-lg rounded-full px-10 py-3 mt-6 ' +
+            (nextEnabled && !loading && !checking ? 'bg-navy' : 'bg-navy/30 cursor-not-allowed')
+          }
+        >
+          {loading || checking ? '...' : 'ДАЛЕЕ'}
+        </button>
 
       </div>
 

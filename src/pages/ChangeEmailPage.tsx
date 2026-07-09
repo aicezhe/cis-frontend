@@ -48,13 +48,20 @@ export default function ChangeEmailPage() {
       <div className="min-h-screen max-w-md mx-auto bg-cream flex flex-col items-center justify-center px-8">
         <p className="font-serif text-navy text-2xl font-bold mb-3">Email изменён</p>
         <p className="font-serif text-navy/60 text-sm text-center mb-8">
-          Теперь используй <span className="text-navy font-bold">{newEmail}</span> для входа.
+          На <span className="text-navy font-bold">{newEmail}</span> отправлен код подтверждения.
+          Подтверди его сейчас — без этого при следующем входе понадобится ввести код заново.
         </p>
         <button
-          onClick={() => navigate('/settings')}
+          onClick={() => navigate('/verify-code', { state: { email: newEmail.trim(), mode: 'login' } })}
           className="font-serif text-cream bg-navy rounded-full px-8 py-3"
         >
-          Готово
+          Ввести код
+        </button>
+        <button
+          onClick={() => navigate('/settings')}
+          className="font-serif text-navy/60 text-sm underline mt-4"
+        >
+          Позже
         </button>
       </div>
     );
