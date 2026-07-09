@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
 import { ApiError, isAuthed } from '../lib/api';
 import { INITIAL_GREETING, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
-import { Paperclip, X, FileText, Image as ImageIcon } from 'lucide-react';
+import { Paperclip, X, FileText, Image as ImageIcon, Pencil, Check } from 'lucide-react';
 import {
   type Chat,
   appendMessages,
@@ -59,9 +59,13 @@ export default function LauraPage() {
   const [attachment, setAttachment] = useState<LauraAttachment | null>(null);
   const [attachmentLoading, setAttachmentLoading] = useState(false);
 
+  const [renamingChatId, setRenamingChatId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const renameInputRef = useRef<HTMLInputElement>(null);
 
   const ALLOWED_ATTACHMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
@@ -157,6 +161,31 @@ export default function LauraPage() {
       setSidebarOpen(false);
       setError(null);
     } catch { /* ignore */ }
+  }
+
+  function startRenaming(chat: Chat) {
+    setRenamingChatId(chat.id);
+    setRenameValue(chat.title);
+    // ждём рендера инпута, потом фокусируемся и выделяем текст
+    setTimeout(() => renameInputRef.current?.select(), 0);
+  }
+
+  async function commitRename() {
+    const chatId = renamingChatId;
+    const title = renameValue.trim();
+    setRenamingChatId(null);
+    if (!chatId) return;
+    const original = chats.find((c) => c.id === chatId)?.title;
+    if (!title || title === original) return;
+    try {
+      const updated = await renameChat(chatId, title.slice(0, 200));
+      setChats((prev) => prev.map((c) => (c.id === chatId ? updated : c)));
+    } catch { /* не критично — оставляем старое название */ }
+  }
+
+  function handleRenameKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') { e.preventDefault(); void commitRename(); }
+    if (e.key === 'Escape') { e.preventDefault(); setRenamingChatId(null); }
   }
 
   async function handleDeleteChat(chatId: string) {
@@ -349,6 +378,7 @@ export default function LauraPage() {
         <div className="flex-1 overflow-y-auto px-3 pb-4 flex flex-col gap-1">
           {chats.map((chat) => {
             const isActive = chat.id === activeChatId;
+            const isRenaming = renamingChatId === chat.id;
             return (
               <div
                 key={chat.id}
@@ -356,26 +386,59 @@ export default function LauraPage() {
                   'group flex items-center gap-2 px-3 py-2.5 rounded-2xl cursor-pointer transition-colors ' +
                   (isActive ? 'bg-navy/10' : 'hover:bg-soft-cream')
                 }
-                onClick={() => void selectChatById(chat.id)}
+                onClick={() => { if (!isRenaming) void selectChatById(chat.id); }}
               >
                 <div className="flex-1 min-w-0">
-                  <p className={
-                    'font-serif text-sm truncate ' +
-                    (isActive ? 'text-navy font-bold' : 'text-navy/80')
-                  }>
-                    {chat.title}
-                  </p>
+                  {isRenaming ? (
+                    <input
+                      ref={renameInputRef}
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      onKeyDown={handleRenameKeyDown}
+                      onBlur={() => void commitRename()}
+                      onClick={(e) => e.stopPropagation()}
+                      autoFocus
+                      maxLength={200}
+                      className="font-serif text-navy text-sm font-bold bg-cream border border-navy/30 rounded-lg px-2 py-0.5 w-full outline-none"
+                    />
+                  ) : (
+                    <p className={
+                      'font-serif text-sm truncate ' +
+                      (isActive ? 'text-navy font-bold' : 'text-navy/80')
+                    }>
+                      {chat.title}
+                    </p>
+                  )}
                   <p className="font-serif text-xs text-navy/40 mt-0.5">
                     {formatChatDate(chat.updated_at)}
                   </p>
                 </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); void handleDeleteChat(chat.id); }}
-                  className="opacity-0 group-hover:opacity-100 text-navy/30 hover:text-red-500 transition-all text-base leading-none flex-shrink-0"
-                  aria-label="Удалить чат"
-                >
-                  ✕
-                </button>
+                {isRenaming ? (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); void commitRename(); }}
+                    className="text-navy/50 hover:text-navy flex-shrink-0"
+                    aria-label="Сохранить название"
+                  >
+                    <Check size={15} />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); startRenaming(chat); }}
+                      className="opacity-0 group-hover:opacity-100 text-navy/30 hover:text-navy transition-all flex-shrink-0"
+                      aria-label="Переименовать чат"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); void handleDeleteChat(chat.id); }}
+                      className="opacity-0 group-hover:opacity-100 text-navy/30 hover:text-red-500 transition-all text-base leading-none flex-shrink-0"
+                      aria-label="Удалить чат"
+                    >
+                      ✕
+                    </button>
+                  </>
+                )}
               </div>
             );
           })}
