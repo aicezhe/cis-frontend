@@ -96,13 +96,15 @@ const sectionsData: Record<string, any> = {
     title: 'ПЕРЕЕЗД',
     titleFull: 'Переезд',
     icon: iconTravel,
-    budget: 1700,
+    // Сумма шагов ниже (500+450+1450+0+136+0). Permesso — marca da bollo (€16) + KIT (€120),
+    // см. relocation_ru_seed.json → permesso_di_soggiorno.steps_ru.
+    budget: 2536,
     steps: [
       { num: 1, title: 'Билеты в Италию', deadline: 'актуально', price: '€500', substeps: [] },
       { num: 2, title: 'Поиск жилья', deadline: 'актуально', price: '€450', substeps: [] },
       { num: 3, title: 'Первый месяц + депозит', deadline: '14 дней', price: '€1450', substeps: [] },
       { num: 4, title: 'Codice fiscale', deadline: '7 дней', price: '€0', substeps: [] },
-      { num: 5, title: 'Permesso di soggiorno', deadline: '8 дней', price: '€60', substeps: [] },
+      { num: 5, title: 'Permesso di soggiorno', deadline: '8 дней', price: '€136', substeps: [] },
       { num: 6, title: 'Банковский счёт', deadline: '14 дней', price: '€0', substeps: [] },
     ],
   },
