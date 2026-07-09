@@ -27,7 +27,7 @@ export default function ParmaLifeOverviewPage() {
 
       {/* Шапка */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-right">
+        <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">В Парме</h1>
           <p className="font-serif text-gold text-lg italic mt-0.5">жизнь после переезда</p>
         </div>

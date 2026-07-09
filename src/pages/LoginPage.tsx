@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { api, ApiError, setToken } from '../lib/api';
+import { cacheAvatar } from '../lib/avatar';
 
 // Та же звёздная композиция что на WelcomePage — для единства входа в приложение
 const stars = [
@@ -36,6 +37,7 @@ export default function LoginPage() {
       const user = await api.me();
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
+      cacheAvatar(user.avatar_b64 || null);
       if (user.course_id) localStorage.setItem('cispr_course_id', user.course_id);
       if (user.program_level) localStorage.setItem('cispr_program', user.program_level);
       navigate('/path');
@@ -137,6 +139,13 @@ export default function LoginPage() {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
+
+        <button
+          onClick={() => navigate('/forgot-password')}
+          className="font-serif text-navy/60 text-xs underline self-end -mt-1"
+        >
+          Забыли пароль?
+        </button>
 
         {error && (
           <p className="font-serif text-xs italic text-center" style={{ color: '#a8332a' }}>

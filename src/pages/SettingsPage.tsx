@@ -11,12 +11,14 @@ export default function SettingsPage() {
   const [geolocation, setGeolocation] = useState(
     !!(localStorage.getItem('cispr_geo_lat') && localStorage.getItem('cispr_geo_lng'))
   );
+  // Push-уведомления не имеют смысла в обычной вкладке браузера — только в установленном PWA
+  const isInstalledApp = window.matchMedia('(display-mode: standalone)').matches;
 
   const [nickname, setNickname] = useState(
     localStorage.getItem('cispr_nickname') || 'Aicezhe',
   );
   const [email, setEmail] = useState(
-    localStorage.getItem('cispr_email') || 'anna@gmail.com',
+    localStorage.getItem('cispr_email') || 'urmail@exmpl.com',
   );
   const [avatar, setAvatar] = useState<string | null>(loadCachedAvatar());
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -268,21 +270,23 @@ export default function SettingsPage() {
       </h3>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
 
-        <div className="flex items-center justify-between px-5 py-4 border-b border-navy/10">
-          <span className="font-serif text-navy text-base">Уведомления</span>
-          <button
-            onClick={() => setNotifications(!notifications)}
-            className={
-              'w-12 h-7 rounded-full relative transition-colors ' +
-              (notifications ? 'bg-navy' : 'bg-navy/20')
-            }
-          >
-            <div className={
-              'absolute top-0.5 w-6 h-6 rounded-full bg-cream transition-all ' +
-              (notifications ? 'left-[22px]' : 'left-0.5')
-            } />
-          </button>
-        </div>
+        {isInstalledApp && (
+          <div className="flex items-center justify-between px-5 py-4 border-b border-navy/10">
+            <span className="font-serif text-navy text-base">Уведомления</span>
+            <button
+              onClick={() => setNotifications(!notifications)}
+              className={
+                'w-12 h-7 rounded-full relative transition-colors ' +
+                (notifications ? 'bg-navy' : 'bg-navy/20')
+              }
+            >
+              <div className={
+                'absolute top-0.5 w-6 h-6 rounded-full bg-cream transition-all ' +
+                (notifications ? 'left-[22px]' : 'left-0.5')
+              } />
+            </button>
+          </div>
+        )}
 
         <div className="flex items-center justify-between px-5 py-4">
           <div>

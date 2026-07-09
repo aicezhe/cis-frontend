@@ -114,6 +114,7 @@ export default function RegisterPage() {
         'cispr_quiz_level',
         'cispr_quiz_lang',
         'cispr_quiz_dept',
+        'cispr_avatar',
       ].forEach((k) => localStorage.removeItem(k));
       Object.keys(localStorage)
         .filter((k) => k.startsWith('cispr_done_'))
@@ -216,7 +217,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setError(''); }}
                 onKeyDown={handleKeyDown}
-                placeholder="anna@mail.ru"
+                placeholder="urmail@exmpl.com"
                 autoComplete="off"
                 className="font-sans text-navy text-lg flex-1 bg-transparent outline-none"
               />

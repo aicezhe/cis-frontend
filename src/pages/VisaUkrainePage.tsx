@@ -86,7 +86,7 @@ export default function VisaUkrainePage() {
 
       {/* Шапка */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-right">
+        <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Легализация</h1>
           <p className="font-serif text-gold text-lg italic mt-0.5">для граждан Украины</p>
           <p className="font-serif text-navy/60 text-xs mt-1">{visa.meta.academic_year}</p>

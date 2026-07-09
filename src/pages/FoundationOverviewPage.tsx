@@ -112,7 +112,7 @@ export default function FoundationOverviewPage() {
 
       {/* Шапка раздела */}
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-right">
+        <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Foundation Year</h1>
           <p className="font-serif text-gold text-base italic mt-1">{p.name_full}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">

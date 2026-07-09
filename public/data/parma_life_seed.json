@@ -244,12 +244,11 @@
       "id": "social_life",
       "icon": "🎉",
       "title_ru": "Социальная жизнь",
-      "subtitle_ru": "События, бары, рынки",
+      "subtitle_ru": "События, бары",
       "foundation_only": false,
       "status": "mobile_version",
       "mobile_version_note_ru": "Актуальные события и социальная фича появятся в мобильной версии приложения (живая обновляемая лента).",
       "static_tips_ru": [
-        { "label_ru": "Рынок Ghiaia — продукты, одежда" },
         { "label_ru": "Cinema Astra — кино" },
         { "label_ru": "Студенческие бары в центре (Парма — студенческий город)" },
         { "label_ru": "CIS community Telegram", "url": "https://t.me/parmacisstudenti" }
