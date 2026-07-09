@@ -151,6 +151,12 @@ export default function RegisterPage() {
       } else if (/username|nickname/i.test(raw)) {
         setError('Что-то не так с никнеймом — попробуй другой');
         setStep(2);
+      } else if (e instanceof ApiError && e.status === 0) {
+        // сеть недоступна или сервер ещё просыпается (Render free tier — до ~50 сек после простоя)
+        setError('Сервер не отвечает — возможно, он просыпается после простоя. Подожди 30 секунд и попробуй снова.');
+      } else if (e instanceof ApiError) {
+        // показываем реальный текст ошибки от бэка, а не маскируем его общей фразой
+        setError(raw);
       } else {
         setError('Не удалось зарегистрироваться. Проверь данные и попробуй ещё раз.');
       }
