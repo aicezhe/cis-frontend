@@ -34,6 +34,24 @@ const stars = Array.from({ length: 54 }, (_, i) => {
   };
 });
 
+// Звёзды для «накрытия» входа — распределены по ВСЕЙ высоте, чтобы вниз
+// спускалось именно звёздное небо, а не пустой синий занавес.
+const coverStars = Array.from({ length: 46 }, (_, i) => {
+  const r1 = rand(i + 11);
+  const r2 = rand(i + 111);
+  const size = +(0.8 + r1 * r1 * 2.3).toFixed(2);
+  const bright = +(0.3 + r2 * r2 * 0.68).toFixed(2);
+  const gold = rand(i + 211) > 0.9;
+  return {
+    top: `${(rand(i + 311) * 100).toFixed(1)}%`,
+    left: `${(rand(i + 411) * 100).toFixed(1)}%`,
+    size,
+    bright,
+    rgb: gold ? '199,168,118' : STAR_TONES[i % STAR_TONES.length],
+    twMin: +(0.35 + rand(i + 511) * 0.5).toFixed(2),
+  };
+});
+
 // Детерминированные параметры анимации по индексу — мерцание/дрейф вразнобой.
 function starVars(i: number, twMin: number): React.CSSProperties {
   const dir = i % 2 === 0 ? 1 : -1;
@@ -202,8 +220,8 @@ export default function WelcomePage() {
         <div className="wp-cream-in absolute inset-0 bg-cream" style={{ zIndex: 5 }} />
       )}
 
-      {/* Вход: само небо welcome (тот же navy) растягивается сверху вниз и
-          накрывает страницу — не отдельная синяя панель, а продолжение шапки. */}
+      {/* Вход: само небо welcome (тот же navy + звёзды) растягивается сверху вниз
+          и накрывает страницу — не пустая синяя панель, а звёздное небо. */}
       {leaving === 'login' && (
         <div
           className="wp-cover absolute inset-0"
@@ -211,7 +229,26 @@ export default function WelcomePage() {
             zIndex: 40,
             background: 'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)',
           }}
-        />
+        >
+          {coverStars.map((s, i) => (
+            <div
+              key={i}
+              className="star absolute rounded-full"
+              style={{
+                top: s.top,
+                left: s.left,
+                width: s.size,
+                height: s.size,
+                background: `rgba(${s.rgb},${s.bright})`,
+                boxShadow:
+                  s.size > 1.8
+                    ? `0 0 ${Math.round(s.size * 2.5)}px ${(s.size * 0.35).toFixed(1)}px rgba(${s.rgb},${(s.bright * 0.55).toFixed(2)})`
+                    : 'none',
+                ...starVars(i + 60, s.twMin),
+              }}
+            />
+          ))}
+        </div>
       )}
 
     </div>
