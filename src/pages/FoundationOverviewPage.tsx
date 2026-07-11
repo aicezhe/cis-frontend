@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
+import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
+import { longPressHandlers } from '../lib/longPress';
 import { formatPrice } from '../utils/formatPrice';
 import type { FoundationModality } from '../types/foundation';
 
@@ -22,6 +24,8 @@ export default function FoundationOverviewPage() {
   const fmt = (eur: number) => formatPrice(eur, currency);
   const [expanded, setExpanded] = useState(1);
   const [copied, setCopied] = useState(false);
+  // Долгий тап по карточке шага «Шаги поступления» → добавить свой расход
+  const [expenseFor, setExpenseFor] = useState<string | null>(null);
   const [checks, setChecks] = useState<string[]>(() => {
     const raw = localStorage.getItem(CHECKS_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -372,7 +376,18 @@ export default function FoundationOverviewPage() {
                       </div>
 
                       {data.steps_to_apply.map((step, idx) => (
-                        <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
+                        <div
+                          key={step.id}
+                          className="relative bg-cream border border-navy/15 rounded-xl px-4 py-3 select-none"
+                          style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
+                          {...longPressHandlers(() => setExpenseFor(step.title))}
+                        >
+                          <span
+                            className="absolute top-3 right-3 w-5 h-5 rounded-full border border-gold/50 flex items-center justify-center text-gold text-xs"
+                            title="Долгий тап — добавить свой расход"
+                          >
+                            +
+                          </span>
                           <p className="font-serif text-gold text-sm font-bold">Шаг {idx + 1}</p>
                           <h5 className="font-serif text-navy text-lg font-bold mt-0.5">{step.title}</h5>
                           {step.timing_ru && (
@@ -636,6 +651,14 @@ export default function FoundationOverviewPage() {
           Данные: {data.meta.source} · уч. год {data.meta.academic_year}
         </p>
       </div>
+
+      {expenseFor && (
+        <AddExpenseSheet
+          defaultCategory="uni"
+          defaultLabel={expenseFor}
+          onClose={() => setExpenseFor(null)}
+        />
+      )}
 
       <TabBar active="path" />
     </div>

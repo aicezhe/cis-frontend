@@ -9,6 +9,7 @@ import { Avatar } from '../components/Avatar';
 import { SectionIcon } from '../components/SectionIcon';
 import { loadCachedAvatar } from '../lib/avatar';
 import { useUniCosts } from '../hooks/useCosts';
+import { useExpenses } from '../hooks/useExpenses';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
 import { COUNTRY_CURRENCY_MAP } from '../config/currencies';
@@ -185,6 +186,7 @@ function getSectionProgress(sectionKey: string, isCompletedSection: boolean): nu
 export default function PathPage() {
   const navigate = useNavigate();
   const uniCosts = useUniCosts();
+  const { totalByCategory: customExpenses } = useExpenses();
   const { currency, setCurrency } = useCurrency();
   const fmt = (eur: number) => formatPrice(eur, currency);
 
@@ -205,10 +207,12 @@ export default function PathPage() {
     return { id, title: base.title, icon: base.icon, status, progress, isCompletedSection };
   });
 
-  // общие расходы — сумма по всем разделам
-  // для uni берём динамический бюджет (по стране + программе), для остальных — статика
+  // общие расходы — сумма по всем разделам + кастомные расходы юзера
+  // (долгий тап по карточке шага — см. AddExpenseSheet), для uni берём
+  // динамический бюджет (по стране + программе), для остальных — статика
   const totalSpent = sections.reduce(
-    (sum, s) => sum + getSectionSpent(s.id, s.isCompletedSection),
+    (sum, s) =>
+      sum + getSectionSpent(s.id, s.isCompletedSection) + (customExpenses[s.id as keyof typeof customExpenses] || 0),
     0
   );
   const totalBudget = sectionsOrder.reduce(
