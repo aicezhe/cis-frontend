@@ -30,3 +30,25 @@ body {
   background: transparent !important;
   border: none !important;
 }
+
+/* ── WelcomePage: мерцание и лёгкий дрейф звёзд ──────────────────────────────
+   Только transform/opacity (GPU, без пересчёта layout). Параметры на каждую
+   звезду задаются через CSS-переменные из компонента. */
+@keyframes star-twinkle {
+  0%, 100% { opacity: var(--tw-min, 0.35); }
+  50%      { opacity: 1; }
+}
+@keyframes star-drift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(var(--dx, 2px), var(--dy, -2px)); }
+  100% { transform: translate(0, 0); }
+}
+.star {
+  animation:
+    star-twinkle var(--tw-dur, 3s) ease-in-out var(--tw-delay, 0s) infinite,
+    star-drift   var(--dr-dur, 7s) ease-in-out var(--dr-delay, 0s) infinite;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none; }
+}

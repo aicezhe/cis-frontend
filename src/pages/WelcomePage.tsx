@@ -1,19 +1,42 @@
 import skyline from '../assets/parma design.svg';
 import { useNavigate } from 'react-router-dom';
 
-// Звёзды на ночном небе сверху — лёгкая декорация
+// Звёзды на ночном небе сверху — часть белые, часть золотые (цвет бренда).
+// gold-звёзды чуть светятся. Мерцание + лёгкий дрейф задаются в index.css (.star),
+// параметры на каждую — через CSS-переменные ниже.
 const stars = [
-  { top: '6%', left: '12%', size: 3 },
-  { top: '9%', left: '78%', size: 2 },
-  { top: '13%', left: '40%', size: 2 },
-  { top: '16%', left: '88%', size: 3 },
-  { top: '19%', left: '22%', size: 2 },
-  { top: '22%', left: '63%', size: 2 },
-  { top: '25%', left: '8%', size: 3 },
-  { top: '11%', left: '55%', size: 2 },
-  { top: '17%', left: '70%', size: 2 },
-  { top: '8%', left: '30%', size: 2 },
+  { top: '6%', left: '12%', size: 3, gold: false },
+  { top: '9%', left: '78%', size: 3, gold: true },
+  { top: '13%', left: '40%', size: 2, gold: false },
+  { top: '16%', left: '88%', size: 3, gold: false },
+  { top: '19%', left: '22%', size: 2, gold: true },
+  { top: '22%', left: '63%', size: 3, gold: true },
+  { top: '25%', left: '8%', size: 3, gold: false },
+  { top: '11%', left: '55%', size: 2, gold: false },
+  { top: '17%', left: '70%', size: 2, gold: true },
+  { top: '8%', left: '30%', size: 2, gold: false },
+  { top: '5%', left: '50%', size: 2, gold: true },
+  { top: '14%', left: '18%', size: 2, gold: false },
+  { top: '21%', left: '84%', size: 2, gold: false },
+  { top: '27%', left: '38%', size: 2, gold: true },
+  { top: '10%', left: '92%', size: 2, gold: false },
+  { top: '24%', left: '48%', size: 2, gold: false },
 ];
+
+// Детерминированные (не рандомные при ре-рендере) параметры анимации по индексу —
+// чтобы звёзды мерцали/дрейфовали вразнобой, а не синхронно.
+function starVars(i: number, gold: boolean): React.CSSProperties {
+  const dir = i % 2 === 0 ? 1 : -1;
+  return {
+    '--tw-min': gold ? 0.3 : 0.45,
+    '--tw-dur': `${2.4 + (i % 4) * 0.6}s`,
+    '--tw-delay': `${((i * 0.53) % 3).toFixed(2)}s`,
+    '--dx': `${dir * (2 + (i % 3))}px`,
+    '--dy': `${-dir * (2 + ((i + 1) % 3))}px`,
+    '--dr-dur': `${6 + (i % 4) * 1.3}s`,
+    '--dr-delay': `${((i * 0.37) % 2).toFixed(2)}s`,
+  } as React.CSSProperties;
+}
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -21,12 +44,20 @@ export default function WelcomePage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
 
-      {/* Декоративные звёзды на синей шапке */}
+      {/* Декоративные звёзды на синей шапке — мерцают и легонько дрейфуют */}
       {stars.map((star, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-cream/60"
-          style={{ top: star.top, left: star.left, width: star.size, height: star.size }}
+          className="star absolute rounded-full"
+          style={{
+            top: star.top,
+            left: star.left,
+            width: star.size,
+            height: star.size,
+            background: star.gold ? '#B89968' : 'rgba(244,241,233,0.7)',
+            boxShadow: star.gold ? '0 0 6px 1px rgba(184,153,104,0.55)' : 'none',
+            ...starVars(i, star.gold),
+          }}
         />
       ))}
 
