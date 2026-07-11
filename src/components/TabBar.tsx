@@ -18,7 +18,7 @@ export default function TabBar({ active }: TabBarProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-cream border-t border-navy/15 flex justify-around py-3">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-cream border-t border-navy/15 flex justify-around py-3 z-40">
       {tabs.map((tab) => (
         <button
           key={tab.id}
