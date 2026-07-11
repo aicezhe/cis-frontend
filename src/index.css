@@ -54,13 +54,13 @@ body {
 }
 
 /* ── Уход с WelcomePage ──────────────────────────────────────────────────────
-   Вход: небо плавно падает вниз (всё уезжает + гаснет) — звёзды «переносят» на
-   экран входа, который проявляется сверху. Регистрация: элементы по очереди
-   отлетают в стороны, экран становится бежевым, а текст регистрации всплывает
-   уже на самой странице. */
-@keyframes wp-fall {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(48vh); }
+   Вход: ночное небо «накрывает» экран (растёт сверху вниз) → дальше на странице
+   входа звёзды идут потоком на зрителя, синее и звёзды расплываются, остаётся
+   экран входа (см. SkyIntro). Регистрация: элементы по очереди отлетают в
+   стороны, экран становится бежевым, текст регистрации всплывает на странице. */
+@keyframes wp-cover {
+  from { transform: scaleY(0.28); }
+  to   { transform: scaleY(1); }
 }
 @keyframes wp-fly-left {
   from { opacity: 1; transform: translateX(0); }
@@ -73,11 +73,27 @@ body {
 @keyframes wp-fade { to { opacity: 0; } }
 @keyframes wp-cream-in { from { opacity: 0; } to { opacity: 1; } }
 
-.wp-fall      { animation: wp-fall 0.7s cubic-bezier(0.55, 0, 0.85, 0.35) both; }
-.wp-fly-left  { animation: wp-fly-left 0.5s cubic-bezier(0.5, 0, 0.75, 0) both; }
-.wp-fly-right { animation: wp-fly-right 0.5s cubic-bezier(0.5, 0, 0.75, 0) both; }
-.wp-fade      { animation: wp-fade 0.45s ease-out both; }
-.wp-cream-in  { animation: wp-cream-in 0.55s ease-out 0.3s both; }
+.wp-cover     { animation: wp-cover 0.5s ease-in both; transform-origin: top; }
+.wp-fly-left  { animation: wp-fly-left 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
+.wp-fly-right { animation: wp-fly-right 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
+.wp-fade      { animation: wp-fade 0.5s ease-out both; }
+.wp-cream-in  { animation: wp-cream-in 0.6s ease-out 0.4s both; }
+
+/* ── SkyIntro (страница входа): поток звёзд на зрителя + расплывание ──────────
+   Оверлей стартует полностью синим (бесшовно после «накрытия»), звёзды летят
+   из центра на зрителя, затем весь оверлей (синее + звёзды) размывается и
+   гаснет, открывая экран входа. */
+@keyframes sky-intro {
+  0%   { opacity: 1; filter: blur(0px); }
+  50%  { opacity: 1; filter: blur(0px); }
+  100% { opacity: 0; filter: blur(16px); }
+}
+@keyframes star-stream {
+  0%   { transform: translate(-50%, -50%) scale(0.15); opacity: 0; }
+  18%  { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(2.6); opacity: 0; }
+}
+.sky-intro { animation: sky-intro 1.25s ease-in both; }
 
 /* ── Появление контента на странице (вход/регистрация) ── */
 @keyframes page-rise {
@@ -92,6 +108,6 @@ body {
 .page-descend { animation: page-descend 0.6s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .wp-fall, .wp-fly-left, .wp-fly-right, .wp-fade, .wp-cream-in,
-  .page-rise, .page-descend { animation: none; }
+  .wp-cover, .wp-fly-left, .wp-fly-right, .wp-fade, .wp-cream-in,
+  .sky-intro, .page-rise, .page-descend { animation: none; }
 }

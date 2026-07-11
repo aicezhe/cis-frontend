@@ -1,9 +1,10 @@
 import skyline from '../assets/parma design.svg';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { api, ApiError, setToken } from '../lib/api';
 import { cacheAvatar } from '../lib/avatar';
+import SkyIntro from '../components/SkyIntro';
 
 // Та же звёздная композиция что на WelcomePage — для единства входа в приложение
 const stars = [
@@ -21,6 +22,11 @@ const stars = [
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  // Пришли по анимации с WelcomePage → проигрываем заставку-поток звёзд.
+  const location = useLocation();
+  const [intro, setIntro] = useState(
+    (location.state as { sky?: boolean } | null)?.sky === true,
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +67,8 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
+
+      {intro && <SkyIntro onDone={() => setIntro(false)} />}
 
       {/* Звёзды */}
       {stars.map((s, i) => (

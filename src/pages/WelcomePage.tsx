@@ -64,36 +64,35 @@ export default function WelcomePage() {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // Запуск анимации ухода, затем навигация. Вход — небо падает (~0.6с);
-  // регистрация — элементы по очереди отлетают, экран бежевеет (~1.0с).
+  // Запуск анимации ухода, затем навигация. Вход — небо «накрывает» экран
+  // (~0.5с), дальше поток звёзд и расплывание уже на странице входа (SkyIntro).
+  // Регистрация — элементы по очереди отлетают, экран бежевеет (~1.15с).
   function go(kind: 'login' | 'register') {
     if (leaving) return;
-    const path = kind === 'login' ? '/login' : '/register';
     const reduce =
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
-      navigate(path);
+      navigate(kind === 'login' ? '/login' : '/register');
       return;
     }
     setLeaving(kind);
-    window.setTimeout(() => navigate(path), kind === 'login' ? 620 : 980);
+    if (kind === 'login') {
+      // флаг sky → страница входа проигрывает SkyIntro (бесшовно после накрытия)
+      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 480);
+    } else {
+      window.setTimeout(() => navigate('/register'), 1150);
+    }
   }
 
-  // Класс/задержка ухода для контентного элемента: вход — падает вниз;
-  // регистрация — отлетает влево/вправо со сдвигом очереди по order.
+  // Регистрация: элемент отлетает влево/вправо со сдвигом очереди по order.
+  // Вход отдельным оверлеем-«накрытием», сами элементы не анимируем.
   const leaveCls = (side: 'left' | 'right') =>
-    leaving === 'login'
-      ? 'wp-fall'
-      : leaving === 'register'
-        ? side === 'left'
-          ? 'wp-fly-left'
-          : 'wp-fly-right'
-        : '';
+    leaving === 'register' ? (side === 'left' ? 'wp-fly-left' : 'wp-fly-right') : '';
   const leaveDelay = (order: number): React.CSSProperties =>
-    leaving === 'register' ? { animationDelay: `${(order * 0.08).toFixed(2)}s` } : {};
-  // Рамка/звёзды: при входе падают со всем небом, при регистрации просто гаснут.
-  const frameCls = leaving === 'login' ? 'wp-fall' : leaving === 'register' ? 'wp-fade' : '';
+    leaving === 'register' ? { animationDelay: `${(order * 0.1).toFixed(2)}s` } : {};
+  // Рамка/звёзды при регистрации просто гаснут.
+  const frameCls = leaving === 'register' ? 'wp-fade' : '';
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
@@ -201,6 +200,17 @@ export default function WelcomePage() {
       {/* Регистрация: бежевый экран проступает по мере отлёта элементов */}
       {leaving === 'register' && (
         <div className="wp-cream-in absolute inset-0 bg-cream" style={{ zIndex: 5 }} />
+      )}
+
+      {/* Вход: ночное небо «накрывает» экран (растёт сверху вниз) */}
+      {leaving === 'login' && (
+        <div
+          className="wp-cover absolute inset-0"
+          style={{
+            zIndex: 40,
+            background: 'radial-gradient(circle at 50% 40%, #17233d 0%, #0d1322 100%)',
+          }}
+        />
       )}
 
     </div>
