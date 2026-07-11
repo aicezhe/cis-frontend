@@ -88,10 +88,13 @@ export default function MapPage() {
   }, [categories]);
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-24">
+    // Вся страница ровно во весь экран, без скролла: иначе на iOS Safari во
+    // время «свайпа вверх» WebGL-канва MapLibre всплывает поверх fixed-меню
+    // (известный баг рендеринга) — убираем сам скролл, а не боремся с ним.
+    <div className="relative h-[100dvh] max-w-md mx-auto bg-cream flex flex-col overflow-hidden">
 
       {/* Шапка */}
-      <div className="px-6 pt-12 pb-3">
+      <div className="px-6 pt-12 pb-3 flex-shrink-0">
         <h1 className="font-serif text-navy text-4xl font-bold">Loci</h1>
         <p className="font-serif text-gold text-sm mt-1 font-bold">
           места Пармы, которые тебе пригодятся
@@ -99,7 +102,7 @@ export default function MapPage() {
       </div>
 
       {/* Фильтры */}
-      <div className="flex gap-2 px-6 pb-3 overflow-x-auto no-scrollbar">
+      <div className="flex gap-2 px-6 pb-3 overflow-x-auto no-scrollbar flex-shrink-0">
         {categories.map((cat) => (
           <button
             key={cat.id}
@@ -116,10 +119,11 @@ export default function MapPage() {
         ))}
       </div>
 
-      {/* Карта — высота фиксирована, иначе Leaflet не понимает размер контейнера */}
+      {/* Карта — занимает всё оставшееся место (flex-1), а не фиксированную
+          calc()-высоту — так суммарная высота страницы никогда не превышает
+          экран и скроллить нечего */}
       <div
-        className="mx-4 mt-2 relative rounded-3xl border border-navy/20 overflow-hidden bg-soft-cream"
-        style={{ height: 'calc(100vh - 260px)', minHeight: 420 }}
+        className="mx-4 mt-2 relative rounded-3xl border border-navy/20 overflow-hidden bg-soft-cream flex-1 min-h-0"
       >
         {loading || !data ? (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -217,9 +221,12 @@ export default function MapPage() {
       </div>
 
       {/* Подсказка */}
-      <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-2 mb-1">
+      <p className="font-serif text-navy/40 text-[11px] italic text-center px-6 mt-2 mb-1 flex-shrink-0">
         Карта © OpenStreetMap. Маршруты открываются в Google Maps.
       </p>
+
+      {/* Резерв под fixed-меню внизу — часть flex-потока, не padding */}
+      <div className="flex-shrink-0" style={{ height: 88 }} />
 
       <TabBar active="loci" />
 
