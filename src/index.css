@@ -53,15 +53,30 @@ body {
   .star { animation: none; }
 }
 
-/* ── Плавный переход между экранами (PageTransitionProvider) ─────────────────
-   approach: поле звёзд очень медленно приближается (вход). side: лёгкий боковой
-   дрейф (регистрация). Само затемнение и проявление — через CSS-transition
-   opacity на оверлее (перекрываем смену маршрута, без резкого стыка). */
-@keyframes transition-approach {
-  0%   { transform: scale(1); }
-  100% { transform: scale(1.16); }
+/* ── Плавный переход welcome → вход/регистрация ──────────────────────────────
+   Честный кросс-фейд: старая страница растворяется, новая проявляется сквозь
+   неё. Без доп. фона/оверлея. login — лёгкое приближение (scale), register —
+   мягкий заход сбоку (translateX). */
+@keyframes pt-in-login {
+  from { opacity: 0; transform: scale(1.045); }
+  to   { opacity: 1; transform: none; }
 }
-@keyframes transition-side {
-  0%   { transform: translateX(3.5%); }
-  100% { transform: translateX(-3.5%); }
+@keyframes pt-out-login {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: scale(0.985); }
+}
+@keyframes pt-in-register {
+  from { opacity: 0; transform: translateX(5%); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pt-out-register {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(-5%); }
+}
+.pt-in-login     { animation: pt-in-login   0.55s ease-out both; }
+.pt-out-login    { animation: pt-out-login  0.6s  ease-in  both; }
+.pt-in-register  { animation: pt-in-register 0.55s ease-out both; }
+.pt-out-register { animation: pt-out-register 0.6s ease-in  both; }
+@media (prefers-reduced-motion: reduce) {
+  .pt-in-login, .pt-out-login, .pt-in-register, .pt-out-register { animation: none; }
 }

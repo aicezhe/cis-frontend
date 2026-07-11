@@ -1,6 +1,6 @@
 import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
-import { usePageTransition } from '../components/PageTransition';
+import { useNavigate } from 'react-router-dom';
 
 // Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
 // ре-рендере, но выглядело естественно-разбросанным.
@@ -49,7 +49,7 @@ function starVars(i: number, twMin: number): React.CSSProperties {
 }
 
 export default function WelcomePage() {
-  const startTransition = usePageTransition();
+  const navigate = useNavigate();
 
   // Кнопка «Войти» по ширине фразы «Путь в Парму» — замеряем её вживую.
   const heroRef = useRef<HTMLParagraphElement>(null);
@@ -129,7 +129,7 @@ export default function WelcomePage() {
       {/* CTA: войти — primary, регистрация — secondary link */}
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
         <button
-          onClick={() => startTransition('login', '/login')}
+          onClick={() => navigate('/login')}
           className="font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm border border-gold/50 active:scale-[0.98] transition-transform"
           style={{
             width: heroWidth,
@@ -139,7 +139,7 @@ export default function WelcomePage() {
           Войти
         </button>
         <button
-          onClick={() => startTransition('register', '/register')}
+          onClick={() => navigate('/register')}
           className="font-serif text-navy/70 text-sm mt-4 underline underline-offset-4 decoration-gold/60 decoration-1"
         >
           Впервые здесь? Создать аккаунт →
