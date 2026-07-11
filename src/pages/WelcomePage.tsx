@@ -79,7 +79,7 @@ export default function WelcomePage() {
     setLeaving(kind);
     if (kind === 'login') {
       // флаг sky → страница входа проигрывает SkyIntro (бесшовно после накрытия)
-      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 480);
+      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 520);
     } else {
       window.setTimeout(() => navigate('/register'), 1150);
     }
@@ -202,13 +202,14 @@ export default function WelcomePage() {
         <div className="wp-cream-in absolute inset-0 bg-cream" style={{ zIndex: 5 }} />
       )}
 
-      {/* Вход: ночное небо «накрывает» экран (растёт сверху вниз) */}
+      {/* Вход: само небо welcome (тот же navy) растягивается сверху вниз и
+          накрывает страницу — не отдельная синяя панель, а продолжение шапки. */}
       {leaving === 'login' && (
         <div
           className="wp-cover absolute inset-0"
           style={{
             zIndex: 40,
-            background: 'radial-gradient(circle at 50% 40%, #17233d 0%, #0d1322 100%)',
+            background: 'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)',
           }}
         />
       )}

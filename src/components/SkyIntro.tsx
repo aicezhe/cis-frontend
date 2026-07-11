@@ -41,7 +41,7 @@ export default function SkyIntro({ onDone }: { onDone: () => void }) {
   return (
     <div
       className="sky-intro fixed inset-0 z-[100] overflow-hidden pointer-events-none"
-      style={{ background: 'radial-gradient(circle at 50% 44%, #17233d 0%, #0d1322 100%)' }}
+      style={{ background: 'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)' }}
     >
       {stars.map((s, i) => (
         <div
