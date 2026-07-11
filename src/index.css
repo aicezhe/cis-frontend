@@ -68,8 +68,9 @@ body {
   100% { transform: scaleY(3);   opacity: 0; } /* гаснет, оставляя чистый сплошной */
 }
 @keyframes wp-solid {
-  0%, 50% { opacity: 0; }
-  100%    { opacity: 1; }
+  0%, 45% { opacity: 0; }
+  88%     { opacity: 1; }
+  100%    { opacity: 1; } /* полностью непрозрачно ЗАДОЛГО до навигации — без просвета cream */
 }
 @keyframes wp-starfall {
   from { transform: translateY(-125vh); }

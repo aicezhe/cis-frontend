@@ -80,7 +80,7 @@ export default function WelcomePage() {
     setLeaving(kind);
     if (kind === 'login') {
       // флаг sky → страница входа проигрывает SkyIntro (бесшовно после накрытия)
-      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 1430);
+      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 1460);
     } else {
       window.setTimeout(() => navigate('/register'), 1150);
     }
