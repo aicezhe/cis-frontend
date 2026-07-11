@@ -70,8 +70,8 @@ export function starVars(i: number, twMin: number): CSSProperties {
     '--tw-min': twMin,
     '--tw-dur': `${2.2 + rand(i + 600) * 3}s`,
     '--tw-delay': `${(rand(i + 700) * 3.5).toFixed(2)}s`,
-    '--dx': `${dir * (1 + rand(i + 800) * 2).toFixed(1)}px`,
-    '--dy': `${-dir * (1 + rand(i + 900) * 2).toFixed(1)}px`,
+    '--dx': `${(dir * (1 + rand(i + 800) * 2)).toFixed(1)}px`,
+    '--dy': `${(-dir * (1 + rand(i + 900) * 2)).toFixed(1)}px`,
     '--dr-dur': `${6 + rand(i + 1000) * 5}s`,
     '--dr-delay': `${(rand(i + 1100) * 2).toFixed(2)}s`,
   } as CSSProperties;
