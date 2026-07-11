@@ -15,22 +15,61 @@ export const API_BASE = (
   import.meta.env.VITE_API_URL || 'http://localhost:8000'
 ).replace(/\/$/, '');
 
-const TOKEN_KEY = 'cispr_token';
+// Access-токен теперь ТОЛЬКО в памяти (не в localStorage — защита от XSS).
+// При перезагрузке страницы обнуляется → AuthProvider на старте молча дёргает
+// /auth/refresh и восстанавливает токен по httpOnly refresh-cookie.
+let accessToken: string | null = null;
 
 export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  return accessToken;
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+  accessToken = token;
 }
 
 export function clearToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+  accessToken = null;
 }
 
 export function isAuthed(): boolean {
-  return !!getToken();
+  return !!accessToken;
+}
+
+/**
+ * Silent-refresh: обменять refresh-cookie на новый access-токен.
+ * Возвращает true, если сессия жива. Зовётся на старте приложения и при 401.
+ */
+export async function refreshAccessToken(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
+      method: 'POST',
+      credentials: 'include', // без этого refresh-cookie не поедет
+    });
+    if (!res.ok) {
+      clearToken();
+      return false;
+    }
+    const data = (await res.json()) as TokenResponse;
+    setToken(data.access_token);
+    return true;
+  } catch {
+    clearToken();
+    return false;
+  }
+}
+
+/** Логаут: инвалидировать сессию на сервере + очистить токен из памяти. */
+export async function logout(): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/api/v1/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch {
+    // даже если сеть упала — локально всё равно разлогиниваемся
+  }
+  clearToken();
 }
 
 export class ApiError extends Error {
@@ -48,7 +87,7 @@ interface RequestOptions {
   auth?: boolean; // прикрепить Bearer-токен
 }
 
-async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
+async function request<T>(path: string, opts: RequestOptions = {}, _retried = false): Promise<T> {
   const { method = 'GET', body, auth = false } = opts;
   const headers: Record<string, string> = {};
 
@@ -64,6 +103,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     res = await fetch(`${API_BASE}${path}`, {
       method,
       headers,
+      credentials: 'include', // чтобы httpOnly refresh-cookie ездила на бэк
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
@@ -71,6 +111,12 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   }
 
   if (res.status === 401) {
+    // access-токен протух — пробуем разово обновить его через refresh-cookie и
+    // повторить запрос. Если refresh не удался — сессия действительно истекла.
+    if (auth && !_retried) {
+      const ok = await refreshAccessToken();
+      if (ok) return request<T>(path, opts, true);
+    }
     clearToken();
     throw new ApiError(401, 'Сессия истекла, войди заново.');
   }
