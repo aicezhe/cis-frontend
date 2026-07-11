@@ -66,21 +66,36 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
   );
 }
 
+// Детерминированный псевдо-рандом (тот же приём, что на WelcomePage).
+function rand(seed: number): number {
+  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+const TONES = ['225,235,255', '255,253,248', '255,246,230', '255,253,248'];
+
 function Overlay({ kind, visible }: { kind: Kind; visible: boolean }) {
-  // Мягкое звёздное поле: небольшие точки со свечением + редкие крупные
-  // размытые для глубины. Расположение детерминированное (не прыгает).
+  // Натуральное звёздное поле: в основном мелкие тусклые + редкие яркие/золотые,
+  // разброс по размеру, яркости и оттенку. Пара крупных размытых — для глубины.
   const stars = useMemo(
     () =>
-      Array.from({ length: 64 }, (_, i) => ({
-        top: `${((i * 16.18) % 100).toFixed(1)}%`,
-        left: `${((i * 61.803) % 100).toFixed(1)}%`,
-        size: 1 + (i % 3),
-        gold: i % 6 === 0,
-        big: i % 13 === 0,
-        min: 0.4 + ((i % 4) * 0.12),
-        dur: `${3 + (i % 5)}s`,
-        delay: `${((i * 0.11) % 2.2).toFixed(2)}s`,
-      })),
+      Array.from({ length: 90 }, (_, i) => {
+        const r1 = rand(i);
+        const r2 = rand(i + 100);
+        const size = +(0.8 + r1 * r1 * 2.4).toFixed(2);
+        const bright = +(0.3 + r2 * r2 * 0.7).toFixed(2);
+        const gold = rand(i + 200) > 0.9;
+        return {
+          top: `${(rand(i + 300) * 100).toFixed(1)}%`,
+          left: `${(rand(i + 400) * 100).toFixed(1)}%`,
+          size,
+          bright,
+          rgb: gold ? '199,168,118' : TONES[i % TONES.length],
+          big: rand(i + 500) > 0.93,
+          min: +(0.35 + rand(i + 600) * 0.45).toFixed(2),
+          dur: `${3 + rand(i + 700) * 3}s`,
+          delay: `${(rand(i + 800) * 2.5).toFixed(2)}s`,
+        };
+      }),
     [],
   );
 
@@ -112,14 +127,15 @@ function Overlay({ kind, visible }: { kind: Kind; visible: boolean }) {
               {
                 top: s.top,
                 left: s.left,
-                width: s.size,
-                height: s.size,
-                background: s.gold ? '#C7A876' : 'rgba(255,253,248,0.92)',
-                boxShadow: s.gold
-                  ? '0 0 8px 2px rgba(199,168,118,0.6)'
-                  : '0 0 5px 1px rgba(255,253,248,0.5)',
-                filter: s.big ? 'blur(2px)' : 'none',
-                opacity: s.big ? 0.55 : 1,
+                width: s.big ? s.size * 2.2 : s.size,
+                height: s.big ? s.size * 2.2 : s.size,
+                background: `rgba(${s.rgb},${s.bright})`,
+                boxShadow:
+                  s.size > 1.8 && !s.big
+                    ? `0 0 ${Math.round(s.size * 2.5)}px ${(s.size * 0.4).toFixed(1)}px rgba(${s.rgb},${(s.bright * 0.55).toFixed(2)})`
+                    : 'none',
+                filter: s.big ? 'blur(2.5px)' : 'none',
+                opacity: s.big ? 0.5 : 1,
                 animation: `star-twinkle ${s.dur} ease-in-out ${s.delay} infinite`,
                 '--tw-min': s.min,
               } as React.CSSProperties

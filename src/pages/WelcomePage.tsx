@@ -2,40 +2,49 @@ import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { usePageTransition } from '../components/PageTransition';
 
-// Звёзды на ночном небе сверху — часть белые, часть золотые (цвет бренда).
-// gold-звёзды чуть светятся. Мерцание + лёгкий дрейф задаются в index.css (.star),
-// параметры на каждую — через CSS-переменные ниже.
-const stars = [
-  { top: '6%', left: '12%', size: 3, gold: false },
-  { top: '9%', left: '78%', size: 3, gold: true },
-  { top: '13%', left: '40%', size: 2, gold: false },
-  { top: '16%', left: '88%', size: 3, gold: false },
-  { top: '19%', left: '22%', size: 2, gold: true },
-  { top: '22%', left: '63%', size: 3, gold: true },
-  { top: '25%', left: '8%', size: 3, gold: false },
-  { top: '11%', left: '55%', size: 2, gold: false },
-  { top: '17%', left: '70%', size: 2, gold: true },
-  { top: '8%', left: '30%', size: 2, gold: false },
-  { top: '5%', left: '50%', size: 2, gold: true },
-  { top: '14%', left: '18%', size: 2, gold: false },
-  { top: '21%', left: '84%', size: 2, gold: false },
-  { top: '27%', left: '38%', size: 2, gold: true },
-  { top: '10%', left: '92%', size: 2, gold: false },
-  { top: '24%', left: '48%', size: 2, gold: false },
-];
+// Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
+// ре-рендере, но выглядело естественно-разбросанным.
+function rand(seed: number): number {
+  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x); // 0..1
+}
 
-// Детерминированные (не рандомные при ре-рендере) параметры анимации по индексу —
-// чтобы звёзды мерцали/дрейфовали вразнобой, а не синхронно.
-function starVars(i: number, gold: boolean): React.CSSProperties {
+// Оттенки настоящих звёзд: холодновато-белый, чисто-белый, тёпло-белый и редкие
+// золотые (акцент бренда). Низкая насыщенность — глазу читается как небо.
+const STAR_TONES = ['225,235,255', '255,253,248', '255,246,230', '255,253,248'];
+
+// Звёздное поле в верхней «ночной» зоне. В основном мелкие тусклые + редкие
+// яркие и золотые — как на настоящем небе. Свечение только у крупных.
+const stars = Array.from({ length: 54 }, (_, i) => {
+  const r1 = rand(i);
+  const r2 = rand(i + 100);
+  // размер: кв. распределение → большинство мелкие, редко крупные (0.8–3.0px)
+  const size = +(0.8 + r1 * r1 * 2.2).toFixed(2);
+  // яркость: большинство тусклые (0.22–0.95)
+  const bright = +(0.22 + r2 * r2 * 0.73).toFixed(2);
+  const gold = rand(i + 200) > 0.9; // ~10% золотых
+  return {
+    top: `${(rand(i + 300) * 33).toFixed(1)}%`, // только тёмная шапка
+    left: `${(rand(i + 400) * 100).toFixed(1)}%`,
+    size,
+    bright,
+    gold,
+    rgb: gold ? '199,168,118' : STAR_TONES[i % STAR_TONES.length],
+    twMin: +(0.3 + rand(i + 500) * 0.5).toFixed(2), // амплитуда мерцания вразнобой
+  };
+});
+
+// Детерминированные параметры анимации по индексу — мерцание/дрейф вразнобой.
+function starVars(i: number, twMin: number): React.CSSProperties {
   const dir = i % 2 === 0 ? 1 : -1;
   return {
-    '--tw-min': gold ? 0.55 : 0.7, // поярче
-    '--tw-dur': `${2.4 + (i % 4) * 0.6}s`,
-    '--tw-delay': `${((i * 0.53) % 3).toFixed(2)}s`,
-    '--dx': `${dir * (2 + (i % 3))}px`,
-    '--dy': `${-dir * (2 + ((i + 1) % 3))}px`,
-    '--dr-dur': `${6 + (i % 4) * 1.3}s`,
-    '--dr-delay': `${((i * 0.37) % 2).toFixed(2)}s`,
+    '--tw-min': twMin,
+    '--tw-dur': `${2.2 + rand(i + 600) * 3}s`,
+    '--tw-delay': `${(rand(i + 700) * 3.5).toFixed(2)}s`,
+    '--dx': `${dir * (1 + rand(i + 800) * 2).toFixed(1)}px`,
+    '--dy': `${-dir * (1 + rand(i + 900) * 2).toFixed(1)}px`,
+    '--dr-dur': `${6 + rand(i + 1000) * 5}s`,
+    '--dr-delay': `${(rand(i + 1100) * 2).toFixed(2)}s`,
   } as React.CSSProperties;
 }
 
@@ -57,7 +66,8 @@ export default function WelcomePage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
 
-      {/* Декоративные звёзды на синей шапке — мерцают и легонько дрейфуют */}
+      {/* Декоративные звёзды на синей шапке — мерцают и легонько дрейфуют.
+          Свечение (ореол) только у крупных/ярких — как у настоящих звёзд. */}
       {stars.map((star, i) => (
         <div
           key={i}
@@ -67,11 +77,12 @@ export default function WelcomePage() {
             left: star.left,
             width: star.size,
             height: star.size,
-            background: star.gold ? '#C7A876' : 'rgba(255,253,248,0.95)',
-            boxShadow: star.gold
-              ? '0 0 7px 1.5px rgba(199,168,118,0.75)'
-              : '0 0 4px 0.5px rgba(255,253,248,0.6)',
-            ...starVars(i, star.gold),
+            background: `rgba(${star.rgb},${star.bright})`,
+            boxShadow:
+              star.size > 1.8
+                ? `0 0 ${Math.round(star.size * 2.5)}px ${(star.size * 0.35).toFixed(1)}px rgba(${star.rgb},${(star.bright * 0.55).toFixed(2)})`
+                : 'none',
+            ...starVars(i, star.twMin),
           }}
         />
       ))}
