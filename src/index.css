@@ -59,7 +59,7 @@ body {
    экран входа (см. SkyIntro). Регистрация: элементы по очереди отлетают в
    стороны, экран становится бежевым, текст регистрации всплывает на странице. */
 @keyframes wp-cover {
-  from { transform: translateY(-108vh); }
+  from { transform: translateY(-125vh); }
   to   { transform: translateY(0); }
 }
 @keyframes wp-fly-left {

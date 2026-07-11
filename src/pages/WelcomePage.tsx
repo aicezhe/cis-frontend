@@ -211,9 +211,9 @@ export default function WelcomePage() {
           className="wp-cover absolute left-0 right-0 top-0"
           style={{
             zIndex: 40,
-            height: '140vh',
+            height: '175vh',
             background:
-              'linear-gradient(to bottom, #1C2A48 0%, #16233e 55%, #0d1830 78%, rgba(13,24,48,0) 100%)',
+              'linear-gradient(to bottom, #1C2A48 0%, #182740 32%, #14213c 48%, #0f1c34 58%, rgba(13,24,48,0) 100%)',
           }}
         >
           {TRANSITION_STARS.map((s, i) => (
