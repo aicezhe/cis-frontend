@@ -4,12 +4,11 @@
     "center_lat": 44.8015,
     "center_lng": 10.3279,
     "default_zoom": 13,
-    "note": "На карте — только то, что нужно регулярно: корпуса UniPR, документы, здоровье, жильё. Магазины/аптеки/SIM описаны в разделе «В Парме» текстом."
+    "note": "На карте — только то, что нужно регулярно: корпуса UniPR, документы, здоровье. Магазины/аптеки/SIM описаны в разделе «В Парме» текстом."
   },
   "categories": [
     { "id": "all", "label_ru": "Все", "emoji": "•" },
     { "id": "study", "label_ru": "Университет", "emoji": "🎓" },
-    { "id": "housing", "label_ru": "Жильё", "emoji": "🏠" },
     { "id": "docs", "label_ru": "Документы", "emoji": "📄" },
     { "id": "health", "label_ru": "Здоровье", "emoji": "🏥" },
     { "id": "transport", "label_ru": "Транспорт", "emoji": "🚆" }
@@ -60,25 +59,6 @@
       "lat": 44.8047,
       "lng": 10.3175,
       "note_ru": "Economia, Management, а также подготовительный Foundation Year."
-    },
-
-    {
-      "id": "ergo_dorm_grossardi",
-      "name": "Casa dello Studente ER.GO — Grossardi",
-      "category": "housing",
-      "address": "Vicolo Grossardi 4",
-      "lat": 44.8034,
-      "lng": 10.3195,
-      "note_ru": "Бюджетное общежитие ER.GO. Заявка отдельно от стипендии."
-    },
-    {
-      "id": "joivy_campus",
-      "name": "Joivy Campus Parma",
-      "category": "housing",
-      "address": "Via Po 124 (проверь точный адрес)",
-      "lat": 44.7901,
-      "lng": 10.3186,
-      "note_ru": "Студенческое жильё 550-800 €/мес. Англоговорящий персонал."
     },
 
     {
