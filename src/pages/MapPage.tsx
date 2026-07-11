@@ -130,6 +130,7 @@ export default function MapPage() {
             center={[data.meta.center_lat, data.meta.center_lng]}
             zoom={data.meta.default_zoom}
             scrollWheelZoom={true}
+            attributionControl={false}
             style={{ height: '100%', width: '100%' }}
           >
             <VectorBasemap />
