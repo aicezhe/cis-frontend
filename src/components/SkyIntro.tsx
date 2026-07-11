@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { makeStarField, rand, starBaseStyle } from '../lib/nightSky';
+import { rand, starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
 
 /**
  * Заставка на странице входа. Оверлей стартует полностью синим (бесшовно после
@@ -14,12 +14,13 @@ export default function SkyIntro({ onDone }: { onDone: () => void }) {
     return () => window.clearTimeout(t);
   }, [onDone]);
 
-  // Поле как на welcome, но по всему экрану. Для каждой звезды считаем вектор
-  // от центра и «разлёт» наружу + масштаб — приближение идёт от самих звёзд.
+  // Те же звёзды, что «опустились» (TRANSITION_STARS) — на тех же местах.
+  // Для каждой считаем вектор от центра и «разлёт» наружу + масштаб: приближение
+  // идёт ровно от их позиций, без перескока.
   const field = useMemo(() => {
-    return makeStarField(64, 100, 21).map((s, i) => {
-      const ox = parseFloat(s.left) - 50; // % от центра по X
-      const oy = parseFloat(s.top) - 50; // % от центра по Y
+    return TRANSITION_STARS.map((s, i) => {
+      const ox = parseFloat(s.left) - 50; // % от центра по X (vw)
+      const oy = parseFloat(s.top) - 50; // vh от центра по Y
       const k = 1.9 + rand(i + 33) * 1.3; // множитель разлёта
       return {
         star: s,

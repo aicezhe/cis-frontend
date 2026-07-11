@@ -1,6 +1,7 @@
 import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
 
 // Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
 // ре-рендере, но выглядело естественно-разбросанным.
@@ -31,24 +32,6 @@ const stars = Array.from({ length: 54 }, (_, i) => {
     gold,
     rgb: gold ? '199,168,118' : STAR_TONES[i % STAR_TONES.length],
     twMin: +(0.3 + rand(i + 500) * 0.5).toFixed(2), // амплитуда мерцания вразнобой
-  };
-});
-
-// Звёзды для «накрытия» входа — распределены по ВСЕЙ высоте, чтобы вниз
-// спускалось именно звёздное небо, а не пустой синий занавес.
-const coverStars = Array.from({ length: 46 }, (_, i) => {
-  const r1 = rand(i + 11);
-  const r2 = rand(i + 111);
-  const size = +(0.8 + r1 * r1 * 2.3).toFixed(2);
-  const bright = +(0.3 + r2 * r2 * 0.68).toFixed(2);
-  const gold = rand(i + 211) > 0.9;
-  return {
-    top: `${(rand(i + 311) * 100).toFixed(1)}%`,
-    left: `${(rand(i + 411) * 100).toFixed(1)}%`,
-    size,
-    bright,
-    rgb: gold ? '199,168,118' : STAR_TONES[i % STAR_TONES.length],
-    twMin: +(0.35 + rand(i + 511) * 0.5).toFixed(2),
   };
 });
 
@@ -97,7 +80,7 @@ export default function WelcomePage() {
     setLeaving(kind);
     if (kind === 'login') {
       // флаг sky → страница входа проигрывает SkyIntro (бесшовно после накрытия)
-      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 940);
+      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 1280);
     } else {
       window.setTimeout(() => navigate('/register'), 1150);
     }
@@ -233,7 +216,7 @@ export default function WelcomePage() {
               'linear-gradient(to bottom, #1C2A48 0%, #16233e 55%, #0d1830 78%, rgba(13,24,48,0) 100%)',
           }}
         >
-          {coverStars.map((s, i) => (
+          {TRANSITION_STARS.map((s, i) => (
             <div
               key={i}
               className="star absolute rounded-full"
@@ -242,11 +225,7 @@ export default function WelcomePage() {
                 left: s.left,
                 width: s.size,
                 height: s.size,
-                background: `rgba(${s.rgb},${s.bright})`,
-                boxShadow:
-                  s.size > 1.8
-                    ? `0 0 ${Math.round(s.size * 2.5)}px ${(s.size * 0.35).toFixed(1)}px rgba(${s.rgb},${(s.bright * 0.55).toFixed(2)})`
-                    : 'none',
+                ...starBaseStyle(s),
                 ...starVars(i + 60, s.twMin),
               }}
             />

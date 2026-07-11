@@ -42,6 +42,27 @@ export function makeStarField(count: number, topSpan = 100, seed = 0): Star[] {
   });
 }
 
+// Общее поле для перехода вход: «накрытие» и «приближение» используют ОДНИ и те
+// же звёзды на одних местах — чтобы приближение шло ровно от тех позиций, где
+// звёзды остановились после спуска (без перескока). Позиции в vh/% — совпадают
+// и в опускающемся слое, и в полноэкранной заставке.
+export const TRANSITION_STARS: Star[] = Array.from({ length: 60 }, (_, i) => {
+  const k = i + 21;
+  const r1 = rand(k);
+  const r2 = rand(k + 100);
+  const size = +(0.8 + r1 * r1 * 2.3).toFixed(2);
+  const bright = +(0.26 + r2 * r2 * 0.7).toFixed(2);
+  const gold = rand(k + 200) > 0.9;
+  return {
+    top: `${(rand(k + 300) * 100).toFixed(1)}vh`,
+    left: `${(rand(k + 400) * 100).toFixed(1)}%`,
+    size,
+    bright,
+    rgb: gold ? '199,168,118' : STAR_TONES[i % STAR_TONES.length],
+    twMin: +(0.3 + rand(k + 500) * 0.5).toFixed(2),
+  };
+});
+
 // CSS-переменные для мерцания/дрейфа (класс .star в index.css) — вразнобой.
 export function starVars(i: number, twMin: number): CSSProperties {
   const dir = i % 2 === 0 ? 1 : -1;
