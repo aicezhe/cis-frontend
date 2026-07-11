@@ -62,12 +62,12 @@ body {
    пока не накроет всю страницу (первая половина), а ПОТОМ снизу потихоньку
    проступает сплошной синий (вторая половина). */
 @keyframes wp-grad {
-  0%   { background-size: 100% 45vh; }
-  55%  { background-size: 100% 135vh; }
-  100% { background-size: 100% 155vh; }
+  0%   { background-size: 100% 45vh; opacity: 1; }
+  55%  { background-size: 100% 135vh; opacity: 1; }
+  100% { background-size: 100% 160vh; opacity: 0; } /* гаснет, оставляя чистый сплошной */
 }
 @keyframes wp-solid {
-  0%, 55% { opacity: 0; }
+  0%, 50% { opacity: 0; }
   100%    { opacity: 1; }
 }
 @keyframes wp-starfall {
@@ -85,9 +85,9 @@ body {
 @keyframes wp-fade { to { opacity: 0; } }
 @keyframes wp-cream-in { from { opacity: 0; } to { opacity: 1; } }
 
-.wp-grad      { animation: wp-grad 1.35s cubic-bezier(0.3, 0, 0.35, 1) both; }
-.wp-solid     { animation: wp-solid 1.35s ease-in both; }
-.wp-starfall  { animation: wp-starfall 1.35s cubic-bezier(0.3, 0, 0.35, 1) both; }
+.wp-grad      { animation: wp-grad 1.5s cubic-bezier(0.33, 0, 0.2, 1) both; }
+.wp-solid     { animation: wp-solid 1.5s cubic-bezier(0.4, 0, 0.4, 1) both; }
+.wp-starfall  { animation: wp-starfall 1.5s cubic-bezier(0.33, 0, 0.2, 1) both; }
 .wp-fly-left  { animation: wp-fly-left 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fly-right { animation: wp-fly-right 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fade      { animation: wp-fade 0.5s ease-out both; }
@@ -100,8 +100,8 @@ body {
    и гаснет, открывая экран входа. */
 @keyframes sky-intro {
   0%   { opacity: 1; filter: blur(0px); }
-  45%  { opacity: 1; filter: blur(0px); }
-  100% { opacity: 0; filter: blur(14px); }
+  50%  { opacity: 1; filter: blur(0px); }
+  100% { opacity: 0; filter: blur(12px); }
 }
 @keyframes star-approach {
   from { transform: translate(0, 0) scale(1); }
