@@ -58,7 +58,17 @@ body {
    входа звёзды идут потоком на зрителя, синее и звёзды расплываются, остаётся
    экран входа (см. SkyIntro). Регистрация: элементы по очереди отлетают в
    стороны, экран становится бежевым, текст регистрации всплывает на странице. */
-@keyframes wp-cover {
+/* Небо welcome (короткий градиент navy→прозрачный) во время анимации
+   растягивается вниз (background-size), затем снизу проявляется сплошной синий. */
+@keyframes wp-grad {
+  from { background-size: 100% 48vh; }
+  to   { background-size: 100% 130vh; }
+}
+@keyframes wp-solid {
+  0%, 45% { opacity: 0; }
+  100%    { opacity: 1; }
+}
+@keyframes wp-starfall {
   from { transform: translateY(-125vh); }
   to   { transform: translateY(0); }
 }
@@ -73,7 +83,9 @@ body {
 @keyframes wp-fade { to { opacity: 0; } }
 @keyframes wp-cream-in { from { opacity: 0; } to { opacity: 1; } }
 
-.wp-cover     { animation: wp-cover 1.35s cubic-bezier(0.3, 0, 0.35, 1) both; }
+.wp-grad      { animation: wp-grad 1.35s cubic-bezier(0.3, 0, 0.35, 1) both; }
+.wp-solid     { animation: wp-solid 1.35s ease-in both; }
+.wp-starfall  { animation: wp-starfall 1.35s cubic-bezier(0.3, 0, 0.35, 1) both; }
 .wp-fly-left  { animation: wp-fly-left 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fly-right { animation: wp-fly-right 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fade      { animation: wp-fade 0.5s ease-out both; }
@@ -108,6 +120,6 @@ body {
 .page-descend { animation: page-descend 0.6s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .wp-cover, .wp-fly-left, .wp-fly-right, .wp-fade, .wp-cream-in,
-  .sky-intro, .page-rise, .page-descend { animation: none; }
+  .wp-grad, .wp-solid, .wp-starfall, .wp-fly-left, .wp-fly-right, .wp-fade,
+  .wp-cream-in, .sky-intro, .page-rise, .page-descend { animation: none; }
 }

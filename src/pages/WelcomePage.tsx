@@ -203,33 +203,46 @@ export default function WelcomePage() {
         <div className="wp-cream-in absolute inset-0 bg-cream" style={{ zIndex: 5 }} />
       )}
 
-      {/* Вход: небо welcome (тот же navy-градиент + звёзды) с мягким нижним
-          краем плавно опускается сверху вниз, пока весь экран не станет синим.
-          Не резкий занавес — градиентная кромка. Звёзды едут вместе с небом. */}
+      {/* Вход: небо welcome (короткий градиент navy→прозрачный, как на экране)
+          во время анимации растягивается вниз, затем снизу проступает сплошной
+          синий. Звёзды падают вместе с небом на свои места. */}
       {leaving === 'login' && (
-        <div
-          className="wp-cover absolute left-0 right-0 top-0"
-          style={{
-            zIndex: 40,
-            height: '175vh',
-            background:
-              'linear-gradient(to bottom, #1C2A48 0%, #182740 32%, #14213c 48%, #0f1c34 58%, rgba(13,24,48,0) 100%)',
-          }}
-        >
-          {TRANSITION_STARS.map((s, i) => (
-            <div
-              key={i}
-              className="star absolute rounded-full"
-              style={{
-                top: s.top,
-                left: s.left,
-                width: s.size,
-                height: s.size,
-                ...starBaseStyle(s),
-                ...starVars(i + 60, s.twMin),
-              }}
-            />
-          ))}
+        <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 40 }}>
+          {/* сплошной синий — проявляется во второй половине */}
+          <div
+            className="wp-solid absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)',
+            }}
+          />
+          {/* небо-градиент — растягивается вниз (background-size) */}
+          <div
+            className="wp-grad absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(to bottom, #1C2A48 0%, #182740 42%, rgba(13,24,48,0) 100%)',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'top',
+            }}
+          />
+          {/* звёзды падают вместе с небом на свои позиции (= позиции SkyIntro) */}
+          <div className="wp-starfall absolute inset-0">
+            {TRANSITION_STARS.map((s, i) => (
+              <div
+                key={i}
+                className="star absolute rounded-full"
+                style={{
+                  top: s.top,
+                  left: s.left,
+                  width: s.size,
+                  height: s.size,
+                  ...starBaseStyle(s),
+                  ...starVars(i + 60, s.twMin),
+                }}
+              />
+            ))}
+          </div>
         </div>
       )}
 
