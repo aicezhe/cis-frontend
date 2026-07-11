@@ -19,10 +19,9 @@ function fmtDate(iso: string | null): string {
   }
 }
 
-// Цвет акцента левой полосы — по категории. Намёк на «раздел» в журнале.
-function accentColor(cat: NewsCategory): string {
-  return cat === 'italy' ? '#a8332a' : '#3a6d40';
-}
+// Единый акцент вместо зелёного/красного по категориям — тёмно-коричневый,
+// в тон бренду (gold), не завязан на study/italy.
+const ACCENT = '#6B4A32';
 
 export function NewsWidget() {
   const [cat, setCat] = useState<NewsCategory>('study');
@@ -144,28 +143,26 @@ export function NewsWidget() {
   );
 }
 
-// ── Карточка в журнальном стиле: cream BG, цветная левая полоса, крупная типографика ──
+// ── Карточка в журнальном стиле: cream BG, полоса-акцент справа, крупная типографика ──
 function NewsCard({ item, onOpen }: { item: NewsItem; onOpen: () => void }) {
-  const color = accentColor(item.category);
-
   return (
     <button
       onClick={onOpen}
       className="relative snap-center flex-shrink-0 w-full rounded-2xl overflow-hidden text-left active:scale-[0.99] transition-transform bg-cream border border-navy/10"
       style={{ height: 190 }}
     >
-      {/* Цветная левая полоса — единственный акцент */}
+      {/* Полоса-акцент справа */}
       <div
-        className="absolute top-0 bottom-0 left-0 w-1.5"
-        style={{ backgroundColor: color }}
+        className="absolute top-0 bottom-0 right-0 w-1.5"
+        style={{ backgroundColor: ACCENT }}
       />
 
-      <div className="relative h-full flex flex-col justify-between p-4 pl-5">
+      <div className="relative h-full flex flex-col justify-between p-4 pl-4 pr-5">
         {/* Верх: источник + дата */}
         <div className="flex items-baseline justify-between gap-3">
           <p
             className="font-serif text-[9px] uppercase tracking-[0.25em] truncate"
-            style={{ color }}
+            style={{ color: ACCENT }}
           >
             {item.source}
           </p>
@@ -196,7 +193,6 @@ function NewsCard({ item, onOpen }: { item: NewsItem; onOpen: () => void }) {
 
 // ── Bottom-sheet ────────────────────────────────────────────────────────────
 function NewsModal({ item, onClose }: { item: NewsItem; onClose: () => void }) {
-  const color = accentColor(item.category);
   return (
     <div
       className="fixed inset-0 z-50 bg-navy/60 flex items-end justify-center"
@@ -212,7 +208,7 @@ function NewsModal({ item, onClose }: { item: NewsItem; onClose: () => void }) {
 
         <div className="px-6 pb-6 pt-2 overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
-            <p className="font-serif text-[10px] uppercase tracking-widest" style={{ color }}>
+            <p className="font-serif text-[10px] uppercase tracking-widest" style={{ color: ACCENT }}>
               {item.source}
             </p>
             {item.published_at && (
