@@ -9,20 +9,16 @@ import { formatPrice } from '../utils/formatPrice';
 
 const CHECKS_KEY = 'cispr_foundation_checks';
 
-function NavCard({ title, sub, to }: { title: string; sub: string; to: string }) {
+// Квадратная кнопка-плитка — «подробнее о:» сетка 2×2 вместо длинных строк
+function GridButton({ icon, title, to }: { icon: string; title: string; to: string }) {
   const navigate = useNavigate();
   return (
     <button
       onClick={() => navigate(to)}
-      className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-3 text-left"
+      className="aspect-square rounded-2xl border-2 border-gold/50 bg-soft-cream flex flex-col items-center justify-center gap-1.5 p-3"
     >
-      <div className="flex-1">
-        <h4 className="font-serif text-navy text-xl font-bold">{title}</h4>
-        <p className="font-serif text-gold text-sm mt-0.5 font-bold">{sub}</p>
-      </div>
-      <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
-        <path d="M7 10L1 4h12L7 10z" />
-      </svg>
+      <span className="text-2xl leading-none">{icon}</span>
+      <span className="font-serif text-navy text-sm font-bold text-center leading-tight">{title}</span>
     </button>
   );
 }
@@ -104,11 +100,11 @@ export default function FoundationOverviewPage() {
   const totalMaxEur =
     c.tuition_full + am.apply_extra_cost_max_eur + (legalization?.total_cost_estimate.documents_only_max_eur ?? 0);
 
-  const buttons = [
-    { title: 'Структура курса', sub: 'Что это, как устроено, учебный план', to: '/path/foundation/structure' },
-    { title: 'Стоимость и оплата', sub: `${fmt(c.tuition_full)} · 3 rate · потоки`, to: '/path/foundation/finance' },
-    { title: 'Языковые требования', sub: 'Итальянский, английский, сертификаты', to: '/path/foundation/languages' },
-    { title: 'Диплом', sub: 'Апостиль, перевод, CIMEA/DDV', to: '/path/uni/program/diploma' },
+  const gridButtons = [
+    { icon: '🎓', title: 'Структура', to: '/path/foundation/structure' },
+    { icon: '€', title: 'Оплата', to: '/path/foundation/finance' },
+    { icon: '🌐', title: 'Языки', to: '/path/foundation/languages' },
+    { icon: '📖', title: 'Диплом', to: '/path/uni/program/diploma' },
   ];
 
   return (
@@ -139,18 +135,21 @@ export default function FoundationOverviewPage() {
       <div className="px-6 flex flex-col gap-3">
 
         {/* Шаги поступления — единственный раздел прямо на странице, открыт
-            по умолчанию. Обычный аккордеон, без постоянных бейджей. */}
+            по умолчанию. Крупная скруглённая карточка, обычный аккордеон,
+            без постоянных бейджей. */}
         <div className={
-          'rounded-2xl border p-4 ' +
-          (stepsOpen ? 'bg-soft-cream border-gold border-2' : 'bg-soft-cream border-navy/20')
+          'rounded-[28px] border-2 p-5 ' +
+          (stepsOpen ? 'bg-soft-cream border-gold' : 'bg-soft-cream border-gold/50')
         }>
           <button
             onClick={() => setStepsOpen(!stepsOpen)}
             className="w-full flex items-center gap-3 text-left"
           >
-            <div className="flex-1">
-              <h4 className="font-serif text-navy text-xl font-bold">Шаги поступления</h4>
-              <p className="font-serif text-gold text-sm mt-0.5 font-bold">Документы, апостиль, заявка, сроки</p>
+            <div className="flex-1 text-center">
+              <h4 className="font-serif text-navy text-2xl font-bold">Шаги поступления</h4>
+              {!stepsOpen && (
+                <p className="font-serif text-gold text-sm mt-1 font-bold">Документы, апостиль, заявка, сроки</p>
+              )}
             </div>
             <svg
               width="16" height="16" viewBox="0 0 14 14"
@@ -311,10 +310,13 @@ export default function FoundationOverviewPage() {
           )}
         </div>
 
-        {/* Остальное — кнопки-переходы на отдельные страницы */}
-        {buttons.map((b) => (
-          <NavCard key={b.to} {...b} />
-        ))}
+        {/* Остальное — компактная сетка 2×2 вместо длинных строк */}
+        <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
+        <div className="grid grid-cols-2 gap-3">
+          {gridButtons.map((b) => (
+            <GridButton key={b.to} {...b} />
+          ))}
+        </div>
       </div>
 
       {/* Контакты */}

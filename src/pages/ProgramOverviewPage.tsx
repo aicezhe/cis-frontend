@@ -38,20 +38,16 @@ function renderHighlights(text: string) {
   );
 }
 
-function NavCard({ title, sub, to }: { title: string; sub: string; to: string }) {
+// Квадратная кнопка-плитка — «подробнее о:» сетка 2×2 вместо длинных строк
+function GridButton({ icon, title, to }: { icon: string; title: string; to: string }) {
   const navigate = useNavigate();
   return (
     <button
       onClick={() => navigate(to)}
-      className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-3 text-left"
+      className="aspect-square rounded-2xl border-2 border-gold/50 bg-soft-cream flex flex-col items-center justify-center gap-1.5 p-3"
     >
-      <div className="flex-1">
-        <h4 className="font-serif text-navy text-xl font-bold">{title}</h4>
-        <p className="font-serif text-gold text-sm mt-0.5 font-bold">{sub}</p>
-      </div>
-      <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
-        <path d="M7 10L1 4h12L7 10z" />
-      </svg>
+      <span className="text-2xl leading-none">{icon}</span>
+      <span className="font-serif text-navy text-sm font-bold text-center leading-tight">{title}</span>
     </button>
   );
 }
@@ -135,13 +131,13 @@ export default function ProgramOverviewPage() {
   const deadline = program.deadlines_2026_2027;
   const windowStr = (deadline['application_window'] || deadline['application_window_english'] || '') as string;
 
-  const buttons = [
-    { title: 'Структура курса', sub: 'Описание, учебный план', to: '/path/uni/program/structure' },
-    { title: 'Документы', sub: 'Чек-лист всего что нужно', to: '/path/uni/program/documents' },
-    { title: 'Диплом', sub: 'Апостиль, перевод, CIMEA/DDV', to: '/path/uni/program/diploma' },
-    { title: 'Стоимость и оплата', sub: 'ISEE, ER.GO, no tax area', to: '/path/uni/program/finance' },
-    { title: 'Языковые требования', sub: 'Сертификаты, тесты UniPR', to: '/path/uni/program/languages' },
-    ...(isBachelor ? [{ title: 'Numero chiuso и тесты', sub: 'IMAT, TOLC-MED, TOLC-A…', to: '/path/uni/program/numero-chiuso' }] : []),
+  const gridButtons = [
+    { icon: '🎓', title: 'Структура', to: '/path/uni/program/structure' },
+    { icon: '📋', title: 'Документы', to: '/path/uni/program/documents' },
+    { icon: '📖', title: 'Диплом', to: '/path/uni/program/diploma' },
+    { icon: '€', title: 'Оплата', to: '/path/uni/program/finance' },
+    { icon: '🌐', title: 'Языки', to: '/path/uni/program/languages' },
+    ...(isBachelor ? [{ icon: '📝', title: 'Тесты', to: '/path/uni/program/numero-chiuso' }] : []),
   ];
 
   return (
@@ -185,19 +181,21 @@ export default function ProgramOverviewPage() {
       <div className="px-6 flex flex-col gap-3">
 
         {/* Шаги поступления — единственный раздел прямо на странице, открыт
-            по умолчанию. Обычный аккордеон: рамка золотая только пока открыт,
-            без постоянных бейджей — как остальные секции у Foundation. */}
+            по умолчанию. Крупная скруглённая карточка, обычный аккордеон,
+            без постоянных бейджей. */}
         <div className={
-          'rounded-2xl border p-4 ' +
-          (stepsOpen ? 'bg-soft-cream border-gold border-2' : 'bg-soft-cream border-navy/20')
+          'rounded-[28px] border-2 p-5 ' +
+          (stepsOpen ? 'bg-soft-cream border-gold' : 'bg-soft-cream border-gold/50')
         }>
           <button
             onClick={() => setStepsOpen(!stepsOpen)}
             className="w-full flex items-center gap-3 text-left"
           >
-            <div className="flex-1">
-              <h4 className="font-serif text-navy text-xl font-bold">Шаги поступления</h4>
-              <p className="font-serif text-gold text-sm mt-0.5 font-bold">Документы, дедлайны, заявка</p>
+            <div className="flex-1 text-center">
+              <h4 className="font-serif text-navy text-2xl font-bold">Шаги поступления</h4>
+              {!stepsOpen && (
+                <p className="font-serif text-gold text-sm mt-1 font-bold">Документы, дедлайны, заявка</p>
+              )}
             </div>
             <svg
               width="16" height="16" viewBox="0 0 14 14"
@@ -350,10 +348,13 @@ export default function ProgramOverviewPage() {
           )}
         </div>
 
-        {/* Остальное — кнопки-переходы на отдельные страницы */}
-        {buttons.map((b) => (
-          <NavCard key={b.to} {...b} />
-        ))}
+        {/* Остальное — компактная сетка 2×2 вместо длинных строк */}
+        <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
+        <div className="grid grid-cols-2 gap-3">
+          {gridButtons.map((b) => (
+            <GridButton key={b.to} {...b} />
+          ))}
+        </div>
       </div>
 
       <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
