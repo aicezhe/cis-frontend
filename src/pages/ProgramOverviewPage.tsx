@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GraduationCap, FileText, Award, Euro, Languages, PenLine } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
 import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
@@ -38,16 +39,16 @@ function renderHighlights(text: string) {
   );
 }
 
-// Квадратная кнопка-плитка — «подробнее о:» сетка 2×2 вместо длинных строк
-function GridButton({ icon, title, to }: { icon: string; title: string; to: string }) {
+// Небольшая квадратная плитка-иконка — сама иконка занимает почти всю
+// площадь квадрата, подпись отдельно снизу (не внутри рамки).
+function GridButton({ icon: Icon, title, to }: { icon: typeof GraduationCap; title: string; to: string }) {
   const navigate = useNavigate();
   return (
-    <button
-      onClick={() => navigate(to)}
-      className="aspect-square rounded-2xl border-2 border-gold/50 bg-soft-cream flex flex-col items-center justify-center gap-1.5 p-3"
-    >
-      <span className="text-2xl leading-none">{icon}</span>
-      <span className="font-serif text-navy text-sm font-bold text-center leading-tight">{title}</span>
+    <button onClick={() => navigate(to)} className="flex flex-col items-center gap-1.5">
+      <div className="w-full aspect-square rounded-xl border-2 border-gold/50 bg-soft-cream flex items-center justify-center p-3">
+        <Icon className="w-full h-full text-gold" strokeWidth={1.5} />
+      </div>
+      <span className="font-serif text-navy text-xs font-bold text-center leading-tight">{title}</span>
     </button>
   );
 }
@@ -91,7 +92,7 @@ export default function ProgramOverviewPage() {
   const navigate = useNavigate();
   const { program, programType, loading } = useMyProgram();
 
-  const [stepsOpen, setStepsOpen] = useState(true);
+  const [stepsOpen, setStepsOpen] = useState(false);
   const [stepChecks, setStepChecks] = useState<string[]>(() => loadList(STEPS_KEY));
   const [expenseFor, setExpenseFor] = useState<string | null>(null);
 
@@ -132,12 +133,12 @@ export default function ProgramOverviewPage() {
   const windowStr = (deadline['application_window'] || deadline['application_window_english'] || '') as string;
 
   const gridButtons = [
-    { icon: '🎓', title: 'Структура', to: '/path/uni/program/structure' },
-    { icon: '📋', title: 'Документы', to: '/path/uni/program/documents' },
-    { icon: '📖', title: 'Диплом', to: '/path/uni/program/diploma' },
-    { icon: '€', title: 'Оплата', to: '/path/uni/program/finance' },
-    { icon: '🌐', title: 'Языки', to: '/path/uni/program/languages' },
-    ...(isBachelor ? [{ icon: '📝', title: 'Тесты', to: '/path/uni/program/numero-chiuso' }] : []),
+    { icon: GraduationCap, title: 'Структура', to: '/path/uni/program/structure' },
+    { icon: FileText, title: 'Документы', to: '/path/uni/program/documents' },
+    { icon: Award, title: 'Диплом', to: '/path/uni/program/diploma' },
+    { icon: Euro, title: 'Оплата', to: '/path/uni/program/finance' },
+    { icon: Languages, title: 'Языки', to: '/path/uni/program/languages' },
+    ...(isBachelor ? [{ icon: PenLine, title: 'Тесты', to: '/path/uni/program/numero-chiuso' }] : []),
   ];
 
   return (
@@ -348,9 +349,9 @@ export default function ProgramOverviewPage() {
           )}
         </div>
 
-        {/* Остальное — компактная сетка 2×2 вместо длинных строк */}
+        {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-4 px-2">
           {gridButtons.map((b) => (
             <GridButton key={b.to} {...b} />
           ))}
