@@ -1,5 +1,4 @@
-import { Routes, Route, useLocation, type Location } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import WelcomePage from './pages/WelcomePage';
 import RegisterPage from './pages/RegisterPage';
 import ChangeStagePage from './pages/ChangeStagePage';
@@ -41,9 +40,9 @@ import LociRoutesView from './pages/LociRoutesView';
 import ParmaLifeOverviewPage from './pages/ParmaLifeOverviewPage';
 import ParmaSubsectionPage from './pages/ParmaSubsectionPage';
 
-function AppRoutes({ location }: { location?: Location }) {
+export default function App() {
   return (
-    <Routes location={location}>
+    <Routes>
       <Route path="/" element={<WelcomePage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/change-stage" element={<ChangeStagePage />} />
@@ -86,48 +85,5 @@ function AppRoutes({ location }: { location?: Location }) {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
     </Routes>
-  );
-}
-
-// Кросс-фейд только для welcome → вход/регистрация: старая страница
-// растворяется поверх новой (обе на одинаковом фоне navy→cream, поэтому
-// «синий экран» не появляется — меняется только контент). Остальные
-// переходы — мгновенно, как раньше.
-export default function App() {
-  const location = useLocation();
-  const prevRef = useRef(location);
-  const [outgoing, setOutgoing] = useState<{ loc: Location; kind: 'login' | 'register' } | null>(
-    null,
-  );
-
-  useEffect(() => {
-    const prev = prevRef.current;
-    prevRef.current = location;
-    if (prev.pathname === location.pathname) return;
-    const kind =
-      location.pathname === '/login' ? 'login' : location.pathname === '/register' ? 'register' : null;
-    const reduce =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (prev.pathname === '/' && kind && !reduce) {
-      setOutgoing({ loc: prev, kind });
-    }
-  }, [location]);
-
-  return (
-    <div style={{ position: 'relative', overflow: outgoing ? 'hidden' : undefined }}>
-      <div className={outgoing ? `pt-in-${outgoing.kind}` : undefined}>
-        <AppRoutes location={location} />
-      </div>
-      {outgoing && (
-        <div
-          className={`pt-out-${outgoing.kind} pointer-events-none`}
-          style={{ position: 'absolute', inset: 0, zIndex: 10 }}
-          onAnimationEnd={() => setOutgoing(null)}
-        >
-          <AppRoutes location={outgoing.loc} />
-        </div>
-      )}
-    </div>
   );
 }

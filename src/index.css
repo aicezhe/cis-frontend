@@ -53,30 +53,45 @@ body {
   .star { animation: none; }
 }
 
-/* ── Плавный переход welcome → вход/регистрация ──────────────────────────────
-   Честный кросс-фейд: старая страница растворяется, новая проявляется сквозь
-   неё. Без доп. фона/оверлея. login — лёгкое приближение (scale), register —
-   мягкий заход сбоку (translateX). */
-@keyframes pt-in-login {
-  from { opacity: 0; transform: scale(1.045); }
+/* ── Уход с WelcomePage ──────────────────────────────────────────────────────
+   Вход: небо плавно падает вниз (всё уезжает + гаснет) — звёзды «переносят» на
+   экран входа, который проявляется сверху. Регистрация: элементы по очереди
+   отлетают в стороны, экран становится бежевым, а текст регистрации всплывает
+   уже на самой странице. */
+@keyframes wp-fall {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(48vh); }
+}
+@keyframes wp-fly-left {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-135%); }
+}
+@keyframes wp-fly-right {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(135%); }
+}
+@keyframes wp-fade { to { opacity: 0; } }
+@keyframes wp-cream-in { from { opacity: 0; } to { opacity: 1; } }
+
+.wp-fall      { animation: wp-fall 0.7s cubic-bezier(0.55, 0, 0.85, 0.35) both; }
+.wp-fly-left  { animation: wp-fly-left 0.5s cubic-bezier(0.5, 0, 0.75, 0) both; }
+.wp-fly-right { animation: wp-fly-right 0.5s cubic-bezier(0.5, 0, 0.75, 0) both; }
+.wp-fade      { animation: wp-fade 0.45s ease-out both; }
+.wp-cream-in  { animation: wp-cream-in 0.55s ease-out 0.3s both; }
+
+/* ── Появление контента на странице (вход/регистрация) ── */
+@keyframes page-rise {
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: none; }
 }
-@keyframes pt-out-login {
-  from { opacity: 1; transform: none; }
-  to   { opacity: 0; transform: scale(0.985); }
-}
-@keyframes pt-in-register {
-  from { opacity: 0; transform: translateX(5%); }
+@keyframes page-descend {
+  from { opacity: 0; transform: translateY(-18px); }
   to   { opacity: 1; transform: none; }
 }
-@keyframes pt-out-register {
-  from { opacity: 1; transform: none; }
-  to   { opacity: 0; transform: translateX(-5%); }
-}
-.pt-in-login     { animation: pt-in-login   0.55s ease-out both; }
-.pt-out-login    { animation: pt-out-login  0.6s  ease-in  both; }
-.pt-in-register  { animation: pt-in-register 0.55s ease-out both; }
-.pt-out-register { animation: pt-out-register 0.6s ease-in  both; }
+.page-rise    { animation: page-rise 0.6s ease-out 0.15s both; }
+.page-descend { animation: page-descend 0.6s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .pt-in-login, .pt-out-login, .pt-in-register, .pt-out-register { animation: none; }
+  .wp-fall, .wp-fly-left, .wp-fly-right, .wp-fade, .wp-cream-in,
+  .page-rise, .page-descend { animation: none; }
 }

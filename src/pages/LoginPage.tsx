@@ -93,7 +93,7 @@ export default function LoginPage() {
       </button>
 
       {/* HERO: «С возвращением» в едином ритме с WelcomePage */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-32 px-6">
+      <div className="page-descend relative z-10 flex flex-col items-center text-center mt-32 px-6">
         <p
           className="font-serif text-navy font-bold leading-tight"
           style={{
@@ -115,7 +115,7 @@ export default function LoginPage() {
       </div>
 
       {/* Форма */}
-      <div className="relative z-10 w-full max-w-xs mx-auto mt-8 flex flex-col gap-3">
+      <div className="page-descend relative z-10 w-full max-w-xs mx-auto mt-8 flex flex-col gap-3">
         <div className="flex items-center bg-cream/70 border border-navy/25 rounded-2xl px-5 py-3.5 backdrop-blur-sm">
           <input
             type="email"
