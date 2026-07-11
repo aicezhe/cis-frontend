@@ -179,7 +179,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center mt-32 px-8">
+      <div className="page-rise flex flex-col items-center mt-32 px-8">
 
         <p className="font-serif text-gold text-sm tracking-widest mb-3">
           РЕГИСТРАЦИЯ

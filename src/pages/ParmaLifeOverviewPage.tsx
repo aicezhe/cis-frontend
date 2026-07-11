@@ -33,13 +33,9 @@ export default function ParmaLifeOverviewPage() {
         </div>
       </div>
 
-      {/* Интро + порядок */}
+      {/* Интро */}
       <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed mb-3">{parmaLife.intro_ru.what_ru}</p>
-        <div className="bg-gold/10 border border-gold/40 rounded-xl px-4 py-3">
-          <p className="font-serif text-gold text-xs italic mb-1">Порядок первых месяцев</p>
-          <p className="font-serif text-navy/80 text-xs leading-relaxed">{parmaLife.intro_ru.order_ru}</p>
-        </div>
+        <p className="font-serif text-navy/80 text-sm leading-relaxed">{parmaLife.intro_ru.what_ru}</p>
       </div>
 
       {/* Карта мест Loci */}

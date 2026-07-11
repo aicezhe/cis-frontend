@@ -1,26 +1,22 @@
 import skyline from '../assets/parma design.svg';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { api, ApiError, setToken } from '../lib/api';
 import { cacheAvatar } from '../lib/avatar';
+import SkyIntro from '../components/SkyIntro';
+import { makeStarField, starBaseStyle, starVars } from '../lib/nightSky';
 
-// Та же звёздная композиция что на WelcomePage — для единства входа в приложение
-const stars = [
-  { top: '6%', left: '12%', size: 3 },
-  { top: '9%', left: '78%', size: 2 },
-  { top: '13%', left: '40%', size: 2 },
-  { top: '16%', left: '88%', size: 3 },
-  { top: '19%', left: '22%', size: 2 },
-  { top: '22%', left: '63%', size: 2 },
-  { top: '25%', left: '8%', size: 3 },
-  { top: '11%', left: '55%', size: 2 },
-  { top: '17%', left: '70%', size: 2 },
-  { top: '8%', left: '30%', size: 2 },
-];
+// То же натуральное ночное небо, что на WelcomePage — для единства входа.
+const stars = makeStarField(50, 33, 7);
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  // Пришли по анимации с WelcomePage → проигрываем заставку-поток звёзд.
+  const location = useLocation();
+  const [intro, setIntro] = useState(
+    (location.state as { sky?: boolean } | null)?.sky === true,
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -62,12 +58,21 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
 
-      {/* Звёзды */}
+      {intro && <SkyIntro onDone={() => setIntro(false)} />}
+
+      {/* Звёзды — то же ночное небо, что на WelcomePage (мерцают, дрейфуют) */}
       {stars.map((s, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-cream/60"
-          style={{ top: s.top, left: s.left, width: s.size, height: s.size }}
+          className="star absolute rounded-full"
+          style={{
+            top: s.top,
+            left: s.left,
+            width: s.size,
+            height: s.size,
+            ...starBaseStyle(s),
+            ...starVars(i, s.twMin),
+          }}
         />
       ))}
 
@@ -93,7 +98,7 @@ export default function LoginPage() {
       </button>
 
       {/* HERO: «С возвращением» в едином ритме с WelcomePage */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-32 px-6">
+      <div className="page-descend relative z-10 flex flex-col items-center text-center mt-32 px-6">
         <p
           className="font-serif text-navy font-bold leading-tight"
           style={{
@@ -115,7 +120,7 @@ export default function LoginPage() {
       </div>
 
       {/* Форма */}
-      <div className="relative z-10 w-full max-w-xs mx-auto mt-8 flex flex-col gap-3">
+      <div className="page-descend relative z-10 w-full max-w-xs mx-auto mt-8 flex flex-col gap-3">
         <div className="flex items-center bg-cream/70 border border-navy/25 rounded-2xl px-5 py-3.5 backdrop-blur-sm">
           <input
             type="email"

@@ -168,18 +168,18 @@ export default function FoundationOverviewPage() {
                   {/* 1. Что это и как устроено */}
                   {s.id === 1 && (
                     <div className="flex flex-col gap-4">
-                      <p className="font-serif text-navy/80 text-base leading-relaxed">{p.description_ru}</p>
+                      <p className="font-serif text-navy/80 text-sm leading-relaxed">{p.description_ru}</p>
                       <div>
-                        <p className="font-serif text-gold text-sm italic mb-1">Как устроена учёба</p>
-                        <p className="font-serif text-navy/80 text-base leading-relaxed">{data.how_studies_work_ru}</p>
+                        <p className="font-serif text-gold text-base italic font-semibold mb-1.5">Как устроена учёба</p>
+                        <p className="font-serif text-navy/80 text-sm leading-relaxed">{data.how_studies_work_ru}</p>
                       </div>
                       <div>
-                        <p className="font-serif text-gold text-sm italic mb-2">После завершения</p>
+                        <p className="font-serif text-gold text-base italic font-semibold mb-2">После завершения</p>
                         <div className="flex flex-col gap-1.5">
                           {p.issued_after_completion.map((item, i) => (
                             <div key={i} className="flex items-start gap-2">
                               <span className="text-gold mt-0.5">◆</span>
-                              <p className="font-serif text-navy/80 text-base">{item}</p>
+                              <p className="font-serif text-navy/80 text-sm">{item}</p>
                             </div>
                           ))}
                         </div>
