@@ -1,13 +1,31 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import L from 'leaflet';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import '@maplibre/maplibre-gl-leaflet';
 
 import TabBar from '../components/TabBar';
 import { useLociPlaces } from '../hooks/useLociPlaces';
 import { openRouteFromCurrentLocation } from '../utils/openInMaps';
 import { loadHomeAddress } from '../lib/homeAddress';
+import { lociMapStyle } from '../lib/lociMapStyle';
 import type { LociCategoryId, LociPlace } from '../types/loci';
+
+// Векторная подложка в фирменных цветах (см. lib/lociMapStyle) вместо растровых
+// тайлов OSM — та же роль, что раньше играл <TileLayer>, но без чужой палитры
+// и подписей. Рисуется через плагин maplibre-gl-leaflet поверх react-leaflet,
+// маркеры/попапы остаются как были.
+function VectorBasemap() {
+  const map = useMap();
+  useEffect(() => {
+    const gl = L.maplibreGL({ style: lociMapStyle }).addTo(map);
+    return () => {
+      map.removeLayer(gl);
+    };
+  }, [map]);
+  return null;
+}
 
 // Цвет канта маркера: магазины — по ценовой категории, остальное — золото.
 function borderColorFor(place: LociPlace): string {
@@ -114,11 +132,7 @@ export default function MapPage() {
             scrollWheelZoom={true}
             style={{ height: '100%', width: '100%' }}
           >
-            <TileLayer
-              attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxZoom={19}
-            />
+            <VectorBasemap />
             {filtered.map((place) => (
               <Marker
                 key={place.id}
