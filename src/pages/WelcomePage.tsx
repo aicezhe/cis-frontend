@@ -1,5 +1,5 @@
 import skyline from '../assets/parma design.svg';
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Звёзды на ночном небе сверху — часть белые, часть золотые (цвет бренда).
@@ -29,7 +29,7 @@ const stars = [
 function starVars(i: number, gold: boolean): React.CSSProperties {
   const dir = i % 2 === 0 ? 1 : -1;
   return {
-    '--tw-min': gold ? 0.3 : 0.45,
+    '--tw-min': gold ? 0.55 : 0.7, // поярче
     '--tw-dur': `${2.4 + (i % 4) * 0.6}s`,
     '--tw-delay': `${((i * 0.53) % 3).toFixed(2)}s`,
     '--dx': `${dir * (2 + (i % 3))}px`,
@@ -43,33 +43,46 @@ export default function WelcomePage() {
   const navigate = useNavigate();
   const [transition, setTransition] = useState<null | 'login' | 'register'>(null);
 
-  // Поле звёзд для «влёта» (login): разлетаются из центра наружу по кругу.
+  // Кнопка «Войти» по ширине фразы «Путь в Парму» — замеряем её вживую.
+  const heroRef = useRef<HTMLParagraphElement>(null);
+  const [heroWidth, setHeroWidth] = useState<number>();
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (heroRef.current) setHeroWidth(heroRef.current.offsetWidth);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  // Поле звёзд для «влёта» (login): ПЛОТНЫЙ поток — звёзды разлетаются из центра
+  // наружу, их много, чтобы они «переносили» на след. экран, а не мигал синий фон.
   const warpStars = useMemo(
     () =>
-      Array.from({ length: 40 }, (_, i) => {
-        const angle = (i / 40) * Math.PI * 2 + (i % 5) * 0.6;
-        const dist = 45 + (i % 6) * 10; // vmax
+      Array.from({ length: 150 }, (_, i) => {
+        const angle = (i * 2.399963) % (Math.PI * 2); // золотой угол — равномерный разброс
+        const dist = 40 + (i % 8) * 9; // vmax
         return {
           tx: Math.round(Math.cos(angle) * dist),
           ty: Math.round(Math.sin(angle) * dist),
           size: 1 + (i % 3),
-          gold: i % 4 === 0,
-          delay: ((i * 0.045) % 0.9).toFixed(2),
-          dur: (0.85 + (i % 4) * 0.15).toFixed(2),
+          gold: i % 5 === 0,
+          delay: ((i * 0.012) % 0.7).toFixed(3),
+          dur: (0.9 + (i % 5) * 0.14).toFixed(2),
         };
       }),
     [],
   );
 
-  // Поле звёзд для регистрации: проходят сбоку (справа налево), на разной высоте.
+  // Поле звёзд для регистрации: плотный поток проходит сбоку (справа налево).
   const passStars = useMemo(
     () =>
-      Array.from({ length: 26 }, (_, i) => ({
-        top: `${4 + ((i * 7) % 92)}%`,
+      Array.from({ length: 70 }, (_, i) => ({
+        top: `${((i * 12.4) % 100).toFixed(1)}%`,
         size: 1 + (i % 3),
-        gold: i % 5 === 0,
-        delay: ((i * 0.04) % 0.7).toFixed(2),
-        dur: (0.85 + (i % 3) * 0.2).toFixed(2),
+        gold: i % 6 === 0,
+        delay: ((i * 0.016) % 0.6).toFixed(3),
+        dur: (0.85 + (i % 4) * 0.16).toFixed(2),
       })),
     [],
   );
@@ -102,8 +115,10 @@ export default function WelcomePage() {
             left: star.left,
             width: star.size,
             height: star.size,
-            background: star.gold ? '#B89968' : 'rgba(244,241,233,0.7)',
-            boxShadow: star.gold ? '0 0 6px 1px rgba(184,153,104,0.55)' : 'none',
+            background: star.gold ? '#C7A876' : 'rgba(255,253,248,0.95)',
+            boxShadow: star.gold
+              ? '0 0 7px 1.5px rgba(199,168,118,0.75)'
+              : '0 0 4px 0.5px rgba(255,253,248,0.6)',
             ...starVars(i, star.gold),
           }}
         />
@@ -124,7 +139,8 @@ export default function WelcomePage() {
       {/* HERO: слоган — главный визуальный акцент */}
       <div className="relative z-10 flex flex-col items-center text-center mt-48 px-6">
         <p
-          className="font-serif text-navy font-bold leading-tight text-center"
+          ref={heroRef}
+          className="font-serif text-navy font-bold leading-tight text-center inline-block"
           style={{
             fontSize: 'clamp(1.8rem, 7vw, 2.8rem)',
             letterSpacing: '0.04em',
@@ -151,8 +167,11 @@ export default function WelcomePage() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
         <button
           onClick={() => goWithTransition('login')}
-          className="font-serif text-cream text-lg bg-navy rounded-full py-3.5 px-16 shadow-sm border border-gold/50 active:scale-[0.98] transition-transform"
-          style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
+          className="font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm border border-gold/50 active:scale-[0.98] transition-transform"
+          style={{
+            width: heroWidth,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)',
+          }}
         >
           Войти
         </button>
@@ -170,7 +189,7 @@ export default function WelcomePage() {
           className="fixed inset-0 z-50 overflow-hidden"
           style={{
             background: 'radial-gradient(circle at center, #1C2A48 0%, #0f1626 100%)',
-            animation: 'overlay-fade-in 0.25s ease-out both',
+            animation: 'overlay-fade-in 0.55s ease-out both',
           }}
         >
           {warpStars.map((s, i) => (
@@ -200,7 +219,7 @@ export default function WelcomePage() {
           className="fixed inset-0 z-50 overflow-hidden"
           style={{
             background: 'linear-gradient(to bottom, #1C2A48 0%, #F4F1E9 100%)',
-            animation: 'overlay-fade-in 0.25s ease-out both',
+            animation: 'overlay-fade-in 0.55s ease-out both',
           }}
         >
           {passStars.map((s, i) => (
