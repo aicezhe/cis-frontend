@@ -103,7 +103,8 @@ export default function WelcomePage() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
         <button
           onClick={() => navigate('/login')}
-          className="w-full font-serif text-cream text-lg bg-navy rounded-full py-3.5 shadow-sm active:scale-[0.98] transition-transform"
+          className="font-serif text-cream text-lg bg-navy rounded-full py-3.5 px-16 shadow-sm border border-gold/50 active:scale-[0.98] transition-transform"
+          style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
         >
           Войти
         </button>
