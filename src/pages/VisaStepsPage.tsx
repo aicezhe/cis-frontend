@@ -184,7 +184,7 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
           )}
           {step.link_to_section_ru && (
             <button
-              onClick={() => navigate('/path/uni/program/documents')}
+              onClick={() => navigate('/path/uni/program', { state: { openSection: 2 } })}
               className="w-full font-serif text-navy border border-navy/30 rounded-full py-2.5 text-sm"
             >
               {step.link_to_section_ru} →

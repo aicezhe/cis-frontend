@@ -22,10 +22,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import FoundationOverviewPage from './pages/FoundationOverviewPage';
 import ProgramOverviewPage from './pages/ProgramOverviewPage';
-import ProgramStepsPage from './pages/ProgramStepsPage';
-import ProgramDocumentsPage from './pages/ProgramDocumentsPage';
-import ProgramFinancePage from './pages/ProgramFinancePage';
-import ProgramLanguagesPage from './pages/ProgramLanguagesPage';
 import NumeroChiusoPage from './pages/NumeroChiusoPage';
 import IseeDocumentsPage from './pages/IseeDocumentsPage';
 import VisaOverviewPage from './pages/VisaOverviewPage';
@@ -64,10 +60,6 @@ export default function App() {
       <Route path="/path" element={<PathPage />} />
       <Route path="/path/foundation" element={<FoundationOverviewPage />} />
       <Route path="/path/uni/program" element={<ProgramOverviewPage />} />
-      <Route path="/path/uni/program/steps" element={<ProgramStepsPage />} />
-      <Route path="/path/uni/program/documents" element={<ProgramDocumentsPage />} />
-      <Route path="/path/uni/program/finance" element={<ProgramFinancePage />} />
-      <Route path="/path/uni/program/languages" element={<ProgramLanguagesPage />} />
       <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
       <Route path="/path/uni/program/isee" element={<IseeDocumentsPage />} />
       <Route path="/path/parma/isee" element={<IseeDocumentsPage />} />

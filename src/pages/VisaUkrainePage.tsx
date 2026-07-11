@@ -128,7 +128,7 @@ export default function VisaUkrainePage() {
                 <p className="font-serif text-navy/70 text-xs leading-relaxed mt-0.5">{step.description_ru}</p>
                 {step.link_to_section_ru && (
                   <button
-                    onClick={() => navigate('/path/uni/program/documents')}
+                    onClick={() => navigate('/path/uni/program', { state: { openSection: 2 } })}
                     className="font-serif text-gold text-xs underline mt-1"
                   >
                     {step.link_to_section_ru} →
