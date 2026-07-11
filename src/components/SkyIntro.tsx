@@ -1,63 +1,56 @@
 import { useEffect, useMemo } from 'react';
-
-// Детерминированный псевдо-рандом по индексу.
-function rand(seed: number): number {
-  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-}
-const TONES = ['225,235,255', '255,253,248', '255,246,230', '255,253,248'];
+import { makeStarField, rand, starBaseStyle } from '../lib/nightSky';
 
 /**
- * Заставка на странице входа: оверлей стартует полностью синим (бесшовно после
- * «накрытия» на WelcomePage), звёзды летят потоком из центра на зрителя, затем
- * весь оверлей размывается и гаснет — открывается экран входа. onDone вызывается
- * по завершении, чтобы родитель снял оверлей.
+ * Заставка на странице входа. Оверлей стартует полностью синим (бесшовно после
+ * «накрытия» на WelcomePage) с уже опустившимися звёздами. Звёзды разъезжаются
+ * из своих позиций наружу — эффект приближения, БЕЗ центральной точки, — затем
+ * весь оверлей плавно размывается и гаснет, открывая экран входа. onDone
+ * вызывается по завершении, чтобы родитель снял оверлей.
  */
 export default function SkyIntro({ onDone }: { onDone: () => void }) {
   useEffect(() => {
-    const t = window.setTimeout(onDone, 1250); // = длительность .sky-intro
+    const t = window.setTimeout(onDone, 1500); // = длительность .sky-intro
     return () => window.clearTimeout(t);
   }, [onDone]);
 
-  // Звёзды летят из центра наружу (радиально) — эффект приближения на зрителя.
-  const stars = useMemo(
-    () =>
-      Array.from({ length: 70 }, (_, i) => {
-        const angle = (i * 2.399963) % (Math.PI * 2); // золотой угол — равномерно
-        const dist = 45 + rand(i) * 55; // vmax до края
-        const gold = rand(i + 200) > 0.9;
-        return {
-          ex: `${(Math.cos(angle) * dist).toFixed(1)}vmax`,
-          ey: `${(Math.sin(angle) * dist).toFixed(1)}vmax`,
-          size: +(1 + rand(i + 100) * 2.2).toFixed(2),
-          rgb: gold ? '199,168,118' : TONES[i % TONES.length],
-          dur: (0.7 + rand(i + 300) * 0.5).toFixed(2),
-          delay: (rand(i + 400) * 0.6).toFixed(2),
-        };
-      }),
-    [],
-  );
+  // Поле как на welcome, но по всему экрану. Для каждой звезды считаем вектор
+  // от центра и «разлёт» наружу + масштаб — приближение идёт от самих звёзд.
+  const field = useMemo(() => {
+    return makeStarField(64, 100, 21).map((s, i) => {
+      const ox = parseFloat(s.left) - 50; // % от центра по X
+      const oy = parseFloat(s.top) - 50; // % от центра по Y
+      const k = 1.9 + rand(i + 33) * 1.3; // множитель разлёта
+      return {
+        star: s,
+        ax: `${(ox * (k - 1)).toFixed(1)}vw`,
+        ay: `${(oy * (k - 1)).toFixed(1)}vh`,
+        asc: (1.5 + rand(i + 44) * 1.4).toFixed(2),
+        delay: (rand(i + 55) * 0.12).toFixed(2),
+      };
+    });
+  }, []);
 
   return (
     <div
       className="sky-intro fixed inset-0 z-[100] overflow-hidden pointer-events-none"
       style={{ background: 'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)' }}
     >
-      {stars.map((s, i) => (
+      {field.map((f, i) => (
         <div
           key={i}
           className="absolute rounded-full"
           style={
             {
-              top: '50%',
-              left: '50%',
-              width: s.size,
-              height: s.size,
-              background: `rgb(${s.rgb})`,
-              boxShadow: `0 0 6px 1px rgba(${s.rgb},0.6)`,
-              animation: `star-stream ${s.dur}s ease-in ${s.delay}s infinite`,
-              '--ex': s.ex,
-              '--ey': s.ey,
+              top: f.star.top,
+              left: f.star.left,
+              width: f.star.size,
+              height: f.star.size,
+              ...starBaseStyle(f.star),
+              animation: `star-approach 1.5s cubic-bezier(0.45, 0, 0.75, 1) ${f.delay}s both`,
+              '--ax': f.ax,
+              '--ay': f.ay,
+              '--asc': f.asc,
             } as React.CSSProperties
           }
         />

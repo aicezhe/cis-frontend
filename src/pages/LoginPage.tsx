@@ -5,20 +5,10 @@ import { Mail, Eye, EyeOff } from 'lucide-react';
 import { api, ApiError, setToken } from '../lib/api';
 import { cacheAvatar } from '../lib/avatar';
 import SkyIntro from '../components/SkyIntro';
+import { makeStarField, starBaseStyle, starVars } from '../lib/nightSky';
 
-// Та же звёздная композиция что на WelcomePage — для единства входа в приложение
-const stars = [
-  { top: '6%', left: '12%', size: 3 },
-  { top: '9%', left: '78%', size: 2 },
-  { top: '13%', left: '40%', size: 2 },
-  { top: '16%', left: '88%', size: 3 },
-  { top: '19%', left: '22%', size: 2 },
-  { top: '22%', left: '63%', size: 2 },
-  { top: '25%', left: '8%', size: 3 },
-  { top: '11%', left: '55%', size: 2 },
-  { top: '17%', left: '70%', size: 2 },
-  { top: '8%', left: '30%', size: 2 },
-];
+// То же натуральное ночное небо, что на WelcomePage — для единства входа.
+const stars = makeStarField(50, 33, 7);
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -70,12 +60,19 @@ export default function LoginPage() {
 
       {intro && <SkyIntro onDone={() => setIntro(false)} />}
 
-      {/* Звёзды */}
+      {/* Звёзды — то же ночное небо, что на WelcomePage (мерцают, дрейфуют) */}
       {stars.map((s, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-cream/60"
-          style={{ top: s.top, left: s.left, width: s.size, height: s.size }}
+          className="star absolute rounded-full"
+          style={{
+            top: s.top,
+            left: s.left,
+            width: s.size,
+            height: s.size,
+            ...starBaseStyle(s),
+            ...starVars(i, s.twMin),
+          }}
         />
       ))}
 
