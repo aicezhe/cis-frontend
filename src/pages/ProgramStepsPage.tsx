@@ -28,7 +28,7 @@ function LegalizationBlock() {
   if (loading || !legalization) return null;
   return (
     <div className="mt-3 bg-soft-cream border border-gold rounded-xl px-4 py-3">
-      <p className="font-serif text-gold text-xs italic mb-2">
+      <p className="font-serif text-gold text-xs mb-2 font-bold">
         Легализация документов — {legalization.meta.country_name_ru}
       </p>
       <div className="flex flex-col gap-2">
@@ -71,7 +71,7 @@ function StepCard({ step, idx, checks, toggle }: {
       <div className="flex items-start gap-3">
         <CheckBox id={step.id} checks={checks} toggle={toggle} />
         <div className="flex-1">
-          <p className="font-serif text-gold text-xs italic">Шаг {idx + 1}</p>
+          <p className="font-serif text-gold text-xs font-bold">Шаг {idx + 1}</p>
           <h5 className={
             'font-serif text-lg font-bold mt-0.5 ' +
             (isDone ? 'text-navy/50 line-through' : 'text-navy')
@@ -143,7 +143,7 @@ function StepCard({ step, idx, checks, toggle }: {
           {step.linked_to_country_seed && <LegalizationBlock />}
 
           {step.next_step_ru && (
-            <p className="font-serif text-gold text-sm italic mt-3">
+            <p className="font-serif text-gold text-sm mt-3 font-bold">
               → {step.next_step_ru}
             </p>
           )}
@@ -181,7 +181,7 @@ export default function ProgramStepsPage() {
 
       {/* Дедлайны */}
       <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-2">Ориентировочные сроки 2026/2027</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">Ориентировочные сроки 2026/2027</p>
         {windowStr && (
           <p className="font-serif text-navy text-sm font-bold">📅 Подача: {windowStr}</p>
         )}
@@ -217,7 +217,7 @@ export default function ProgramStepsPage() {
 
       {/* Частые ошибки */}
       <div className="px-6 mt-6">
-        <p className="font-serif text-gold text-sm italic mb-2">Частые ошибки</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">Частые ошибки</p>
         <div className="flex flex-col gap-2">
           {program.common_pitfalls_ru.map((p, i) => (
             <div key={i} className="flex items-start gap-2">

@@ -344,12 +344,12 @@ export default function RegisterPage() {
             </div>
 
             {password.length > 0 && password.length < 8 && (
-              <p className="font-serif text-gold text-xs italic mb-4 self-start">
+              <p className="font-serif text-gold text-xs mb-4 self-start font-bold">
                 Пароль минимум 8 символов
               </p>
             )}
             {password.length >= 8 && passwordRepeat.length > 0 && password !== passwordRepeat && (
-              <p className="font-serif text-gold text-xs italic mb-4 self-start">
+              <p className="font-serif text-gold text-xs mb-4 self-start font-bold">
                 Пароли не совпадают
               </p>
             )}

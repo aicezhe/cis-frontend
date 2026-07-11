@@ -151,7 +151,7 @@ export default function QuizTravelPage() {
             {/* Поле адреса — только если "Да" */}
             {hasHousing === 'Да' && (
               <div className="w-full mt-6">
-                <p className="font-serif text-gold text-sm italic mb-2">
+                <p className="font-serif text-gold text-sm mb-2 font-bold">
                   Адрес жилья в Парме
                 </p>
                 <input
@@ -162,7 +162,7 @@ export default function QuizTravelPage() {
                   autoComplete="off"
                   className="w-full font-sans text-navy text-lg bg-cream border border-navy rounded-2xl px-5 py-4 outline-none"
                 />
-                <p className="font-serif text-gold text-xs italic mt-2">
+                <p className="font-serif text-gold text-xs mt-2 font-bold">
                   чтобы построить маршрут от станции до дома
                 </p>
               </div>

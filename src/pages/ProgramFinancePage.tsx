@@ -23,12 +23,12 @@ export default function ProgramFinancePage() {
 
       {/* Объяснение ISEE */}
       <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-2">Как считается стоимость в Италии</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">Как считается стоимость в Италии</p>
         <p className="font-serif text-navy/80 text-sm leading-relaxed">{fees.explanation_ru}</p>
       </div>
 
       {/* Сравнительные карточки */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Варианты стоимости в год</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты стоимости в год</p>
       <div className="px-6 flex flex-col gap-3">
 
         {/* No tax area */}
@@ -37,14 +37,14 @@ export default function ProgramFinancePage() {
           <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
           <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
           <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-          <p className="font-serif text-gold text-sm italic">С ISEE parificato ≤ {noTax.isee_threshold_eur.toLocaleString()} €</p>
+          <p className="font-serif text-gold text-sm font-bold">С ISEE parificato ≤ {noTax.isee_threshold_eur.toLocaleString()} €</p>
           <p className="font-serif text-cream text-3xl font-bold mt-2">
             <Price eur={noTax.amount_eur} />
           </p>
           <p className="font-serif text-cream/70 text-sm mt-2 leading-relaxed">
             {noTax.components_ru || 'Региональный налог + виртуальная марка — это вся плата за год'}
           </p>
-          <p className="font-serif text-gold text-xs italic mt-2">
+          <p className="font-serif text-gold text-xs mt-2 font-bold">
             ISEE parificato оформляется бесплатно через CAF в Италии
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function ProgramFinancePage() {
       {/* ER.GO */}
       {ergo && (
         <>
-          <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Стипендия</p>
+          <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Стипендия</p>
           <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
             <div className="flex justify-between items-start">
               <div>
@@ -96,7 +96,7 @@ export default function ProgramFinancePage() {
       )}
 
       {/* ISEE parificato */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">ISEE parificato</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">ISEE parificato</p>
       <button
         onClick={() => navigate('/path/uni/program/isee')}
         className="relative mx-6 bg-navy rounded-2xl px-5 py-4 text-left w-[calc(100%-3rem)]"
@@ -112,7 +112,7 @@ export default function ProgramFinancePage() {
 
       {/* Совет */}
       <div className="mx-6 mt-5 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-2">💡 Как сэкономить</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">💡 Как сэкономить</p>
         <p className="font-serif text-navy/80 text-sm leading-relaxed">
           Сразу после приезда в Италию — иди в ближайший CAF и оформи ISEE parificato. Это бесплатно
           и займёт 1-2 визита. С ISEE ≤ 27 000 € ты платишь только 156 € в год вместо 1500-2500 €.

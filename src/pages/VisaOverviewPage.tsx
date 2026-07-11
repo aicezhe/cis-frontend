@@ -75,7 +75,7 @@ function VisaRuOverview() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Виза D</h1>
-          <p className="font-serif text-gold text-lg italic mt-0.5">Visto nazionale · studio</p>
+          <p className="font-serif text-gold text-lg mt-0.5 font-bold">Visto nazionale · studio</p>
           <p className="font-serif text-navy/60 text-xs mt-1">
             {visa.meta.country_name_ru} · {visa.meta.academic_year}
           </p>
@@ -91,10 +91,10 @@ function VisaRuOverview() {
       </div>
 
       {/* Консульский округ */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Твой консульский округ</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Твой консульский округ</p>
       <div className="mx-6 relative bg-navy rounded-2xl p-5">
         <Corners />
-        <p className="font-serif text-gold text-xs italic">
+        <p className="font-serif text-gold text-xs font-bold">
           {city ? `по твоему городу: ${city}` : 'город не указан — по умолчанию'}
         </p>
         <p className="font-serif text-cream text-xl font-bold mt-1">{district.name_ru}</p>
@@ -115,13 +115,13 @@ function VisaRuOverview() {
           </p>
           <p className="font-serif text-cream/50 text-[11px] mt-1 leading-relaxed">{operators.note_ru}</p>
         </div>
-        <p className="font-serif text-gold/70 text-[10px] italic mt-3">
+        <p className="font-serif text-gold/70 text-[10px] mt-3 font-bold">
           Распределение округов меняется — проверь на официальном сайте перед подачей
         </p>
       </div>
 
       {/* Процесс целиком */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Как устроен процесс</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Как устроен процесс</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
         <ol className="flex flex-col gap-2.5">
           {visa.process_overview_ru.map((step, i) => (
@@ -144,7 +144,7 @@ function VisaRuOverview() {
           >
             <div className="flex-1">
               <h4 className="font-serif text-navy text-xl font-bold">{card.title}</h4>
-              <p className="font-serif text-gold text-sm italic mt-0.5">{card.sub}</p>
+              <p className="font-serif text-gold text-sm mt-0.5 font-bold">{card.sub}</p>
             </div>
             <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
               <path d="M7 10L1 4h12L7 10z" />
@@ -155,7 +155,7 @@ function VisaRuOverview() {
 
       {/* После приезда */}
       <div className="mx-6 mt-5 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-2">{visa.permesso_di_soggiorno_ru.title_ru}</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">{visa.permesso_di_soggiorno_ru.title_ru}</p>
         <p className="font-serif text-navy/80 text-sm leading-relaxed">{visa.intro_ru.after_arrival_ru}</p>
         <p className="font-serif text-navy/50 text-xs italic mt-2">{visa.permesso_di_soggiorno_ru.note_ru}</p>
       </div>

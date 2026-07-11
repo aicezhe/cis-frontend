@@ -75,7 +75,7 @@ export default function RelocationOverviewPage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Переезд</h1>
-          <p className="font-serif text-gold text-lg italic mt-0.5">дорога и первые дни</p>
+          <p className="font-serif text-gold text-lg mt-0.5 font-bold">дорога и первые дни</p>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default function RelocationOverviewPage() {
       </div>
 
       {/* Примерные расходы — только реальные цифры из проверенных источников */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Примерные расходы</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Примерные расходы</p>
       <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
         {budgetLines.map((line, i) => (
           <div
@@ -137,7 +137,7 @@ export default function RelocationOverviewPage() {
           >
             <div className="flex-1">
               <h4 className="font-serif text-navy text-xl font-bold">{card.title}</h4>
-              <p className="font-serif text-gold text-sm italic mt-0.5">{card.sub}</p>
+              <p className="font-serif text-gold text-sm mt-0.5 font-bold">{card.sub}</p>
             </div>
             <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
               <path d="M7 10L1 4h12L7 10z" />
@@ -147,7 +147,7 @@ export default function RelocationOverviewPage() {
       </div>
 
       {/* Жильё */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{relocation.housing_search.title_ru}</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{relocation.housing_search.title_ru}</p>
       <div className="px-6 flex flex-col gap-2">
         {relocation.housing_search.options.map((opt, i) => (
           <div key={i} className="bg-soft-cream border border-navy/15 rounded-xl px-4 py-3">

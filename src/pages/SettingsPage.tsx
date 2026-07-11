@@ -154,7 +154,7 @@ export default function SettingsPage() {
         />
         <div className="flex-1 min-w-0">
           <h2 className="font-serif text-navy text-2xl font-bold truncate">{nickname}</h2>
-          <p className="font-serif text-gold text-sm italic truncate">{email}</p>
+          <p className="font-serif text-gold text-sm truncate font-bold">{email}</p>
           <div className="flex gap-3 mt-1.5">
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -218,7 +218,7 @@ export default function SettingsPage() {
         >
           <div className="text-left">
             <span className="font-serif text-navy text-base block">Редактировать путь</span>
-            <span className="font-serif text-gold text-xs italic">сменить этап обучения</span>
+            <span className="font-serif text-gold text-xs font-bold">сменить этап обучения</span>
           </div>
           <span className="text-navy/60 text-xl">→</span>
         </button>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
         >
           <div className="text-left min-w-0 pr-3">
             <span className="font-serif text-navy text-base block">Поменять мой курс</span>
-            <span className="font-serif text-gold text-xs italic truncate block">
+            <span className="font-serif text-gold text-xs truncate block font-bold">
               {courseName || 'курс ещё не выбран'}
             </span>
           </div>
@@ -291,7 +291,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between px-5 py-4">
           <div>
             <span className="font-serif text-navy text-base block">Геолокация</span>
-            <span className="font-serif text-gold text-xs italic">для карты Loci</span>
+            <span className="font-serif text-gold text-xs font-bold">для карты Loci</span>
           </div>
           <button
             onClick={() => {

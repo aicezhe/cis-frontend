@@ -143,7 +143,7 @@ function OverviewDocs({ isee }: { isee: IseeSeed }) {
       {opt.documents_ru.map((d, i) => (
         <p key={i} className="font-serif text-navy/65 text-xs leading-relaxed mt-0.5">— {d}</p>
       ))}
-      {opt.cost_ru && <p className="font-serif text-gold/80 text-[11px] italic mt-0.5">{opt.cost_ru}</p>}
+      {opt.cost_ru && <p className="font-serif text-gold/80 text-[11px] mt-0.5 font-bold">{opt.cost_ru}</p>}
     </div>
   );
 
@@ -153,7 +153,7 @@ function OverviewDocs({ isee }: { isee: IseeSeed }) {
       <div className="bg-cream border border-gold/40 rounded-xl px-4 py-3">
         <p className="font-serif text-navy/50 text-[10px] uppercase tracking-widest mb-1">Всегда нужна — одна на семью</p>
         <p className="font-serif text-navy text-sm">{isee.family_cert.document_ru}</p>
-        <p className="font-serif text-gold/80 text-[11px] italic mt-1">{isee.family_cert.cost_ru}</p>
+        <p className="font-serif text-gold/80 text-[11px] mt-1 font-bold">{isee.family_cert.cost_ru}</p>
       </div>
 
       {/* Родители */}
@@ -170,7 +170,7 @@ function OverviewDocs({ isee }: { isee: IseeSeed }) {
 
       {/* Вопросы по каждому человеку */}
       <div className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-4">
-        <p className="font-serif text-gold text-xs italic mb-3">Для КАЖДОГО члена семьи 18+ (включая тебя):</p>
+        <p className="font-serif text-gold text-xs mb-3 font-bold">Для КАЖДОГО члена семьи 18+ (включая тебя):</p>
         {isee.person_questions.map((q) => (
           <div key={q.id} className="mb-4 last:mb-0">
             <p className="font-serif text-navy text-sm font-bold mb-2">{q.question_ru}</p>
@@ -351,7 +351,7 @@ export default function IseeDocumentsPage() {
 
           {parentsChoice === 'one' && (
             <div className="mt-4">
-              <p className="font-serif text-gold text-[11px] italic mb-1">↳ уточни:</p>
+              <p className="font-serif text-gold text-[11px] mb-1 font-bold">↳ уточни:</p>
               <p className="font-serif text-navy text-sm font-bold mb-2">{isee.parents_step.reason_question_ru}</p>
               <div className="flex flex-col gap-2">
                 {isee.parents_step.reasons.map((r) => (
@@ -546,7 +546,7 @@ export default function IseeDocumentsPage() {
           {/* Стипендия — после результата */}
           {allAnswered && (
             <div className="bg-soft-cream border border-gold/50 rounded-2xl px-5 py-4 mt-4">
-              <p className="font-serif text-gold text-sm italic mb-2">{sch.title_ru}</p>
+              <p className="font-serif text-gold text-sm mb-2 font-bold">{sch.title_ru}</p>
               <p className="font-serif text-navy/70 text-xs leading-relaxed mb-3">{sch.threshold_note_ru}</p>
               <div className="flex flex-col gap-2 mb-3">
                 {sch.amounts.map((a) => (
@@ -562,7 +562,7 @@ export default function IseeDocumentsPage() {
                         {a.label_ru}
                       </p>
                       {a.note_ru && (
-                        <p className={'font-serif text-[10px] italic ' + (a.is_default ? 'text-gold' : 'text-navy/40')}>
+                        <p className={'font-serif text-[10px] ' + (a.is_default ? 'text-gold font-bold' : 'text-navy/40')}>
                           {a.note_ru}
                         </p>
                       )}
@@ -588,7 +588,7 @@ export default function IseeDocumentsPage() {
 
       {/* Финальные шаги + советы */}
       <div className="mx-6 mt-6 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-3">Что делать дальше</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Что делать дальше</p>
         <ol className="flex flex-col gap-2">
           {isee.final_steps_ru.map((step, i) => (
             <li key={i} className="flex gap-3 items-start">
@@ -600,7 +600,7 @@ export default function IseeDocumentsPage() {
       </div>
 
       <div className="mx-6 mt-4 bg-gold/10 border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-3">Советы</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Советы</p>
         <div className="flex flex-col gap-2">
           {isee.tips_ru.map((tip, i) => (
             <div key={i} className="flex gap-2 items-start">

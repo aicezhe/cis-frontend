@@ -145,7 +145,7 @@ export default function ChoiceProgramPage() {
       <h1 className="font-serif text-cream text-3xl text-center mt-24 mb-2 z-10">
         Твои программы
       </h1>
-      <p className="font-serif text-gold text-sm italic text-center mb-10 z-10">
+      <p className="font-serif text-gold text-sm text-center mb-10 z-10 font-bold">
         {loading
           ? 'загружаем программы...'
           : error

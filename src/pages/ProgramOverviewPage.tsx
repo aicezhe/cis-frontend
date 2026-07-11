@@ -64,7 +64,7 @@ function NavCard({ title, sub, to }: { title: string; sub: string; to: string })
     >
       <div className="flex-1">
         <h4 className="font-serif text-navy text-xl font-bold">{title}</h4>
-        <p className="font-serif text-gold text-sm italic mt-0.5">{sub}</p>
+        <p className="font-serif text-gold text-sm mt-0.5 font-bold">{sub}</p>
       </div>
       <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
         <path d="M7 10L1 4h12L7 10z" />
@@ -215,7 +215,7 @@ export default function ProgramOverviewPage() {
           <h1 className="font-serif text-navy text-3xl font-bold">
             {p.name_ru.replace(/\s*\(.*\)/, '')}
           </h1>
-          <p className="font-serif text-gold text-lg italic mt-0.5">{p.name_it}</p>
+          <p className="font-serif text-gold text-lg mt-0.5 font-bold">{p.name_it}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">
             {p.duration_years} {p.duration_years === 2 ? 'года' : 'лет'} · {p.ects_total} CFU · {p.title_after}
           </p>
@@ -224,7 +224,7 @@ export default function ProgramOverviewPage() {
 
       {/* Блок выбранной программы с предметами */}
       <div className="mx-6 mt-5">
-        <p className="font-serif text-gold text-sm italic mb-2">Твоя программа</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">Твоя программа</p>
         {courseLoading ? (
           <div className="h-16 bg-soft-cream rounded-2xl animate-pulse" />
         ) : courseId && courseName ? (
@@ -294,7 +294,7 @@ export default function ProgramOverviewPage() {
       {p.important_notes_ru.length > 0 && (
         <div className="mx-6 mt-4 relative bg-navy rounded-2xl px-5 py-5">
           <Corners />
-          <p className="font-serif text-gold text-[11px] italic uppercase tracking-[0.18em] mb-4 pl-1">Важно знать</p>
+          <p className="font-serif text-gold text-[11px] uppercase tracking-[0.18em] mb-4 pl-1 font-bold">Важно знать</p>
           <div className="flex flex-col gap-4">
             {p.important_notes_ru.map((note, i) => (
               <div key={i} className="flex items-start gap-3">

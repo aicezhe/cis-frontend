@@ -59,7 +59,7 @@ export default function TravelRoutesPage() {
       </div>
 
       {/* Маршруты */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Варианты маршрутов</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
       <div className="px-6 flex flex-col gap-3">
         {tr.routes.map((route) => (
           <div
@@ -108,7 +108,7 @@ export default function TravelRoutesPage() {
       </button>
 
       {/* Прибытие */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-8 mb-3">{ar.title_ru}</p>
+      <p className="font-serif text-gold text-sm px-6 mt-8 mb-3 font-bold">{ar.title_ru}</p>
 
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-4 py-4">
         <p className="font-serif text-navy text-base font-bold">{ar.via_bologna.name_ru}</p>

@@ -64,7 +64,7 @@ function TestCard({ test }: { test: TestEntry }) {
                 </p>
               )}
               {test.structure.language && (
-                <p className="font-serif text-gold text-xs italic mt-1">
+                <p className="font-serif text-gold text-xs mt-1 font-bold">
                   Язык: {test.structure.language}
                 </p>
               )}
@@ -154,7 +154,7 @@ export default function NumeroChiusoPage() {
       </div>
 
       {/* Libero vs Chiuso — 2 карточки */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">
         Типы доступа к программам
       </p>
       <div className="px-6 flex flex-col gap-3">
@@ -182,7 +182,7 @@ export default function NumeroChiusoPage() {
       </div>
 
       {/* Список тестов */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">
         Все тесты UniPR (9 типов)
       </p>
       <div className="px-6 flex flex-col gap-3">
@@ -192,7 +192,7 @@ export default function NumeroChiusoPage() {
       </div>
 
       {/* Как сдавать */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Как и где сдавать</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Как и где сдавать</p>
       <div className="px-6 flex flex-col gap-3">
         {[
           { label: 'TOLC@CASA vs TOLC@UNI', text: howTo.tolc_casa_vs_uni },

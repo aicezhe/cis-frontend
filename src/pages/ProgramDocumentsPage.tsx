@@ -26,7 +26,7 @@ function LegalizationInline() {
     // Страна не определена — показываем общий порядок
     return (
       <div className="mt-4 border-t border-navy/10 pt-3 flex flex-col gap-2">
-        <p className="font-serif text-gold text-xs italic">Общий порядок легализации</p>
+        <p className="font-serif text-gold text-xs font-bold">Общий порядок легализации</p>
         <div className="flex flex-col gap-1.5">
           {[
             '1. Апостиль документа об образовании — через уполномоченный орган своей страны',
@@ -48,7 +48,7 @@ function LegalizationInline() {
   const leg = legalization.diploma_legalization;
   return (
     <div className="mt-4 border-t border-navy/10 pt-4 flex flex-col gap-3">
-      <p className="font-serif text-gold text-xs italic">
+      <p className="font-serif text-gold text-xs font-bold">
         Порядок для {legalization.meta.country_name_ru}
         <span className="text-navy/40 ml-1">(источник: {legalization.meta.source})</span>
       </p>
@@ -106,7 +106,7 @@ function LegalizationInline() {
                 </div>
               ))}
               {step.recommendation_ru && (
-                <p className="font-serif text-gold text-xs italic">💡 {step.recommendation_ru}</p>
+                <p className="font-serif text-gold text-xs font-bold">💡 {step.recommendation_ru}</p>
               )}
             </div>
           )}
@@ -127,7 +127,7 @@ function LegalizationInline() {
       {/* Частые ошибки */}
       {legalization.common_pitfalls_ru.length > 0 && (
         <div className="bg-soft-cream border border-gold/30 rounded-xl px-3 py-3">
-          <p className="font-serif text-gold text-xs italic mb-2">Частые ошибки при легализации</p>
+          <p className="font-serif text-gold text-xs mb-2 font-bold">Частые ошибки при легализации</p>
           <div className="flex flex-col gap-1.5">
             {legalization.common_pitfalls_ru.map((p, i) => (
               <div key={i} className="flex items-start gap-2">
@@ -193,7 +193,7 @@ function TwelfthYearBlock({ data }: { data: TwelfthYearOptions }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="bg-cream border border-gold/30 rounded-2xl px-4 py-3">
-        <p className="font-serif text-gold text-sm italic mb-1">{data.title_ru}</p>
+        <p className="font-serif text-gold text-sm mb-1 font-bold">{data.title_ru}</p>
         <p className="font-serif text-navy/70 text-sm leading-relaxed">{data.explanation_ru}</p>
       </div>
       {data.options.map((opt) => {
@@ -387,7 +387,7 @@ export default function ProgramDocumentsPage() {
       {/* 12-й год образования — только для бакалавриата */}
       {programType === 'bachelor' && program.twelfth_year_options && (
         <>
-          <p className="font-serif text-gold text-sm italic px-6 mt-8 mb-3">
+          <p className="font-serif text-gold text-sm px-6 mt-8 mb-3 font-bold">
             12 лет образования — как закрыть
           </p>
           <div className="px-6">

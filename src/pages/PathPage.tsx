@@ -222,7 +222,7 @@ export default function PathPage() {
 
       <div className="flex items-center justify-between px-6 pt-12">
         <div>
-          <p className="font-serif text-gold text-sm italic tracking-wide">Bentornata,</p>
+          <p className="font-serif text-gold text-sm tracking-wide font-bold">Bentornata,</p>
           <h1 className="font-serif text-navy text-3xl leading-tight">
             {localStorage.getItem('cispr_nickname') || 'Aicezhe'}
           </h1>
@@ -360,7 +360,7 @@ export default function PathPage() {
 
         {/* Примечание об Украине (временная защита) */}
         {uniCosts.has_visa_waiver && (
-          <p className="font-serif text-gold text-xs italic mt-3">
+          <p className="font-serif text-gold text-xs mt-3 font-bold">
             ✓ Временная защита ЕС: виза D не нужна — стоимость визы не включена
           </p>
         )}
