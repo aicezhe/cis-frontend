@@ -45,7 +45,7 @@ export default function RegisterPage() {
     if (step === 5) return city.trim() !== '';
     if (step === 6) {
       return (
-        password.trim().length >= 6 &&
+        password.trim().length >= 8 &&
         password === passwordRepeat
       );
     }
@@ -343,12 +343,12 @@ export default function RegisterPage() {
               </button>
             </div>
 
-            {password.length > 0 && password.length < 6 && (
+            {password.length > 0 && password.length < 8 && (
               <p className="font-serif text-gold text-xs italic mb-4 self-start">
-                Пароль минимум 6 символов
+                Пароль минимум 8 символов
               </p>
             )}
-            {password.length >= 6 && passwordRepeat.length > 0 && password !== passwordRepeat && (
+            {password.length >= 8 && passwordRepeat.length > 0 && password !== passwordRepeat && (
               <p className="font-serif text-gold text-xs italic mb-4 self-start">
                 Пароли не совпадают
               </p>
