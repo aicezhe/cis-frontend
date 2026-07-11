@@ -99,8 +99,9 @@ export default function WelcomePage() {
     <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
 
       {/* Звёздное небо — единым слоем (чтобы уходило целиком).
-          Свечение (ореол) только у крупных/ярких — как у настоящих звёзд. */}
-      <div className={`absolute inset-0 z-0 ${frameCls}`}>
+          Свечение (ореол) только у крупных/ярких — как у настоящих звёзд.
+          При уходе на вход замораживаем (они под вуалью — незачем анимировать). */}
+      <div className={`absolute inset-0 z-0 ${frameCls} ${leaving === 'login' ? 'wp-frozen' : ''}`}>
         {stars.map((star, i) => (
           <div
             key={i}
@@ -216,15 +217,14 @@ export default function WelcomePage() {
                 'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)',
             }}
           />
-          {/* небо-градиент — ПОЛУПРОЗРАЧНЫЙ, растягивается вниз (welcome ещё
-              просвечивает — мягкое «затягивание», не резкий яркий синий) */}
+          {/* небо-градиент — ПОЛУПРОЗРАЧНЫЙ, растягивается вниз через scaleY
+              (welcome ещё просвечивает — мягкое «затягивание», не резкий синий) */}
           <div
-            className="wp-grad absolute inset-0"
+            className="wp-grad absolute top-0 left-0 right-0"
             style={{
-              backgroundImage:
-                'linear-gradient(to bottom, rgba(28,42,72,0.72) 0%, rgba(20,33,60,0.68) 58%, rgba(15,28,52,0.5) 82%, rgba(13,24,48,0) 100%)',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'top',
+              height: '58vh',
+              background:
+                'linear-gradient(to bottom, rgba(28,42,72,0.72) 0%, rgba(20,33,60,0.68) 45%, rgba(15,28,52,0.5) 72%, rgba(13,24,48,0) 100%)',
             }}
           />
           {/* звёзды падают вместе с небом на свои позиции (= позиции SkyIntro) */}
