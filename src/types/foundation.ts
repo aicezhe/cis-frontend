@@ -88,6 +88,7 @@ export interface FoundationSubjectsByTrack {
 export interface FoundationSubstep {
   name: string;
   cost_rub?: string;
+  cost_note_ru?: string;
   duration_days?: string;
 }
 
@@ -106,6 +107,9 @@ export interface FoundationApplyMeta {
   target_year_ru: string;
   dates_disclaimer_ru: string;
   total_cost_note_ru: string;
+  // числовой диапазон той же оценки (300-600 €) — для расчёта общей сметы
+  apply_extra_cost_min_eur: number;
+  apply_extra_cost_max_eur: number;
 }
 
 export interface FoundationEmailTemplate {
@@ -191,6 +195,8 @@ export interface FoundationLegalizationSeed {
   total_cost_estimate: {
     currency: string;
     documents_only: string;
+    documents_only_min_eur: number;
+    documents_only_max_eur: number;
     with_visa: string;
     course_separately: string;
   };

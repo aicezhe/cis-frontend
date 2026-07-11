@@ -89,6 +89,8 @@
   "total_cost_estimate": {
     "currency": "EUR",
     "documents_only": "200-300 EUR",
+    "documents_only_min_eur": 200,
+    "documents_only_max_eur": 300,
     "with_visa": "+50-100 EUR",
     "course_separately": "4000 EUR (3200 EUR с PIFY-Dante)"
   },

@@ -14,18 +14,6 @@ const MODALITY_LABEL: Record<FoundationModality, string> = {
 
 const CHECKS_KEY = 'cispr_foundation_checks';
 
-// Угловые скобки в стиле раздела «Виза»
-function Corners() {
-  return (
-    <>
-      <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-      <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-      <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-      <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-    </>
-  );
-}
-
 export default function FoundationOverviewPage() {
   const navigate = useNavigate();
   const { data, loading, error } = useFoundation();
@@ -86,12 +74,21 @@ export default function FoundationOverviewPage() {
   }
 
   const sections = [
-    { id: 1, title: 'Что это и как устроено', sub: 'Суть курса, формат, что получаешь' },
+    { id: 1, title: 'Структура курса', sub: 'Суть курса, формат, что получаешь' },
     { id: 2, title: 'Учебный план', sub: `≈${plan.total_cfu ?? 60} CFU за год` },
     { id: 3, title: 'Стоимость и оплата', sub: `${fmt(c.tuition_full)} · 3 rate · потоки` },
     { id: 4, title: 'Языковые требования', sub: 'Итальянский, английский, сертификаты' },
-    { id: 5, title: 'Как поступить', sub: 'Документы, апостиль, заявка, сроки' },
+    { id: 5, title: 'Шаги поступления', sub: 'Документы, апостиль, заявка, сроки' },
   ];
+
+  // Общая примерная смета: курс + документы/тест на этапе подачи + легализация
+  // диплома (если известна страна) — суммируем всё, что раньше было
+  // разбросано по разным блокам отдельными диапазонами.
+  const am = data.apply_meta;
+  const totalMinEur =
+    c.tuition_dante + am.apply_extra_cost_min_eur + (legalization?.total_cost_estimate.documents_only_min_eur ?? 0);
+  const totalMaxEur =
+    c.tuition_full + am.apply_extra_cost_max_eur + (legalization?.total_cost_estimate.documents_only_max_eur ?? 0);
 
   // Круглый чекбокс в стиле раздела «Виза»
   const CheckBox = ({ id }: { id: string }) => (
@@ -110,38 +107,38 @@ export default function FoundationOverviewPage() {
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
 
-      {/* Шапка раздела */}
-      <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-center">
-          <h1 className="font-serif text-navy text-3xl font-bold">Foundation Year</h1>
-          <p className="font-serif text-gold text-base mt-1 font-bold">{p.name_full}</p>
-          <p className="font-serif text-navy/60 text-xs mt-1">
-            {p.duration_months} мес · {p.period}
-          </p>
-        </div>
+      {/* Шапка раздела — без коробки-плашки, текст прямо на странице */}
+      <div className="mt-4 px-6 text-center">
+        <h1 className="font-serif text-navy text-3xl font-bold">Foundation Year</h1>
+        <p className="font-serif text-gold text-base mt-1 italic">{p.name_full}</p>
+        <p className="font-serif text-navy/60 text-xs mt-1">
+          {p.duration_months} мес · {p.period}
+        </p>
+        <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 40, height: 1 }} />
       </div>
 
-      {/* Важно: FY ≠ университет */}
-      <div className="mx-6 mt-6 relative bg-navy rounded-2xl p-5">
-        <Corners />
-        <p className="font-serif text-gold text-sm mb-2 px-2 font-bold">Важно</p>
-        <p className="font-serif text-cream text-base leading-relaxed px-2">{p.important_note_ru}</p>
+      {/* Важно: FY ≠ университет — просто длинный синий блок, без декора */}
+      <div className="mx-6 mt-6 bg-navy rounded-2xl p-5">
+        <p className="font-serif text-cream text-base leading-relaxed">{p.important_note_ru}</p>
       </div>
 
       <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">
-        Что нужно знать
+        Об универе
       </h3>
 
       {/* Аккордеон-разделы в стиле «Виза» */}
       <div className="px-6 flex flex-col gap-3">
         {sections.map((s) => {
           const isExpanded = expanded === s.id;
+          // «Шаги поступления» — самый важный, действенный раздел: выделяем
+          // золотой рамкой всегда, не только при раскрытии, + маркер сверху.
+          const isKey = s.id === 5;
           return (
             <div
               key={s.id}
               className={
                 'rounded-2xl border p-4 ' +
-                (isExpanded ? 'bg-soft-cream border-gold border-2' : 'bg-soft-cream border-navy/20')
+                (isExpanded || isKey ? 'bg-soft-cream border-gold border-2' : 'bg-soft-cream border-navy/20')
               }
             >
               <button
@@ -149,6 +146,11 @@ export default function FoundationOverviewPage() {
                 className="w-full flex items-center gap-3 text-left"
               >
                 <div className="flex-1">
+                  {isKey && (
+                    <p className="font-serif text-gold text-[10px] uppercase tracking-widest font-bold mb-1">
+                      ⌐ начни здесь ¬
+                    </p>
+                  )}
                   <h4 className="font-serif text-navy text-xl font-bold">{s.title}</h4>
                   <p className="font-serif text-gold text-sm mt-0.5 font-bold">{s.sub}</p>
                 </div>
@@ -354,6 +356,21 @@ export default function FoundationOverviewPage() {
                         </p>
                       </div>
 
+                      {/* Итоговая примерная смета — курс + документы/тест + легализация
+                          (если известна страна) сложены в одну цифру */}
+                      <div className="bg-navy rounded-xl px-4 py-3">
+                        <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">
+                          Итого ориентировочно
+                        </p>
+                        <p className="font-serif text-cream text-2xl font-bold mt-1">
+                          {fmt(totalMinEur)} – {fmt(totalMaxEur)}
+                        </p>
+                        <p className="font-serif text-cream/70 text-xs mt-1 leading-relaxed">
+                          Курс + документы/языковой тест{legalization ? ' + легализация диплома' : ''}.
+                          {!legalization && ' Выбери страну в профиле, чтобы учесть и легализацию диплома.'}
+                        </p>
+                      </div>
+
                       {data.steps_to_apply.map((step, idx) => (
                         <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
                           <p className="font-serif text-gold text-sm font-bold">Шаг {idx + 1}</p>
@@ -413,6 +430,9 @@ export default function FoundationOverviewPage() {
                                           <span className="font-serif text-navy/60 text-xs">{sub.duration_days} дн.</span>
                                         )}
                                       </div>
+                                      {sub.cost_note_ru && (
+                                        <p className="font-serif text-gold text-xs mt-0.5">{sub.cost_note_ru}</p>
+                                      )}
                                     </div>
                                   </div>
                                 );
@@ -562,9 +582,12 @@ export default function FoundationOverviewPage() {
                           <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
                             <p className="font-serif text-gold text-sm mb-1.5 font-bold">Примерная смета</p>
                             <div className="flex flex-col gap-1">
-                              <p className="font-serif text-navy/80 text-sm">Документы: {legalization.total_cost_estimate.documents_only}</p>
                               <p className="font-serif text-navy/80 text-sm">Сам курс: {legalization.total_cost_estimate.course_separately}</p>
+                              <p className="font-serif text-navy/80 text-sm">Документы + тест: {legalization.total_cost_estimate.documents_only}</p>
                             </div>
+                            <p className="font-serif text-navy text-base font-bold mt-2">
+                              Итого: {fmt(totalMinEur)} – {fmt(totalMaxEur)}
+                            </p>
                           </div>
 
                           {/* Pitfalls легализации */}
