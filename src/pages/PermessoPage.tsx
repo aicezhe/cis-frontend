@@ -34,7 +34,7 @@ export default function PermessoPage() {
       </div>
 
       {/* Шаги */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">5 шагов</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">5 шагов</p>
       <div className="px-6 flex flex-col gap-3">
         {pm.steps_ru.map((s) => (
           <div key={s.step} className="bg-soft-cream border border-navy/20 rounded-2xl px-4 py-4">
@@ -65,7 +65,7 @@ export default function PermessoPage() {
       </button>
 
       {/* Документы */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Пакет документов</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Пакет документов</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
         <div className="flex flex-col gap-2">
           {pm.documents_ru.map((d, i) => (
@@ -83,7 +83,7 @@ export default function PermessoPage() {
         <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
         <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
         <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-xs italic">отслеживание</p>
+        <p className="font-serif text-gold text-xs font-bold">отслеживание</p>
         <p className="font-serif text-cream/80 text-sm leading-relaxed mt-1">{pm.tracking_ru}</p>
         <a
           href={pm.tracking_url}

@@ -88,7 +88,7 @@ export default function VisaUkrainePage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Легализация</h1>
-          <p className="font-serif text-gold text-lg italic mt-0.5">для граждан Украины</p>
+          <p className="font-serif text-gold text-lg mt-0.5 font-bold">для граждан Украины</p>
           <p className="font-serif text-navy/60 text-xs mt-1">{visa.meta.academic_year}</p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function VisaUkrainePage() {
       </div>
 
       {/* Граница — главная развилка */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-1">{visa.border_rules.title_ru}</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-1 font-bold">{visa.border_rules.title_ru}</p>
       <p className="font-serif text-navy/60 text-xs px-6 mb-3 leading-relaxed">{visa.border_rules.intro_ru}</p>
       <div className="px-6 flex flex-col gap-3">
         {visa.border_rules.categories.map((cat) => (
@@ -116,7 +116,7 @@ export default function VisaUkrainePage() {
       </div>
 
       {/* Путь 1 — студенческий */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{visa.study_path.title_ru}</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{visa.study_path.title_ru}</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
         <p className="font-serif text-navy/70 text-sm leading-relaxed mb-4">{visa.study_path.description_ru}</p>
         <div className="flex flex-col gap-3">
@@ -151,7 +151,7 @@ export default function VisaUkrainePage() {
       </div>
 
       {/* Путь 2 — временная защита */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{tp.title_ru}</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{tp.title_ru}</p>
       <div className="mx-6 relative bg-navy rounded-2xl p-5">
         <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
         <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
@@ -160,7 +160,7 @@ export default function VisaUkrainePage() {
 
         <p className="font-serif text-cream/80 text-sm leading-relaxed">{tp.what_ru}</p>
 
-        <p className="font-serif text-gold text-xs italic mt-4 mb-2">Что даёт</p>
+        <p className="font-serif text-gold text-xs mt-4 mb-2 font-bold">Что даёт</p>
         <div className="flex flex-col gap-1.5">
           {tp.gives_ru.map((g, i) => (
             <div key={i} className="flex gap-2 items-start">
@@ -170,7 +170,7 @@ export default function VisaUkrainePage() {
           ))}
         </div>
 
-        <p className="font-serif text-gold text-xs italic mt-4 mb-2">Кому положена</p>
+        <p className="font-serif text-gold text-xs mt-4 mb-2 font-bold">Кому положена</p>
         <div className="flex flex-col gap-1.5">
           {tp.who_ru.map((w, i) => (
             <div key={i} className="flex gap-2 items-start">
@@ -190,17 +190,17 @@ export default function VisaUkrainePage() {
         {protOpen && (
           <div className="mt-4 flex flex-col gap-3">
             <div className="bg-cream/10 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs italic mb-1">Шаг 0 — если нет штампа Шенгена</p>
+              <p className="font-serif text-gold text-xs mb-1 font-bold">Шаг 0 — если нет штампа Шенгена</p>
               <p className="font-serif text-cream/80 text-xs leading-relaxed">{tp.first_step_ru}</p>
             </div>
 
             <div className="bg-cream/10 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs italic mb-1">Куда идти</p>
+              <p className="font-serif text-gold text-xs mb-1 font-bold">Куда идти</p>
               <p className="font-serif text-cream/80 text-xs leading-relaxed">{tp.how_to_apply_ru.where_ru}</p>
             </div>
 
             <div className="bg-cream/10 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs italic mb-2">Документы с собой</p>
+              <p className="font-serif text-gold text-xs mb-2 font-bold">Документы с собой</p>
               <div className="flex flex-col gap-1.5">
                 {tp.how_to_apply_ru.documents_ru.map((d, i) => (
                   <div key={i} className="flex gap-2 items-start">
@@ -212,7 +212,7 @@ export default function VisaUkrainePage() {
             </div>
 
             <div className="bg-cream/10 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs italic mb-2">Как проходит</p>
+              <p className="font-serif text-gold text-xs mb-2 font-bold">Как проходит</p>
               <div className="flex flex-col gap-1.5">
                 {tp.how_to_apply_ru.process_ru.map((p, i) => (
                   <div key={i} className="flex gap-2 items-start">
@@ -246,11 +246,11 @@ export default function VisaUkrainePage() {
       {/* Доверенность перед отъездом */}
       {visa.power_of_attorney_ru && (
         <>
-          <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{visa.power_of_attorney_ru.title_ru}</p>
+          <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{visa.power_of_attorney_ru.title_ru}</p>
           <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
             <p className="font-serif text-navy/80 text-sm leading-relaxed mb-3">{visa.power_of_attorney_ru.why_ru}</p>
 
-            <p className="font-serif text-gold text-xs italic mb-2">Как сделать</p>
+            <p className="font-serif text-gold text-xs mb-2 font-bold">Как сделать</p>
             <div className="flex flex-col gap-1.5 mb-3">
               {visa.power_of_attorney_ru.how_ru.map((h, i) => (
                 <div key={i} className="flex gap-2 items-start">
@@ -260,7 +260,7 @@ export default function VisaUkrainePage() {
               ))}
             </div>
 
-            <p className="font-serif text-gold text-xs italic mb-2">Какие полномочия вписать</p>
+            <p className="font-serif text-gold text-xs mb-2 font-bold">Какие полномочия вписать</p>
             <div className="flex flex-col gap-1.5 mb-3">
               {visa.power_of_attorney_ru.include_ru.map((d, i) => (
                 <div key={i} className="flex gap-2 items-start">
@@ -280,7 +280,7 @@ export default function VisaUkrainePage() {
 
       {/* Советы */}
       <div className="mx-6 mt-6 bg-gold/10 border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-3">Главное</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Главное</p>
         <div className="flex flex-col gap-2">
           {visa.tips_ru.map((tip, i) => (
             <div key={i} className="flex gap-2 items-start">

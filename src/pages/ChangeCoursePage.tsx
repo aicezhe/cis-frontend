@@ -138,7 +138,7 @@ export default function ChangeCoursePage() {
 
       {/* Переключатель этапа */}
       <div className="mx-6 mt-5">
-        <p className="font-serif text-gold text-sm italic mb-2">Этап обучения</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">Этап обучения</p>
         <div className="flex gap-2">
           {(['foundation', 'bachelor', 'master'] as Stage[]).map((st) => (
             <button
@@ -170,7 +170,7 @@ export default function ChangeCoursePage() {
         <>
           {/* Фильтр по языку */}
           <div className="mx-6 mt-5">
-            <p className="font-serif text-gold text-sm italic mb-2">Язык программы</p>
+            <p className="font-serif text-gold text-sm mb-2 font-bold">Язык программы</p>
             <div className="flex gap-2">
               {([
                 { id: 'all', label: 'Все' },
@@ -195,7 +195,7 @@ export default function ChangeCoursePage() {
 
           {/* Список специальностей */}
           <div className="mx-6 mt-5">
-            <p className="font-serif text-gold text-sm italic mb-2">
+            <p className="font-serif text-gold text-sm mb-2 font-bold">
               {loading ? 'Загружаем специальности…' : `Выбери специальность (${courses.length})`}
             </p>
 
@@ -239,7 +239,7 @@ export default function ChangeCoursePage() {
                       <span className="block text-base leading-snug pr-2">{course.name}</span>
                       <span
                         className={
-                          'block text-xs italic mt-1 ' + (isSelected ? 'text-gold/80' : 'text-navy/50')
+                          'block text-xs mt-1 ' + (isSelected ? 'text-gold/80 font-bold' : 'text-navy/50')
                         }
                       >
                         {course.lang === 'en' ? 'English' : 'Italiano'}

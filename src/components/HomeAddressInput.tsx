@@ -62,7 +62,7 @@ export function HomeAddressInput() {
       )}
 
       {saved && !error && (
-        <p className="font-serif text-gold text-xs italic mt-2">
+        <p className="font-serif text-gold text-xs mt-2 font-bold">
           ✓ адрес сохранён и виден на карте
         </p>
       )}

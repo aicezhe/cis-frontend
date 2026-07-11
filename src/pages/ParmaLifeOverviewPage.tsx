@@ -29,7 +29,7 @@ export default function ParmaLifeOverviewPage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">В Парме</h1>
-          <p className="font-serif text-gold text-lg italic mt-0.5">жизнь после переезда</p>
+          <p className="font-serif text-gold text-lg mt-0.5 font-bold">жизнь после переезда</p>
         </div>
       </div>
 
@@ -70,7 +70,7 @@ export default function ParmaLifeOverviewPage() {
             <div className="flex-1">
               <h4 className="font-serif text-navy text-lg font-bold leading-tight">{sec.title_ru}</h4>
               {sec.subtitle_ru && (
-                <p className="font-serif text-gold text-xs italic mt-0.5">{sec.subtitle_ru}</p>
+                <p className="font-serif text-gold text-xs mt-0.5 font-bold">{sec.subtitle_ru}</p>
               )}
             </div>
             <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">

@@ -151,7 +151,7 @@ export default function CoursePage() {
         <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
 
         <h1 className="font-serif text-cream text-2xl leading-tight">{course.name}</h1>
-        <p className="font-serif text-gold text-sm italic mt-2">{course.dept_name}</p>
+        <p className="font-serif text-gold text-sm mt-2 font-bold">{course.dept_name}</p>
         <div className="flex flex-wrap gap-2 mt-4">
           <span className="font-serif text-cream text-xs border border-gold/60 rounded-full px-3 py-1">
             {LEVEL_LABEL[course.level] || course.level}

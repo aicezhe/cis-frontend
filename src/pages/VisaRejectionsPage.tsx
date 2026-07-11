@@ -55,7 +55,7 @@ export default function VisaRejectionsPage() {
 
       {/* Универсальные советы */}
       <div className="mx-6 mt-6 bg-gold/10 border border-gold/50 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-3">Как не попасть под отказ</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Как не попасть под отказ</p>
         <div className="flex flex-col gap-2">
           {rj.universal_tips_ru.map((tip, i) => (
             <div key={i} className="flex gap-2 items-start">

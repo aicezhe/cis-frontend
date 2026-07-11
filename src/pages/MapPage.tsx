@@ -75,7 +75,7 @@ export default function MapPage() {
       {/* Шапка */}
       <div className="px-6 pt-12 pb-3">
         <h1 className="font-serif text-navy text-4xl font-bold">Loci</h1>
-        <p className="font-serif text-gold text-sm italic mt-1">
+        <p className="font-serif text-gold text-sm mt-1 font-bold">
           места Пармы, которые тебе пригодятся
         </p>
       </div>

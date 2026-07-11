@@ -30,7 +30,7 @@ function BulletList({ items, icon = '◆' }: { items: string[]; icon?: string })
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{children}</p>;
+  return <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{children}</p>;
 }
 
 function FyToBachelorButton() {
@@ -190,7 +190,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
       {sec.free_option_ru && (
         <div className="mx-6 mt-4 relative bg-navy rounded-2xl p-5">
           <Corners />
-          <p className="font-serif text-gold text-xs italic">бесплатный вариант</p>
+          <p className="font-serif text-gold text-xs font-bold">бесплатный вариант</p>
           <p className="font-serif text-cream text-sm leading-relaxed mt-1">{sec.free_option_ru}</p>
         </div>
       )}
@@ -198,7 +198,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
       {/* Cost (number) — компактный chip в едином стиле с остальными ценами */}
       {sec.cost_eur != null && (
         <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-xl px-4 py-3 flex justify-between items-center">
-          <p className="font-serif text-gold text-xs italic">Стоимость</p>
+          <p className="font-serif text-gold text-xs font-bold">Стоимость</p>
           <p className="font-serif text-navy text-base font-bold">
             <Price eur={sec.cost_eur} />
           </p>
@@ -229,7 +229,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
       {/* Where */}
       {sec.where_ru && (
         <div className="mx-6 mt-3 bg-soft-cream border border-navy/15 rounded-xl px-4 py-3">
-          <p className="font-serif text-gold text-xs italic mb-1">Куда идти</p>
+          <p className="font-serif text-gold text-xs mb-1 font-bold">Куда идти</p>
           <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.where_ru}</p>
         </div>
       )}
@@ -386,7 +386,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
       {/* Static tips (social_life) */}
       {sec.static_tips_ru && (
         <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-          <p className="font-serif text-gold text-xs italic mb-3">Пока что — статичные советы</p>
+          <p className="font-serif text-gold text-xs mb-3 font-bold">Пока что — статичные советы</p>
           <div className="flex flex-col gap-2">
             {sec.static_tips_ru.map((t, i) => (
               <div key={i} className="flex gap-2 items-start">
@@ -502,7 +502,7 @@ export default function ParmaSubsectionPage() {
           <div className="min-w-0">
             <h1 className="font-serif text-navy text-2xl font-bold leading-tight">{sec.title_ru}</h1>
             {sec.subtitle_ru && (
-              <p className="font-serif text-gold text-sm italic leading-tight">{sec.subtitle_ru}</p>
+              <p className="font-serif text-gold text-sm leading-tight font-bold">{sec.subtitle_ru}</p>
             )}
           </div>
         </div>

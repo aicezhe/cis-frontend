@@ -37,13 +37,13 @@ export default function CodiceFiscalePage() {
         <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
         <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
         <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-xs italic">куда идти</p>
+        <p className="font-serif text-gold text-xs font-bold">куда идти</p>
         <p className="font-serif text-cream text-lg font-bold mt-0.5">{cf.where_ru}</p>
         <p className="font-serif text-gold text-sm mt-1">{cf.cost_ru}</p>
       </div>
 
       {/* Документы */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Документы с собой</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Документы с собой</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
         <div className="flex flex-col gap-2">
           {cf.documents_ru.map((d, i) => (
@@ -56,7 +56,7 @@ export default function CodiceFiscalePage() {
       </div>
 
       {/* Шаги */}
-      <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">Как получить</p>
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Как получить</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
         <ol className="flex flex-col gap-2.5">
           {cf.steps_ru.map((s, i) => (

@@ -22,7 +22,7 @@ export default function ProgramLanguagesPage() {
       {/* Italstudio из FY */}
       {completedFY && (
         <div className="mx-6 mt-5 bg-navy rounded-2xl px-5 py-4">
-          <p className="font-serif text-gold text-sm italic mb-1">Foundation Year завершён</p>
+          <p className="font-serif text-gold text-sm mb-1 font-bold">Foundation Year завершён</p>
           <p className="font-serif text-cream text-sm leading-relaxed">
             Сертификат Italstudio B2 из Foundation Year UniPR засчитывается для поступления на италоязычный бакалавриат автоматически.
           </p>
@@ -31,7 +31,7 @@ export default function ProgramLanguagesPage() {
 
       {/* Итальянский */}
       <div className="px-6 mt-6">
-        <p className="font-serif text-gold text-sm italic mb-3">Для программ на итальянском</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Для программ на итальянском</p>
         <div className="bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
           <div className="flex justify-between items-center mb-3">
             <p className="font-serif text-navy text-base font-bold">Итальянский</p>
@@ -57,7 +57,7 @@ export default function ProgramLanguagesPage() {
 
       {/* Английский */}
       <div className="px-6 mt-5">
-        <p className="font-serif text-gold text-sm italic mb-3">Для программ на английском</p>
+        <p className="font-serif text-gold text-sm mb-3 font-bold">Для программ на английском</p>
         <div className="bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
           <div className="flex justify-between items-center mb-3">
             <p className="font-serif text-navy text-base font-bold">Английский</p>
@@ -83,7 +83,7 @@ export default function ProgramLanguagesPage() {
 
       {/* UniPR Language Test */}
       <div className="mx-6 mt-5 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm italic mb-2">🎓 UniPR Language Test — бесплатно</p>
+        <p className="font-serif text-gold text-sm mb-2 font-bold">🎓 UniPR Language Test — бесплатно</p>
         <p className="font-serif text-navy/80 text-sm leading-relaxed">
           UniPR предлагает собственный языковой тест через CLA (Centro Linguistico di Ateneo).
           Он признаётся для поступления и не требует оплаты.
@@ -94,7 +94,7 @@ export default function ProgramLanguagesPage() {
       {/* Duolingo */}
       {lr.duolingo_note_ru && (
         <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-          <p className="font-serif text-gold text-sm italic mb-1">Про Duolingo</p>
+          <p className="font-serif text-gold text-sm mb-1 font-bold">Про Duolingo</p>
           <p className="font-serif text-navy/70 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
         </div>
       )}

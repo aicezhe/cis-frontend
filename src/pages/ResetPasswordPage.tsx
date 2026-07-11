@@ -106,7 +106,7 @@ export default function ResetPasswordPage() {
             />
           </div>
           {next.length >= 8 && confirm.length > 0 && next !== confirm && (
-            <p className="font-serif text-gold text-xs italic mt-1">Пароли не совпадают</p>
+            <p className="font-serif text-gold text-xs mt-1 font-bold">Пароли не совпадают</p>
           )}
         </div>
 

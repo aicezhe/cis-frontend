@@ -99,7 +99,7 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
           {/* Жильё: карточки вариантов */}
           {step.housing_search_ru && (
             <div>
-              <p className="font-serif text-gold text-xs italic mb-2">{step.housing_search_ru.title_ru}</p>
+              <p className="font-serif text-gold text-xs mb-2 font-bold">{step.housing_search_ru.title_ru}</p>
               <div className="flex flex-col gap-2">
                 {step.housing_search_ru.options.map((opt, i) => (
                   <div key={i} className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
@@ -134,7 +134,7 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
           {/* Страховка: рекомендация */}
           {step.recommended_ru && (
             <div className="relative bg-navy rounded-xl px-4 py-3.5">
-              <p className="font-serif text-gold text-xs italic">рекомендуем</p>
+              <p className="font-serif text-gold text-xs font-bold">рекомендуем</p>
               <div className="flex justify-between items-baseline gap-2 mt-0.5">
                 <p className="font-serif text-cream text-base font-bold">{step.recommended_ru.name}</p>
                 {step.recommended_ru.price_year_eur != null && (
@@ -165,7 +165,7 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
           {/* Слоты */}
           {step.slots_strategy_ru && (
             <div className="bg-cream border border-gold/40 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs italic mb-2">{step.slots_strategy_ru.title_ru}</p>
+              <p className="font-serif text-gold text-xs mb-2 font-bold">{step.slots_strategy_ru.title_ru}</p>
               <List items={step.slots_strategy_ru.details_ru} icon="→" />
             </div>
           )}
@@ -258,7 +258,7 @@ export default function VisaStepsPage() {
         <h1 className="font-serif text-navy text-2xl font-bold">Шаги получения визы</h1>
       </div>
 
-      <p className="font-serif text-gold text-sm italic px-6 mt-5 mb-3">
+      <p className="font-serif text-gold text-sm px-6 mt-5 mb-3 font-bold">
         {visa.steps.length} шагов — нажимай и раскрывай
       </p>
 

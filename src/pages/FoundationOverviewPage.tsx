@@ -114,7 +114,7 @@ export default function FoundationOverviewPage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">Foundation Year</h1>
-          <p className="font-serif text-gold text-base italic mt-1">{p.name_full}</p>
+          <p className="font-serif text-gold text-base mt-1 font-bold">{p.name_full}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">
             {p.duration_months} мес · {p.period}
           </p>
@@ -124,7 +124,7 @@ export default function FoundationOverviewPage() {
       {/* Важно: FY ≠ университет */}
       <div className="mx-6 mt-6 relative bg-navy rounded-2xl p-5">
         <Corners />
-        <p className="font-serif text-gold text-sm italic mb-2 px-2">Важно</p>
+        <p className="font-serif text-gold text-sm mb-2 px-2 font-bold">Важно</p>
         <p className="font-serif text-cream text-base leading-relaxed px-2">{p.important_note_ru}</p>
       </div>
 
@@ -150,7 +150,7 @@ export default function FoundationOverviewPage() {
               >
                 <div className="flex-1">
                   <h4 className="font-serif text-navy text-xl font-bold">{s.title}</h4>
-                  <p className="font-serif text-gold text-sm italic mt-0.5">{s.sub}</p>
+                  <p className="font-serif text-gold text-sm mt-0.5 font-bold">{s.sub}</p>
                 </div>
                 <svg
                   width="16"
@@ -170,11 +170,11 @@ export default function FoundationOverviewPage() {
                     <div className="flex flex-col gap-4">
                       <p className="font-serif text-navy/80 text-sm leading-relaxed">{p.description_ru}</p>
                       <div>
-                        <p className="font-serif text-gold text-base italic font-semibold mb-1.5">Как устроена учёба</p>
+                        <p className="font-serif text-gold text-base font-bold mb-1.5">Как устроена учёба</p>
                         <p className="font-serif text-navy/80 text-sm leading-relaxed">{data.how_studies_work_ru}</p>
                       </div>
                       <div>
-                        <p className="font-serif text-gold text-base italic font-semibold mb-2">После завершения</p>
+                        <p className="font-serif text-gold text-base font-bold mb-2">После завершения</p>
                         <div className="flex flex-col gap-1.5">
                           {p.issued_after_completion.map((item, i) => (
                             <div key={i} className="flex items-start gap-2">
@@ -244,7 +244,7 @@ export default function FoundationOverviewPage() {
                         <p className="font-serif text-navy text-xl font-bold">{fmt(c.tuition_full)}</p>
                       </div>
 
-                      <p className="font-serif text-gold text-sm italic mt-1">
+                      <p className="font-serif text-gold text-sm mt-1 font-bold">
                         Оплата тремя частями — отмечай галочкой, когда оплатил
                       </p>
                       {data.payment_schedule.installments.map((inst) => (
@@ -261,7 +261,7 @@ export default function FoundationOverviewPage() {
                                 </h5>
                                 <div className="text-right ml-2 flex-shrink-0">
                                   <p className="font-serif text-navy text-base font-bold">{fmt(inst.amount_general)}</p>
-                                  <p className="font-serif text-gold text-xs italic">Dante {fmt(inst.amount_dante)}</p>
+                                  <p className="font-serif text-gold text-xs font-bold">Dante {fmt(inst.amount_dante)}</p>
                                 </div>
                               </div>
                               {inst.when_ru && <p className="font-serif text-navy/70 text-sm mt-1.5">{inst.when_ru}</p>}
@@ -274,7 +274,7 @@ export default function FoundationOverviewPage() {
                                 ))}
                               </div>
                               {inst.refundable_if_visa_denied && (
-                                <p className="font-serif text-gold text-xs italic mt-1.5">Возвращается при отказе в визе.</p>
+                                <p className="font-serif text-gold text-xs mt-1.5 font-bold">Возвращается при отказе в визе.</p>
                               )}
                             </div>
                           </div>
@@ -282,13 +282,13 @@ export default function FoundationOverviewPage() {
                       ))}
                       <p className="font-serif text-navy/50 text-xs italic">{data.payment_schedule.note_ru}</p>
 
-                      <p className="font-serif text-gold text-sm italic mt-2">Потоки подачи</p>
+                      <p className="font-serif text-gold text-sm mt-2 font-bold">Потоки подачи</p>
                       {data.enrollment_types.map((e) => (
                         <div key={e.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
                           <div className="flex justify-between items-start">
                             <div>
                               <p className="font-serif text-navy text-base font-bold">{e.name}</p>
-                              <p className="font-serif text-gold text-xs italic">{e.name_ru}</p>
+                              <p className="font-serif text-gold text-xs font-bold">{e.name_ru}</p>
                             </div>
                             <span className="font-serif text-navy text-xs bg-soft-cream border border-navy/15 rounded-full px-2 py-0.5 flex-shrink-0">до {e.deadline_template}</span>
                           </div>
@@ -320,7 +320,7 @@ export default function FoundationOverviewPage() {
                       </div>
 
                       <div>
-                        <p className="font-serif text-gold text-sm italic mb-1.5">Если идёшь на англоязычный bachelor — нужен B2:</p>
+                        <p className="font-serif text-gold text-sm mb-1.5 font-bold">Если идёшь на англоязычный bachelor — нужен B2:</p>
                         <div className="flex flex-col gap-1">
                           {lr.accepted_english_b2_certificates.map((cert, i) => (
                             <div key={i} className="flex items-start gap-2">
@@ -332,7 +332,7 @@ export default function FoundationOverviewPage() {
                       </div>
 
                       <div className="bg-cream border border-gold rounded-xl px-4 py-3">
-                        <p className="font-serif text-gold text-sm italic mb-1">Про Duolingo</p>
+                        <p className="font-serif text-gold text-sm mb-1 font-bold">Про Duolingo</p>
                         <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
                       </div>
                     </div>
@@ -343,7 +343,7 @@ export default function FoundationOverviewPage() {
                     <div className="flex flex-col gap-3">
                       {/* Дисклеймер по срокам + общая стоимость */}
                       <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                        <p className="font-serif text-gold text-sm italic mb-1">
+                        <p className="font-serif text-gold text-sm mb-1 font-bold">
                           Ориентир на приём {data.apply_meta.target_year_ru}
                         </p>
                         <p className="font-serif text-navy/75 text-sm leading-relaxed">
@@ -356,7 +356,7 @@ export default function FoundationOverviewPage() {
 
                       {data.steps_to_apply.map((step, idx) => (
                         <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                          <p className="font-serif text-gold text-sm italic">Шаг {idx + 1}</p>
+                          <p className="font-serif text-gold text-sm font-bold">Шаг {idx + 1}</p>
                           <h5 className="font-serif text-navy text-lg font-bold mt-0.5">{step.title}</h5>
                           {step.timing_ru && (
                             <span className="inline-block font-serif text-navy text-xs bg-soft-cream border border-gold/40 rounded-full px-2.5 py-1 mt-2">
@@ -435,9 +435,9 @@ export default function FoundationOverviewPage() {
 
                       {emailTemplate && (
                         <div className="bg-navy rounded-xl p-4 mt-1">
-                          <p className="font-serif text-gold text-xs italic mb-1">Subject</p>
+                          <p className="font-serif text-gold text-xs mb-1 font-bold">Subject</p>
                           <p className="font-serif text-cream text-sm mb-3">{emailTemplate.subject}</p>
-                          <p className="font-serif text-gold text-xs italic mb-1">Body</p>
+                          <p className="font-serif text-gold text-xs mb-1 font-bold">Body</p>
                           <pre className="font-serif text-cream/90 text-xs whitespace-pre-wrap leading-relaxed">
 {emailTemplate.body_en}
                           </pre>
@@ -451,7 +451,7 @@ export default function FoundationOverviewPage() {
                       )}
 
                       <div className="mt-1">
-                        <p className="font-serif text-gold text-sm italic mb-1.5">Частые ошибки</p>
+                        <p className="font-serif text-gold text-sm mb-1.5 font-bold">Частые ошибки</p>
                         <div className="flex flex-col gap-1.5">
                           {data.common_pitfalls_ru.map((pitfall, i) => (
                             <div key={i} className="flex items-start gap-2">
@@ -477,7 +477,7 @@ export default function FoundationOverviewPage() {
                           {/* Особый статус: UA — временная защита, KZ — CIMEA Central Asia */}
                           {legalization.special_status?.active && (
                             <div className="bg-soft-cream border border-gold rounded-xl px-4 py-3">
-                              <p className="font-serif text-gold text-xs italic uppercase tracking-widest">
+                              <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">
                                 ⌐ важно ¬
                               </p>
                               <h5 className="font-serif text-navy text-lg font-bold mt-1">
@@ -540,7 +540,7 @@ export default function FoundationOverviewPage() {
                                     </div>
                                   ))}
                                   {step.recommendation_ru && (
-                                    <p className="font-serif text-gold text-sm italic">💡 {step.recommendation_ru}</p>
+                                    <p className="font-serif text-gold text-sm font-bold">💡 {step.recommendation_ru}</p>
                                   )}
                                 </div>
                               )}
@@ -560,7 +560,7 @@ export default function FoundationOverviewPage() {
 
                           {/* Итоговая смета (виза — отдельный раздел приложения, здесь не дублируем) */}
                           <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                            <p className="font-serif text-gold text-sm italic mb-1.5">Примерная смета</p>
+                            <p className="font-serif text-gold text-sm mb-1.5 font-bold">Примерная смета</p>
                             <div className="flex flex-col gap-1">
                               <p className="font-serif text-navy/80 text-sm">Документы: {legalization.total_cost_estimate.documents_only}</p>
                               <p className="font-serif text-navy/80 text-sm">Сам курс: {legalization.total_cost_estimate.course_separately}</p>
@@ -569,7 +569,7 @@ export default function FoundationOverviewPage() {
 
                           {/* Pitfalls легализации */}
                           <div className="mt-1">
-                            <p className="font-serif text-gold text-sm italic mb-1.5">Что часто ломается</p>
+                            <p className="font-serif text-gold text-sm mb-1.5 font-bold">Что часто ломается</p>
                             <div className="flex flex-col gap-1.5">
                               {legalization.common_pitfalls_ru.map((pf, i) => (
                                 <div key={i} className="flex items-start gap-2">

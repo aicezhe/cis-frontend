@@ -313,7 +313,7 @@ export default function LauraPage() {
             </div>
             <div>
               <h1 className="font-serif text-navy text-2xl font-bold">Laura</h1>
-              <p className="font-serif text-gold text-xs italic">твой гид по Парме</p>
+              <p className="font-serif text-gold text-xs font-bold">твой гид по Парме</p>
             </div>
           </div>
         </div>
@@ -461,7 +461,7 @@ export default function LauraPage() {
           <h1 className="font-serif text-navy text-xl font-bold leading-tight truncate">
             {chats.find((c) => c.id === activeChatId)?.title || 'Laura'}
           </h1>
-          <p className="font-serif text-gold text-xs italic">твой гид по Парме</p>
+          <p className="font-serif text-gold text-xs font-bold">твой гид по Парме</p>
         </div>
         <button
           onClick={() => void handleNewChat()}

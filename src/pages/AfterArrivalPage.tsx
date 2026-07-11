@@ -43,7 +43,7 @@ export default function AfterArrivalPage() {
       {/* SIM */}
       {sim && (
         <>
-          <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">
+          <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">
             {sim.title_ru} · {sim.priority_ru}
           </p>
           <div className="mx-6 relative bg-navy rounded-2xl p-5">
@@ -52,7 +52,7 @@ export default function AfterArrivalPage() {
             <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
             <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
 
-            <p className="font-serif text-gold text-xs italic">рекомендуем</p>
+            <p className="font-serif text-gold text-xs font-bold">рекомендуем</p>
             <p className="font-serif text-cream text-2xl font-bold mt-0.5">{sim.recommended_operator}</p>
             <p className="font-serif text-cream/70 text-xs mt-1">{sim.why_ru}</p>
 
@@ -95,7 +95,7 @@ export default function AfterArrivalPage() {
       {/* Наличные и карта */}
       {cash && (
         <>
-          <p className="font-serif text-gold text-sm italic px-6 mt-6 mb-3">{cash.title_ru}</p>
+          <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{cash.title_ru}</p>
           <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
             <div className="flex flex-col gap-2">
               {cash.details_ru?.map((d, i) => (

@@ -97,7 +97,7 @@ export default function ChangePasswordPage() {
             />
           </div>
           {next.length > 0 && next.length < 8 && (
-            <p className="font-serif text-gold text-xs italic mt-1">Минимум 8 символов</p>
+            <p className="font-serif text-gold text-xs mt-1 font-bold">Минимум 8 символов</p>
           )}
         </div>
 
@@ -113,7 +113,7 @@ export default function ChangePasswordPage() {
             />
           </div>
           {next.length >= 8 && confirm.length > 0 && next !== confirm && (
-            <p className="font-serif text-gold text-xs italic mt-1">Пароли не совпадают</p>
+            <p className="font-serif text-gold text-xs mt-1 font-bold">Пароли не совпадают</p>
           )}
         </div>
 

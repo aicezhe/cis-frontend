@@ -111,7 +111,7 @@ export default function ScholarshipPage() {
 
       <div className="px-6 mt-2">
         <h1 className="font-serif text-navy text-3xl font-bold">Стипендия ER.GO</h1>
-        <p className="font-serif text-gold text-sm italic mt-1">
+        <p className="font-serif text-gold text-sm mt-1 font-bold">
           {data.academic_year ? `Бандо ${data.academic_year}` : 'право на учёбу в Эмилии-Романье'}
         </p>
       </div>
@@ -139,7 +139,7 @@ export default function ScholarshipPage() {
               <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
               <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
 
-              <p className="font-serif text-gold text-sm italic">Твоя оценка</p>
+              <p className="font-serif text-gold text-sm font-bold">Твоя оценка</p>
               <p className="font-serif text-cream text-4xl mt-1">
                 <Price eur={comp.total_eur} />
               </p>

@@ -267,7 +267,7 @@ export default function SectionPage() {
       <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
         <div className="text-center">
           <h1 className="font-serif text-navy text-3xl font-bold">{data.title}</h1>
-          <p className="font-serif text-gold text-base italic mt-1">{headerSubtitle}</p>
+          <p className="font-serif text-gold text-base mt-1 font-bold">{headerSubtitle}</p>
           <p className="font-serif text-navy/60 text-xs mt-1">{data.meta}</p>
         </div>
 
@@ -312,7 +312,7 @@ export default function SectionPage() {
             <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
 
             <div className="flex justify-between items-start">
-              <p className="font-serif text-gold text-sm italic">Шаг {currentStep.num}</p>
+              <p className="font-serif text-gold text-sm font-bold">Шаг {currentStep.num}</p>
               <p className="font-serif text-gold text-sm">{currentStep.price}</p>
             </div>
 
@@ -386,14 +386,14 @@ export default function SectionPage() {
                   onClick={() => setExpanded(isExpanded ? 0 : step.num)}
                   className="flex-1 text-left"
                 >
-                  <p className="font-serif text-gold text-sm italic">Шаг {step.num}</p>
+                  <p className="font-serif text-gold text-sm font-bold">Шаг {step.num}</p>
                   <h4 className={
                     'font-serif text-lg font-bold ' +
                     (isStepDone ? 'text-navy/60 line-through' : 'text-navy')
                   }>
                     {step.title}
                   </h4>
-                  <p className="font-serif text-gold text-xs italic mt-0.5">
+                  <p className="font-serif text-gold text-xs mt-0.5 font-bold">
                     {sectionKey === 'uni' && step.num === 1 && selectedCourseName
                       ? `${selectedCourseName} · €0`
                       : step.sub}
@@ -483,7 +483,7 @@ export default function SectionPage() {
                       const courseName = localStorage.getItem('cispr_course_name');
                       return courseId ? (
                         <div className="flex flex-col gap-3">
-                          <p className="font-serif text-gold text-xs italic">
+                          <p className="font-serif text-gold text-xs font-bold">
                             Твоя программа
                           </p>
                           <div className="bg-cream border border-navy/20 rounded-2xl px-4 py-3">
