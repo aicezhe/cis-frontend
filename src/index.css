@@ -52,3 +52,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .star { animation: none; }
 }
+
+/* ── Переходы с WelcomePage ──────────────────────────────────────────────────
+   warp: звёзды разлетаются из центра наружу с ускорением — «влёт в поток звёзд»
+   (переход на вход). pass: звёзды проходят сбоку (переход на регистрацию). */
+@keyframes star-warp {
+  0%   { transform: translate(-50%, -50%) scale(0.15); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(2.2); opacity: 0; }
+}
+@keyframes star-pass {
+  0%   { transform: translateX(0); opacity: 0; }
+  12%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(var(--pass-x, -130vw)); opacity: 0; }
+}
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
