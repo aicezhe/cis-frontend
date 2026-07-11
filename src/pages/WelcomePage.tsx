@@ -221,7 +221,7 @@ export default function WelcomePage() {
             className="wp-grad absolute inset-0"
             style={{
               backgroundImage:
-                'linear-gradient(to bottom, #1C2A48 0%, #182740 42%, rgba(13,24,48,0) 100%)',
+                'linear-gradient(to bottom, #1C2A48 0%, #14213c 58%, #0f1c34 82%, rgba(13,24,48,0) 100%)',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'top',
             }}
