@@ -106,6 +106,7 @@ export async function* streamLaura(
     res = await fetch(`${API_BASE}/api/v1/laura/chat`, {
       method: 'POST',
       headers,
+      credentials: 'include', // httpOnly refresh-cookie
       body: JSON.stringify({
         messages: toBackendMessages(messages),
         profile: profile ?? null,

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, clearToken, isAuthed } from '../lib/api';
+import { api, isAuthed, logout } from '../lib/api';
 import { CurrencyPicker } from '../components/CurrencyPicker';
 import { Avatar } from '../components/Avatar';
 import { cacheAvatar, fileToAvatarB64, loadCachedAvatar } from '../lib/avatar';
@@ -82,15 +82,15 @@ export default function SettingsPage() {
     }
   }
 
-  function handleLogout() {
-    clearToken();
+  async function handleLogout() {
+    await logout(); // /auth/logout — отзыв refresh-токена на сервере + чистка памяти
     localStorage.clear();
     navigate('/');
   }
 
   function handleDeleteAccount() {
     if (confirm('Удалить аккаунт? Это действие нельзя отменить.')) {
-      clearToken();
+      void logout();
       localStorage.clear();
       navigate('/');
     }

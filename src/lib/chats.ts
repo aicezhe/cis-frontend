@@ -22,6 +22,16 @@ function authHeaders(): Record<string, string> {
   };
 }
 
+// Все запросы к чатам идут через этот хелпер: добавляет Bearer-токен и
+// credentials:'include' (иначе httpOnly refresh-cookie не поедет на бэк).
+function chatFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  return fetch(`${API_BASE}${path}`, {
+    ...init,
+    headers: { ...authHeaders(), ...(init.headers ?? {}) },
+    credentials: 'include',
+  });
+}
+
 async function ok<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let detail = `Ошибка ${res.status}`;
@@ -36,45 +46,37 @@ async function ok<T>(res: Response): Promise<T> {
 }
 
 export async function listChats(): Promise<Chat[]> {
-  return ok<Chat[]>(await fetch(`${API_BASE}/api/v1/chats`, { headers: authHeaders() }));
+  return ok<Chat[]>(await chatFetch('/api/v1/chats'));
 }
 
 export async function createChat(title = 'Новый чат'): Promise<Chat> {
-  return ok<Chat>(await fetch(`${API_BASE}/api/v1/chats`, {
+  return ok<Chat>(await chatFetch('/api/v1/chats', {
     method: 'POST',
-    headers: authHeaders(),
     body: JSON.stringify({ title }),
   }));
 }
 
 export async function renameChat(chatId: string, title: string): Promise<Chat> {
-  return ok<Chat>(await fetch(`${API_BASE}/api/v1/chats/${chatId}`, {
+  return ok<Chat>(await chatFetch(`/api/v1/chats/${chatId}`, {
     method: 'PATCH',
-    headers: authHeaders(),
     body: JSON.stringify({ title }),
   }));
 }
 
 export async function deleteChat(chatId: string): Promise<void> {
-  await ok<void>(await fetch(`${API_BASE}/api/v1/chats/${chatId}`, {
-    method: 'DELETE',
-    headers: authHeaders(),
-  }));
+  await ok<void>(await chatFetch(`/api/v1/chats/${chatId}`, { method: 'DELETE' }));
 }
 
 export async function getChatMessages(chatId: string): Promise<ChatApiMessage[]> {
-  return ok<ChatApiMessage[]>(await fetch(`${API_BASE}/api/v1/chats/${chatId}/messages`, {
-    headers: authHeaders(),
-  }));
+  return ok<ChatApiMessage[]>(await chatFetch(`/api/v1/chats/${chatId}/messages`));
 }
 
 export async function appendMessages(
   chatId: string,
   messages: { role: 'user' | 'assistant'; content: string }[],
 ): Promise<void> {
-  await ok<unknown>(await fetch(`${API_BASE}/api/v1/chats/${chatId}/messages`, {
+  await ok<unknown>(await chatFetch(`/api/v1/chats/${chatId}/messages`, {
     method: 'POST',
-    headers: authHeaders(),
     body: JSON.stringify({ messages }),
   }));
 }
