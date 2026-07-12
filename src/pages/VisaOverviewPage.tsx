@@ -71,15 +71,14 @@ function VisaRuOverview() {
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
 
-      {/* Шапка */}
-      <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-center">
-          <h1 className="font-serif text-navy text-3xl font-bold">Виза D</h1>
-          <p className="font-serif text-gold text-lg mt-0.5 font-bold">Visto nazionale · studio</p>
-          <p className="font-serif text-navy/60 text-xs mt-1">
-            {visa.meta.country_name_ru} · {visa.meta.academic_year}
-          </p>
-        </div>
+      {/* Шапка раздела — без коробки-плашки, текст прямо на странице (как в Университете) */}
+      <div className="mt-4 px-6 text-center">
+        <h1 className="font-serif text-navy text-3xl font-bold">Виза D</h1>
+        <p className="font-serif text-gold text-base mt-1 italic">Visto nazionale · studio</p>
+        <p className="font-serif text-navy/60 text-xs mt-1">
+          {visa.meta.country_name_ru} · {visa.meta.academic_year}
+        </p>
+        <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
       </div>
 
       {/* Что это */}
