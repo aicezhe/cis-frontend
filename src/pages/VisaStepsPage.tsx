@@ -5,6 +5,63 @@ import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
 
+const CHECKS_KEY = 'cispr_visa_docs_checks';
+
+function loadChecks(): string[] {
+  try { return JSON.parse(localStorage.getItem(CHECKS_KEY) || '[]'); } catch { return []; }
+}
+
+// Считает, сколько всего галочек в шаге (сам шаг + его пункты-документы) и
+// сколько из них отмечено — нужно для процента прогресса по разделу.
+function stepItemIds(step: VisaStep): string[] {
+  const ids = [`visa-step-${step.id}`];
+  (step.checklist_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-checklist-${i}`));
+  (step.substeps_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-substep-${i}`));
+  (step.requirements_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-req-${i}`));
+  return ids;
+}
+
+// Круглый чекбокс в стиле остальных разделов
+function CheckBox({ id, checked, toggle }: { id: string; checked: boolean; toggle: (id: string) => void }) {
+  return (
+    <button onClick={() => toggle(id)} className="w-5 h-5 mt-0.5 flex-shrink-0">
+      {checked ? (
+        <div className="w-5 h-5 rounded-full bg-gold flex items-center justify-center text-cream text-[10px]">✓</div>
+      ) : (
+        <div className="w-5 h-5 rounded-full border-2 border-navy/30" />
+      )}
+    </button>
+  );
+}
+
+// Список пунктов с галочками — для checklist_ru/substeps_ru/requirements_ru
+// (реальные документы/требования этого шага, а не просто описательный текст).
+function CheckList({
+  items, idPrefix, checked, toggle, numbered = false,
+}: {
+  items: string[]; idPrefix: string; checked: string[]; toggle: (id: string) => void; numbered?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((s, i) => {
+        const id = `${idPrefix}-${i}`;
+        const done = checked.includes(id);
+        return (
+          <div key={i} className="flex gap-2 items-start">
+            <CheckBox id={id} checked={done} toggle={toggle} />
+            <p className={
+              'font-serif text-sm leading-relaxed flex-1 ' +
+              (done ? 'text-navy/40 line-through' : 'text-navy/75')
+            }>
+              {numbered ? `${i + 1}. ` : ''}{s}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // Признание диплома (CIMEA/DDV) — реальные данные по стране юзера (те же,
 // что на странице «Диплом»), встроены прямо в шаг «Документы об образовании»
 // вместо ссылки на другой раздел.
@@ -54,10 +111,16 @@ function List({ items, icon = '◆' }: { items: string[]; icon?: string }) {
   );
 }
 
-function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: VisaSeed }) {
+function StepCard({
+  step, index, seed, checked, toggle,
+}: {
+  step: VisaStep; index: number; seed: VisaSeed; checked: string[]; toggle: (id: string) => void;
+}) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const mainId = `visa-step-${step.id}`;
+  const stepDone = checked.includes(mainId);
 
   const template = step.sponsor_letter_template_id
     ? seed.templates.sponsor_declaration
@@ -75,21 +138,32 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
   }
 
   return (
-    <div className="bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full px-4 py-4 flex items-center gap-3 text-left"
-      >
-        <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-6">{index + 1}.</span>
-        <p className="font-serif text-navy text-base font-bold flex-1">{step.title_ru}</p>
-        <svg
-          width="14" height="14" viewBox="0 0 14 14"
-          className={'text-navy transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')}
-          fill="currentColor"
+    <div className={
+      'bg-soft-cream border rounded-2xl overflow-hidden ' +
+      (stepDone ? 'border-gold/60' : 'border-navy/20')
+    }>
+      <div className="w-full px-4 py-4 flex items-center gap-3">
+        <CheckBox id={mainId} checked={stepDone} toggle={toggle} />
+        <button
+          onClick={() => setOpen(!open)}
+          className="flex-1 flex items-center gap-3 text-left"
         >
-          <path d="M7 10L1 4h12L7 10z" />
-        </svg>
-      </button>
+          <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-5">{index + 1}.</span>
+          <p className={
+            'font-serif text-base font-bold flex-1 ' +
+            (stepDone ? 'text-navy/50 line-through' : 'text-navy')
+          }>
+            {step.title_ru}
+          </p>
+          <svg
+            width="14" height="14" viewBox="0 0 14 14"
+            className={'text-navy transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')}
+            fill="currentColor"
+          >
+            <path d="M7 10L1 4h12L7 10z" />
+          </svg>
+        </button>
+      </div>
 
       {open && (
         <div className="px-4 pb-4 border-t border-navy/10 pt-3 flex flex-col gap-3">
@@ -99,21 +173,24 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
           )}
 
           {step.substeps_ru && (
-            <ol className="flex flex-col gap-1.5">
-              {step.substeps_ru.map((s, i) => (
-                <li key={i} className="flex gap-2 items-start">
-                  <span className="font-serif text-gold text-xs font-bold flex-shrink-0 mt-0.5 w-4">{i + 1}.</span>
-                  <p className="font-serif text-navy/75 text-sm leading-relaxed">{s}</p>
-                </li>
-              ))}
-            </ol>
+            <CheckList
+              items={step.substeps_ru}
+              idPrefix={`${mainId}-substep`}
+              checked={checked}
+              toggle={toggle}
+              numbered
+            />
           )}
 
-          {step.checklist_ru && <List items={step.checklist_ru} />}
+          {step.checklist_ru && (
+            <CheckList items={step.checklist_ru} idPrefix={`${mainId}-checklist`} checked={checked} toggle={toggle} />
+          )}
           {step.details_ru && <List items={step.details_ru} />}
           {step.options_ru && <List items={step.options_ru} />}
           {step.what_happens_ru && <List items={step.what_happens_ru} />}
-          {step.requirements_ru && <List items={step.requirements_ru} icon="✓" />}
+          {step.requirements_ru && (
+            <CheckList items={step.requirements_ru} idPrefix={`${mainId}-req`} checked={checked} toggle={toggle} />
+          )}
 
           {/* Финансы: best practice + спонсорское письмо */}
           {step.best_practice_ru && (
@@ -277,9 +354,18 @@ export default function VisaStepsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { visa, loading } = useVisa();
+  const [checked, setChecked] = useState<string[]>(loadChecks);
   // Пришли по ссылке из «Шаги получения визы» — возвращаем назад тоже с
   // раскрытым тем разделом, а не на свёрнутую страницу.
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
+
+  function toggle(id: string) {
+    setChecked((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(CHECKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
 
   if (loading) {
     return (
@@ -293,6 +379,10 @@ export default function VisaStepsPage() {
     return null;
   }
 
+  const allIds = visa.steps.flatMap(stepItemIds);
+  const doneCount = allIds.filter((id) => checked.includes(id)).length;
+  const pct = allIds.length > 0 ? Math.round((doneCount / allIds.length) * 100) : 0;
+
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
@@ -303,13 +393,22 @@ export default function VisaStepsPage() {
         <h1 className="font-serif text-navy text-2xl font-bold">Подробнее о документах</h1>
       </div>
 
-      <p className="font-serif text-gold text-sm px-6 mt-5 mb-3 font-bold">
-        {visa.steps.length} шагов — нажимай и раскрывай
-      </p>
+      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
+        <div className="flex justify-between items-baseline mb-2">
+          <p className="font-serif text-navy text-sm">Готово</p>
+          <p className="font-serif text-navy/60 text-xs">{doneCount} из {allIds.length} · {visa.steps.length} шагов</p>
+        </div>
+        <div className="h-1.5 rounded-full bg-navy/10 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-navy transition-all duration-500"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
 
-      <div className="px-6 flex flex-col gap-3">
+      <div className="px-6 mt-5 flex flex-col gap-3">
         {visa.steps.map((step, i) => (
-          <StepCard key={step.id} step={step} index={i} seed={visa} />
+          <StepCard key={step.id} step={step} index={i} seed={visa} checked={checked} toggle={toggle} />
         ))}
       </div>
 
