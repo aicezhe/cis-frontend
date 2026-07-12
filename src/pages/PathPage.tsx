@@ -13,12 +13,14 @@ import { useExpenses } from '../hooks/useExpenses';
 import { useFoundation } from '../hooks/useFoundation';
 import { useMyProgram } from '../hooks/useProgram';
 import { useVisa } from '../hooks/useVisa';
+import { useRelocation } from '../hooks/useRelocation';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
 import { COUNTRY_CURRENCY_MAP } from '../config/currencies';
 import type { FoundationSeed } from '../types/foundation';
 import type { LaureaSeed } from '../types/laurea';
 import type { VisaSeed } from '../types/visa';
+import type { RelocationSeed } from '../types/relocation';
 
 // Реальные чек-листы (галочки, по которым юзер и правда кликает) появились
 // отдельно на каждой странице раздела — эти функции строят те же id, что
@@ -53,6 +55,10 @@ function visaChecklistIds(visa: VisaSeed): string[] {
     (step.requirements_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-req-${i}`));
   });
   return ids;
+}
+
+function relocationChecklistIds(relocation: RelocationSeed): string[] {
+  return relocation.steps_overview_ru.steps.map((_, idx) => `travel-step-${idx}`);
 }
 
 // Возвращает null, если считать не по чему (нет id) — тогда остаётся старый расчёт.
@@ -127,6 +133,7 @@ export default function PathPage() {
   const { data: foundationData } = useFoundation();
   const { program: programData } = useMyProgram();
   const { visa: visaData } = useVisa();
+  const { relocation: relocationData } = useRelocation();
   const cisprProgram = localStorage.getItem('cispr_program');
 
   // Динамический бюджет раздела «Универ» — по стране + программе
@@ -150,6 +157,9 @@ export default function PathPage() {
         if (p !== null) progress = p;
       } else if (id === 'visa' && visaData) {
         const p = pctFromIds(visaChecklistIds(visaData), ['cispr_visa_action_checks', 'cispr_visa_docs_checks']);
+        if (p !== null) progress = p;
+      } else if (id === 'travel' && relocationData) {
+        const p = pctFromIds(relocationChecklistIds(relocationData), ['cispr_travel_steps_checks']);
         if (p !== null) progress = p;
       }
     }

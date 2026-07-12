@@ -53,6 +53,21 @@ export interface RelocationHousingOption {
   url?: string;
 }
 
+export interface RelocationStep {
+  title_ru: string;
+  description_ru: string;
+  details_ru?: string[];
+  warning_ru?: string;
+  link_to?: string;
+  link_label?: string;
+}
+
+export interface RelocationSteps {
+  title_ru: string;
+  steps: RelocationStep[];
+  disclaimer_ru: string;
+}
+
 export interface RelocationSeed {
   meta: {
     country_code: string;
@@ -64,6 +79,7 @@ export interface RelocationSeed {
     what_ru: string;
     key_ru: string;
   };
+  steps_overview_ru: RelocationSteps;
   travel_routes: {
     title_ru: string;
     first_trip_logic_ru: string;

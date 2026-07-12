@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Route, PackageOpen, FileText, IdCard } from 'lucide-react';
 import TabBar from '../components/TabBar';
@@ -5,9 +6,26 @@ import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
 import { HomeAddressInput } from '../components/HomeAddressInput';
 
+const STEPS_CHECKS_KEY = 'cispr_travel_steps_checks';
+
+function loadStepsChecks(): string[] {
+  try { return JSON.parse(localStorage.getItem(STEPS_CHECKS_KEY) || '[]'); } catch { return []; }
+}
+
 export default function RelocationOverviewPage() {
   const navigate = useNavigate();
   const { relocation, loading } = useRelocation();
+  const [stepsOpen, setStepsOpen] = useState(false);
+  const [checks, setChecks] = useState<string[]>(loadStepsChecks);
+
+  function toggleCheck(id: string) {
+    setChecks((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(STEPS_CHECKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+  const isChecked = (id: string) => checks.includes(id);
 
   if (loading) {
     return (
@@ -67,6 +85,91 @@ export default function RelocationOverviewPage() {
       <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
         {relocation.intro_ru.what_ru}
       </p>
+
+      {/* Шаги переезда — тот же паттерн, что «Шаги поступления»/«Шаги
+          получения визы»: без рамки-«кнопки», свёрнуто по умолчанию,
+          у каждого шага своя галочка. */}
+      <div className="px-6 mt-6">
+        <button
+          onClick={() => setStepsOpen(!stepsOpen)}
+          className="w-full flex items-center gap-3 text-left py-1"
+        >
+          <div className="flex-1 text-center">
+            <h4 className="font-serif text-navy text-2xl font-bold">{relocation.steps_overview_ru.title_ru}</h4>
+            {!stepsOpen && (
+              <p className="font-serif text-gold text-sm mt-1 font-bold">От визы до полученного ВНЖ</p>
+            )}
+          </div>
+          <svg
+            width="16" height="16" viewBox="0 0 14 14"
+            className={'text-navy flex-shrink-0 transition-transform ' + (stepsOpen ? 'rotate-180' : '')}
+            fill="currentColor"
+          >
+            <path d="M7 10L1 4h12L7 10z" />
+          </svg>
+        </button>
+
+        {stepsOpen && (
+          <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
+            {relocation.steps_overview_ru.steps.map((step, idx) => {
+              const stepId = `travel-step-${idx}`;
+              const done = isChecked(stepId);
+              return (
+                <div key={idx} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
+                    <button onClick={() => toggleCheck(stepId)} className="w-6 h-6 flex-shrink-0">
+                      {done ? (
+                        <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
+                      ) : (
+                        <div className="w-6 h-6 rounded-full border-2 border-navy/30" />
+                      )}
+                    </button>
+                  </div>
+                  <h5 className={
+                    'font-serif text-lg font-bold mt-1 ' +
+                    (done ? 'text-navy/50 line-through' : 'text-navy')
+                  }>
+                    {step.title_ru}
+                  </h5>
+                  <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+
+                  {step.details_ru && (
+                    <div className="flex flex-col gap-1.5 mt-3">
+                      {step.details_ru.map((d, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="text-gold mt-0.5 text-sm flex-shrink-0">◆</span>
+                          <p className="font-serif text-navy/75 text-sm leading-relaxed">{d}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {step.warning_ru && (
+                    <div className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2 mt-3">
+                      <span className="text-gold mt-0.5 text-sm flex-shrink-0">!</span>
+                      <p className="font-serif text-navy/80 text-sm">{step.warning_ru}</p>
+                    </div>
+                  )}
+
+                  {step.link_to && (
+                    <button
+                      onClick={() => navigate(step.link_to!)}
+                      className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm"
+                    >
+                      {step.link_label || '→'}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+
+            <p className="font-serif text-navy/50 text-xs italic mt-1 pt-3 border-t border-navy/10 leading-relaxed">
+              {relocation.steps_overview_ru.disclaimer_ru}
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Кнопка LOCI маршруты */}
       <button
