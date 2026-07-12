@@ -31,13 +31,13 @@ function ArrivalTable({ steps }: { steps: ArrivalStep[] }) {
 // Раскрывающийся раздел пути прибытия — без рамки-«кнопки», просто
 // кликабельный заголовок со стрелкой, как «Шаги» в остальных разделах.
 function ArrivalSection({
-  name, subtitle, steps, defaultOpen = false,
+  name, subtitle, steps, first = false,
 }: {
-  name: string; subtitle?: string; steps: ArrivalStep[]; defaultOpen?: boolean;
+  name: string; subtitle?: string; steps: ArrivalStep[]; first?: boolean;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(false);
   return (
-    <div className={'px-6 ' + (defaultOpen ? '' : 'pt-4 border-t border-navy/10')}>
+    <div className={'px-6 ' + (first ? '' : 'pt-4 border-t border-navy/10')}>
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 text-left py-1"
@@ -142,7 +142,7 @@ export default function TravelRoutesPage() {
       <p className="font-serif text-gold text-sm px-6 mt-8 mb-2 font-bold">{ar.title_ru}</p>
 
       <div className="flex flex-col">
-        <ArrivalSection name={ar.via_bologna.name_ru} steps={ar.via_bologna.steps_ru} defaultOpen />
+        <ArrivalSection name={ar.via_bologna.name_ru} steps={ar.via_bologna.steps_ru} first />
         <ArrivalSection
           name={ar.via_milan.name_ru}
           subtitle={ar.via_milan.airports_ru}

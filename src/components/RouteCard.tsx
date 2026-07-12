@@ -34,8 +34,8 @@ export function RouteCard({ route }: { route: LociRoute }) {
     <div
       className={'rounded-2xl p-4 ' + (danger ? 'border' : 'border border-navy/20')}
       style={{
-        backgroundColor: danger ? 'rgba(140, 100, 55, 0.12)' : '#1C2A48',
-        borderColor: danger ? 'rgba(196, 160, 108, 0.45)' : undefined,
+        backgroundColor: danger ? '#4a3b26' : '#1C2A48',
+        borderColor: danger ? 'rgba(196, 160, 108, 0.5)' : undefined,
       }}
     >
       <p className="font-serif text-cream text-lg">{route.name_ru}</p>
