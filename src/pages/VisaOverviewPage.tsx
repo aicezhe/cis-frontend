@@ -105,7 +105,7 @@ function VisaRuOverview() {
 
       {/* Что это — просто текст, без коробки-плашки */}
       <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
-        Для учёбы в Италии нужна виза дольше 90 дней категории D.
+        Для учёбы в Италии нужна виза дольше 90 дней категории&nbsp;D.
       </p>
 
       {/* Консульский округ */}
