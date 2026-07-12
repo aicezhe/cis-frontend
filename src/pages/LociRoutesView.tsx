@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Bus, Car, Plane, TrainFront, TriangleAlert } from 'lucide-react';
 import TabBar from '../components/TabBar';
+import skyline from '../assets/parma design.svg';
 import { useLociRoutes } from '../hooks/useRelocation';
 import type { LociRoute } from '../types/relocation';
 
@@ -34,12 +35,12 @@ function RouteCard({ route }: { route: LociRoute }) {
   return (
     <div
       className={'rounded-2xl p-4 ' + (danger ? 'border' : 'bg-cream/10')}
-      style={danger ? { backgroundColor: 'rgba(168, 51, 42, 0.18)', borderColor: 'rgba(220, 100, 90, 0.45)' } : undefined}
+      style={danger ? { backgroundColor: 'rgba(140, 100, 55, 0.2)', borderColor: 'rgba(196, 160, 108, 0.45)' } : undefined}
     >
       <p className="font-serif text-cream text-lg">{route.name_ru}</p>
 
       {route.warning_ru && (
-        <p className="font-serif text-xs mt-1 font-bold flex items-center gap-1.5" style={{ color: '#e8978f' }}>
+        <p className="font-serif text-xs mt-1 font-bold flex items-center gap-1.5" style={{ color: '#d9b579' }}>
           <TriangleAlert className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
           {route.warning_ru}
         </p>
@@ -59,7 +60,7 @@ function RouteCard({ route }: { route: LociRoute }) {
                   className="w-px h-7 ml-[4px] flex-shrink-0"
                   style={
                     danger
-                      ? { borderLeft: '2px dashed rgba(232, 151, 143, 0.6)' }
+                      ? { borderLeft: '2px dashed rgba(196, 160, 108, 0.6)' }
                       : { borderLeft: '2px solid rgba(193, 160, 80, 0.5)' }
                   }
                 />
@@ -94,34 +95,45 @@ export default function LociRoutesView() {
   const { routes, loading } = useLociRoutes();
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-navy flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="text-cream text-2xl">←</button>
-        <div>
-          <p className="font-serif text-gold text-[10px] uppercase tracking-widest">⌐ loci ¬</p>
-          <h1 className="font-serif text-cream text-2xl font-bold">Маршруты в Парму</h1>
+    <div className="relative min-h-screen max-w-md mx-auto bg-navy flex flex-col pb-28 overflow-hidden">
+      {/* Размытый силуэт Пармы фоном — смягчает плоскую синюю заливку */}
+      <img
+        src={skyline}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        style={{ opacity: 0.14, filter: 'blur(6px)' }}
+      />
+
+      <div className="relative z-10 flex flex-col flex-1">
+        <div className="px-6 pt-12 flex items-center gap-4">
+          <button onClick={() => navigate(-1)} className="text-cream text-2xl">←</button>
+          <div>
+            <p className="font-serif text-gold text-[10px] uppercase tracking-widest">⌐ loci ¬</p>
+            <h1 className="font-serif text-cream text-2xl font-bold">Маршруты в Парму</h1>
+          </div>
         </div>
-      </div>
 
-      {loading && (
-        <p className="font-serif text-cream/60 italic px-6 mt-8">Загрузка…</p>
-      )}
+        {loading && (
+          <p className="font-serif text-cream/60 italic px-6 mt-8">Загрузка…</p>
+        )}
 
-      {!loading && routes.length === 0 && (
-        <p className="font-serif text-cream/60 italic px-6 mt-8 text-center">
-          Маршруты для твоей страны уточняются.
+        {!loading && routes.length === 0 && (
+          <p className="font-serif text-cream/60 italic px-6 mt-8 text-center">
+            Маршруты для твоей страны уточняются.
+          </p>
+        )}
+
+        <div className="px-5 mt-6 flex flex-col gap-3">
+          {routes.map((route) => (
+            <RouteCard key={route.id} route={route} />
+          ))}
+        </div>
+
+        <p className="font-serif text-cream/40 text-xs italic text-center px-6 mt-6">
+          Маршруты — общая логика. Детали (рейсы, цены, правила транзита) проверяй перед поездкой.
         </p>
-      )}
-
-      <div className="px-5 mt-6 flex flex-col gap-3">
-        {routes.map((route) => (
-          <RouteCard key={route.id} route={route} />
-        ))}
       </div>
-
-      <p className="font-serif text-cream/40 text-xs italic text-center px-6 mt-6">
-        Маршруты — общая логика. Детали (рейсы, цены, правила транзита) проверяй перед поездкой.
-      </p>
 
       <TabBar active="loci" />
     </div>
