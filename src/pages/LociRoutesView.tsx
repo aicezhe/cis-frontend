@@ -1,15 +1,32 @@
 import { useNavigate } from 'react-router-dom';
+import { Bus, Car, Plane, TrainFront, TriangleAlert } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { useLociRoutes } from '../hooks/useRelocation';
 import type { LociRoute } from '../types/relocation';
 
-const MODE_ICONS: Record<string, string> = {
-  plane: '✈',
-  train: '🚆',
-  bus: '🚌',
-  car: '🚗',
-  plane_or_bus: '✈/🚌',
-};
+// SVG вместо эмодзи-транспорта — в стилистике остальных иконок приложения.
+function ModeIcon({ mode }: { mode: string }) {
+  const cls = 'w-4 h-4 text-gold flex-shrink-0';
+  switch (mode) {
+    case 'plane':
+      return <Plane className={cls} strokeWidth={1.75} />;
+    case 'train':
+      return <TrainFront className={cls} strokeWidth={1.75} />;
+    case 'bus':
+      return <Bus className={cls} strokeWidth={1.75} />;
+    case 'car':
+      return <Car className={cls} strokeWidth={1.75} />;
+    case 'plane_or_bus':
+      return (
+        <span className="flex items-center gap-0.5">
+          <Plane className={cls} strokeWidth={1.75} />
+          <Bus className={cls} strokeWidth={1.75} />
+        </span>
+      );
+    default:
+      return null;
+  }
+}
 
 function RouteCard({ route }: { route: LociRoute }) {
   const danger = route.requires_permit;
@@ -22,8 +39,9 @@ function RouteCard({ route }: { route: LociRoute }) {
       <p className="font-serif text-cream text-lg">{route.name_ru}</p>
 
       {route.warning_ru && (
-        <p className="font-serif text-xs mt-1 font-bold" style={{ color: '#e8978f' }}>
-          ⚠ {route.warning_ru}
+        <p className="font-serif text-xs mt-1 font-bold flex items-center gap-1.5" style={{ color: '#e8978f' }}>
+          <TriangleAlert className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+          {route.warning_ru}
         </p>
       )}
 
@@ -45,7 +63,7 @@ function RouteCard({ route }: { route: LociRoute }) {
                       : { borderLeft: '2px solid rgba(193, 160, 80, 0.5)' }
                   }
                 />
-                <span className="text-gold text-base leading-none">{MODE_ICONS[leg.mode] || '→'}</span>
+                <ModeIcon mode={leg.mode} />
                 {leg.note_ru && (
                   <p className="font-serif text-cream/50 text-[11px] italic">{leg.note_ru}</p>
                 )}
