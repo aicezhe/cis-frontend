@@ -135,9 +135,9 @@ function List({ items, icon = '◆' }: { items: string[]; icon?: string }) {
 }
 
 function StepCard({
-  step, index, seed, checked, toggle,
+  step, seed, checked, toggle,
 }: {
-  step: VisaStep; index: number; seed: VisaSeed; checked: string[]; toggle: (id: string) => void;
+  step: VisaStep; seed: VisaSeed; checked: string[]; toggle: (id: string) => void;
 }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -171,7 +171,6 @@ function StepCard({
           onClick={() => setOpen(!open)}
           className="flex-1 flex items-center gap-3 text-left"
         >
-          <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-5">{index + 1}.</span>
           <p className={
             'font-serif text-base font-bold flex-1 ' +
             (stepDone ? 'text-navy/50 line-through' : 'text-navy')
@@ -413,8 +412,8 @@ export default function VisaStepsPage() {
       </div>
 
       <div className="px-6 mt-5 flex flex-col gap-3">
-        {visa.steps.map((step, i) => (
-          <StepCard key={step.id} step={step} index={i} seed={visa} checked={checked} toggle={toggle} />
+        {visa.steps.map((step) => (
+          <StepCard key={step.id} step={step} seed={visa} checked={checked} toggle={toggle} />
         ))}
       </div>
 
