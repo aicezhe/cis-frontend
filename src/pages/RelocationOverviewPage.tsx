@@ -84,9 +84,6 @@ export default function RelocationOverviewPage() {
       <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
         {relocation.intro_ru.what_ru}
       </p>
-      <p className="font-serif text-navy/70 text-sm text-center px-6 mt-2 leading-relaxed">
-        {relocation.intro_ru.key_ru}
-      </p>
 
       {/* Примерные расходы — только реальные цифры из проверенных источников */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Примерные расходы</p>
