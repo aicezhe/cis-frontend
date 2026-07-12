@@ -99,6 +99,8 @@ export interface FoundationStep {
   checklist?: FoundationChecklistItem[];
   description_ru?: string;
   email_template_id?: string;
+  link_to?: string;
+  link_label?: string;
 }
 
 export interface FoundationApplyMeta {

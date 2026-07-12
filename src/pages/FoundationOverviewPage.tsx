@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Euro, Languages, BookOpen } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
@@ -46,11 +46,15 @@ function GridButton({
 
 export default function FoundationOverviewPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { data, loading, error } = useFoundation();
   const { legalization } = useMyLegalization();
   const { currency } = useCurrency();
   const fmt = (eur: number) => formatPrice(eur, currency);
-  const [stepsOpen, setStepsOpen] = useState(false);
+  // Если вернулись сюда со страницы, открытой по ссылке из шага (например,
+  // «Языковой сертификат →»), снова разворачиваем «Шаги поступления» —
+  // иначе после перехода назад юзер попадает на свёрнутую страницу.
+  const [stepsOpen, setStepsOpen] = useState(() => Boolean((location.state as { openSteps?: boolean } | null)?.openSteps));
   const [copied, setCopied] = useState(false);
   // Долгий тап по карточке шага «Шаги поступления» → добавить свой расход
   const [expenseFor, setExpenseFor] = useState<string | null>(null);
@@ -253,7 +257,7 @@ export default function FoundationOverviewPage() {
                                 {item.text}
                                 {item.link_to && (
                                   <button
-                                    onClick={() => navigate(item.link_to!)}
+                                    onClick={() => navigate(item.link_to!, { state: { openSteps: true } })}
                                     className="ml-2 font-serif text-gold text-sm no-underline"
                                   >
                                     {item.link_label || '→'}
@@ -264,6 +268,15 @@ export default function FoundationOverviewPage() {
                           );
                         })}
                       </div>
+                    )}
+
+                    {step.link_to && (
+                      <button
+                        onClick={() => navigate(step.link_to!, { state: { openSteps: true } })}
+                        className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm"
+                      >
+                        {step.link_label || '→'}
+                      </button>
                     )}
 
                     <div className="flex items-center gap-3 mt-3">

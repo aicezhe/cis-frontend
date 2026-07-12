@@ -1,8 +1,12 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFoundation } from '../hooks/useFoundation';
 
 export default function FoundationLanguagesPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  // Пришли по ссылке из шага «Шаги поступления» — возвращаем назад тоже
+  // с раскрытыми шагами, а не на свёрнутую страницу.
+  const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
   const { data, loading, error } = useFoundation();
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-cream"><p className="font-serif text-navy/60 italic">Загрузка…</p></div>;
@@ -13,7 +17,10 @@ export default function FoundationLanguagesPage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate('/path/foundation')} className="text-navy text-2xl">←</button>
+        <button
+          onClick={() => navigate('/path/foundation', openSteps ? { state: { openSteps: true } } : undefined)}
+          className="text-navy text-2xl"
+        >←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Языковые требования</h1>
       </div>
 
