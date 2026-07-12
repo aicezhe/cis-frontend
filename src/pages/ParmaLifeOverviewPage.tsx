@@ -67,6 +67,7 @@ export default function ParmaLifeOverviewPage() {
             title={sec.title_ru}
             to={`/path/parma/${sec.id}`}
             seed={i + 1}
+            wide={subsections.length % 2 === 1 && i === subsections.length - 1}
           />
         ))}
       </div>

@@ -15,17 +15,19 @@ type IconComponent = React.ComponentType<{
 // копий иконки разного размера — мерцают, дрейфуют, слегка пульсируют
 // (та же анимация, что звёзды на Welcome). Подпись — под рамкой.
 // onLongPress открывает произвольное действие (например, форму расхода).
+// wide — растянуть плитку на 2 колонки (для последней при нечётном числе,
+// чтобы не висела одиноко слева «крестиком»).
 export function GridButton({
-  icon: Icon, title, to, seed, onLongPress,
+  icon: Icon, title, to, seed, onLongPress, wide,
 }: {
-  icon: IconComponent; title: string; to: string; seed: number; onLongPress?: () => void;
+  icon: IconComponent; title: string; to: string; seed: number; onLongPress?: () => void; wide?: boolean;
 }) {
   const navigate = useNavigate();
   const icons = scatterIcons(seed, 11);
   return (
     <button
       onClick={() => navigate(to)}
-      className="flex flex-col items-center gap-1.5 select-none"
+      className={'flex flex-col items-center gap-1.5 select-none' + (wide ? ' col-span-2' : '')}
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       {...(onLongPress ? longPressHandlers(onLongPress) : {})}
     >

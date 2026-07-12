@@ -179,8 +179,8 @@ export default function RelocationOverviewPage() {
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}
       <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
       <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
-        {gridButtons.map((b) => (
-          <GridButton key={b.to} {...b} />
+        {gridButtons.map((b, i) => (
+          <GridButton key={b.to} {...b} wide={gridButtons.length % 2 === 1 && i === gridButtons.length - 1} />
         ))}
       </div>
 
