@@ -66,6 +66,16 @@ export async function createExpense(
   }));
 }
 
+export async function updateExpense(
+  expenseId: string,
+  patch: Partial<{ category: ExpenseCategory; label: string; amount_eur: number }>,
+): Promise<Expense> {
+  return ok<Expense>(await expenseFetch(`/api/v1/expenses/${expenseId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  }));
+}
+
 export async function deleteExpense(expenseId: string): Promise<void> {
   await ok<void>(await expenseFetch(`/api/v1/expenses/${expenseId}`, { method: 'DELETE' }));
 }

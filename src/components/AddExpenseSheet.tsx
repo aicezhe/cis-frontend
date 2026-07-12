@@ -4,7 +4,8 @@ import iconVisa from '../assets/iconVisa.svg';
 import iconTravel from '../assets/iconTravel.svg';
 import iconInParma from '../assets/iconInParma.svg';
 import { useExpenses } from '../hooks/useExpenses';
-import type { ExpenseCategory } from '../lib/expenses';
+import { useCurrency } from '../hooks/useCurrency';
+import type { Expense, ExpenseCategory } from '../lib/expenses';
 import { ApiError } from '../lib/api';
 
 const CATEGORIES: { id: ExpenseCategory; label: string; icon: string }[] = [
@@ -17,29 +18,45 @@ const CATEGORIES: { id: ExpenseCategory; label: string; icon: string }[] = [
 interface Props {
   defaultCategory: ExpenseCategory;
   defaultLabel?: string;
+  // Передай существующий расход — форма откроется в режиме редактирования
+  // (сохраняет через PATCH, а не создаёт новый).
+  expense?: Expense;
   onClose: () => void;
 }
 
-// Bottom-sheet «Добавить расход» — открывается долгим тапом по карточке шага.
-// Выбираешь категорию (совпадает с 4 разделами Path), вписываешь сумму и на
-// что она — сохраняется на бэкенде и сразу учитывается в общих расходах.
-export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }: Props) {
-  const { addExpense } = useExpenses();
-  const [category, setCategory] = useState<ExpenseCategory>(defaultCategory);
-  const [label, setLabel] = useState(defaultLabel);
-  const [amount, setAmount] = useState('');
+// Bottom-sheet «Добавить/изменить расход» — открывается долгим тапом по
+// плитке «Оплата»/карточке «Расходы», кнопкой «+» на странице «Стоимость»,
+// либо тапом по уже добавленному расходу (редактирование). Выбираешь
+// категорию (совпадает с 4 разделами Path), вписываешь сумму в ТЕКУЩЕЙ
+// валюте приложения — конвертируется в евро для бэкенда (там всё в EUR).
+export function AddExpenseSheet({ defaultCategory, defaultLabel = '', expense, onClose }: Props) {
+  const { addExpense, editExpense, removeExpense } = useExpenses();
+  const { currency, info } = useCurrency();
+  const isEdit = !!expense;
+  const [category, setCategory] = useState<ExpenseCategory>(expense?.category ?? defaultCategory);
+  const [label, setLabel] = useState(expense?.label ?? defaultLabel);
+  // Показываем и принимаем сумму в текущей выбранной валюте приложения —
+  // храним в евро только на бэкенде, конвертируем на границе формы.
+  const [amount, setAmount] = useState(
+    expense ? String(Math.round(expense.amount_eur * info.rate_to_eur)) : '',
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  const amountNum = Math.round(Number(amount.replace(',', '.')));
-  const canSave = label.trim() !== '' && amount.trim() !== '' && amountNum > 0 && !saving;
+  const amountLocal = Number(amount.replace(',', '.'));
+  const amountEur = Math.round(amountLocal / info.rate_to_eur);
+  const canSave = label.trim() !== '' && amount.trim() !== '' && amountEur > 0 && !saving;
 
   async function handleSave() {
     if (!canSave) return;
     setSaving(true);
     setError('');
     try {
-      await addExpense(category, label.trim(), amountNum);
+      if (isEdit) {
+        await editExpense(expense.id, { category, label: label.trim(), amount_eur: amountEur });
+      } else {
+        await addExpense(category, label.trim(), amountEur);
+      }
       onClose();
     } catch (err) {
       setError(
@@ -47,6 +64,19 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
           ? 'Сессия истекла — обнови страницу и войди заново.'
           : 'Не удалось сохранить — попробуй ещё раз.',
       );
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!expense) return;
+    setSaving(true);
+    setError('');
+    try {
+      await removeExpense(expense.id);
+      onClose();
+    } catch {
+      setError('Не удалось удалить — попробуй ещё раз.');
       setSaving(false);
     }
   }
@@ -62,7 +92,9 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
         </div>
 
         <div className="px-6 pb-6 pt-2">
-          <h2 className="font-serif text-navy text-xl font-bold mb-4">Добавить расход</h2>
+          <h2 className="font-serif text-navy text-xl font-bold mb-4">
+            {isEdit ? 'Изменить расход' : 'Добавить расход'}
+          </h2>
 
           <div className="flex gap-2 mb-4">
             {CATEGORIES.map((c) => (
@@ -101,7 +133,12 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
             className="w-full font-serif text-navy border border-navy/20 rounded-xl px-4 py-3 mb-4 outline-none focus:border-gold"
           />
 
-          <label className="block font-serif text-navy/60 text-xs mb-1">Сумма, €</label>
+          <label className="block font-serif text-navy/60 text-xs mb-1">
+            Сумма, {info.symbol}
+            {currency !== 'EUR' && (
+              <span className="text-navy/40"> (валюта из Настроек — {info.name_ru.toLowerCase()})</span>
+            )}
+          </label>
           <input
             type="number"
             inputMode="decimal"
@@ -128,6 +165,16 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
             >
               {saving ? '…' : 'Сохранить'}
             </button>
+            {isEdit && (
+              <button
+                onClick={handleDelete}
+                disabled={saving}
+                className="w-full font-serif text-lg rounded-full py-3 border"
+                style={{ color: '#a8332a', borderColor: '#a8332a55' }}
+              >
+                Удалить
+              </button>
+            )}
             <button
               onClick={onClose}
               className="w-full font-serif text-navy border border-navy/30 rounded-full py-3 text-sm"
