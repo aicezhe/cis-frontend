@@ -63,12 +63,13 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
     });
   });
 
-  // Стоимость курса (Foundation)
+  // Стоимость курса (Foundation) — полная цена курса, а не только депозит
+  // (депозит — это первый взнос ИЗ этой суммы, а не отдельная статья расхода).
   if (program === 'foundation') {
     items.push({
-      label_ru: 'Курс Foundation Year (депозит)',
-      eur: programData.deposit_eur,
-      note_ru: 'Депозит 600€ возвращается при отказе в визе. Остаток оплачивается по графику.',
+      label_ru: 'Курс Foundation Year',
+      eur: programData.course_fee_eur,
+      note_ru: `Депозит ${programData.deposit_eur}€ — первый взнос из этой суммы, возвращается при отказе в визе. С Dante — ${programData.course_fee_dante_eur}€.`,
     });
   }
 

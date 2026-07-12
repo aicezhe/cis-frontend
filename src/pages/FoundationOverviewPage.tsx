@@ -72,6 +72,20 @@ export default function FoundationOverviewPage() {
   }
   const isChecked = (id: string) => checks.includes(id);
 
+  // Общая галочка шага (справа сверху блока) — отмечает/снимает сразу все
+  // пункты чек-листа этого шага одним нажатием, а не просто «шаг выполнен».
+  function toggleStepAll(mainId: string, itemIds: string[]) {
+    const nowChecked = !isChecked(mainId);
+    setChecks((prev) => {
+      const allIds = [mainId, ...itemIds];
+      const next = nowChecked
+        ? [...prev.filter((x) => !allIds.includes(x)), ...allIds]
+        : prev.filter((x) => !allIds.includes(x));
+      localStorage.setItem(CHECKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cream">
@@ -209,10 +223,20 @@ export default function FoundationOverviewPage() {
 
               {data.steps_to_apply.map((step, idx) => {
                 const mainId = `apply-${step.id}`;
+                const itemIds = (step.checklist || []).map((_, i) => `${mainId}-item-${i}`);
                 const stepTemplate = step.email_template_id ? data.email_templates[step.email_template_id] : null;
                 return (
                   <div key={step.id} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
-                    <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx}</p>
+                      <button onClick={() => toggleStepAll(mainId, itemIds)} className="w-6 h-6 flex-shrink-0">
+                        {isChecked(mainId) ? (
+                          <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
+                        ) : (
+                          <div className="w-6 h-6 rounded-full border-2 border-navy/30" />
+                        )}
+                      </button>
+                    </div>
                     <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title}</h5>
 
                     {step.warning_ru && (
@@ -278,16 +302,6 @@ export default function FoundationOverviewPage() {
                         {step.link_label || '→'}
                       </button>
                     )}
-
-                    <div className="flex items-center gap-3 mt-3">
-                      <CheckBox id={mainId} />
-                      <span className={
-                        'font-serif text-sm font-bold ' +
-                        (isChecked(mainId) ? 'text-navy/50 line-through' : 'text-navy')
-                      }>
-                        {step.ack_label_ru || 'Шаг выполнен'}
-                      </span>
-                    </div>
                   </div>
                 );
               })}
