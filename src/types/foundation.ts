@@ -85,20 +85,18 @@ export interface FoundationSubjectsByTrack {
   list: FoundationSubject[];
 }
 
-export interface FoundationSubstep {
-  name: string;
-  cost_rub?: string;
-  cost_note_ru?: string;
-  duration_days?: string;
+export interface FoundationChecklistItem {
+  text: string;
+  link_to?: string;
+  link_label?: string;
 }
 
 export interface FoundationStep {
   id: string;
   title: string;
-  timing_ru?: string;
-  items?: string[];
-  substeps?: FoundationSubstep[];
-  warnings?: string[];
+  warning_ru?: string;
+  ack_label_ru?: string;
+  checklist?: FoundationChecklistItem[];
   description_ru?: string;
   email_template_id?: string;
 }

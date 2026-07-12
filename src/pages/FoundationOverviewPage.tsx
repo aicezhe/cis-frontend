@@ -124,7 +124,7 @@ export default function FoundationOverviewPage() {
     c.tuition_full + am.apply_extra_cost_max_eur + (legalization?.total_cost_estimate.documents_only_max_eur ?? 0);
 
   const gridButtons = [
-    { icon: GraduationCap, title: 'Структура', to: '/path/foundation/structure', seed: 1 },
+    { icon: GraduationCap, title: 'Программа', to: '/path/foundation/structure', seed: 1 },
     {
       icon: Euro, title: 'Оплата', to: '/path/expenses', seed: 2,
       // Долгий тап по «Оплате» — добавить свой расход (раньше было на карточках шагов)
@@ -203,102 +203,81 @@ export default function FoundationOverviewPage() {
                 </p>
               </div>
 
-              {data.steps_to_apply.map((step, idx) => (
-                <div key={step.id} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
-                  <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
-                  <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title}</h5>
-                  {step.timing_ru && (
-                    <span className="inline-block font-serif text-navy text-xs bg-soft-cream border border-gold/40 rounded-full px-2.5 py-1 mt-2">
-                      🕑 {step.timing_ru}
-                    </span>
-                  )}
-                  {step.description_ru && (
-                    <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
-                  )}
+              {data.steps_to_apply.map((step, idx) => {
+                const mainId = `apply-${step.id}`;
+                const stepTemplate = step.email_template_id ? data.email_templates[step.email_template_id] : null;
+                return (
+                  <div key={step.id} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
+                    <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx}</p>
+                    <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title}</h5>
 
-                  {step.items && (
-                    <div className="flex flex-col gap-2 mt-3">
-                      {step.items.map((item, i) => {
-                        const cid = `apply-${step.id}-item-${i}`;
-                        return (
-                          <div key={i} className="flex items-start gap-3">
-                            <CheckBox id={cid} />
-                            <p className={
-                              'font-serif text-base flex-1 ' +
-                              (isChecked(cid) ? 'text-navy/50 line-through' : 'text-navy/80')
-                            }>
-                              {item}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                    {step.warning_ru && (
+                      <div className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2 mt-2">
+                        <span className="text-gold mt-0.5 text-sm flex-shrink-0">!</span>
+                        <p className="font-serif text-navy/80 text-sm">{step.warning_ru}</p>
+                      </div>
+                    )}
 
-                  {step.substeps && (
-                    <div className="flex flex-col gap-2 mt-3">
-                      {step.substeps.map((sub, i) => {
-                        const cid = `apply-${step.id}-sub-${i}`;
-                        return (
-                          <div key={i} className="flex items-start gap-3">
-                            <CheckBox id={cid} />
-                            <div className="flex-1">
+                    {step.description_ru && (
+                      <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+                    )}
+
+                    {stepTemplate && (
+                      <div className="bg-navy rounded-xl p-4 mt-3">
+                        <p className="font-serif text-gold text-xs mb-1 font-bold">Subject</p>
+                        <p className="font-serif text-cream text-sm mb-3">{stepTemplate.subject}</p>
+                        <p className="font-serif text-gold text-xs mb-1 font-bold">Body</p>
+                        <pre className="font-serif text-cream/90 text-xs whitespace-pre-wrap leading-relaxed">
+{stepTemplate.body_en}
+                        </pre>
+                        <button
+                          onClick={copyEmail}
+                          className="w-full mt-3 font-serif text-navy bg-gold rounded-full py-2.5 text-sm"
+                        >
+                          {copied ? 'Скопировано ✓' : 'Скопировать письмо'}
+                        </button>
+                      </div>
+                    )}
+
+                    {step.checklist && (
+                      <div className="flex flex-col gap-2 mt-3">
+                        {step.checklist.map((item, i) => {
+                          const cid = `${mainId}-item-${i}`;
+                          return (
+                            <div key={i} className="flex items-start gap-3">
+                              <CheckBox id={cid} />
                               <p className={
-                                'font-serif text-base ' +
+                                'font-serif text-base flex-1 ' +
                                 (isChecked(cid) ? 'text-navy/50 line-through' : 'text-navy/80')
                               }>
-                                {sub.name}
+                                {item.text}
+                                {item.link_to && (
+                                  <button
+                                    onClick={() => navigate(item.link_to!)}
+                                    className="ml-2 font-serif text-gold text-sm no-underline"
+                                  >
+                                    {item.link_label || '→'}
+                                  </button>
+                                )}
                               </p>
-                              <div className="flex gap-3 mt-0.5">
-                                {sub.cost_rub && sub.cost_rub !== '0' && (
-                                  <span className="font-serif text-gold text-xs">≈ {sub.cost_rub} ₽</span>
-                                )}
-                                {sub.cost_rub === '0' && (
-                                  <span className="font-serif text-navy/50 text-xs">бесплатно</span>
-                                )}
-                                {sub.duration_days && (
-                                  <span className="font-serif text-navy/60 text-xs">{sub.duration_days} дн.</span>
-                                )}
-                              </div>
-                              {sub.cost_note_ru && (
-                                <p className="font-serif text-gold text-xs mt-0.5">{sub.cost_note_ru}</p>
-                              )}
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                          );
+                        })}
+                      </div>
+                    )}
 
-                  {step.warnings && (
-                    <div className="flex flex-col gap-1.5 mt-3">
-                      {step.warnings.map((w, i) => (
-                        <div key={i} className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2">
-                          <span className="text-gold mt-0.5 text-sm">!</span>
-                          <p className="font-serif text-navy/80 text-sm">{w}</p>
-                        </div>
-                      ))}
+                    <div className="flex items-center gap-3 mt-3">
+                      <CheckBox id={mainId} />
+                      <span className={
+                        'font-serif text-sm font-bold ' +
+                        (isChecked(mainId) ? 'text-navy/50 line-through' : 'text-navy')
+                      }>
+                        {step.ack_label_ru || 'Шаг выполнен'}
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
-
-              {emailTemplate && (
-                <div className="bg-navy rounded-xl p-4 mt-1">
-                  <p className="font-serif text-gold text-xs mb-1 font-bold">Subject</p>
-                  <p className="font-serif text-cream text-sm mb-3">{emailTemplate.subject}</p>
-                  <p className="font-serif text-gold text-xs mb-1 font-bold">Body</p>
-                  <pre className="font-serif text-cream/90 text-xs whitespace-pre-wrap leading-relaxed">
-{emailTemplate.body_en}
-                  </pre>
-                  <button
-                    onClick={copyEmail}
-                    className="w-full mt-3 font-serif text-navy bg-gold rounded-full py-2.5 text-sm"
-                  >
-                    {copied ? 'Скопировано ✓' : 'Скопировать письмо'}
-                  </button>
-                </div>
-              )}
+                  </div>
+                );
+              })}
 
               <div className="mt-1">
                 <p className="font-serif text-gold text-sm mb-1.5 font-bold">Частые ошибки</p>
