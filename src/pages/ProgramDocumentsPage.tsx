@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyProgram } from '../hooks/useProgram';
+import { useMyLegalization } from '../hooks/useFoundation';
 import type { RequiredDocument, TwelfthYearOptions } from '../types/laurea';
 
 const DOCS_KEY = 'cispr_docs_checklist';
+const TWELFTH_YEAR_KEY = 'cispr_12year_path';
+const BACHELOR_COUNTRY_KEY = 'cispr_bachelor_country';
 
 function loadChecked(): string[] {
   try { return JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); } catch { return []; }
@@ -54,25 +57,72 @@ const EXTRA_DETAILS: Record<string, { steps?: string[]; tip?: string }> = {
   },
 };
 
-// Блок «12-й год» — только для бакалавриата
+// Блок «12-й год» — только для бакалавриата. Вопрос сверху («каким путём ты
+// закрыла 12-й год») сохраняет ответ и сразу открывает/подсвечивает именно
+// этот вариант — вместо того чтобы листать все три вслепую.
 function TwelfthYearBlock({ data }: { data: TwelfthYearOptions }) {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [answer, setAnswer] = useState<string | null>(() => localStorage.getItem(TWELFTH_YEAR_KEY));
+  const [openId, setOpenId] = useState<string | null>(answer);
+
+  function choose(id: string) {
+    setAnswer(id);
+    localStorage.setItem(TWELFTH_YEAR_KEY, id);
+    setOpenId(id);
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="bg-cream border border-gold/30 rounded-2xl px-4 py-3">
         <p className="font-serif text-gold text-sm mb-1 font-bold">{data.title_ru}</p>
         <p className="font-serif text-navy/70 text-sm leading-relaxed">{data.explanation_ru}</p>
       </div>
+
+      <div>
+        <p className="font-serif text-navy/60 text-xs mb-2">
+          Ты получила 12 лет учёбы с помощью:
+        </p>
+        <div className="flex flex-col gap-2">
+          {data.options.map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() => choose(opt.id)}
+              className={
+                'w-full text-left rounded-xl border px-3.5 py-2.5 font-serif text-sm ' +
+                (answer === opt.id
+                  ? 'bg-navy border-navy text-cream font-bold'
+                  : 'bg-soft-cream border-navy/20 text-navy')
+              }
+            >
+              {opt.name_ru}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {data.options.map((opt) => {
         const isOpen = openId === opt.id;
+        const isChosen = answer === opt.id;
         return (
-          <div key={opt.id} className="bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
+          <div
+            key={opt.id}
+            className={
+              'bg-soft-cream border rounded-2xl overflow-hidden ' +
+              (isChosen ? 'border-gold/60' : 'border-navy/20')
+            }
+          >
             <button
               onClick={() => setOpenId(isOpen ? null : opt.id)}
               className="w-full px-4 py-4 flex items-start gap-3 text-left"
             >
               <div className="flex-1">
-                <p className="font-serif text-navy text-base font-bold">{opt.name_ru}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-serif text-navy text-base font-bold">{opt.name_ru}</p>
+                  {isChosen && (
+                    <span className="font-serif text-[10px] text-gold border border-gold/60 rounded-full px-2 py-0.5 flex-shrink-0">
+                      твой путь
+                    </span>
+                  )}
+                </div>
                 <p className="font-serif text-navy/60 text-xs mt-0.5 leading-relaxed">{opt.description_ru}</p>
               </div>
               <svg
@@ -191,7 +241,13 @@ function DocCard({ doc, checked, toggle }: {
 export default function ProgramDocumentsPage() {
   const navigate = useNavigate();
   const { program, programType, loading } = useMyProgram();
+  const { legalization } = useMyLegalization();
   const [checked, setChecked] = useState<string[]>(loadChecked);
+  // Для магистратуры: где получен бакалавриат — определяет, нужно ли
+  // признание диплома (CIMEA/DDV). Если диплом уже итальянский — не нужно.
+  const [bachelorCountry, setBachelorCountry] = useState<'home' | 'italy' | null>(
+    () => localStorage.getItem(BACHELOR_COUNTRY_KEY) as 'home' | 'italy' | null,
+  );
 
   function toggle(id: string) {
     setChecked((prev) => {
@@ -201,13 +257,20 @@ export default function ProgramDocumentsPage() {
     });
   }
 
+  function chooseBachelorCountry(v: 'home' | 'italy') {
+    setBachelorCountry(v);
+    localStorage.setItem(BACHELOR_COUNTRY_KEY, v);
+  }
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-cream"><p className="font-serif text-navy/60 italic">Загрузка…</p></div>;
   if (!program) return null;
 
-  const docs = program.documents_required;
+  const skipRecognition = programType === 'master' && bachelorCountry === 'italy';
+  const docs = program.documents_required.filter((d) => !(skipRecognition && d.id === 'recognition'));
   const total = docs.length;
   const doneCount = docs.filter((d) => checked.includes(d.id)).length;
   const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+  const homeCountryLabel = legalization?.meta.country_name_ru || 'своей стране';
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -215,6 +278,43 @@ export default function ProgramDocumentsPage() {
         <button onClick={() => navigate('/path/uni/program')} className="text-navy text-2xl">←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Документы</h1>
       </div>
+
+      {programType === 'master' && (
+        <div className="mx-6 mt-5 bg-cream border border-gold/30 rounded-2xl px-4 py-3">
+          <p className="font-serif text-gold text-sm mb-2 font-bold">
+            Ты получила степень бакалавра в:
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => chooseBachelorCountry('home')}
+              className={
+                'flex-1 rounded-xl border px-3 py-2.5 font-serif text-sm ' +
+                (bachelorCountry === 'home'
+                  ? 'bg-navy border-navy text-cream font-bold'
+                  : 'bg-soft-cream border-navy/20 text-navy')
+              }
+            >
+              {homeCountryLabel}
+            </button>
+            <button
+              onClick={() => chooseBachelorCountry('italy')}
+              className={
+                'flex-1 rounded-xl border px-3 py-2.5 font-serif text-sm ' +
+                (bachelorCountry === 'italy'
+                  ? 'bg-navy border-navy text-cream font-bold'
+                  : 'bg-soft-cream border-navy/20 text-navy')
+              }
+            >
+              Италия
+            </button>
+          </div>
+          {bachelorCountry === 'italy' && (
+            <p className="font-serif text-navy/60 text-xs mt-2 leading-relaxed">
+              Тогда признание диплома (CIMEA/DDV) не нужно — бакалавриат уже в итальянской системе. Убрали этот пункт из списка ниже.
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
         <div className="flex justify-between items-baseline mb-2">
