@@ -53,6 +53,24 @@ body {
   .star { animation: none; }
 }
 
+/* ── Плитки-кнопки (раздел «Университет»): мелкие иконки внутри мерцают,
+   дрейфуют и слегка пульсируют размером — та же идея, что звёзды на Welcome,
+   только дрейф+масштаб объединены в одну transform-анимацию. */
+@keyframes icon-float {
+  0%, 100% { transform: translate(0, 0) scale(var(--ic-min, 0.85)); }
+  50%      { transform: translate(var(--dx, 3px), var(--dy, -3px)) scale(var(--ic-max, 1.15)); }
+}
+.tile-icon {
+  position: absolute;
+  animation:
+    star-twinkle var(--tw-dur, 3s) ease-in-out var(--tw-delay, 0s) infinite,
+    icon-float   var(--dr-dur, 4s) ease-in-out var(--dr-delay, 0s) infinite;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile-icon { animation: none; }
+}
+
 /* ── Уход с WelcomePage ──────────────────────────────────────────────────────
    Вход: ночное небо «накрывает» экран (растёт сверху вниз) → дальше на странице
    входа звёзды идут потоком на зрителя, синее и звёзды расплываются, остаётся

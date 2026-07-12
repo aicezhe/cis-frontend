@@ -6,6 +6,7 @@ import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { longPressHandlers } from '../lib/longPress';
+import { scatterIcons } from '../lib/scatterIcons';
 
 // Ключевые термины в «Важно знать» подсвечиваем золотым,
 // чтобы взгляд цеплялся за смысл, а не за стену текста.
@@ -39,14 +40,33 @@ function renderHighlights(text: string) {
   );
 }
 
-// Небольшая квадратная плитка-иконка — сама иконка занимает почти всю
-// площадь квадрата, подпись отдельно снизу (не внутри рамки).
-function GridButton({ icon: Icon, title, to }: { icon: typeof GraduationCap; title: string; to: string }) {
+// Широкая невысокая плитка-кнопка: внутри рамки раскидано несколько мелких
+// копий иконки разного размера — мерцают, дрейфуют, слегка пульсируют
+// (та же анимация, что звёзды на Welcome). Подпись — под рамкой.
+// onLongPress (только у «Оплаты») открывает форму добавления расхода.
+function GridButton({
+  icon: Icon, title, to, seed, onLongPress,
+}: {
+  icon: typeof GraduationCap; title: string; to: string; seed: number; onLongPress?: () => void;
+}) {
   const navigate = useNavigate();
+  const icons = scatterIcons(seed, 7);
   return (
-    <button onClick={() => navigate(to)} className="flex flex-col items-center gap-1.5 w-24 mx-auto">
-      <div className="w-full aspect-square rounded-xl border-2 border-gold/50 bg-soft-cream flex items-center justify-center p-3">
-        <Icon className="w-full h-full text-gold" strokeWidth={1.5} />
+    <button
+      onClick={() => navigate(to)}
+      className="flex flex-col items-center gap-1.5 select-none"
+      style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
+      {...(onLongPress ? longPressHandlers(onLongPress) : {})}
+    >
+      <div className="relative w-full h-16 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
+        {icons.map((ic, i) => (
+          <Icon
+            key={i}
+            className="tile-icon text-gold"
+            strokeWidth={1.5}
+            style={{ top: ic.top, left: ic.left, width: ic.size, height: ic.size, ...ic.style }}
+          />
+        ))}
       </div>
       <span className="font-serif text-navy text-xs font-bold text-center leading-tight">{title}</span>
     </button>
@@ -133,12 +153,16 @@ export default function ProgramOverviewPage() {
   const windowStr = (deadline['application_window'] || deadline['application_window_english'] || '') as string;
 
   const gridButtons = [
-    { icon: GraduationCap, title: 'Структура', to: '/path/uni/program/structure' },
-    { icon: FileText, title: 'Документы', to: '/path/uni/program/documents' },
-    { icon: Award, title: 'Диплом', to: '/path/uni/program/diploma' },
-    { icon: Euro, title: 'Оплата', to: '/path/uni/program/finance' },
-    { icon: Languages, title: 'Языки', to: '/path/uni/program/languages' },
-    ...(isBachelor ? [{ icon: PenLine, title: 'Тесты', to: '/path/uni/program/numero-chiuso' }] : []),
+    { icon: GraduationCap, title: 'Структура', to: '/path/uni/program/structure', seed: 1 },
+    { icon: FileText, title: 'Документы', to: '/path/uni/program/documents', seed: 2 },
+    { icon: Award, title: 'Диплом', to: '/path/uni/program/diploma', seed: 3 },
+    {
+      icon: Euro, title: 'Оплата', to: '/path/uni/program/finance', seed: 4,
+      // Долгий тап по «Оплате» — добавить свой расход (раньше было на карточках шагов)
+      onLongPress: () => setExpenseFor('Расход'),
+    },
+    { icon: Languages, title: 'Языки', to: '/path/uni/program/languages', seed: 5 },
+    ...(isBachelor ? [{ icon: PenLine, title: 'Тесты', to: '/path/uni/program/numero-chiuso', seed: 6 }] : []),
   ];
 
   return (
@@ -181,16 +205,13 @@ export default function ProgramOverviewPage() {
 
       <div className="px-6 flex flex-col gap-3">
 
-        {/* Шаги поступления — единственный раздел прямо на странице, открыт
-            по умолчанию. Крупная скруглённая карточка, обычный аккордеон,
-            без постоянных бейджей. */}
-        <div className={
-          'rounded-[28px] border-2 p-5 ' +
-          (stepsOpen ? 'bg-soft-cream border-gold' : 'bg-soft-cream border-gold/50')
-        }>
+        {/* Шаги поступления — единственный раздел прямо на странице. Можно
+            свернуть/развернуть, но без рамки-«кнопки» — просто заголовок,
+            кликабельный, контент течёт дальше как обычный текст страницы. */}
+        <div>
           <button
             onClick={() => setStepsOpen(!stepsOpen)}
-            className="w-full flex items-center gap-3 text-left"
+            className="w-full flex items-center gap-3 text-left py-1"
           >
             <div className="flex-1 text-center">
               <h4 className="font-serif text-navy text-2xl font-bold">Шаги поступления</h4>
@@ -234,18 +255,10 @@ export default function ProgramOverviewPage() {
                   <div
                     key={step.id}
                     className={
-                      'relative bg-cream border rounded-xl px-4 py-3 select-none ' +
+                      'bg-cream border rounded-xl px-4 py-3 ' +
                       (isDone ? 'border-navy/15 opacity-70' : 'border-navy/15')
                     }
-                    style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
-                    {...longPressHandlers(() => setExpenseFor(step.title_ru))}
                   >
-                    <span
-                      className="absolute top-3 right-3 w-5 h-5 rounded-full border border-gold/50 flex items-center justify-center text-gold text-xs"
-                      title="Долгий тап — добавить свой расход"
-                    >
-                      +
-                    </span>
                     <div className="flex items-start gap-3">
                       <CheckBox id={step.id} checks={stepChecks} toggle={toggleStep} />
                       <div className="flex-1 pr-4">
