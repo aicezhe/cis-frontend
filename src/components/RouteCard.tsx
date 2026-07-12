@@ -1,8 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
 import { Bus, Car, Plane, TrainFront, TriangleAlert } from 'lucide-react';
-import TabBar from '../components/TabBar';
-import skyline from '../assets/parma design.svg';
-import { useLociRoutes } from '../hooks/useRelocation';
 import type { LociRoute } from '../types/relocation';
 
 // SVG вместо эмодзи-транспорта — в стилистике остальных иконок приложения.
@@ -29,13 +25,18 @@ function ModeIcon({ mode }: { mode: string }) {
   }
 }
 
-function RouteCard({ route }: { route: LociRoute }) {
+// Карточка маршрута с цепочкой точек-транспорта (тёмно-синяя, с золотым
+// финишем «Парма») — единственное место, где показываются маршруты переезда.
+export function RouteCard({ route }: { route: LociRoute }) {
   const danger = route.requires_permit;
 
   return (
     <div
-      className={'rounded-2xl p-4 ' + (danger ? 'border' : 'bg-cream/10')}
-      style={danger ? { backgroundColor: 'rgba(140, 100, 55, 0.2)', borderColor: 'rgba(196, 160, 108, 0.45)' } : undefined}
+      className={'rounded-2xl p-4 ' + (danger ? 'border' : 'border border-navy/20')}
+      style={{
+        backgroundColor: danger ? 'rgba(140, 100, 55, 0.12)' : '#1C2A48',
+        borderColor: danger ? 'rgba(196, 160, 108, 0.45)' : undefined,
+      }}
     >
       <p className="font-serif text-cream text-lg">{route.name_ru}</p>
 
@@ -86,65 +87,6 @@ function RouteCard({ route }: { route: LociRoute }) {
       {route.cost_estimate_ru && (
         <p className="font-serif text-cream/60 text-xs mt-3">≈ {route.cost_estimate_ru}</p>
       )}
-    </div>
-  );
-}
-
-export default function LociRoutesView() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { routes, loading } = useLociRoutes();
-  // Пришли по ссылке из «Шаги переезда» — возвращаем назад тоже с раскрытым разделом.
-  const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
-
-  return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-navy flex flex-col pb-28 overflow-hidden">
-      {/* Размытый силуэт Пармы фоном — смягчает плоскую синюю заливку */}
-      <img
-        src={skyline}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-        style={{ opacity: 0.14, filter: 'blur(6px)' }}
-      />
-
-      <div className="relative z-10 flex flex-col flex-1">
-        <div className="px-6 pt-12 flex items-center gap-4">
-          <button
-            onClick={() => {
-              if (openSteps) navigate('/path/travel', { state: { openSteps: true } });
-              else navigate(-1);
-            }}
-            className="text-cream text-2xl"
-          >←</button>
-          <div>
-            <p className="font-serif text-gold text-[10px] uppercase tracking-widest">⌐ loci ¬</p>
-            <h1 className="font-serif text-cream text-2xl font-bold">Маршруты в Парму</h1>
-          </div>
-        </div>
-
-        {loading && (
-          <p className="font-serif text-cream/60 italic px-6 mt-8">Загрузка…</p>
-        )}
-
-        {!loading && routes.length === 0 && (
-          <p className="font-serif text-cream/60 italic px-6 mt-8 text-center">
-            Маршруты для твоей страны уточняются.
-          </p>
-        )}
-
-        <div className="px-5 mt-6 flex flex-col gap-3">
-          {routes.map((route) => (
-            <RouteCard key={route.id} route={route} />
-          ))}
-        </div>
-
-        <p className="font-serif text-cream/40 text-xs italic text-center px-6 mt-6">
-          Маршруты — общая логика. Детали (рейсы, цены, правила транзита) проверяй перед поездкой.
-        </p>
-      </div>
-
-      <TabBar active="loci" />
     </div>
   );
 }

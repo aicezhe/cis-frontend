@@ -1,14 +1,3 @@
-export interface TravelRoute {
-  id: string;
-  name_ru: string;
-  via_ru: string[];
-  to_ru: string;
-  requires_residence_permit: boolean;
-  note_ru?: string;
-  warning_ru?: string;
-  safe: boolean;
-}
-
 export interface ArrivalStep {
   step: string;
   transport: string;
@@ -53,11 +42,6 @@ export interface RelocationHousingOption {
   url?: string;
 }
 
-export interface RelocationStepLink {
-  to: string;
-  label: string;
-}
-
 export interface RelocationStep {
   title_ru: string;
   description_ru: string;
@@ -65,7 +49,6 @@ export interface RelocationStep {
   warning_ru?: string;
   link_to?: string;
   link_label?: string;
-  links_ru?: RelocationStepLink[];
 }
 
 export interface RelocationSteps {
@@ -90,7 +73,6 @@ export interface RelocationSeed {
     title_ru: string;
     first_trip_logic_ru: string;
     airports_ru: string;
-    routes: TravelRoute[];
     flight_cost_ru: {
       estimate_ru: string;
       tip_ru: string;

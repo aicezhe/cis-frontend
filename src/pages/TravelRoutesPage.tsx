@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRelocation } from '../hooks/useRelocation';
+import { useRelocation, useLociRoutes } from '../hooks/useRelocation';
 import { Price } from '../components/Price';
+import { RouteCard } from '../components/RouteCard';
 import type { ArrivalStep } from '../types/relocation';
 
 function ArrivalTable({ steps }: { steps: ArrivalStep[] }) {
@@ -30,6 +31,7 @@ export default function TravelRoutesPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { relocation, loading } = useRelocation();
+  const { routes: lociRoutes } = useLociRoutes();
   // Пришли по ссылке из «Шаги переезда» — возвращаем назад тоже с раскрытым разделом.
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
@@ -40,9 +42,33 @@ export default function TravelRoutesPage() {
       </div>
     );
   }
+  // Нет детального seed'а для страны (ua/by/kz) — маршруты всё равно
+  // показываем, остальное (логика поездки, прибытие в Парму) недоступно.
   if (!relocation) {
-    navigate('/path/travel');
-    return null;
+    return (
+      <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+        <div className="px-6 pt-12 flex items-center gap-4">
+          <button
+            onClick={() => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined)}
+            className="text-navy text-2xl"
+          >←</button>
+          <h1 className="font-serif text-navy text-2xl font-bold">Дорога в Парму</h1>
+        </div>
+
+        <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
+        <div className="px-5 flex flex-col gap-3">
+          {lociRoutes.length === 0 ? (
+            <p className="font-serif text-navy/50 text-sm italic px-1">Маршруты для твоей страны уточняются.</p>
+          ) : (
+            lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
+          )}
+        </div>
+
+        <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
+          Подробный гайд по дороге и первым дням для твоей страны в разработке.
+        </p>
+      </div>
+    );
   }
 
   const tr = relocation.travel_routes;
@@ -64,39 +90,14 @@ export default function TravelRoutesPage() {
         <p className="font-serif text-navy/70 text-sm leading-relaxed">{tr.airports_ru}</p>
       </div>
 
-      {/* Маршруты */}
+      {/* Маршруты — карточки с цепочкой точек-транспорта */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
-      <div className="px-6 flex flex-col gap-3">
-        {tr.routes.map((route) => (
-          <div
-            key={route.id}
-            className={'rounded-2xl border px-4 py-4 ' + (route.safe ? 'bg-soft-cream border-navy/20' : '')}
-            style={
-              route.safe
-                ? undefined
-                : { backgroundColor: 'rgba(168, 51, 42, 0.06)', borderColor: 'rgba(168, 51, 42, 0.4)' }
-            }
-          >
-            <p className="font-serif text-navy text-base font-bold">{route.name_ru}</p>
-            <p className="font-serif text-navy/60 text-xs mt-1">
-              {route.via_ru.join(' · ')} {route.to_ru}
-            </p>
-            {route.warning_ru && (
-              <div
-                className="rounded-xl px-3 py-2 mt-2 flex gap-2"
-                style={{ backgroundColor: 'rgba(168, 51, 42, 0.1)' }}
-              >
-                <span className="flex-shrink-0 text-sm" style={{ color: '#a8332a' }}>⚠</span>
-                <p className="font-serif text-xs font-bold leading-relaxed" style={{ color: '#a8332a' }}>
-                  {route.warning_ru}
-                </p>
-              </div>
-            )}
-            {route.note_ru && (
-              <p className="font-serif text-navy/60 text-xs italic mt-2 leading-relaxed">{route.note_ru}</p>
-            )}
-          </div>
-        ))}
+      <div className="px-5 flex flex-col gap-3">
+        {lociRoutes.length === 0 ? (
+          <p className="font-serif text-navy/50 text-sm italic px-1">Маршруты для твоей страны уточняются.</p>
+        ) : (
+          lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
+        )}
       </div>
 
       {/* Стоимость перелёта */}
@@ -104,14 +105,6 @@ export default function TravelRoutesPage() {
         <p className="font-serif text-navy/80 text-sm leading-relaxed">{tr.flight_cost_ru.estimate_ru}</p>
         <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">{tr.flight_cost_ru.tip_ru}</p>
       </div>
-
-      {/* Кнопка LOCI */}
-      <button
-        onClick={() => navigate('/loci/routes')}
-        className="mx-6 mt-4 font-serif text-cream bg-navy rounded-full py-3 text-sm"
-      >
-        Показать на карте ✈ →
-      </button>
 
       {/* Прибытие */}
       <p className="font-serif text-gold text-sm px-6 mt-8 mb-3 font-bold">{ar.title_ru}</p>

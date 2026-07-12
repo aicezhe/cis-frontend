@@ -38,7 +38,7 @@ export default function RelocationOverviewPage() {
     );
   }
 
-  // нет seed для страны (ua/by/kz) — заглушка + маршруты LOCI всё равно доступны
+  // нет seed для страны (ua/by/kz) — заглушка, но типовые маршруты всё равно доступны
   if (!relocation) {
     return (
       <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -52,10 +52,10 @@ export default function RelocationOverviewPage() {
               Детальный гайд для твоей страны в разработке. Типовые маршруты уже можно посмотреть.
             </p>
             <button
-              onClick={() => navigate('/loci/routes')}
+              onClick={() => navigate('/path/travel/routes')}
               className="font-serif text-cream bg-navy rounded-full px-8 py-3"
             >
-              Предположить маршрут →
+              Дорога в Парму →
             </button>
           </div>
         </div>
@@ -165,19 +165,6 @@ export default function RelocationOverviewPage() {
                     </button>
                   )}
 
-                  {step.links_ru && (
-                    <div className="flex flex-col gap-2 mt-3">
-                      {step.links_ru.map((l, i) => (
-                        <button
-                          key={i}
-                          onClick={() => navigate(l.to, { state: { openSteps: true } })}
-                          className="flex items-center gap-1.5 font-serif text-gold text-sm"
-                        >
-                          {l.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -197,21 +184,8 @@ export default function RelocationOverviewPage() {
         ))}
       </div>
 
-      {/* Кнопка LOCI маршруты + адрес — в самом низу, после всех подразделов */}
-      <button
-        onClick={() => navigate('/loci/routes')}
-        className="relative mx-6 mt-6 bg-navy rounded-2xl px-5 py-4 text-left"
-      >
-        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
-        <p className="font-serif text-cream text-lg">Предположить маршрут ✈</p>
-        <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
-      </button>
-
-      <div className="mx-6 mt-4">
+      {/* Адрес — в самом низу, после всех подразделов */}
+      <div className="mx-6 mt-6">
         <HomeAddressInput />
       </div>
 
