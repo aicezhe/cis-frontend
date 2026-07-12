@@ -10,9 +10,57 @@ import { longPressHandlers } from '../lib/longPress';
 import { sectionsData, parsePrice } from '../lib/sectionsData';
 import { useUniCosts } from '../hooks/useCosts';
 import { useExpenses } from '../hooks/useExpenses';
+import { useFoundation } from '../hooks/useFoundation';
+import { useMyProgram } from '../hooks/useProgram';
+import { useVisa } from '../hooks/useVisa';
 import { formatPrice } from '../utils/formatPrice';
 import { useCurrency } from '../hooks/useCurrency';
 import { COUNTRY_CURRENCY_MAP } from '../config/currencies';
+import type { FoundationSeed } from '../types/foundation';
+import type { LaureaSeed } from '../types/laurea';
+import type { VisaSeed } from '../types/visa';
+
+// Реальные чек-листы (галочки, по которым юзер и правда кликает) появились
+// отдельно на каждой странице раздела — эти функции строят те же id, что
+// пишут FoundationOverviewPage/ProgramDocumentsPage+ProgramOverviewPage/
+// VisaStepsPage, чтобы посчитать прогресс «Универ»/«Виза» на Path по тем
+// же самым галочкам, а не по мёртвому generic-чек-листу sectionsData.
+function foundationChecklistIds(data: FoundationSeed): string[] {
+  const ids: string[] = [];
+  data.steps_to_apply.forEach((s) => {
+    ids.push(`apply-${s.id}`);
+    (s.checklist || []).forEach((_, i) => ids.push(`apply-${s.id}-item-${i}`));
+  });
+  return ids;
+}
+
+function programChecklistIds(program: LaureaSeed): string[] {
+  return [
+    ...program.documents_required.map((d) => d.id),
+    ...program.application_steps.map((s) => s.id),
+  ];
+}
+
+function visaChecklistIds(visa: VisaSeed): string[] {
+  const ids: string[] = [];
+  visa.steps.forEach((step) => {
+    ids.push(`visa-step-${step.id}`);
+    (step.checklist_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-checklist-${i}`));
+    (step.substeps_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-substep-${i}`));
+    (step.requirements_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-req-${i}`));
+  });
+  return ids;
+}
+
+// Возвращает null, если считать не по чему (нет id) — тогда остаётся старый расчёт.
+function pctFromIds(ids: string[], storageKeys: string[]): number | null {
+  if (ids.length === 0) return null;
+  const checked = storageKeys.flatMap((k) => {
+    try { return JSON.parse(localStorage.getItem(k) || '[]') as string[]; } catch { return []; }
+  });
+  const done = ids.filter((id) => checked.includes(id)).length;
+  return Math.round((done / ids.length) * 100);
+}
 
 function getItemId(section: string, stepNum: number, subIndex: number | null = null): string {
   return subIndex === null
@@ -71,6 +119,13 @@ export default function PathPage() {
   // Долгий тап по карточке «Расходы» — быстро добавить свой расход
   const [expenseFor, setExpenseFor] = useState<string | null>(null);
 
+  // Реальные данные разделов — чтобы посчитать прогресс по настоящим
+  // галочкам (см. foundationChecklistIds/programChecklistIds/visaChecklistIds)
+  const { data: foundationData } = useFoundation();
+  const { program: programData } = useMyProgram();
+  const { visa: visaData } = useVisa();
+  const cisprProgram = localStorage.getItem('cispr_program');
+
   // Динамический бюджет раздела «Универ» — по стране + программе
   const dynamicUniBudget = uniCosts.loading ? sectionsData.uni.budget : uniCosts.total_eur;
 
@@ -82,7 +137,19 @@ export default function PathPage() {
   const sections = sectionsOrder.map((id, i) => {
     const base = sectionsData[id];
     const isCompletedByQuiz = i < passedIndex;
-    const progress = getSectionProgress(id, isCompletedByQuiz);
+    let progress = getSectionProgress(id, isCompletedByQuiz);
+    if (!isCompletedByQuiz) {
+      if (id === 'uni' && cisprProgram === 'foundation' && foundationData) {
+        const p = pctFromIds(foundationChecklistIds(foundationData), ['cispr_foundation_checks']);
+        if (p !== null) progress = p;
+      } else if (id === 'uni' && (cisprProgram === 'bachelor' || cisprProgram === 'master') && programData) {
+        const p = pctFromIds(programChecklistIds(programData), ['cispr_docs_checklist', 'cispr_steps_checks']);
+        if (p !== null) progress = p;
+      } else if (id === 'visa' && visaData) {
+        const p = pctFromIds(visaChecklistIds(visaData), ['cispr_visa_docs_checks']);
+        if (p !== null) progress = p;
+      }
+    }
     const isCompletedSection = isCompletedByQuiz || progress === 100;
     const status = isCompletedSection ? 'done' : (i === passedIndex ? 'current' : 'future');
     return { id, title: base.title, icon: base.icon, status, progress, isCompletedSection };
