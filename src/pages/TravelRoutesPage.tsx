@@ -116,11 +116,9 @@ export default function TravelRoutesPage() {
         <h1 className="font-serif text-navy text-2xl font-bold">Дорога в Парму</h1>
       </div>
 
-      {/* Логика первого переезда */}
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed mb-2">{tr.first_trip_logic_ru}</p>
-        <p className="font-serif text-navy/70 text-sm leading-relaxed">{tr.airports_ru}</p>
-      </div>
+      {/* Логика первого переезда — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/75 text-sm leading-relaxed px-6 mt-5">{tr.first_trip_logic_ru}</p>
+      <p className="font-serif text-navy/70 text-sm leading-relaxed px-6 mt-2">{tr.airports_ru}</p>
 
       {/* Маршруты — карточки с цепочкой точек-транспорта */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
@@ -132,11 +130,9 @@ export default function TravelRoutesPage() {
         )}
       </div>
 
-      {/* Стоимость перелёта */}
-      <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed">{tr.flight_cost_ru.estimate_ru}</p>
-        <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">{tr.flight_cost_ru.tip_ru}</p>
-      </div>
+      {/* Стоимость перелёта — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/75 text-sm leading-relaxed px-6 mt-5">{tr.flight_cost_ru.estimate_ru}</p>
+      <p className="font-serif text-navy/50 text-xs italic leading-relaxed px-6 mt-2">{tr.flight_cost_ru.tip_ru}</p>
 
       {/* Прибытие — два раскрывающихся раздела */}
       <p className="font-serif text-gold text-sm px-6 mt-8 mb-2 font-bold">{ar.title_ru}</p>
