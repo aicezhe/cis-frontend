@@ -75,7 +75,7 @@
   },
 
   "arrival_routes": {
-    "title_ru": "Два пути прибытия",
+    "title_ru": "Два пути прибытия в Парму",
     "via_bologna": {
       "name_ru": "Через Болонью",
       "steps_ru": [

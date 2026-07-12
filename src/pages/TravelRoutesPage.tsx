@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRelocation, useLociRoutes } from '../hooks/useRelocation';
 import { Price } from '../components/Price';
@@ -23,6 +24,37 @@ function ArrivalTable({ steps }: { steps: ArrivalStep[] }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+// Раскрывающийся раздел пути прибытия — без рамки-«кнопки», просто
+// кликабельный заголовок со стрелкой, как «Шаги» в остальных разделах.
+function ArrivalSection({
+  name, subtitle, steps, defaultOpen = false,
+}: {
+  name: string; subtitle?: string; steps: ArrivalStep[]; defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className={'px-6 ' + (defaultOpen ? '' : 'pt-4 border-t border-navy/10')}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-3 text-left py-1"
+      >
+        <div className="flex-1">
+          <p className="font-serif text-navy text-lg font-bold">{name}</p>
+          {subtitle && <p className="font-serif text-navy/60 text-xs mt-0.5">{subtitle}</p>}
+        </div>
+        <svg
+          width="14" height="14" viewBox="0 0 14 14"
+          className={'text-navy flex-shrink-0 transition-transform ' + (open ? 'rotate-180' : '')}
+          fill="currentColor"
+        >
+          <path d="M7 10L1 4h12L7 10z" />
+        </svg>
+      </button>
+      {open && <ArrivalTable steps={steps} />}
     </div>
   );
 }
@@ -106,22 +138,20 @@ export default function TravelRoutesPage() {
         <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">{tr.flight_cost_ru.tip_ru}</p>
       </div>
 
-      {/* Прибытие */}
-      <p className="font-serif text-gold text-sm px-6 mt-8 mb-3 font-bold">{ar.title_ru}</p>
+      {/* Прибытие — два раскрывающихся раздела */}
+      <p className="font-serif text-gold text-sm px-6 mt-8 mb-2 font-bold">{ar.title_ru}</p>
 
-      <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-4 py-4">
-        <p className="font-serif text-navy text-base font-bold">{ar.via_bologna.name_ru}</p>
-        <ArrivalTable steps={ar.via_bologna.steps_ru} />
-      </div>
-
-      <div className="mx-6 mt-3 bg-soft-cream border border-navy/20 rounded-2xl px-4 py-4">
-        <p className="font-serif text-navy text-base font-bold">{ar.via_milan.name_ru}</p>
-        <p className="font-serif text-navy/60 text-xs mt-0.5">{ar.via_milan.airports_ru}</p>
-        <ArrivalTable steps={ar.via_milan.steps_ru} />
+      <div className="flex flex-col">
+        <ArrivalSection name={ar.via_bologna.name_ru} steps={ar.via_bologna.steps_ru} defaultOpen />
+        <ArrivalSection
+          name={ar.via_milan.name_ru}
+          subtitle={ar.via_milan.airports_ru}
+          steps={ar.via_milan.steps_ru}
+        />
       </div>
 
       <div className="mx-6 mt-4 bg-gold/10 border border-gold/40 rounded-2xl px-4 py-3">
-        <p className="font-serif text-navy/80 text-xs leading-relaxed">📱 {ar.trenit_app_ru}</p>
+        <p className="font-serif text-navy/80 text-xs leading-relaxed">{ar.trenit_app_ru}</p>
       </div>
 
       <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
