@@ -103,13 +103,10 @@ function VisaRuOverview() {
         <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
       </div>
 
-      {/* Что это */}
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed mb-3">{visa.intro_ru.what_ru}</p>
-        <div className="bg-gold/10 border border-gold/40 rounded-xl px-4 py-3">
-          <p className="font-serif text-navy/80 text-xs leading-relaxed">{visa.intro_ru.prerequisites_ru}</p>
-        </div>
-      </div>
+      {/* Что это — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
+        Для учёбы в Италии нужна виза дольше 90 дней категории D.
+      </p>
 
       {/* Консульский округ */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Твой консульский округ</p>
