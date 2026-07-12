@@ -163,17 +163,9 @@ export default function FoundationOverviewPage() {
 
           {stepsOpen && (
             <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
-              <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                <p className="font-serif text-gold text-sm mb-1 font-bold">
-                  Ориентир на приём {data.apply_meta.target_year_ru}
-                </p>
-                <p className="font-serif text-navy/75 text-sm leading-relaxed">
-                  {data.apply_meta.dates_disclaimer_ru}
-                </p>
-                <p className="font-serif text-navy text-sm leading-relaxed mt-2 font-bold">
-                  {data.apply_meta.total_cost_note_ru}
-                </p>
-              </div>
+              <p className="font-serif text-gold text-base text-center italic">
+                ~ Приём {data.apply_meta.target_year_ru} ~
+              </p>
 
               <div className="bg-navy rounded-xl px-4 py-3">
                 <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">

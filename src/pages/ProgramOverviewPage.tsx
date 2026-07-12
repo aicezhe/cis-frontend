@@ -209,8 +209,11 @@ export default function ProgramOverviewPage() {
 
           {stepsOpen && (
             <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
+              <p className="font-serif text-gold text-base text-center italic mb-1">
+                ~ Приём 2026/2027 ~
+              </p>
+
               <div className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                <p className="font-serif text-gold text-sm mb-2 font-bold">Ориентировочные сроки 2026/2027</p>
                 {windowStr && (
                   <p className="font-serif text-navy text-sm font-bold">📅 Подача: {windowStr}</p>
                 )}
