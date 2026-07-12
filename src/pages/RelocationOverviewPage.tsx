@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Route, PackageOpen, FileText, IdCard } from 'lucide-react';
+import { Route, PackageOpen, FileText, IdCard, Home } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
@@ -69,6 +69,7 @@ export default function RelocationOverviewPage() {
     { icon: PackageOpen, title: 'После приезда', to: '/path/travel/after', seed: 2 },
     { icon: FileText, title: 'Codice Fiscale', to: '/path/travel/codice-fiscale', seed: 3 },
     { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
+    { icon: Home, title: 'Поиск жилья', to: '/path/travel/housing', seed: 5 },
   ];
 
   return (
@@ -193,34 +194,6 @@ export default function RelocationOverviewPage() {
       <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
         {gridButtons.map((b) => (
           <GridButton key={b.to} {...b} />
-        ))}
-      </div>
-
-      {/* Жильё */}
-      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{relocation.housing_search.title_ru}</p>
-      <div className="px-6 flex flex-col gap-2">
-        {relocation.housing_search.options.map((opt, i) => (
-          <div key={i} className="bg-soft-cream border border-navy/15 rounded-xl px-4 py-3">
-            <div className="flex justify-between items-baseline gap-2">
-              <p className="font-serif text-navy text-sm font-bold">{opt.name}</p>
-              {opt.price_min_eur != null && opt.price_max_eur != null && (
-                <p className="font-serif text-navy/70 text-xs flex-shrink-0">
-                  {opt.price_min_eur}–{opt.price_max_eur} €/мес
-                </p>
-              )}
-            </div>
-            <p className="font-serif text-navy/65 text-xs leading-relaxed mt-1">{opt.pros_ru}</p>
-            {opt.url && (
-              <a
-                href={opt.url}
-                target="_blank"
-                rel="noreferrer"
-                className="font-serif text-gold text-xs underline mt-1 inline-block"
-              >
-                {opt.url.replace('https://', '').replace(/\/$/, '')} ↗
-              </a>
-            )}
-          </div>
         ))}
       </div>
 
