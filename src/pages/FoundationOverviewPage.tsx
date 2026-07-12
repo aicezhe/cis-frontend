@@ -15,7 +15,7 @@ const CHECKS_KEY = 'cispr_foundation_checks';
 function GridButton({ icon: Icon, title, to }: { icon: typeof GraduationCap; title: string; to: string }) {
   const navigate = useNavigate();
   return (
-    <button onClick={() => navigate(to)} className="flex flex-col items-center gap-1.5">
+    <button onClick={() => navigate(to)} className="flex flex-col items-center gap-1.5 w-24 mx-auto">
       <div className="w-full aspect-square rounded-xl border-2 border-gold/50 bg-soft-cream flex items-center justify-center p-3">
         <Icon className="w-full h-full text-gold" strokeWidth={1.5} />
       </div>
@@ -313,7 +313,7 @@ export default function FoundationOverviewPage() {
 
         {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-3 gap-4 px-2">
+        <div className="grid grid-cols-2 gap-y-4">
           {gridButtons.map((b) => (
             <GridButton key={b.to} {...b} />
           ))}
