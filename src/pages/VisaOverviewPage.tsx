@@ -197,6 +197,15 @@ function VisaRuOverview() {
                       {step.title_ru}
                     </h5>
                     <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+                    {idx === 6 && (
+                      <button
+                        onClick={() => navigate('/path/travel/permesso')}
+                        className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm"
+                      >
+                        <span>Подробнее про permesso и следующие шаги — в разделе «Переезд»</span>
+                        <span>→</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Доп. инфо между шагом 3 и 4 — ссылка на подробный сбор документов */}
