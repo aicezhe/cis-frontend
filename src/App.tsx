@@ -20,6 +20,7 @@ import ChangeEmailPage from './pages/ChangeEmailPage';
 import VerifyCodePage from './pages/VerifyCodePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import ExpensesPage from './pages/ExpensesPage';
 import FoundationOverviewPage from './pages/FoundationOverviewPage';
 import FoundationStructurePage from './pages/FoundationStructurePage';
 import FoundationFinancePage from './pages/FoundationFinancePage';
@@ -66,6 +67,7 @@ export default function App() {
       <Route path="/quiz-visa" element={<QuizVisaPage />} />
       <Route path="/quiz-travel" element={<QuizTravelPage />} />
       <Route path="/path" element={<PathPage />} />
+      <Route path="/path/expenses" element={<ExpensesPage />} />
       <Route path="/path/foundation" element={<FoundationOverviewPage />} />
       <Route path="/path/foundation/structure" element={<FoundationStructurePage />} />
       <Route path="/path/foundation/finance" element={<FoundationFinancePage />} />

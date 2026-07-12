@@ -114,17 +114,19 @@ export default function FoundationOverviewPage() {
   );
 
   // Общая примерная смета: курс + документы/тест на этапе подачи + легализация
-  // диплома (если известна страна) — суммируем всё в одну цифру.
+  // диплома (если известна страна) — суммируем всё в одну цифру. Нижняя
+  // граница тоже считается по полной стоимости курса (tuition_full) — скидка
+  // Dante не гарантирована каждому, так что не занижаем ей стартовую цифру.
   const am = data.apply_meta;
   const totalMinEur =
-    c.tuition_dante + am.apply_extra_cost_min_eur + (legalization?.total_cost_estimate.documents_only_min_eur ?? 0);
+    c.tuition_full + am.apply_extra_cost_min_eur + (legalization?.total_cost_estimate.documents_only_min_eur ?? 0);
   const totalMaxEur =
     c.tuition_full + am.apply_extra_cost_max_eur + (legalization?.total_cost_estimate.documents_only_max_eur ?? 0);
 
   const gridButtons = [
     { icon: GraduationCap, title: 'Структура', to: '/path/foundation/structure', seed: 1 },
     {
-      icon: Euro, title: 'Оплата', to: '/path/foundation/finance', seed: 2,
+      icon: Euro, title: 'Оплата', to: '/path/expenses', seed: 2,
       // Долгий тап по «Оплате» — добавить свой расход (раньше было на карточках шагов)
       onLongPress: () => setExpenseFor('Расход'),
     },

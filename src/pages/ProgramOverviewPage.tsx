@@ -157,7 +157,7 @@ export default function ProgramOverviewPage() {
     { icon: FileText, title: 'Документы', to: '/path/uni/program/documents', seed: 2 },
     { icon: BookOpen, title: 'Диплом', to: '/path/uni/program/diploma', seed: 3 },
     {
-      icon: Euro, title: 'Оплата', to: '/path/uni/program/finance', seed: 4,
+      icon: Euro, title: 'Оплата', to: '/path/expenses', seed: 4,
       // Долгий тап по «Оплате» — добавить свой расход (раньше было на карточках шагов)
       onLongPress: () => setExpenseFor('Расход'),
     },
