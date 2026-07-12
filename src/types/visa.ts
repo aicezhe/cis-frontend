@@ -140,6 +140,8 @@ export interface VisaUaSeed {
 export interface VisaActionStep {
   title_ru: string;
   description_ru: string;
+  details_ru?: string[];
+  warning_ru?: string;
 }
 
 export interface VisaActionSteps {

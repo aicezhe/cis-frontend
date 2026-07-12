@@ -197,6 +197,22 @@ function VisaRuOverview() {
                       {step.title_ru}
                     </h5>
                     <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+                    {step.details_ru && (
+                      <div className="flex flex-col gap-1.5 mt-3">
+                        {step.details_ru.map((d, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <span className="text-gold mt-0.5 text-sm flex-shrink-0">◆</span>
+                            <p className="font-serif text-navy/75 text-sm leading-relaxed">{d}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {step.warning_ru && (
+                      <div className="flex items-start gap-2 bg-soft-cream border border-gold rounded-lg px-3 py-2 mt-3">
+                        <span className="text-gold mt-0.5 text-sm flex-shrink-0">!</span>
+                        <p className="font-serif text-navy/80 text-sm">{step.warning_ru}</p>
+                      </div>
+                    )}
                     {idx === 6 && (
                       <button
                         onClick={() => navigate('/path/travel/permesso')}
