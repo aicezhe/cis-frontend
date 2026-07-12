@@ -110,9 +110,12 @@ async function request<T>(path: string, opts: RequestOptions = {}, _retried = fa
     throw new ApiError(0, 'Не удаётся связаться с сервером. Проверь соединение.');
   }
 
-  if (res.status === 401) {
-    // access-токен протух — пробуем разово обновить его через refresh-cookie и
-    // повторить запрос. Если refresh не удался — сессия действительно истекла.
+  if (res.status === 401 || res.status === 403) {
+    // 401 — токен протух. 403 — токена вообще нет в памяти (например, сразу
+    // после перезагрузки страницы, пока AuthProvider ещё не восстановил его
+    // через silent-refresh): так отвечает HTTPBearer FastAPI, когда заголовка
+    // Authorization нет вовсе. В обоих случаях пробуем разово обновить токен
+    // через refresh-cookie и повторить запрос.
     if (auth && !_retried) {
       const ok = await refreshAccessToken();
       if (ok) return request<T>(path, opts, true);

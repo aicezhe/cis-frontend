@@ -19,16 +19,18 @@ function authHeaders(): Record<string, string> {
 }
 
 // Как request() в api.ts: Bearer-токен + credentials:'include' для httpOnly
-// refresh-cookie, и та же логика — при 401 (короткий TTL access-токена)
-// once-retry через тихий /auth/refresh, иначе каждый expenses-запрос после
-// протухания токена падал бы с "Не удалось сохранить".
+// refresh-cookie, и та же логика once-retry через тихий /auth/refresh — при
+// 401 (токен протух) И при 403 (токена вообще нет в памяти — так отвечает
+// HTTPBearer FastAPI, когда Authorization-заголовка нет вовсе, например
+// сразу после перезагрузки страницы, пока AuthProvider ещё не восстановил
+// токен). Без обработки 403 запрос падал сразу, до всякого ретрая.
 async function expenseFetch(path: string, init: RequestInit = {}, _retried = false): Promise<Response> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { ...authHeaders(), ...(init.headers ?? {}) },
     credentials: 'include',
   });
-  if (res.status === 401 && !_retried) {
+  if ((res.status === 401 || res.status === 403) && !_retried) {
     const ok = await refreshAccessToken();
     if (ok) return expenseFetch(path, init, true);
     clearToken();

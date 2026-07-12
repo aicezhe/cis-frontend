@@ -43,7 +43,7 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
       onClose();
     } catch (err) {
       setError(
-        err instanceof ApiError && err.status === 401
+        err instanceof ApiError && (err.status === 401 || err.status === 403)
           ? 'Сессия истекла — обнови страницу и войди заново.'
           : 'Не удалось сохранить — попробуй ещё раз.',
       );
