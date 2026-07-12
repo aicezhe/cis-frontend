@@ -11,16 +11,6 @@ function loadChecks(): string[] {
   try { return JSON.parse(localStorage.getItem(CHECKS_KEY) || '[]'); } catch { return []; }
 }
 
-// Считает, сколько всего галочек в шаге (сам шаг + его пункты-документы) и
-// сколько из них отмечено — нужно для процента прогресса по разделу.
-function stepItemIds(step: VisaStep): string[] {
-  const ids = [`visa-step-${step.id}`];
-  (step.checklist_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-checklist-${i}`));
-  (step.substeps_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-substep-${i}`));
-  (step.requirements_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-req-${i}`));
-  return ids;
-}
-
 // Круглый чекбокс в стиле остальных разделов
 function CheckBox({ id, checked, toggle }: { id: string; checked: boolean; toggle: (id: string) => void }) {
   return (
@@ -379,10 +369,6 @@ export default function VisaStepsPage() {
     return null;
   }
 
-  const allIds = visa.steps.flatMap(stepItemIds);
-  const doneCount = allIds.filter((id) => checked.includes(id)).length;
-  const pct = allIds.length > 0 ? Math.round((doneCount / allIds.length) * 100) : 0;
-
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
@@ -391,19 +377,6 @@ export default function VisaStepsPage() {
           className="text-navy text-2xl"
         >←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Подробнее о документах</h1>
-      </div>
-
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <div className="flex justify-between items-baseline mb-2">
-          <p className="font-serif text-navy text-sm">Готово</p>
-          <p className="font-serif text-navy/60 text-xs">{doneCount} из {allIds.length} · {visa.steps.length} шагов</p>
-        </div>
-        <div className="h-1.5 rounded-full bg-navy/10 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-navy transition-all duration-500"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
       </div>
 
       <div className="px-6 mt-5 flex flex-col gap-3">
