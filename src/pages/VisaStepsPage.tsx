@@ -1,8 +1,45 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useVisa } from '../hooks/useVisa';
+import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
+
+// Признание диплома (CIMEA/DDV) — реальные данные по стране юзера (те же,
+// что на странице «Диплом»), встроены прямо в шаг «Документы об образовании»
+// вместо ссылки на другой раздел.
+function CimeaDdvBlock() {
+  const { legalization, loading } = useMyLegalization();
+  if (loading || !legalization) return null;
+  const recognition = legalization.diploma_legalization.steps.find((s) => s.id === '3_recognition');
+  if (!recognition?.options) return null;
+
+  return (
+    <div className="flex flex-col gap-2 mt-1">
+      <p className="font-serif text-gold text-xs font-bold">{recognition.title_ru}</p>
+      {recognition.options.map((opt, i) => (
+        <div key={i} className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
+          <div className="flex justify-between items-baseline gap-2">
+            <p className="font-serif text-navy text-sm font-bold">{opt.name}</p>
+            <p className="font-serif text-navy text-xs font-bold flex-shrink-0">{opt.cost_eur} € · {opt.duration}</p>
+          </div>
+          <p className="font-serif text-navy/70 text-xs leading-relaxed mt-1">{opt.description_ru}</p>
+          <div className="flex flex-col gap-1 mt-2">
+            {opt.pros_ru.map((p, j) => (
+              <p key={`p${j}`} className="font-serif text-navy/70 text-xs">✓ {p}</p>
+            ))}
+            {opt.cons_ru.map((c, j) => (
+              <p key={`c${j}`} className="font-serif text-navy/50 text-xs">– {c}</p>
+            ))}
+          </div>
+        </div>
+      ))}
+      {recognition.recommendation_ru && (
+        <p className="font-serif text-navy/60 text-xs italic leading-relaxed">{recognition.recommendation_ru}</p>
+      )}
+    </div>
+  );
+}
 
 function List({ items, icon = '◆' }: { items: string[]; icon?: string }) {
   return (
@@ -19,7 +56,7 @@ function List({ items, icon = '◆' }: { items: string[]; icon?: string }) {
 
 function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: VisaSeed }) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(index === 0);
+  const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const template = step.sponsor_letter_template_id
@@ -178,7 +215,6 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
             </div>
           )}
 
-          {/* Ссылка на раздел Универ (легализация) */}
           {step.important_ru && (
             <p className="font-serif text-navy/70 text-xs leading-relaxed">{step.important_ru}</p>
           )}
@@ -190,6 +226,8 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
               {step.link_to_section_ru} →
             </button>
           )}
+          {/* Признание диплома (CIMEA/DDV) — прямо в этом шаге, без ссылки на другой раздел */}
+          {step.id === '2_education_docs' && <CimeaDdvBlock />}
 
           {step.note_ru && (
             <p className="font-serif text-navy/50 text-xs italic leading-relaxed">{step.note_ru}</p>
@@ -237,7 +275,11 @@ function StepCard({ step, index, seed }: { step: VisaStep; index: number; seed: 
 
 export default function VisaStepsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { visa, loading } = useVisa();
+  // Пришли по ссылке из «Шаги получения визы» — возвращаем назад тоже с
+  // раскрытым тем разделом, а не на свёрнутую страницу.
+  const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
   if (loading) {
     return (
@@ -254,7 +296,10 @@ export default function VisaStepsPage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate('/path/visa')} className="text-navy text-2xl">←</button>
+        <button
+          onClick={() => navigate('/path/visa', openSteps ? { state: { openSteps: true } } : undefined)}
+          className="text-navy text-2xl"
+        >←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Подробнее о документах</h1>
       </div>
 

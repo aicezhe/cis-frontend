@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Fragment, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FileText, XCircle } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
@@ -26,8 +26,11 @@ export default function VisaOverviewPage() {
 
 function VisaRuOverview() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { visa, loading } = useVisa();
-  const [stepsOpen, setStepsOpen] = useState(false);
+  // Если вернулись сюда со страницы «Подробнее о документах» (ссылка внутри
+  // шагов) — снова разворачиваем «Шаги получения визы».
+  const [stepsOpen, setStepsOpen] = useState(() => Boolean((location.state as { openSteps?: boolean } | null)?.openSteps));
 
   if (loading) {
     return (
@@ -157,11 +160,28 @@ function VisaRuOverview() {
               </p>
 
               {visa.action_steps_ru.steps.map((step, idx) => (
-                <div key={idx} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
-                  <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
-                  <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title_ru}</h5>
-                  <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
-                </div>
+                <Fragment key={idx}>
+                  <div className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
+                    <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
+                    <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title_ru}</h5>
+                    <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+                  </div>
+
+                  {/* Доп. инфо между шагом 3 и 4 — ссылка на подробный сбор документов */}
+                  {idx === 2 && (
+                    <div className="bg-gold/10 border border-gold/40 rounded-xl px-4 py-3">
+                      <p className="font-serif text-navy/80 text-xs leading-relaxed mb-1.5">
+                        Для самого сбора документов есть отдельный раздел — там всё разобрано подробно, по каждому пункту.
+                      </p>
+                      <button
+                        onClick={() => navigate('/path/visa/steps', { state: { openSteps: true } })}
+                        className="font-serif text-gold text-sm font-bold"
+                      >
+                        Перейти к сбору документов →
+                      </button>
+                    </div>
+                  )}
+                </Fragment>
               ))}
 
               <p className="font-serif text-navy/50 text-xs italic mt-1 pt-3 border-t border-navy/10 leading-relaxed">
