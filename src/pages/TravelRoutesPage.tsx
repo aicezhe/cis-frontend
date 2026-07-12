@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRelocation } from '../hooks/useRelocation';
 import { Price } from '../components/Price';
 import type { ArrivalStep } from '../types/relocation';
@@ -28,7 +28,10 @@ function ArrivalTable({ steps }: { steps: ArrivalStep[] }) {
 
 export default function TravelRoutesPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { relocation, loading } = useRelocation();
+  // Пришли по ссылке из «Шаги переезда» — возвращаем назад тоже с раскрытым разделом.
+  const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
   if (loading) {
     return (
@@ -48,7 +51,10 @@ export default function TravelRoutesPage() {
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate('/path/travel')} className="text-navy text-2xl">←</button>
+        <button
+          onClick={() => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined)}
+          className="text-navy text-2xl"
+        >←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Дорога в Парму</h1>
       </div>
 

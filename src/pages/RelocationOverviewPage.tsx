@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Route, PackageOpen, FileText, IdCard } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
@@ -14,8 +14,11 @@ function loadStepsChecks(): string[] {
 
 export default function RelocationOverviewPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { relocation, loading } = useRelocation();
-  const [stepsOpen, setStepsOpen] = useState(false);
+  // Пришли по ссылке из шага (маршруты/LOCI) — возвращаем назад тоже с
+  // раскрытыми «Шагами переезда».
+  const [stepsOpen, setStepsOpen] = useState(() => Boolean((location.state as { openSteps?: boolean } | null)?.openSteps));
   const [checks, setChecks] = useState<string[]>(loadStepsChecks);
 
   function toggleCheck(id: string) {
@@ -86,25 +89,6 @@ export default function RelocationOverviewPage() {
         {relocation.intro_ru.what_ru}
       </p>
 
-      {/* Кнопка LOCI маршруты */}
-      <button
-        onClick={() => navigate('/loci/routes')}
-        className="relative mx-6 mt-4 bg-navy rounded-2xl px-5 py-4 text-left"
-      >
-        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
-        <p className="font-serif text-cream text-lg">Предположить маршрут ✈</p>
-        <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
-      </button>
-
-      {/* Адрес дома — общий компонент с геокодингом и меткой на карте */}
-      <div className="mx-6 mt-4">
-        <HomeAddressInput />
-      </div>
-
       {/* Шаги переезда — тот же паттерн, что «Шаги поступления»/«Шаги
           получения визы»: без рамки-«кнопки», свёрнуто по умолчанию,
           у каждого шага своя галочка. Перед подразделами. */}
@@ -173,11 +157,25 @@ export default function RelocationOverviewPage() {
 
                   {step.link_to && (
                     <button
-                      onClick={() => navigate(step.link_to!)}
+                      onClick={() => navigate(step.link_to!, { state: { openSteps: true } })}
                       className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm"
                     >
                       {step.link_label || '→'}
                     </button>
+                  )}
+
+                  {step.links_ru && (
+                    <div className="flex flex-col gap-2 mt-3">
+                      {step.links_ru.map((l, i) => (
+                        <button
+                          key={i}
+                          onClick={() => navigate(l.to, { state: { openSteps: true } })}
+                          className="flex items-center gap-1.5 font-serif text-gold text-sm"
+                        >
+                          {l.label}
+                        </button>
+                      ))}
+                    </div>
                   )}
                 </div>
               );
@@ -224,6 +222,24 @@ export default function RelocationOverviewPage() {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Кнопка LOCI маршруты + адрес — в самом низу, после всех подразделов */}
+      <button
+        onClick={() => navigate('/loci/routes')}
+        className="relative mx-6 mt-6 bg-navy rounded-2xl px-5 py-4 text-left"
+      >
+        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
+        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
+        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
+        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
+        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
+        <p className="font-serif text-cream text-lg">Предположить маршрут ✈</p>
+        <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
+      </button>
+
+      <div className="mx-6 mt-4">
+        <HomeAddressInput />
       </div>
 
       <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">

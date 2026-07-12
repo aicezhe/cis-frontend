@@ -53,6 +53,11 @@ export interface RelocationHousingOption {
   url?: string;
 }
 
+export interface RelocationStepLink {
+  to: string;
+  label: string;
+}
+
 export interface RelocationStep {
   title_ru: string;
   description_ru: string;
@@ -60,6 +65,7 @@ export interface RelocationStep {
   warning_ru?: string;
   link_to?: string;
   link_label?: string;
+  links_ru?: RelocationStepLink[];
 }
 
 export interface RelocationSteps {

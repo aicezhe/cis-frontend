@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Bus, Car, Plane, TrainFront, TriangleAlert } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import skyline from '../assets/parma design.svg';
@@ -92,7 +92,10 @@ function RouteCard({ route }: { route: LociRoute }) {
 
 export default function LociRoutesView() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { routes, loading } = useLociRoutes();
+  // Пришли по ссылке из «Шаги переезда» — возвращаем назад тоже с раскрытым разделом.
+  const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-navy flex flex-col pb-28 overflow-hidden">
@@ -107,7 +110,13 @@ export default function LociRoutesView() {
 
       <div className="relative z-10 flex flex-col flex-1">
         <div className="px-6 pt-12 flex items-center gap-4">
-          <button onClick={() => navigate(-1)} className="text-cream text-2xl">←</button>
+          <button
+            onClick={() => {
+              if (openSteps) navigate('/path/travel', { state: { openSteps: true } });
+              else navigate(-1);
+            }}
+            className="text-cream text-2xl"
+          >←</button>
           <div>
             <p className="font-serif text-gold text-[10px] uppercase tracking-widest">⌐ loci ¬</p>
             <h1 className="font-serif text-cream text-2xl font-bold">Маршруты в Парму</h1>
