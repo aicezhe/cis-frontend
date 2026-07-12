@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, FileText, Award, Euro, Languages, PenLine } from 'lucide-react';
+import { GraduationCap, FileText, BookOpen, Euro, Languages, PenLine } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
 import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
@@ -50,7 +50,7 @@ function GridButton({
   icon: typeof GraduationCap; title: string; to: string; seed: number; onLongPress?: () => void;
 }) {
   const navigate = useNavigate();
-  const icons = scatterIcons(seed, 7);
+  const icons = scatterIcons(seed, 11);
   return (
     <button
       onClick={() => navigate(to)}
@@ -58,7 +58,7 @@ function GridButton({
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       {...(onLongPress ? longPressHandlers(onLongPress) : {})}
     >
-      <div className="relative w-full h-16 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
+      <div className="relative w-full h-20 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
         {icons.map((ic, i) => (
           <Icon
             key={i}
@@ -155,7 +155,7 @@ export default function ProgramOverviewPage() {
   const gridButtons = [
     { icon: GraduationCap, title: 'Структура', to: '/path/uni/program/structure', seed: 1 },
     { icon: FileText, title: 'Документы', to: '/path/uni/program/documents', seed: 2 },
-    { icon: Award, title: 'Диплом', to: '/path/uni/program/diploma', seed: 3 },
+    { icon: BookOpen, title: 'Диплом', to: '/path/uni/program/diploma', seed: 3 },
     {
       icon: Euro, title: 'Оплата', to: '/path/uni/program/finance', seed: 4,
       // Долгий тап по «Оплате» — добавить свой расход (раньше было на карточках шагов)
@@ -255,14 +255,14 @@ export default function ProgramOverviewPage() {
                   <div
                     key={step.id}
                     className={
-                      'bg-cream border rounded-xl px-4 py-3 ' +
-                      (isDone ? 'border-navy/15 opacity-70' : 'border-navy/15')
+                      (idx === 0 ? '' : 'pt-4 border-t border-navy/10 ') +
+                      (isDone ? 'opacity-70' : '')
                     }
                   >
                     <div className="flex items-start gap-3">
                       <CheckBox id={step.id} checks={stepChecks} toggle={toggleStep} />
                       <div className="flex-1 pr-4">
-                        <p className="font-serif text-gold text-xs font-bold">Шаг {idx + 1}</p>
+                        <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
                         <h5 className={
                           'font-serif text-lg font-bold mt-0.5 ' +
                           (isDone ? 'text-navy/50 line-through' : 'text-navy')
@@ -367,7 +367,7 @@ export default function ProgramOverviewPage() {
 
         {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-2 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-4">
           {gridButtons.map((b) => (
             <GridButton key={b.to} {...b} />
           ))}

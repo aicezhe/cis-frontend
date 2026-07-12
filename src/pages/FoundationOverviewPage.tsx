@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Euro, Languages, Award } from 'lucide-react';
+import { GraduationCap, Euro, Languages, BookOpen } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
@@ -21,7 +21,7 @@ function GridButton({
   icon: typeof GraduationCap; title: string; to: string; seed: number; onLongPress?: () => void;
 }) {
   const navigate = useNavigate();
-  const icons = scatterIcons(seed, 7);
+  const icons = scatterIcons(seed, 11);
   return (
     <button
       onClick={() => navigate(to)}
@@ -29,7 +29,7 @@ function GridButton({
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       {...(onLongPress ? longPressHandlers(onLongPress) : {})}
     >
-      <div className="relative w-full h-16 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
+      <div className="relative w-full h-20 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
         {icons.map((ic, i) => (
           <Icon
             key={i}
@@ -129,7 +129,7 @@ export default function FoundationOverviewPage() {
       onLongPress: () => setExpenseFor('Расход'),
     },
     { icon: Languages, title: 'Языки', to: '/path/foundation/languages', seed: 3 },
-    { icon: Award, title: 'Диплом', to: '/path/uni/program/diploma', seed: 4 },
+    { icon: BookOpen, title: 'Диплом', to: '/path/uni/program/diploma', seed: 4 },
   ];
 
   return (
@@ -202,9 +202,9 @@ export default function FoundationOverviewPage() {
               </div>
 
               {data.steps_to_apply.map((step, idx) => (
-                <div key={step.id} className="bg-cream border border-navy/15 rounded-xl px-4 py-3">
-                  <p className="font-serif text-gold text-sm font-bold">Шаг {idx + 1}</p>
-                  <h5 className="font-serif text-navy text-lg font-bold mt-0.5">{step.title}</h5>
+                <div key={step.id} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
+                  <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
+                  <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title}</h5>
                   {step.timing_ru && (
                     <span className="inline-block font-serif text-navy text-xs bg-soft-cream border border-gold/40 rounded-full px-2.5 py-1 mt-2">
                       🕑 {step.timing_ru}
@@ -315,7 +315,7 @@ export default function FoundationOverviewPage() {
 
         {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-2 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-4">
           {gridButtons.map((b) => (
             <GridButton key={b.to} {...b} />
           ))}
