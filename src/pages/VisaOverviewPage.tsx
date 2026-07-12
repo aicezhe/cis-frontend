@@ -17,6 +17,12 @@ function Corners() {
   );
 }
 
+const ACTION_CHECKS_KEY = 'cispr_visa_action_checks';
+
+function loadActionChecks(): string[] {
+  try { return JSON.parse(localStorage.getItem(ACTION_CHECKS_KEY) || '[]'); } catch { return []; }
+}
+
 export default function VisaOverviewPage() {
   const country = localStorage.getItem('cispr_country') || 'ru';
   // у Украины свой трек: безвиз + permesso / временная защита, без визы D
@@ -31,6 +37,15 @@ function VisaRuOverview() {
   // Если вернулись сюда со страницы «Подробнее о документах» (ссылка внутри
   // шагов) — снова разворачиваем «Шаги получения визы».
   const [stepsOpen, setStepsOpen] = useState(() => Boolean((location.state as { openSteps?: boolean } | null)?.openSteps));
+  const [actionChecks, setActionChecks] = useState<string[]>(loadActionChecks);
+
+  function toggleActionCheck(id: string) {
+    setActionChecks((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(ACTION_CHECKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
 
   if (loading) {
     return (
@@ -159,11 +174,28 @@ function VisaRuOverview() {
                 {visa.action_steps_ru.audience_note_ru}
               </p>
 
-              {visa.action_steps_ru.steps.map((step, idx) => (
+              {visa.action_steps_ru.steps.map((step, idx) => {
+                const stepId = `visa-action-${idx}`;
+                const done = actionChecks.includes(stepId);
+                return (
                 <Fragment key={idx}>
                   <div className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
-                    <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
-                    <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title_ru}</h5>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
+                      <button onClick={() => toggleActionCheck(stepId)} className="w-6 h-6 flex-shrink-0">
+                        {done ? (
+                          <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center text-cream text-xs">✓</div>
+                        ) : (
+                          <div className="w-6 h-6 rounded-full border-2 border-navy/30" />
+                        )}
+                      </button>
+                    </div>
+                    <h5 className={
+                      'font-serif text-lg font-bold mt-1 ' +
+                      (done ? 'text-navy/50 line-through' : 'text-navy')
+                    }>
+                      {step.title_ru}
+                    </h5>
                     <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
                   </div>
 
@@ -182,7 +214,8 @@ function VisaRuOverview() {
                     </div>
                   )}
                 </Fragment>
-              ))}
+                );
+              })}
 
               <p className="font-serif text-navy/50 text-xs italic mt-1 pt-3 border-t border-navy/10 leading-relaxed">
                 {visa.action_steps_ru.disclaimer_ru}

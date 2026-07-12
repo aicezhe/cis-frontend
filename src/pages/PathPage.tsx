@@ -42,7 +42,10 @@ function programChecklistIds(program: LaureaSeed): string[] {
 }
 
 function visaChecklistIds(visa: VisaSeed): string[] {
-  const ids: string[] = [];
+  // «Шаги получения визы» (visa-action-N, на VisaOverviewPage) + «Подробнее
+  // о документах» (visa-step-…, на VisaStepsPage) — оба чек-листа считаются
+  // в один общий процент по разделу «Виза».
+  const ids: string[] = visa.action_steps_ru.steps.map((_, idx) => `visa-action-${idx}`);
   visa.steps.forEach((step) => {
     ids.push(`visa-step-${step.id}`);
     (step.checklist_ru || []).forEach((_, i) => ids.push(`visa-step-${step.id}-checklist-${i}`));
@@ -146,7 +149,7 @@ export default function PathPage() {
         const p = pctFromIds(programChecklistIds(programData), ['cispr_docs_checklist', 'cispr_steps_checks']);
         if (p !== null) progress = p;
       } else if (id === 'visa' && visaData) {
-        const p = pctFromIds(visaChecklistIds(visaData), ['cispr_visa_docs_checks']);
+        const p = pctFromIds(visaChecklistIds(visaData), ['cispr_visa_action_checks', 'cispr_visa_docs_checks']);
         if (p !== null) progress = p;
       }
     }
