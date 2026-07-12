@@ -3,46 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Euro, Languages, BookOpen } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
+import { GridButton } from '../components/GridButton';
 import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
-import { longPressHandlers } from '../lib/longPress';
-import { scatterIcons } from '../lib/scatterIcons';
 import { formatPrice } from '../utils/formatPrice';
 
 const CHECKS_KEY = 'cispr_foundation_checks';
-
-// Широкая невысокая плитка-кнопка: внутри рамки раскидано несколько мелких
-// копий иконки разного размера — мерцают, дрейфуют, слегка пульсируют
-// (та же анимация, что звёзды на Welcome). Подпись — под рамкой.
-// onLongPress (только у «Оплаты») открывает форму добавления расхода.
-function GridButton({
-  icon: Icon, title, to, seed, onLongPress,
-}: {
-  icon: typeof GraduationCap; title: string; to: string; seed: number; onLongPress?: () => void;
-}) {
-  const navigate = useNavigate();
-  const icons = scatterIcons(seed, 11);
-  return (
-    <button
-      onClick={() => navigate(to)}
-      className="flex flex-col items-center gap-1.5 select-none"
-      style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
-      {...(onLongPress ? longPressHandlers(onLongPress) : {})}
-    >
-      <div className="relative w-full h-20 rounded-xl border-2 border-gold/50 bg-soft-cream overflow-hidden">
-        {icons.map((ic, i) => (
-          <Icon
-            key={i}
-            className="tile-icon text-gold"
-            strokeWidth={1.5}
-            style={{ top: ic.top, left: ic.left, width: ic.size, height: ic.size, ...ic.style }}
-          />
-        ))}
-      </div>
-      <span className="font-serif text-navy text-xs font-bold text-center leading-tight">{title}</span>
-    </button>
-  );
-}
 
 export default function FoundationOverviewPage() {
   const navigate = useNavigate();

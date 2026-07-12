@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FileText, XCircle } from 'lucide-react';
 import TabBar from '../components/TabBar';
+import { GridButton } from '../components/GridButton';
 import { useVisa, getConsularDistrict } from '../hooks/useVisa';
 import VisaUkrainePage from './VisaUkrainePage';
 
@@ -24,6 +27,7 @@ export default function VisaOverviewPage() {
 function VisaRuOverview() {
   const navigate = useNavigate();
   const { visa, loading } = useVisa();
+  const [stepsOpen, setStepsOpen] = useState(false);
 
   if (loading) {
     return (
@@ -60,9 +64,9 @@ function VisaRuOverview() {
     : visa.consular_districts.moscow_district;
   const operators = visa.consular_districts.operators_ru;
 
-  const cards = [
-    { title: 'Подробнее о документах', sub: `${visa.steps.length} шагов — от Universitaly до паспорта с визой`, to: '/path/visa/steps' },
-    { title: 'Причины отказа', sub: 'Что проверяют и как не завалить', to: '/path/visa/rejections' },
+  const gridButtons = [
+    { icon: FileText, title: 'Документы', to: '/path/visa/steps', seed: 1 },
+    { icon: XCircle, title: 'Причины отказа', to: '/path/visa/rejections', seed: 2 },
   ];
 
   return (
@@ -119,43 +123,61 @@ function VisaRuOverview() {
         </p>
       </div>
 
-      {/* Шаги получения визы */}
-      <p className="font-serif text-gold text-sm px-6 mt-6 mb-1 font-bold">Шаги получения визы</p>
-      <p className="font-serif text-navy/50 text-xs italic px-6 mb-3">{visa.action_steps_ru.audience_note_ru}</p>
-      <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-        <ol className="flex flex-col gap-3">
-          {visa.action_steps_ru.steps.map((step, i) => (
-            <li key={i} className={'flex gap-3 items-start ' + (i === 0 ? '' : 'pt-3 border-t border-navy/10')}>
-              <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-              <p className="font-serif text-navy/80 text-sm leading-relaxed">
-                <span className="font-bold text-navy">{step.title_ru}</span> {step.description_ru}
-              </p>
-            </li>
-          ))}
-        </ol>
-        <p className="font-serif text-navy/50 text-xs italic mt-4 pt-3 border-t border-navy/10 leading-relaxed">
-          {visa.action_steps_ru.disclaimer_ru}
-        </p>
-      </div>
+      <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">О визе</h3>
 
-      {/* Навигация */}
-      <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">Разделы</h3>
       <div className="px-6 flex flex-col gap-3">
-        {cards.map((card) => (
+
+        {/* Шаги получения визы — тот же паттерн, что «Шаги поступления» в
+            Университете: без рамки-«кнопки», просто кликабельный заголовок,
+            свёрнуто по умолчанию. */}
+        <div>
           <button
-            key={card.to}
-            onClick={() => navigate(card.to)}
-            className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-3 text-left"
+            onClick={() => setStepsOpen(!stepsOpen)}
+            className="w-full flex items-center gap-3 text-left py-1"
           >
-            <div className="flex-1">
-              <h4 className="font-serif text-navy text-xl font-bold">{card.title}</h4>
-              <p className="font-serif text-gold text-sm mt-0.5 font-bold">{card.sub}</p>
+            <div className="flex-1 text-center">
+              <h4 className="font-serif text-navy text-2xl font-bold">Шаги получения визы</h4>
+              {!stepsOpen && (
+                <p className="font-serif text-gold text-sm mt-1 font-bold">От поступления до permesso</p>
+              )}
             </div>
-            <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
+            <svg
+              width="16" height="16" viewBox="0 0 14 14"
+              className={'text-navy flex-shrink-0 transition-transform ' + (stepsOpen ? 'rotate-180' : '')}
+              fill="currentColor"
+            >
               <path d="M7 10L1 4h12L7 10z" />
             </svg>
           </button>
-        ))}
+
+          {stepsOpen && (
+            <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
+              <p className="font-serif text-gold text-sm text-center italic">
+                {visa.action_steps_ru.audience_note_ru}
+              </p>
+
+              {visa.action_steps_ru.steps.map((step, idx) => (
+                <div key={idx} className={idx === 0 ? '' : 'pt-4 border-t border-navy/10'}>
+                  <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Шаг {idx + 1}</p>
+                  <h5 className="font-serif text-navy text-lg font-bold mt-1">{step.title_ru}</h5>
+                  <p className="font-serif text-navy/80 text-base mt-2 leading-relaxed">{step.description_ru}</p>
+                </div>
+              ))}
+
+              <p className="font-serif text-navy/50 text-xs italic mt-1 pt-3 border-t border-navy/10 leading-relaxed">
+                {visa.action_steps_ru.disclaimer_ru}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Остальное — компактная сетка мелких плиток, как в Университете */}
+        <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
+        <div className="grid grid-cols-2 gap-x-5 gap-y-4">
+          {gridButtons.map((b) => (
+            <GridButton key={b.to} {...b} />
+          ))}
+        </div>
       </div>
 
       {/* После приезда */}
