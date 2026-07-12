@@ -5,6 +5,7 @@ import iconTravel from '../assets/iconTravel.svg';
 import iconInParma from '../assets/iconInParma.svg';
 import { useExpenses } from '../hooks/useExpenses';
 import type { ExpenseCategory } from '../lib/expenses';
+import { ApiError } from '../lib/api';
 
 const CATEGORIES: { id: ExpenseCategory; label: string; icon: string }[] = [
   { id: 'uni', label: 'Университет', icon: iconUni },
@@ -40,8 +41,12 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', onClose }:
     try {
       await addExpense(category, label.trim(), amountNum);
       onClose();
-    } catch {
-      setError('Не удалось сохранить — попробуй ещё раз.');
+    } catch (err) {
+      setError(
+        err instanceof ApiError && err.status === 401
+          ? 'Сессия истекла — обнови страницу и войди заново.'
+          : 'Не удалось сохранить — попробуй ещё раз.',
+      );
       setSaving(false);
     }
   }

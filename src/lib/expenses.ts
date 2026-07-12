@@ -1,4 +1,4 @@
-import { API_BASE, ApiError, getToken } from './api';
+import { API_BASE, ApiError, clearToken, getToken, refreshAccessToken } from './api';
 
 export type ExpenseCategory = 'uni' | 'visa' | 'travel' | 'parma';
 
@@ -18,13 +18,22 @@ function authHeaders(): Record<string, string> {
   };
 }
 
-// Как chatFetch: Bearer-токен + credentials:'include' для httpOnly refresh-cookie.
-function expenseFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  return fetch(`${API_BASE}${path}`, {
+// Как request() в api.ts: Bearer-токен + credentials:'include' для httpOnly
+// refresh-cookie, и та же логика — при 401 (короткий TTL access-токена)
+// once-retry через тихий /auth/refresh, иначе каждый expenses-запрос после
+// протухания токена падал бы с "Не удалось сохранить".
+async function expenseFetch(path: string, init: RequestInit = {}, _retried = false): Promise<Response> {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { ...authHeaders(), ...(init.headers ?? {}) },
     credentials: 'include',
   });
+  if (res.status === 401 && !_retried) {
+    const ok = await refreshAccessToken();
+    if (ok) return expenseFetch(path, init, true);
+    clearToken();
+  }
+  return res;
 }
 
 async function ok<T>(res: Response): Promise<T> {
