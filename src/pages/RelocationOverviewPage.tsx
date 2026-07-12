@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { Route, PackageOpen, FileText, IdCard } from 'lucide-react';
 import TabBar from '../components/TabBar';
+import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
 import { HomeAddressInput } from '../components/HomeAddressInput';
 
@@ -41,11 +43,11 @@ export default function RelocationOverviewPage() {
     );
   }
 
-  const cards = [
-    { title: 'Дорога в Парму', sub: 'Маршруты, аэропорты, поезда', to: '/path/travel/routes' },
-    { title: 'После приезда', sub: 'SIM, наличные, первый магазин', to: '/path/travel/after' },
-    { title: 'Codice Fiscale', sub: 'Налоговый код — нужен для всего', to: '/path/travel/codice-fiscale' },
-    { title: 'Permesso di soggiorno', sub: 'ВНЖ — 8 дней после въезда', to: '/path/travel/permesso' },
+  const gridButtons = [
+    { icon: Route, title: 'Дорога в Парму', to: '/path/travel/routes', seed: 1 },
+    { icon: PackageOpen, title: 'После приезда', to: '/path/travel/after', seed: 2 },
+    { icon: FileText, title: 'Codice Fiscale', to: '/path/travel/codice-fiscale', seed: 3 },
+    { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
   ];
 
   // Примерный бюджет — считаем только из уже проверенных полей seed'а, ничего не выдумываем.
@@ -71,21 +73,20 @@ export default function RelocationOverviewPage() {
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
 
-      {/* Шапка */}
-      <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-center">
-          <h1 className="font-serif text-navy text-3xl font-bold">Переезд</h1>
-          <p className="font-serif text-gold text-lg mt-0.5 font-bold">дорога и первые дни</p>
-        </div>
+      {/* Шапка раздела — без коробки-плашки, текст прямо на странице (как в Университете) */}
+      <div className="mt-4 px-6 text-center">
+        <h1 className="font-serif text-navy text-3xl font-bold">Переезд</h1>
+        <p className="font-serif text-gold text-base mt-1 italic">Дорога и первые дни</p>
+        <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
       </div>
 
-      {/* Интро */}
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed mb-3">{relocation.intro_ru.what_ru}</p>
-        <div className="bg-gold/10 border border-gold/40 rounded-xl px-4 py-3">
-          <p className="font-serif text-navy/80 text-xs leading-relaxed">{relocation.intro_ru.key_ru}</p>
-        </div>
-      </div>
+      {/* Интро — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
+        {relocation.intro_ru.what_ru}
+      </p>
+      <p className="font-serif text-navy/70 text-sm text-center px-6 mt-2 leading-relaxed">
+        {relocation.intro_ru.key_ru}
+      </p>
 
       {/* Примерные расходы — только реальные цифры из проверенных источников */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Примерные расходы</p>
@@ -126,23 +127,11 @@ export default function RelocationOverviewPage() {
         <HomeAddressInput />
       </div>
 
-      {/* Навигация */}
-      <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">Что нужно знать</h3>
-      <div className="px-6 flex flex-col gap-3">
-        {cards.map((card) => (
-          <button
-            key={card.to}
-            onClick={() => navigate(card.to)}
-            className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-3 text-left"
-          >
-            <div className="flex-1">
-              <h4 className="font-serif text-navy text-xl font-bold">{card.title}</h4>
-              <p className="font-serif text-gold text-sm mt-0.5 font-bold">{card.sub}</p>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
-              <path d="M7 10L1 4h12L7 10z" />
-            </svg>
-          </button>
+      {/* Навигация — компактная сетка мелких плиток, как в Университете */}
+      <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
+      <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
+        {gridButtons.map((b) => (
+          <GridButton key={b.to} {...b} />
         ))}
       </div>
 

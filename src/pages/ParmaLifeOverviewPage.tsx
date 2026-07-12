@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { useParmaLife } from '../hooks/useParmaLife';
-import { ParmaIcon } from '../components/ParmaIcon';
+import { parmaIconComponent } from '../components/ParmaIcon';
+import { GridButton } from '../components/GridButton';
 import { HomeAddressInput } from '../components/HomeAddressInput';
 
 export default function ParmaLifeOverviewPage() {
@@ -25,18 +26,17 @@ export default function ParmaLifeOverviewPage() {
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
 
-      {/* Шапка */}
-      <div className="mx-6 mt-4 relative bg-soft-cream border border-navy/20 rounded-3xl p-6">
-        <div className="text-center">
-          <h1 className="font-serif text-navy text-3xl font-bold">В Парме</h1>
-          <p className="font-serif text-gold text-lg mt-0.5 font-bold">жизнь после переезда</p>
-        </div>
+      {/* Шапка раздела — без коробки-плашки, текст прямо на странице (как в Университете) */}
+      <div className="mt-4 px-6 text-center">
+        <h1 className="font-serif text-navy text-3xl font-bold">В Парме</h1>
+        <p className="font-serif text-gold text-base mt-1 italic">Жизнь после переезда</p>
+        <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
       </div>
 
-      {/* Интро */}
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed">{parmaLife.intro_ru.what_ru}</p>
-      </div>
+      {/* Интро — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
+        {parmaLife.intro_ru.what_ru}
+      </p>
 
       {/* Карта мест Loci */}
       <button
@@ -57,26 +57,17 @@ export default function ParmaLifeOverviewPage() {
         <HomeAddressInput />
       </div>
 
-      {/* Карточки подразделов */}
-      <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">Что нужно знать</h3>
-      <div className="px-6 flex flex-col gap-3">
-        {subsections.map((sec) => (
-          <button
+      {/* Подразделы — компактная сетка мелких плиток, как в Университете */}
+      <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
+      <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
+        {subsections.map((sec, i) => (
+          <GridButton
             key={sec.id}
-            onClick={() => navigate(`/path/parma/${sec.id}`)}
-            className="w-full rounded-2xl border border-navy/20 bg-soft-cream p-4 flex items-center gap-4 text-left"
-          >
-            <ParmaIcon id={sec.id} className="w-7 h-7 text-navy/75 flex-shrink-0" />
-            <div className="flex-1">
-              <h4 className="font-serif text-navy text-lg font-bold leading-tight">{sec.title_ru}</h4>
-              {sec.subtitle_ru && (
-                <p className="font-serif text-gold text-xs mt-0.5 font-bold">{sec.subtitle_ru}</p>
-              )}
-            </div>
-            <svg width="16" height="16" viewBox="0 0 14 14" className="text-navy flex-shrink-0 -rotate-90" fill="currentColor">
-              <path d="M7 10L1 4h12L7 10z" />
-            </svg>
-          </button>
+            icon={parmaIconComponent(sec.id)}
+            title={sec.title_ru}
+            to={`/path/parma/${sec.id}`}
+            seed={i + 1}
+          />
         ))}
       </div>
 

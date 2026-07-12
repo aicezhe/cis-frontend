@@ -1,7 +1,15 @@
-import type { LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { longPressHandlers } from '../lib/longPress';
 import { scatterIcons } from '../lib/scatterIcons';
+
+// Любой компонент-иконка, принимающий className/style/strokeWidth —
+// подходят как lucide-react иконки, так и кастомные (например ParmaIcon
+// через parmaIconComponent).
+type IconComponent = React.ComponentType<{
+  className?: string;
+  style?: React.CSSProperties;
+  strokeWidth?: string | number;
+}>;
 
 // Широкая невысокая плитка-кнопка: внутри рамки раскидано несколько мелких
 // копий иконки разного размера — мерцают, дрейфуют, слегка пульсируют
@@ -10,7 +18,7 @@ import { scatterIcons } from '../lib/scatterIcons';
 export function GridButton({
   icon: Icon, title, to, seed, onLongPress,
 }: {
-  icon: LucideIcon; title: string; to: string; seed: number; onLongPress?: () => void;
+  icon: IconComponent; title: string; to: string; seed: number; onLongPress?: () => void;
 }) {
   const navigate = useNavigate();
   const icons = scatterIcons(seed, 11);
