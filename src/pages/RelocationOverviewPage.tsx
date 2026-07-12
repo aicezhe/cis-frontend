@@ -86,10 +86,29 @@ export default function RelocationOverviewPage() {
         {relocation.intro_ru.what_ru}
       </p>
 
+      {/* Кнопка LOCI маршруты */}
+      <button
+        onClick={() => navigate('/loci/routes')}
+        className="relative mx-6 mt-4 bg-navy rounded-2xl px-5 py-4 text-left"
+      >
+        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
+        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
+        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
+        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
+        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
+        <p className="font-serif text-cream text-lg">Предположить маршрут ✈</p>
+        <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
+      </button>
+
+      {/* Адрес дома — общий компонент с геокодингом и меткой на карте */}
+      <div className="mx-6 mt-4">
+        <HomeAddressInput />
+      </div>
+
       {/* Шаги переезда — тот же паттерн, что «Шаги поступления»/«Шаги
           получения визы»: без рамки-«кнопки», свёрнуто по умолчанию,
-          у каждого шага своя галочка. */}
-      <div className="px-6 mt-6">
+          у каждого шага своя галочка. Перед подразделами. */}
+      <div className="px-6 mt-8">
         <button
           onClick={() => setStepsOpen(!stepsOpen)}
           className="w-full flex items-center gap-3 text-left py-1"
@@ -169,25 +188,6 @@ export default function RelocationOverviewPage() {
             </p>
           </div>
         )}
-      </div>
-
-      {/* Кнопка LOCI маршруты */}
-      <button
-        onClick={() => navigate('/loci/routes')}
-        className="relative mx-6 mt-4 bg-navy rounded-2xl px-5 py-4 text-left"
-      >
-        <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-        <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-        <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-        <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-1">⌐ loci ¬</p>
-        <p className="font-serif text-cream text-lg">Предположить маршрут ✈</p>
-        <p className="font-serif text-cream/60 text-sm mt-1">Типичные пути из твоей страны до Пармы</p>
-      </button>
-
-      {/* Адрес дома — общий компонент с геокодингом и меткой на карте */}
-      <div className="mx-6 mt-4">
-        <HomeAddressInput />
       </div>
 
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}
