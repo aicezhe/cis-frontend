@@ -50,23 +50,6 @@ export default function RelocationOverviewPage() {
     { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
   ];
 
-  // Примерный бюджет — считаем только из уже проверенных полей seed'а, ничего не выдумываем.
-  const permessoTotal = relocation.permesso_di_soggiorno.steps_ru.reduce(
-    (sum, s) => sum + (s.cost_eur ?? 0), 0
-  );
-  const housing = relocation.housing_search.options.find((o) => o.price_min_eur != null);
-
-  const budgetLines = [
-    { label: 'Билет (через третью страну)', value: relocation.travel_routes.flight_cost_ru.estimate_ru.split('.')[0] },
-    housing && {
-      label: 'Аренда жилья',
-      value: `${housing.price_min_eur}–${housing.price_max_eur} €/мес + депозит (обычно = 1 месяц)`,
-    },
-    { label: 'SIM-карта (Iliad, активация + первый месяц)', value: '≈18–20 €' },
-    { label: 'Permesso di soggiorno (marca da bollo + KIT)', value: `${permessoTotal} €` },
-    { label: 'Codice Fiscale', value: relocation.codice_fiscale.cost_ru },
-  ].filter(Boolean) as { label: string; value: string }[];
-
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12">
@@ -83,26 +66,6 @@ export default function RelocationOverviewPage() {
       {/* Интро — просто текст, без коробки-плашки */}
       <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
         {relocation.intro_ru.what_ru}
-      </p>
-
-      {/* Примерные расходы — только реальные цифры из проверенных источников */}
-      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Примерные расходы</p>
-      <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
-        {budgetLines.map((line, i) => (
-          <div
-            key={line.label}
-            className={
-              'flex justify-between items-start gap-3 px-4 py-3 ' +
-              (i < budgetLines.length - 1 ? 'border-b border-navy/10' : '')
-            }
-          >
-            <p className="font-serif text-navy/80 text-xs leading-relaxed flex-1">{line.label}</p>
-            <p className="font-serif text-navy text-xs font-bold flex-shrink-0 text-right whitespace-nowrap">{line.value}</p>
-          </div>
-        ))}
-      </div>
-      <p className="font-serif text-navy/40 text-[11px] italic px-6 mt-1.5">
-        Примерно, по данным на {relocation.meta.last_updated} · источники: {relocation.meta.source}
       </p>
 
       {/* Кнопка LOCI маршруты */}
