@@ -137,6 +137,17 @@ export interface VisaUaSeed {
   tips_ru: string[];
 }
 
+export interface VisaActionStep {
+  title_ru: string;
+  description_ru: string;
+}
+
+export interface VisaActionSteps {
+  audience_note_ru: string;
+  steps: VisaActionStep[];
+  disclaimer_ru: string;
+}
+
 export interface VisaSeed {
   meta: {
     country_code: string;
@@ -151,7 +162,7 @@ export interface VisaSeed {
     prerequisites_ru: string;
     after_arrival_ru: string;
   };
-  process_overview_ru: string[];
+  action_steps_ru: VisaActionSteps;
   consular_districts: {
     description_ru: string;
     spb_district: VisaDistrict;

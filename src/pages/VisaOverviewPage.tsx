@@ -61,7 +61,7 @@ function VisaRuOverview() {
   const operators = visa.consular_districts.operators_ru;
 
   const cards = [
-    { title: 'Шаги получения визы', sub: `${visa.steps.length} шагов — от Universitaly до паспорта с визой`, to: '/path/visa/steps' },
+    { title: 'Подробнее о документах', sub: `${visa.steps.length} шагов — от Universitaly до паспорта с визой`, to: '/path/visa/steps' },
     { title: 'Причины отказа', sub: 'Что проверяют и как не завалить', to: '/path/visa/rejections' },
   ];
 
@@ -119,17 +119,23 @@ function VisaRuOverview() {
         </p>
       </div>
 
-      {/* Процесс целиком */}
-      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Как устроен процесс</p>
+      {/* Шаги получения визы */}
+      <p className="font-serif text-gold text-sm px-6 mt-6 mb-1 font-bold">Шаги получения визы</p>
+      <p className="font-serif text-navy/50 text-xs italic px-6 mb-3">{visa.action_steps_ru.audience_note_ru}</p>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-        <ol className="flex flex-col gap-2.5">
-          {visa.process_overview_ru.map((step, i) => (
-            <li key={i} className="flex gap-3 items-start">
+        <ol className="flex flex-col gap-3">
+          {visa.action_steps_ru.steps.map((step, i) => (
+            <li key={i} className={'flex gap-3 items-start ' + (i === 0 ? '' : 'pt-3 border-t border-navy/10')}>
               <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-              <p className="font-serif text-navy/80 text-sm leading-relaxed">{step}</p>
+              <p className="font-serif text-navy/80 text-sm leading-relaxed">
+                <span className="font-bold text-navy">{step.title_ru}</span> {step.description_ru}
+              </p>
             </li>
           ))}
         </ol>
+        <p className="font-serif text-navy/50 text-xs italic mt-4 pt-3 border-t border-navy/10 leading-relaxed">
+          {visa.action_steps_ru.disclaimer_ru}
+        </p>
       </div>
 
       {/* Навигация */}

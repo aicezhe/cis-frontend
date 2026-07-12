@@ -255,7 +255,7 @@ export default function VisaStepsPage() {
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
       <div className="px-6 pt-12 flex items-center gap-4">
         <button onClick={() => navigate('/path/visa')} className="text-navy text-2xl">←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">Шаги получения визы</h1>
+        <h1 className="font-serif text-navy text-2xl font-bold">Подробнее о документах</h1>
       </div>
 
       <p className="font-serif text-gold text-sm px-6 mt-5 mb-3 font-bold">
