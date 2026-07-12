@@ -58,11 +58,38 @@ function CheckList({
 function CimeaDdvBlock() {
   const { legalization, loading } = useMyLegalization();
   if (loading || !legalization) return null;
-  const recognition = legalization.diploma_legalization.steps.find((s) => s.id === '3_recognition');
+  const steps = legalization.diploma_legalization.steps;
+  const translation = steps.find((s) => s.id === '2_translation');
+  const recognition = steps.find((s) => s.id === '3_recognition');
   if (!recognition?.options) return null;
 
   return (
-    <div className="flex flex-col gap-2 mt-1">
+    <div className="flex flex-col gap-3 mt-1">
+      {/* Перевод — аккредитованный переводчик, до признания диплома */}
+      {translation && (
+        <div className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
+          <div className="flex justify-between items-baseline gap-2">
+            <p className="font-serif text-navy text-sm font-bold">{translation.title_ru}</p>
+            {translation.cost_eur_approx != null && (
+              <p className="font-serif text-navy text-xs font-bold flex-shrink-0">
+                ~{translation.cost_eur_approx} € · {translation.duration_days}
+              </p>
+            )}
+          </div>
+          <p className="font-serif text-navy/70 text-xs leading-relaxed mt-1">{translation.description_ru}</p>
+          {translation.cost_local && (
+            <p className="font-serif text-navy/50 text-xs mt-1">В местной валюте: {translation.cost_local}</p>
+          )}
+          {translation.warnings_ru && translation.warnings_ru.length > 0 && (
+            <div className="flex flex-col gap-1 mt-2">
+              {translation.warnings_ru.map((w, i) => (
+                <p key={i} className="font-serif text-gold text-xs">⚠ {w}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <p className="font-serif text-gold text-xs font-bold">{recognition.title_ru}</p>
       {recognition.options.map((opt, i) => (
         <div key={i} className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
@@ -71,6 +98,12 @@ function CimeaDdvBlock() {
             <p className="font-serif text-navy text-xs font-bold flex-shrink-0">{opt.cost_eur} € · {opt.duration}</p>
           </div>
           <p className="font-serif text-navy/70 text-xs leading-relaxed mt-1">{opt.description_ru}</p>
+          {/* Слоты/запись — то, что реально известно про эту опцию, без выдумывания цифр сверху */}
+          <p className="font-serif text-navy/50 text-xs mt-2 italic">
+            {opt.name === 'CIMEA'
+              ? 'Слоты: подача онлайн, но в пиковый сезон (июнь–сентябрь) у CIMEA бывают периоды, когда приём новых заявок временно закрыт — подавай заранее, не жди последний месяц.'
+              : 'Слоты: запись на приём в консульство через Prenot@Mi — в пиковый сезон свободные даты разбирают быстро, проверяй портал регулярно и записывайся, как только освободится время.'}
+          </p>
           <div className="flex flex-col gap-1 mt-2">
             {opt.pros_ru.map((p, j) => (
               <p key={`p${j}`} className="font-serif text-navy/70 text-xs">✓ {p}</p>
