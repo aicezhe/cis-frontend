@@ -5,37 +5,39 @@ import { Price } from '../components/Price';
 import { RouteCard } from '../components/RouteCard';
 import type { ArrivalStep } from '../types/relocation';
 
-function ArrivalTable({ steps }: { steps: ArrivalStep[] }) {
+function StepBox({ s }: { s: ArrivalStep }) {
   return (
-    <div className="flex flex-col gap-2 mt-3">
-      {steps.map((s, i) => (
-        <div key={i} className="bg-cream border border-navy/10 rounded-xl px-3.5 py-3">
-          <div className="flex justify-between items-baseline gap-2">
-            <p className="font-serif text-navy text-sm font-bold flex-1">{s.transport}</p>
-            <p className="font-serif text-navy text-sm font-bold flex-shrink-0">
-              <Price eur={s.cost_eur} />
-            </p>
-          </div>
-          <p className="font-serif text-navy/70 text-xs leading-relaxed mt-0.5">
-            {s.step}{s.duration_ru ? ` · ${s.duration_ru}` : ''}
-          </p>
-          {s.note_ru && (
-            <p className="font-serif text-navy/50 text-[11px] italic mt-1 leading-relaxed">{s.note_ru}</p>
-          )}
-        </div>
-      ))}
+    // Фон чуть темнее страницы (#F4F1E9) — чтобы квадратики выделялись
+    <div className="border border-navy/10 rounded-xl px-3.5 py-3" style={{ backgroundColor: '#ECE5D4' }}>
+      <div className="flex justify-between items-baseline gap-2">
+        <p className="font-serif text-navy text-sm font-bold flex-1">{s.transport}</p>
+        <p className="font-serif text-navy text-sm font-bold flex-shrink-0">
+          <Price eur={s.cost_eur} />
+        </p>
+      </div>
+      <p className="font-serif text-navy/70 text-xs leading-relaxed mt-0.5">
+        {s.step}{s.duration_ru ? ` · ${s.duration_ru}` : ''}
+      </p>
+      {s.note_ru && (
+        <p className="font-serif text-navy/50 text-[11px] italic mt-1 leading-relaxed">{s.note_ru}</p>
+      )}
     </div>
   );
 }
 
 // Раскрывающийся раздел пути прибытия — без рамки-«кнопки», просто
 // кликабельный заголовок со стрелкой, как «Шаги» в остальных разделах.
+// Внутри — два уровня: варианты «до центра» (в Милане их два, в Болонье
+// один) и финальный поезд «до Пармы».
 function ArrivalSection({
   name, subtitle, steps, first = false,
 }: {
   name: string; subtitle?: string; steps: ArrivalStep[]; first?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  // Последний шаг — всегда поезд до Пармы, остальные — как добраться до центра.
+  const toCenter = steps.slice(0, -1);
+  const toParma = steps[steps.length - 1];
   return (
     <div className={'px-6 ' + (first ? '' : 'pt-4 border-t border-navy/10')}>
       <button
@@ -54,7 +56,29 @@ function ArrivalSection({
           <path d="M7 10L1 4h12L7 10z" />
         </svg>
       </button>
-      {open && <ArrivalTable steps={steps} />}
+
+      {open && (
+        <div className="mt-3">
+          {toCenter.length > 0 && (
+            <>
+              <p className="font-serif text-gold text-[11px] uppercase tracking-widest font-bold mb-2">
+                Добраться до центра{toCenter.length > 1 ? ' — 2 варианта' : ''}
+              </p>
+              <div className="flex flex-col gap-2">
+                {toCenter.map((s, i) => <StepBox key={i} s={s} />)}
+              </div>
+            </>
+          )}
+          {toParma && (
+            <>
+              <p className="font-serif text-gold text-[11px] uppercase tracking-widest font-bold mb-2 mt-4">
+                Дальше → до Пармы
+              </p>
+              <StepBox s={toParma} />
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
