@@ -115,27 +115,27 @@ export default function AfterArrivalPage() {
                   <p className="font-serif text-gold text-xs mt-0.5 font-bold">{sim.priority_ru}</p>
                 )}
 
-                <div className="relative bg-navy rounded-2xl p-4 mt-3">
-                  <p className="font-serif text-gold text-xs font-bold">рекомендуем</p>
-                  <p className="font-serif text-cream text-xl font-bold mt-0.5">{sim.recommended_operator}</p>
-                  <p className="font-serif text-cream/70 text-xs mt-1">{sim.why_ru}</p>
+                <div className="mt-3">
+                  <p className="font-serif text-gold text-xs font-bold uppercase tracking-widest">рекомендуем</p>
+                  <p className="font-serif text-navy text-xl font-bold mt-0.5">{sim.recommended_operator}</p>
+                  <p className="font-serif text-navy/70 text-xs mt-1">{sim.why_ru}</p>
 
                   <div className="flex flex-col gap-2 mt-3">
                     {sim.tariffs_ru?.map((t, i) => (
-                      <div key={i} className="bg-cream/10 rounded-xl px-3.5 py-2.5">
+                      <div key={i} className="bg-soft-cream border border-navy/15 rounded-xl px-3.5 py-2.5">
                         <div className="flex justify-between items-baseline gap-2">
-                          <p className="font-serif text-cream text-sm font-bold">{t.name}</p>
-                          <p className="font-serif text-gold text-sm font-bold flex-shrink-0">
+                          <p className="font-serif text-navy text-sm font-bold">{t.name}</p>
+                          <p className="font-serif text-navy text-sm font-bold flex-shrink-0">
                             <Price eur={t.price_eur} />/мес
                           </p>
                         </div>
-                        <p className="font-serif text-cream/70 text-xs mt-0.5">{t.data} · {t.extra_ru}</p>
+                        <p className="font-serif text-navy/65 text-xs mt-0.5">{t.data} · {t.extra_ru}</p>
                       </div>
                     ))}
                   </div>
 
                   {sim.activation_ru && (
-                    <p className="font-serif text-cream/60 text-xs leading-relaxed mt-3">{sim.activation_ru}</p>
+                    <p className="font-serif text-navy/60 text-xs leading-relaxed mt-3">{sim.activation_ru}</p>
                   )}
                   {sim.url && (
                     <a
