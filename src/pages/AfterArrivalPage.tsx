@@ -39,17 +39,8 @@ export default function AfterArrivalPage() {
   const sim = aa.steps.find((s) => s.id === 'sim');
   const cash = aa.steps.find((s) => s.id === 'cash_card');
 
-  // Единый чек-лист «После заселения». Каждый пункт — галочка + название,
-  // под ним разворачивается вспомогательный контент (тарифы SIM, детали
-  // по картам и т.п.). Прогресс — доля отмеченных пунктов.
-  const items = [
-    { id: 'shopping', label: 'Сходить в магазин за базовыми вещами' },
-    ...(sim ? [{ id: 'sim', label: 'Купить SIM-карту' }] : []),
-    ...(cash ? [{ id: 'cash', label: 'Подготовить наличные и карту' }] : []),
-  ];
-  const doneCount = items.filter((it) => isChecked(it.id)).length;
-  const pct = items.length > 0 ? Math.round((doneCount / items.length) * 100) : 0;
-
+  // Единый чек-лист «После заселения»: магазин / SIM / наличные+карта.
+  // Каждый пункт — галочка + название, под ним вспомогательный контент.
   // Круглый чекбокс в стиле остальных разделов
   const CheckBox = ({ id }: { id: string }) => (
     <button onClick={() => toggle(id)} className="w-6 h-6 mt-0.5 flex-shrink-0">
@@ -71,21 +62,7 @@ export default function AfterArrivalPage() {
         <h1 className="font-serif text-navy text-2xl font-bold">{aa.title_ru}</h1>
       </div>
 
-      {/* Прогресс */}
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <div className="flex justify-between items-baseline mb-2">
-          <p className="font-serif text-navy text-sm">Готово</p>
-          <p className="font-serif text-navy/60 text-xs">{doneCount} из {items.length}</p>
-        </div>
-        <div className="h-1.5 rounded-full bg-navy/10 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-navy transition-all duration-500"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="px-6 mt-5 flex flex-col gap-3">
+      <div className="px-6 mt-6 flex flex-col gap-3">
 
         {/* Магазин */}
         <div className={isChecked('shopping') ? 'opacity-70' : ''}>
