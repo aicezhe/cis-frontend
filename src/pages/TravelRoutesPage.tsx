@@ -58,7 +58,7 @@ function ArrivalSection({
       </button>
 
       {open && (
-        <div className="mt-3">
+        <div className="mt-3 pb-5">
           {toCenter.length > 0 && (
             <>
               <p className="font-serif text-gold text-[11px] uppercase tracking-widest font-bold mb-2">
