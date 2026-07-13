@@ -57,6 +57,21 @@ export interface RelocationSteps {
   disclaimer_ru: string;
 }
 
+export interface CardOption {
+  name: string;
+  tag_ru?: string;
+  how_ru: string;
+  details_ru?: string[];
+  url?: string;
+}
+
+export interface CardsSection {
+  title_ru: string;
+  intro_ru: string;
+  options: CardOption[];
+  disclaimer_ru?: string;
+}
+
 export interface RelocationSeed {
   meta: {
     country_code: string;
@@ -90,6 +105,7 @@ export interface RelocationSeed {
     first_shopping_ru: string;
     steps: AfterArrivalStep[];
   };
+  cards_ru?: CardsSection;
   codice_fiscale: {
     title_ru: string;
     what_ru: string;

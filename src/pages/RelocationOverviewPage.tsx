@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Route, PackageOpen, FileText, IdCard, Home } from 'lucide-react';
+import { Route, PackageOpen, FileText, IdCard, Home, CreditCard } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
@@ -70,6 +70,7 @@ export default function RelocationOverviewPage() {
     { icon: FileText, title: 'Codice Fiscale', to: '/path/travel/codice-fiscale', seed: 3 },
     { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
     { icon: Home, title: 'Поиск жилья', to: '/path/travel/housing', seed: 5 },
+    { icon: CreditCard, title: 'Карты и оплата', to: '/path/travel/cards', seed: 6 },
   ];
 
   return (
