@@ -113,9 +113,15 @@ export default function RelocationOverviewPage() {
           </svg>
         </button>
 
-        {stepsOpen && (
+        {stepsOpen && (() => {
+          const allSteps = relocation.steps_overview_ru.steps;
+          // Последний пункт — не пронумерованный шаг с галочкой, а заметка
+          // в конце (ожидание после подачи не требует «сделать» действия).
+          const numberedSteps = allSteps.slice(0, -1);
+          const finalNote = allSteps[allSteps.length - 1];
+          return (
           <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
-            {relocation.steps_overview_ru.steps.map((step, idx) => {
+            {numberedSteps.map((step, idx) => {
               const stepId = `travel-step-${idx}`;
               const done = isChecked(stepId);
               return (
@@ -169,11 +175,30 @@ export default function RelocationOverviewPage() {
               );
             })}
 
+            {/* Заметка в конце — что дальше, без галочки и номера */}
+            {finalNote && (
+              <div className="pt-4 border-t border-navy/10 bg-soft-cream rounded-xl px-4 py-3 -mx-0">
+                <p className="font-serif text-navy text-base font-bold">{finalNote.title_ru}</p>
+                <p className="font-serif text-navy/80 text-sm mt-1.5 leading-relaxed">{finalNote.description_ru}</p>
+                {finalNote.details_ru && (
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    {finalNote.details_ru.map((d, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="text-gold mt-0.5 text-sm flex-shrink-0">◆</span>
+                        <p className="font-serif text-navy/70 text-xs leading-relaxed">{d}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <p className="font-serif text-navy/50 text-xs italic mt-1 pt-3 border-t border-navy/10 leading-relaxed">
               {relocation.steps_overview_ru.disclaimer_ru}
             </p>
           </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}

@@ -58,7 +58,8 @@ function visaChecklistIds(visa: VisaSeed): string[] {
 }
 
 function relocationChecklistIds(relocation: RelocationSeed): string[] {
-  return relocation.steps_overview_ru.steps.map((_, idx) => `travel-step-${idx}`);
+  // Последний пункт — заметка «после подачи», без галочки: не считаем в прогресс.
+  return relocation.steps_overview_ru.steps.slice(0, -1).map((_, idx) => `travel-step-${idx}`);
 }
 
 // Возвращает null, если считать не по чему (нет id) — тогда остаётся старый расчёт.
