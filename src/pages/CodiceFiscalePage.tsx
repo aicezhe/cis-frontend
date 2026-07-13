@@ -26,21 +26,23 @@ export default function CodiceFiscalePage() {
         <h1 className="font-serif text-navy text-2xl font-bold">{cf.title_ru}</h1>
       </div>
 
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy/80 text-sm leading-relaxed mb-2">{cf.what_ru}</p>
-        <p className="font-serif text-navy/70 text-sm leading-relaxed">{cf.if_not_in_russia_ru}</p>
-      </div>
+      {/* Интро — просто текст, без коробки-плашки */}
+      <p className="font-serif text-navy/75 text-sm leading-relaxed px-6 mt-5">{cf.what_ru}</p>
+      <p className="font-serif text-navy/70 text-sm leading-relaxed px-6 mt-2">{cf.if_not_in_russia_ru}</p>
 
-      {/* Где + цена */}
-      <div className="mx-6 mt-4 relative bg-navy rounded-2xl p-5">
+      {/* Где + цена — тап открывает эту точку на карте Loci */}
+      <button
+        onClick={() => navigate('/map', { state: { focus: 'agenzia_entrate' } })}
+        className="mx-6 mt-4 relative bg-navy rounded-2xl p-5 text-left w-[calc(100%-3rem)]"
+      >
         <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
         <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
         <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
         <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-        <p className="font-serif text-gold text-xs font-bold">куда идти</p>
+        <p className="font-serif text-gold text-xs font-bold">куда идти · на карте →</p>
         <p className="font-serif text-cream text-lg font-bold mt-0.5">{cf.where_ru}</p>
         <p className="font-serif text-gold text-sm mt-1">{cf.cost_ru}</p>
-      </div>
+      </button>
 
       {/* Документы */}
       <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Документы с собой</p>

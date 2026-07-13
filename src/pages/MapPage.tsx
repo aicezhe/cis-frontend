@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import { MapContainer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -24,6 +25,16 @@ function VectorBasemap() {
       map.removeLayer(gl);
     };
   }, [map]);
+  return null;
+}
+
+// Долетает до конкретной точки, если пришли с deep-link (напр. из шага
+// «Codice Fiscale» → Agenzia delle Entrate). Один раз на маунте.
+function FlyToPlace({ place }: { place: LociPlace | undefined }) {
+  const map = useMap();
+  useEffect(() => {
+    if (place) map.setView([place.lat, place.lng], 16);
+  }, [map, place]);
   return null;
 }
 
@@ -72,13 +83,22 @@ function googleMapsRoute(to: LociPlace) {
 
 export default function MapPage() {
   const { data, loading } = useLociPlaces();
+  const location = useLocation();
+  const focusId = (location.state as { focus?: string } | null)?.focus;
   const [activeCat, setActiveCat] = useState<LociCategoryId>('all');
+  const focusMarkerRef = useRef<L.Marker | null>(null);
 
   const categories = data?.categories ?? [];
+  const focusPlace = data?.places.find((p) => p.id === focusId);
   const filtered = useMemo<LociPlace[]>(() => {
     if (!data) return [];
     return activeCat === 'all' ? data.places : data.places.filter((p) => p.category === activeCat);
   }, [data, activeCat]);
+
+  // Открываем попап целевой точки после её появления на карте.
+  useEffect(() => {
+    if (focusId) focusMarkerRef.current?.openPopup();
+  }, [focusId, filtered]);
 
   // эмодзи категории по id — для маркеров
   const emojiFor = useMemo(() => {
@@ -138,11 +158,13 @@ export default function MapPage() {
             style={{ height: '100%', width: '100%' }}
           >
             <VectorBasemap />
+            <FlyToPlace place={focusPlace} />
             {filtered.map((place) => (
               <Marker
                 key={place.id}
                 position={[place.lat, place.lng]}
                 icon={makeIcon(emojiFor[place.category] || '•', place)}
+                ref={place.id === focusId ? focusMarkerRef : undefined}
               >
                 <Popup>
                   <div className="font-serif" style={{ minWidth: 200 }}>
