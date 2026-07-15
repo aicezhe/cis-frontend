@@ -41,9 +41,9 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 - [x] 3 adaptive onboarding quizzes: University · Visa · Travel
 - [x] Personalised dashboard with dynamic stage progress
 - [x] Section pages with checkable steps and expandable substeps
-- [x] Real-time budget tracker
-- [x] AI chat placeholder — Laura (RAG integration planned)
-- [x] Interactive map placeholder — Loci (Leaflet integration planned)
+- [x] Real-time budget tracker with expense editing, currency switching, and PDF export
+- [x] Laura — AI assistant answering from a curated knowledge base (RAG), with streamed replies
+- [x] Loci — interactive map of Parma (Leaflet + MapLibre), deep-linked from the relevant steps
 - [x] Settings page with profile editing
 - [x] `localStorage` state persistence across sessions
 
@@ -59,6 +59,7 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 | Styling | Tailwind CSS 3 |
 | Routing | React Router v6 |
 | Icons | lucide-react |
+| Map | Leaflet + MapLibre GL |
 
 ### Testing
 | Tool | Purpose |
@@ -67,10 +68,11 @@ A mobile-first web app that guides Russian-speaking students from CIS countries 
 | React Testing Library | Component testing |
 
 ### Deploy
-- **Render** — static site, auto-deploys from `main`
+- **Render** — static site, auto-deploys from `main` (Cloudflare in front, ~5 min edge cache)
 
-### Backend _(in progress)_
-FastAPI · PostgreSQL · Supabase · Anthropic API
+### Backend
+FastAPI · PostgreSQL + pgvector · Voyage AI embeddings · Anthropic API —
+see [cis-backend](https://github.com/aicezhe/cis-backend)
 
 ---
 
@@ -107,8 +109,9 @@ src/
 Requires **Node.js 18+**.
 
 ```bash
-git clone https://github.com/aicezhe/cispr-frontend.git
-cd cispr-frontend
+git clone https://github.com/aicezhe/cis-frontend.git
+cd cis-frontend
+cp .env.example .env   # VITE_API_URL: http://localhost:8000 для локального бэка
 npm install
 npm run dev
 ```
@@ -127,9 +130,6 @@ npm test
 
 ## Roadmap
 
-- [ ] Backend integration — FastAPI + PostgreSQL
-- [ ] Laura RAG chatbot — Anthropic API + pgvector
-- [ ] Real Leaflet map with university and city points of interest
 - [ ] Mobile native app — React Native
 - [ ] Multi-language support (IT · EN · RU)
 
@@ -139,7 +139,7 @@ npm test
 
 **Anna Zheleikina** — Management Engineering student, Università di Parma
 
-[LinkedIn →](https://www.linkedin.com/in/anna-zheleikina-136094291/?locale=en) <!-- replace with your profile URL -->
+[LinkedIn →](https://www.linkedin.com/in/anna-zheleikina-136094291/?locale=en)
 
 ---
 
