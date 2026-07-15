@@ -13,12 +13,14 @@ const sectionsData: Record<string, any> = {
     steps: [
       { num: 1, title: 'Выбор программы', sub: 'Выбор программы · €0', deadline: 'актуально', price: '€0', substeps: [] },
       { num: 2, title: 'Проверка учебной базы', sub: 'Языки, профильные предметы · €0', deadline: '14 дней', price: '€0', substeps: [] },
-      { num: 3, title: 'Документы и легализация', sub: '€200–400', deadline: '14 дней', price: '€800', substeps: [
-        { title: 'Перевод аттестата на итальянский', price: '€200' },
-        { title: 'Апостиль на аттестат', price: '€150' },
-        { title: 'Сделать CIMEA или Dichiarazione di valore', price: '~€170' },
-        { title: 'Транскрипт оценок с переводом', price: '~€60' },
-        { title: 'Сертификат итальянского B2', price: '€100–200' },
+      // Цены и порядок — из public/data/costs_seed.json (countries.ru.documents).
+      // Апостиль ИДЁТ ПЕРВЫМ: перевод без штампа придётся переделывать. Перевод
+      // (€60) — за комплект «аттестат + приложение», приложение и есть транскрипт.
+      { num: 3, title: 'Документы и легализация', sub: '€400–550', deadline: '14 дней', price: '€400–550', substeps: [
+        { title: 'Апостиль на аттестат', price: '€140' },
+        { title: 'Перевод аттестата на итальянский', price: '€60' },
+        { title: 'Сделать CIMEA или Dichiarazione di valore', price: '€75–150' },
+        { title: 'Сертификат итальянского B2', price: '€120–200' },
       ]},
       { num: 4, title: 'Регистрация интереса', sub: 'Let\'s keep in touch · €0', deadline: '7 дней', price: '€0', substeps: [] },
       { num: 5, title: 'Входной тест', sub: 'Test di ingresso · €0', deadline: 'до 30 апр', price: '€0', substeps: [] },

@@ -15,12 +15,16 @@ export const sectionsData: Record<string, any> = {
     steps: [
       { num: 1, title: 'Выбор программы', deadline: 'актуально', price: '€0', substeps: [] },
       { num: 2, title: 'Проверка учебной базы', deadline: '14 дней', price: '€0', substeps: [] },
-      { num: 3, title: 'Документы и легализация', deadline: '14 дней', price: '~€170', substeps: [
-        { title: 'Перевод аттестата', price: '€200' },
-        { title: 'Апостиль', price: '€150' },
-        { title: 'CIMEA', price: '~€170' },
-        { title: 'Транскрипт', price: '~€60' },
-        { title: 'Сертификат B2', price: '€100–200' },
+      // Цены и порядок — из public/data/costs_seed.json (countries.ru.documents,
+      // источники: obrnadzor.gov.ru, cimea.it, esteri.it). Апостиль ИДЁТ ПЕРВЫМ:
+      // перевод без штампа придётся переделывать. Перевод (€60) — за комплект
+      // «аттестат + приложение», приложение и есть транскрипт, отдельной строкой
+      // его считать нельзя.
+      { num: 3, title: 'Документы и легализация', deadline: '14 дней', price: '€400–550', substeps: [
+        { title: 'Апостиль', price: '€140' },
+        { title: 'Перевод аттестата', price: '€60' },
+        { title: 'CIMEA или DDV', price: '€75–150' },
+        { title: 'Сертификат B2', price: '€120–200' },
       ]},
       { num: 4, title: 'Регистрация интереса', deadline: '7 дней', price: '€0', substeps: [] },
       { num: 5, title: 'Входной тест', deadline: 'до 30 апр', price: '€0', substeps: [] },
