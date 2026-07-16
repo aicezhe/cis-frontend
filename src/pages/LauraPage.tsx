@@ -495,25 +495,25 @@ export default function LauraPage() {
           messages.map((msg) => {
             const isLaura = msg.from === 'laura';
             const isEmpty = msg.text.length === 0;
+            // Лаура говорит во всю ширину экрана, без плашки — её ответ это не
+            // реплика-пузырь, а «страница» текста. Реплики юзера остаются
+            // выключенным вправо navy-пузырём, чтобы визуально отделить свой
+            // голос от голоса ассистента (паттерн ChatGPT/Claude).
+            if (isLaura) {
+              return (
+                <div key={msg.id} className="self-stretch w-full">
+                  {isEmpty ? <TypingDots /> : <LauraMarkdown text={msg.text} />}
+                </div>
+              );
+            }
             return (
               <div
                 key={msg.id}
-                className={
-                  'max-w-[85%] rounded-2xl px-4 py-3 ' +
-                  (isLaura
-                    ? 'self-start bg-soft-cream border border-navy/15'
-                    : 'self-end bg-navy')
-                }
+                className="self-end max-w-[85%] rounded-2xl px-4 py-3 bg-navy"
               >
-                {isEmpty && isLaura ? (
-                  <TypingDots />
-                ) : isLaura ? (
-                  <LauraMarkdown text={msg.text} />
-                ) : (
-                  <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap break-words text-cream">
-                    {msg.text}
-                  </p>
-                )}
+                <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap break-words text-cream">
+                  {msg.text}
+                </p>
               </div>
             );
           })
