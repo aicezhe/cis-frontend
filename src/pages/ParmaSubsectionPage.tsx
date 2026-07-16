@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ChevronDown, TriangleAlert, Info } from 'lucide-react';
 import { useParmaLife } from '../hooks/useParmaLife';
 import { Price } from '../components/Price';
 import { ParmaIcon } from '../components/ParmaIcon';
@@ -31,6 +32,52 @@ function BulletList({ items, icon = '◆' }: { items: string[]; icon?: string })
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{children}</p>;
+}
+
+// Сворачиваемая секция — золотой заголовок + шеврон, тап раскрывает содержимое.
+// Тот же паттерн, что «Шаги N» на других вкладышах.
+function CollapsibleSection({
+  title, defaultOpen = false, children,
+}: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="mx-6 mt-4">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between gap-3 py-1.5 text-left"
+      >
+        <span className="font-serif text-gold text-sm font-bold">{title}</span>
+        <ChevronDown
+          size={16}
+          className={'text-navy/40 transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')}
+        />
+      </button>
+      {open && (
+        <div className="bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4 mt-1">{children}</div>
+      )}
+    </div>
+  );
+}
+
+// Полноширинная navy-полоса «Важно для иностранцев» — без эмодзи, чистая
+// иконка. Всегда развёрнута: это то, что важно не пропустить.
+function ForeignersBanner({ items }: { items: string[] }) {
+  return (
+    <div className="mt-5 bg-navy px-6 py-5">
+      <div className="flex items-center gap-2 mb-2.5">
+        <Info size={15} className="text-gold flex-shrink-0" />
+        <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Важно для иностранцев</p>
+      </div>
+      <div className="flex flex-col gap-2.5">
+        {items.map((s, i) => (
+          <div key={i} className="flex gap-2.5 items-start">
+            <span className="w-1 h-1 rounded-full bg-gold/70 flex-shrink-0 mt-2" />
+            <p className="font-serif text-cream/90 text-sm leading-relaxed">{s}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function FyToBachelorButton() {
@@ -88,25 +135,25 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
 
   return (
     <>
-      {/* Главное описание */}
+      {/* Главное описание — просто текст, без коробки-плашки */}
       {(sec.what_ru || sec.intro_ru || sec.description_ru) && (
-        <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
+        <div className="px-6 mt-5 flex flex-col gap-2">
           {sec.what_ru && (
-            <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.what_ru}</p>
+            <p className="font-serif text-navy/75 text-sm leading-relaxed">{sec.what_ru}</p>
           )}
           {sec.intro_ru && (
-            <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.intro_ru}</p>
+            <p className="font-serif text-navy/75 text-sm leading-relaxed">{sec.intro_ru}</p>
           )}
           {sec.description_ru && (
-            <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.description_ru}</p>
+            <p className="font-serif text-navy/75 text-sm leading-relaxed">{sec.description_ru}</p>
           )}
         </div>
       )}
 
-      {/* Предупреждение (gold) */}
+      {/* Предупреждение (gold) — чистая иконка, без эмодзи */}
       {sec.warning_ru && (
         <div className="mx-6 mt-4 bg-gold/10 border border-gold/60 rounded-2xl px-4 py-3 flex gap-3">
-          <span className="text-gold text-sm flex-shrink-0 mt-0.5">⚠</span>
+          <TriangleAlert size={16} className="text-gold flex-shrink-0 mt-0.5" />
           <p className="font-serif text-navy/85 text-sm leading-relaxed font-bold">{sec.warning_ru}</p>
         </div>
       )}
@@ -119,71 +166,51 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
 
-      {/* Зачем нужна (why) */}
+      {/* Зачем нужна (why) — раскрывается */}
       {sec.why_ru && (
-        <>
-          <SectionLabel>Зачем нужна</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-            <BulletList items={sec.why_ru} />
-          </div>
-        </>
+        <CollapsibleSection title="Зачем нужна" defaultOpen>
+          <BulletList items={sec.why_ru} />
+        </CollapsibleSection>
       )}
 
-      {/* Important for foreigners */}
+      {/* Важно для иностранцев — полноширинная navy-полоса */}
       {sec.important_for_foreigners_ru && (
-        <>
-          <SectionLabel>Важно для иностранцев</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
-            <BulletList items={sec.important_for_foreigners_ru} icon="⚠" />
-          </div>
-        </>
+        <ForeignersBanner items={sec.important_for_foreigners_ru} />
       )}
 
-      {/* Шаги (steps) */}
+      {/* Шаги (steps) — раскрывается */}
       {sec.steps_ru && (
-        <>
-          <SectionLabel>Шаги</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-            <ol className="flex flex-col gap-2.5">
-              {sec.steps_ru.map((s, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-                  <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
+        <CollapsibleSection title="Шаги">
+          <ol className="flex flex-col gap-2.5">
+            {sec.steps_ru.map((s, i) => (
+              <li key={i} className="flex gap-3 items-start">
+                <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
+                <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
+              </li>
+            ))}
+          </ol>
+        </CollapsibleSection>
       )}
 
-      {/* Documents */}
+      {/* Documents — раскрывается */}
       {sec.documents_ru && (
-        <>
-          <SectionLabel>Документы</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-            <BulletList items={sec.documents_ru} />
-          </div>
-        </>
+        <CollapsibleSection title="Документы">
+          <BulletList items={sec.documents_ru} />
+        </CollapsibleSection>
       )}
 
-      {/* Requirements */}
+      {/* Requirements — раскрывается */}
       {sec.requirements_ru && (
-        <>
-          <SectionLabel>Требования</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-            <BulletList items={sec.requirements_ru} icon="✓" />
-          </div>
-        </>
+        <CollapsibleSection title="Требования">
+          <BulletList items={sec.requirements_ru} icon="✓" />
+        </CollapsibleSection>
       )}
 
-      {/* Functionality */}
+      {/* Functionality — раскрывается */}
       {sec.functionality_ru && (
-        <>
-          <SectionLabel>Что можно делать через SPID</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-            <BulletList items={sec.functionality_ru} icon="✓" />
-          </div>
-        </>
+        <CollapsibleSection title="Что можно делать через SPID">
+          <BulletList items={sec.functionality_ru} icon="✓" />
+        </CollapsibleSection>
       )}
 
       {/* Free option highlight */}
@@ -205,25 +232,22 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
 
-      {/* Procedure */}
+      {/* Procedure — раскрывается */}
       {sec.procedure_ru && (
-        <>
-          <SectionLabel>Процедура</SectionLabel>
-          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-            {Array.isArray(sec.procedure_ru) ? (
-              <ol className="flex flex-col gap-2.5">
-                {sec.procedure_ru.map((s, i) => (
-                  <li key={i} className="flex gap-3 items-start">
-                    <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-                    <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.procedure_ru}</p>
-            )}
-          </div>
-        </>
+        <CollapsibleSection title="Процедура">
+          {Array.isArray(sec.procedure_ru) ? (
+            <ol className="flex flex-col gap-2.5">
+              {sec.procedure_ru.map((s, i) => (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
+                  <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.procedure_ru}</p>
+          )}
+        </CollapsibleSection>
       )}
 
       {/* Where */}
@@ -241,7 +265,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
           <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
             <BulletList items={sec.contracts_ru.types_ru} />
             <div className="bg-gold/10 border border-gold/60 rounded-xl px-4 py-3 mt-3 flex gap-2">
-              <span className="text-gold text-sm flex-shrink-0">⚠</span>
+              <TriangleAlert size={15} className="text-gold flex-shrink-0 mt-0.5" />
               <p className="font-serif text-navy/85 text-xs leading-relaxed font-bold">
                 {sec.contracts_ru.student_limit_ru}
               </p>
