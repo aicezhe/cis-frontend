@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, FileDown, Plus, X } from 'lucide-react';
 import TabBar from '../components/TabBar';
@@ -104,15 +104,14 @@ export default function ExpensesPage() {
   const total = SECTIONS_ORDER.reduce((sum, id) => sum + sectionTotal(id), 0);
 
   // Печать/сохранение в PDF — системный диалог печати браузера (в нём есть
-  // «Сохранить как PDF»), без сторонних библиотек. Перед печатью разворачиваем
-  // все разделы, чтобы в PDF попала полная разбивка, а не только открытый раздел.
+  // «Сохранить как PDF»), без сторонних библиотек. Печатается отдельное чистое
+  // представление — таблица (hidden print:block ниже), а не вёрстка экрана.
   function handleExportPdf() {
-    setExpanded('all');
-    setTimeout(() => window.print(), 50);
+    window.print();
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28 print:max-w-full print:pb-0">
       <div className="px-6 pt-12 flex items-center justify-between print:hidden">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>
@@ -125,9 +124,9 @@ export default function ExpensesPage() {
           <FileDown size={14} /> PDF
         </button>
       </div>
-      <h1 className="hidden print:block font-serif text-navy text-2xl font-bold px-6 pt-6">Стоимость</h1>
+      <h1 className="hidden print:block font-serif text-navy text-2xl font-bold px-8 pt-6">Стоимость</h1>
 
-      <div className="mx-6 mt-5 bg-navy rounded-2xl px-5 py-4 print:border print:border-navy">
+      <div className="mx-6 mt-5 bg-navy rounded-2xl px-5 py-4 print:hidden">
         <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Итого</p>
         <p className="font-serif text-cream text-3xl font-bold mt-1">{fmt(total)}</p>
         <p className="font-serif text-cream/60 text-xs mt-1">
@@ -135,7 +134,60 @@ export default function ExpensesPage() {
         </p>
       </div>
 
-      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
+      {/* Печатное представление — чистая таблица, а не скрин экрана. Видна только
+          при печати/сохранении в PDF (hidden print:block). */}
+      <div className="hidden print:block px-8 pt-4">
+        <table className="w-full font-serif text-navy text-sm" style={{ borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th className="text-left font-bold pb-1" style={{ borderBottom: '2px solid #1C2A48' }}>Статья</th>
+              <th className="text-right font-bold pb-1" style={{ borderBottom: '2px solid #1C2A48' }}>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SECTIONS_ORDER.map((id) => {
+              const custom = expenses.filter((e) => e.category === id);
+              const perYear = id === 'parma';
+              return (
+                <Fragment key={id}>
+                  <tr style={{ borderBottom: '1.5px solid #1C2A48' }}>
+                    <td className="pt-4 pb-1 font-bold uppercase text-xs" style={{ color: '#B89968', letterSpacing: '0.1em' }}>
+                      {sectionsData[id].titleFull}{perYear ? ' · в год' : ''}
+                    </td>
+                    <td className="pt-4 pb-1 font-bold text-right">{fmt(sectionTotal(id))}</td>
+                  </tr>
+                  {sectionItems(id).map((item) => (
+                    <tr key={item.id}>
+                      <td className="py-1 pl-4" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>{item.label}</td>
+                      <td className="py-1 text-right" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>
+                        {item.approx ? '~' : ''}{fmt(item.eur)}
+                      </td>
+                    </tr>
+                  ))}
+                  {custom.map((e) => (
+                    <tr key={e.id}>
+                      <td className="py-1 pl-4" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>
+                        {e.label} <span style={{ color: '#B89968' }}>· вручную</span>
+                      </td>
+                      <td className="py-1 text-right" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>{fmt(e.amount_eur)}</td>
+                    </tr>
+                  ))}
+                </Fragment>
+              );
+            })}
+            <tr>
+              <td className="pt-4 font-bold text-base">ИТОГО</td>
+              <td className="pt-4 font-bold text-base text-right">{fmt(total)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="text-navy/50 text-[11px] italic mt-4">
+          Оценки помечены «~» — приблизительно. Разовые расходы (универ, виза, переезд) + первый год
+          жизни в Парме{uniCosts.country ? ` · страна ${uniCosts.country.toUpperCase()}` : ''}.
+        </p>
+      </div>
+
+      <div className="mx-6 mt-5 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden print:hidden">
         {SECTIONS_ORDER.map((id, idx) => {
           const custom = expenses.filter((e) => e.category === id);
           const perYear = id === 'parma';
@@ -246,7 +298,7 @@ export default function ExpensesPage() {
       </button>
 
       {uniCosts.country && (
-        <p className="font-serif text-navy/40 text-[11px] italic text-center mt-6 px-6">
+        <p className="font-serif text-navy/40 text-[11px] italic text-center mt-6 px-6 print:hidden">
           Оценки для {uniCosts.country.toUpperCase()} · меняй валюту в Настройках
         </p>
       )}
@@ -270,7 +322,9 @@ export default function ExpensesPage() {
         />
       )}
 
-      <TabBar active="path" />
+      <div className="print:hidden">
+        <TabBar active="path" />
+      </div>
     </div>
   );
 }
