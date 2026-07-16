@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronDown, FileDown, Plus, X } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
+import { EditPriceSheet } from '../components/EditPriceSheet';
 import { sectionsData, parsePrice } from '../lib/sectionsData';
 import { useUniCosts } from '../hooks/useCosts';
 import { useExpenses } from '../hooks/useExpenses';
+import { usePriceOverrides } from '../hooks/usePriceOverrides';
 import type { Expense, ExpenseCategory } from '../lib/expenses';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
@@ -15,8 +17,10 @@ const SECTIONS_ORDER: ExpenseCategory[] = ['uni', 'visa', 'travel', 'parma'];
 interface LineItem {
   id: string;
   label: string;
-  eur: number;
+  eur: number;      // отображаемая цена (с учётом override)
+  baseEur?: number; // эталон из сида — к нему возвращает «Сбросить»
   approx?: boolean; // показываем «~» — оценка, а не точный тариф
+  edited?: boolean; // юзер подставил свою цену (override поверх сида)
   note?: string;
 }
 
@@ -55,10 +59,12 @@ export default function ExpensesPage() {
   const navigate = useNavigate();
   const uniCosts = useUniCosts();
   const { expenses, totalByCategory, removeExpense } = useExpenses();
+  const { overrides } = usePriceOverrides();
   const { currency } = useCurrency();
   const fmt = (eur: number) => formatPrice(eur, currency);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
+  const [editingPrice, setEditingPrice] = useState<{ id: string; label: string; baseEur: number } | null>(null);
   const [expanded, setExpanded] = useState<ExpenseCategory | 'all' | null>(null);
   const [healthSsn, setHealthSsn] = useState(() => localStorage.getItem('cispr_health_ssn') === 'true');
 
@@ -67,13 +73,21 @@ export default function ExpensesPage() {
     setHealthSsn(ssn);
   }
 
+  // Персональная правка поверх сида: если для строки есть override — берём его
+  // (и это уже не «оценка», а точная цифра юзера), эталон остаётся в baseEur.
+  const applyOverride = (i: LineItem): LineItem =>
+    i.id in overrides
+      ? { ...i, baseEur: i.eur, eur: overrides[i.id], approx: false, edited: true }
+      : { ...i, baseEur: i.eur };
+
   const sectionItems = (id: ExpenseCategory): LineItem[] => {
-    if (id === 'uni') {
-      return uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }));
-    }
-    const items = staticItems(id);
-    if (id === 'parma') items.push(healthItem(healthSsn));
-    return items;
+    const raw =
+      id === 'uni'
+        ? uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }))
+        : id === 'parma'
+        ? [...staticItems(id), healthItem(healthSsn)]
+        : staticItems(id);
+    return raw.map(applyOverride);
   };
 
   // База раздела = сумма его статей (заголовок = разбивка). Универ на время
@@ -150,12 +164,16 @@ export default function ExpensesPage() {
                   ) : (
                     <>
                       {items.map((item) => (
-                        <div key={item.id} className="flex items-start justify-between gap-3">
-                          <p className="font-serif text-navy/85 text-sm flex-1">{item.label}</p>
-                          <p className="font-serif text-navy/85 text-sm font-bold flex-shrink-0">
+                        <button
+                          key={item.id}
+                          onClick={() => setEditingPrice({ id: item.id, label: item.label, baseEur: item.baseEur ?? item.eur })}
+                          className="flex items-start justify-between gap-3 text-left print:pointer-events-none"
+                        >
+                          <span className="font-serif text-navy/85 text-sm flex-1">{item.label}</span>
+                          <span className={'font-serif text-sm font-bold flex-shrink-0 ' + (item.edited ? 'text-gold' : 'text-navy/85')}>
                             {item.approx ? '~' : ''}{fmt(item.eur)}
-                          </p>
-                        </div>
+                          </span>
+                        </button>
                       ))}
 
                       {/* Ручные расходы — теми же строками, что seed-разбивка, а не
@@ -241,6 +259,14 @@ export default function ExpensesPage() {
           defaultCategory={editing.category}
           expense={editing}
           onClose={() => setEditing(null)}
+        />
+      )}
+      {editingPrice && (
+        <EditPriceSheet
+          id={editingPrice.id}
+          label={editingPrice.label}
+          baseEur={editingPrice.baseEur}
+          onClose={() => setEditingPrice(null)}
         />
       )}
 
