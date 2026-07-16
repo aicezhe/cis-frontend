@@ -110,46 +110,50 @@ export default function ExpensesPage() {
 
               {isOpen && (
                 <div className="px-4 pb-2 flex flex-col gap-2">
-                  {items.length === 0 ? (
+                  {items.length === 0 && custom.length === 0 ? (
                     <p className="font-serif text-navy/50 text-xs italic pb-1">
                       Нет данных для разбивки.
                     </p>
                   ) : (
-                    items.map((item, i) => (
-                      <div key={i} className="flex items-start justify-between gap-3">
-                        <p className="font-serif text-navy/85 text-sm flex-1">
-                          {'label_ru' in item ? item.label_ru : item.label}
-                        </p>
-                        <p className="font-serif text-navy/85 text-sm font-bold flex-shrink-0">{fmt(item.eur)}</p>
-                      </div>
-                    ))
+                    <>
+                      {items.map((item, i) => (
+                        <div key={i} className="flex items-start justify-between gap-3">
+                          <p className="font-serif text-navy/85 text-sm flex-1">
+                            {'label_ru' in item ? item.label_ru : item.label}
+                          </p>
+                          <p className="font-serif text-navy/85 text-sm font-bold flex-shrink-0">{fmt(item.eur)}</p>
+                        </div>
+                      ))}
+
+                      {/* Ручные расходы — теми же строками, что seed-разбивка, а не
+                          коробкой-плашкой. Отличает только золотая точка-маркер:
+                          тап по строке — изменить, крестик — удалить. */}
+                      {custom.map((e) => (
+                        <div key={e.id} className="flex items-center justify-between gap-3">
+                          <button
+                            onClick={() => setEditing(e)}
+                            className="flex items-center gap-2 flex-1 text-left"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-gold flex-shrink-0" aria-hidden />
+                            <span className="font-serif text-navy/85 text-sm">{e.label}</span>
+                          </button>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className="font-serif text-navy/85 text-sm font-bold">{fmt(e.amount_eur)}</span>
+                            <span
+                              role="button"
+                              onClick={() => removeExpense(e.id)}
+                              className="text-navy/30 print:hidden"
+                              aria-label="Удалить"
+                            >
+                              <X size={13} />
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </>
                   )}
                 </div>
               )}
-
-              {custom.map((e) => (
-                <button
-                  key={e.id}
-                  onClick={() => setEditing(e)}
-                  className="w-full flex items-start justify-between gap-3 px-4 py-2.5 border-t border-navy/10 text-left"
-                >
-                  <div className="flex-1">
-                    <p className="font-serif text-navy/85 text-sm">{e.label}</p>
-                    <p className="font-serif text-gold text-[11px] italic mt-0.5">добавлено вручную · тап, чтобы изменить</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <p className="font-serif text-navy text-sm font-bold">{fmt(e.amount_eur)}</p>
-                    <span
-                      role="button"
-                      onClick={(ev) => { ev.stopPropagation(); removeExpense(e.id); }}
-                      className="text-navy/40 print:hidden"
-                      aria-label="Удалить"
-                    >
-                      <X size={14} />
-                    </span>
-                  </div>
-                </button>
-              ))}
             </div>
           );
         })}
