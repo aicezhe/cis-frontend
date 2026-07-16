@@ -6,6 +6,7 @@ type CountryCode = 'ru' | 'ua' | 'by' | 'kz';
 type ProgramKey = 'foundation' | 'bachelor' | 'master';
 
 export interface CostItem {
+  id: string;
   label_ru: string;
   eur: number;
   note_ru?: string;
@@ -56,6 +57,7 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
       passport_biometric: 'Биометрический загранпаспорт',
     };
     items.push({
+      id: `uni:${key}`,
       label_ru: labelMap[key] || key,
       eur: d.eur,
       note_ru: d.note_ru,
@@ -67,6 +69,7 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
   // (депозит — это первый взнос ИЗ этой суммы, а не отдельная статья расхода).
   if (program === 'foundation') {
     items.push({
+      id: 'uni:foundation_fee',
       label_ru: 'Курс Foundation Year',
       eur: programData.course_fee_eur,
       note_ru: `Депозит ${programData.deposit_eur}€ — первый взнос из этой суммы, возвращается при отказе в визе. С Dante — ${programData.course_fee_dante_eur}€.`,
@@ -76,29 +79,17 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
   // Минимальный взнос при зачислении (бакалавр/маги)
   if ((program === 'bachelor' || program === 'master') && programData.enrollment_min_eur > 0) {
     items.push({
+      id: 'uni:enrollment_min',
       label_ru: 'Минимальный взнос (no tax area, ISEE ≤27 000€)',
       eur: programData.enrollment_min_eur,
       note_ru: 'С ISEE parificato — 156€/год. Без ISEE — до 2 500€/год.',
     });
   }
 
-  // Виза (если не waiver)
+  // ВИЗА здесь НЕ считается: у визовых расходов свой раздел-владелец «Виза»
+  // (sectionsData.visa). Раньше consular/service/insurance попадали и сюда, и
+  // туда — итог двоился. См. правило «каждый расход ровно в одном разделе».
   const hasWaiver = !!(visa.special_status?.active);
-  if (!hasWaiver) {
-    items.push({
-      label_ru: 'Консульский сбор (виза D)',
-      eur: visa.consular_fee.eur,
-    });
-    items.push({
-      label_ru: 'Сервисный сбор визового центра',
-      eur: visa.service_fee.eur,
-    });
-    items.push({
-      label_ru: 'Медицинская страховка (год)',
-      eur: visa.insurance_year.eur,
-      note_ru: 'Приближённая стоимость. Страховка нужна для визы.',
-    });
-  }
 
   const total_eur = items.reduce((sum, i) => sum + i.eur, 0);
 

@@ -7,7 +7,7 @@ import { SectionIcon } from '../components/SectionIcon';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { loadCachedAvatar } from '../lib/avatar';
 import { longPressHandlers } from '../lib/longPress';
-import { sectionsData, parsePrice } from '../lib/sectionsData';
+import { sectionsData, parsePrice, sectionStaticTotal } from '../lib/sectionsData';
 import { useUniCosts } from '../hooks/useCosts';
 import { useExpenses } from '../hooks/useExpenses';
 import { useFoundation } from '../hooks/useFoundation';
@@ -80,7 +80,7 @@ function getItemId(section: string, stepNum: number, subIndex: number | null = n
 
 function getSectionSpent(sectionKey: string, isCompletedSection: boolean): number {
   const data = sectionsData[sectionKey];
-  if (isCompletedSection) return data.budget;
+  if (isCompletedSection) return sectionKey === 'uni' ? data.budget : sectionStaticTotal(sectionKey);
   const completed = loadCompleted(sectionKey);
   let spent = 0;
   data.steps.forEach((step: any) => {
@@ -178,7 +178,7 @@ export default function PathPage() {
     0
   );
   const totalBudget = sectionsOrder.reduce(
-    (sum, id) => sum + (id === 'uni' ? dynamicUniBudget : sectionsData[id].budget),
+    (sum, id) => sum + (id === 'uni' ? dynamicUniBudget : sectionStaticTotal(id)),
     0
   );
   const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
@@ -316,7 +316,7 @@ export default function PathPage() {
         {/* Разбивка по разделам */}
         <div className="mt-3 pt-3 border-t border-navy/10 flex flex-col gap-1.5">
           {sectionsOrder.map((id) => {
-            const budget = id === 'uni' ? dynamicUniBudget : sectionsData[id].budget;
+            const budget = id === 'uni' ? dynamicUniBudget : sectionStaticTotal(id);
             const label = sectionsData[id].titleFull;
             // «В Парме» — это годовой расход на жизнь после переезда (а не на разовое мероприятие)
             const perYear = id === 'parma';

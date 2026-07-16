@@ -12,26 +12,40 @@ import { formatPrice } from '../utils/formatPrice';
 
 const SECTIONS_ORDER: ExpenseCategory[] = ['uni', 'visa', 'travel', 'parma'];
 
-interface StaticItem {
+interface LineItem {
+  id: string;
   label: string;
   eur: number;
+  approx?: boolean; // показываем «~» — оценка, а не точный тариф
+  note?: string;
 }
 
-// Разворачиваем шаги раздела в отдельные позиции: если у шага есть подшаги —
-// берём их (точнее), иначе сам шаг. Нулевые убираем — они не несут стоимости.
-function staticItems(id: 'visa' | 'travel' | 'parma'): StaticItem[] {
-  const items: StaticItem[] = [];
+// Медицина в Парме — выбор юзера: частная страховка (~€150/год) или запись в
+// госмедицину SSN (€700/год, тариф для студентов с 2024, подтверждён AUSL Parma).
+// Пока переключателя нет — дефолт частная; выбор добавим следующим шагом.
+function healthItem(): LineItem {
+  const ssn = localStorage.getItem('cispr_health_ssn') === 'true';
+  return ssn
+    ? { id: 'parma-health', label: 'Медицина: SSN (год)', eur: 700 }
+    : { id: 'parma-health', label: 'Медицина: частная страховка (год)', eur: 150, approx: true };
+}
+
+// Разворачиваем шаги раздела в отдельные позиции. Новая структура — плоские
+// строки с id (для override) и флагом approx. Нулевые убираем.
+function staticItems(id: 'visa' | 'travel' | 'parma'): LineItem[] {
+  const items: LineItem[] = [];
   sectionsData[id].steps.forEach((step: any) => {
-    if (step.substeps.length > 0) {
-      step.substeps.forEach((sub: any) => {
+    if (step.substeps && step.substeps.length > 0) {
+      step.substeps.forEach((sub: any, i: number) => {
         const eur = parsePrice(sub.price);
-        if (eur > 0) items.push({ label: sub.title, eur });
+        if (eur > 0) items.push({ id: `${id}-${step.num}-${i}`, label: sub.title, eur });
       });
     } else {
       const eur = parsePrice(step.price);
-      if (eur > 0) items.push({ label: step.title, eur });
+      if (eur > 0) items.push({ id: step.id, label: step.title, eur, approx: step.approx });
     }
   });
+  if (id === 'parma') items.push(healthItem());
   return items;
 }
 
@@ -50,11 +64,23 @@ export default function ExpensesPage() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [expanded, setExpanded] = useState<ExpenseCategory | 'all' | null>(null);
 
-  // Универ — динамический бюджет (страна + программа), остальное — статика
-  const dynamicUniBudget = uniCosts.loading ? sectionsData.uni.budget : uniCosts.total_eur;
-  const baseBudget = (id: ExpenseCategory) => (id === 'uni' ? dynamicUniBudget : sectionsData[id].budget);
+  const sectionItems = (id: ExpenseCategory): LineItem[] =>
+    id === 'uni'
+      ? uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }))
+      : staticItems(id);
 
-  const total = SECTIONS_ORDER.reduce((sum, id) => sum + baseBudget(id) + totalByCategory[id], 0);
+  // База раздела = сумма его статей (заголовок = разбивка). Универ на время
+  // загрузки сида — прежняя оценка, чтобы не мигало нулём.
+  const sectionBase = (id: ExpenseCategory): number =>
+    id === 'uni' && uniCosts.loading
+      ? sectionsData.uni.budget
+      : sectionItems(id).reduce((sum, i) => sum + i.eur, 0);
+
+  // Заголовок раздела = статьи + добавленные вручную. Раньше ручные в заголовок
+  // не входили, а в «Итого» входили — расходилось.
+  const sectionTotal = (id: ExpenseCategory): number => sectionBase(id) + totalByCategory[id];
+
+  const total = SECTIONS_ORDER.reduce((sum, id) => sum + sectionTotal(id), 0);
 
   // Печать/сохранение в PDF — системный диалог печати браузера (в нём есть
   // «Сохранить как PDF»), без сторонних библиотек. Перед печатью разворачиваем
@@ -93,7 +119,7 @@ export default function ExpensesPage() {
           const custom = expenses.filter((e) => e.category === id);
           const perYear = id === 'parma';
           const isOpen = expanded === id || expanded === 'all';
-          const items = id === 'uni' ? uniCosts.items : staticItems(id);
+          const items = sectionItems(id);
           return (
             <div key={id} className={idx > 0 ? 'border-t border-navy/15' : ''}>
               <button
@@ -105,7 +131,7 @@ export default function ExpensesPage() {
                   {id === 'uni' && uniCosts.loading && <span className="text-navy/40 normal-case font-normal">— считаю…</span>}
                   <ChevronDown size={12} className={'text-navy/40 transition-transform print:hidden ' + (isOpen ? 'rotate-180' : '')} />
                 </p>
-                <p className="font-serif text-navy text-sm font-bold flex-shrink-0">{fmt(baseBudget(id))}</p>
+                <p className="font-serif text-navy text-sm font-bold flex-shrink-0">{fmt(sectionTotal(id))}</p>
               </button>
 
               {isOpen && (
@@ -116,12 +142,12 @@ export default function ExpensesPage() {
                     </p>
                   ) : (
                     <>
-                      {items.map((item, i) => (
-                        <div key={i} className="flex items-start justify-between gap-3">
-                          <p className="font-serif text-navy/85 text-sm flex-1">
-                            {'label_ru' in item ? item.label_ru : item.label}
+                      {items.map((item) => (
+                        <div key={item.id} className="flex items-start justify-between gap-3">
+                          <p className="font-serif text-navy/85 text-sm flex-1">{item.label}</p>
+                          <p className="font-serif text-navy/85 text-sm font-bold flex-shrink-0">
+                            {item.approx ? '~' : ''}{fmt(item.eur)}
                           </p>
-                          <p className="font-serif text-navy/85 text-sm font-bold flex-shrink-0">{fmt(item.eur)}</p>
                         </div>
                       ))}
 

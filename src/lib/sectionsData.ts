@@ -34,87 +34,46 @@ export const sectionsData: Record<string, any> = {
       { num: 9, title: 'Acceptance Letter', deadline: 'актуально', price: '€0', substeps: [] },
     ],
   },
+  // ВИЗА — только визовые расходы. Документы (апостиль/перевод/CIMEA) считаются
+  // в «Университете», permesso — в «Переезде». Здесь их НЕТ, чтобы не двоить.
   visa: {
     title: 'ВИЗА',
     titleFull: 'Виза',
     icon: iconVisa,
-    budget: 600,
     steps: [
-      { num: 1, title: 'Понять свою схему', deadline: '3 дня', price: '€0', substeps: [
-        { title: 'Консульский округ', price: '€0' },
-        { title: 'Визовый центр', price: '€0' },
-        { title: 'Тип D', price: '€0' },
-      ]},
-      { num: 2, title: 'Завершить поступление', deadline: 'актуально', price: '€340', substeps: [
-        { title: 'Письмо о зачислении', price: '€0' },
-        { title: 'Апостиль', price: '€20–50' },
-        { title: 'Перевод', price: '€150–250' },
-        { title: 'Dichiarazione', price: '€30–60' },
-      ]},
-      { num: 3, title: 'Universitaly', deadline: '7 дней', price: '€0', substeps: [
-        { title: 'Аккаунт', price: '€0' },
-        { title: 'Заявка', price: '€0' },
-        { title: 'Подтверждение', price: '€0' },
-      ]},
-      { num: 4, title: 'Подготовка документов', deadline: '14 дней', price: '€80', substeps: [
-        { title: 'Загранпаспорт', price: '€0' },
-        { title: 'Копии', price: '€0' },
-        { title: 'Паспорт РФ', price: '€0' },
-        { title: 'Анкета', price: '€0' },
-        { title: 'Фото', price: '€10–20' },
-        { title: 'Бронь', price: '€0–50' },
-      ]},
-      { num: 5, title: 'Финансы и страховка', deadline: '14 дней', price: '€225', substeps: [
-        { title: 'Выписка', price: '€0' },
-        { title: 'Спонсорское', price: '€0' },
-        { title: 'Страховка', price: '€150–300' },
-      ]},
-      { num: 6, title: 'Подача в визовый центр', deadline: 'актуально', price: '€110', substeps: [
-        { title: 'Запись', price: '€0' },
-        { title: 'Консульский сбор', price: '~€90' },
-        { title: 'Сервисный сбор', price: '~€20' },
-        { title: 'Биометрия', price: '€0' },
-      ]},
-      { num: 7, title: 'Ожидание визы', deadline: '7 дней', price: '€0', substeps: [
-        { title: 'Статус', price: '€0' },
-        { title: 'Забрать паспорт', price: '€0' },
-      ]},
-      { num: 8, title: 'После въезда', deadline: 'актуально', price: '€60', substeps: [
-        { title: 'Kit permesso', price: '€50–70' },
-        { title: 'Конверт', price: '€0' },
-        { title: 'Questura', price: '€0' },
-        { title: 'Карта permesso', price: '€0' },
-      ]},
+      { id: 'visa-consular', num: 1, title: 'Консульский сбор (виза D)', deadline: 'актуально', price: '€90', substeps: [] },
+      { id: 'visa-service', num: 2, title: 'Сервисный сбор визового центра', deadline: 'актуально', price: '€40', substeps: [], approx: true },
+      { id: 'visa-insurance', num: 3, title: 'Медстраховка для визы (год)', deadline: '14 дней', price: '€200', substeps: [], approx: true },
+      { id: 'visa-photo', num: 4, title: 'Фото и бронь билета/жилья', deadline: '14 дней', price: '€20', substeps: [], approx: true },
     ],
   },
   travel: {
     title: 'ПЕРЕЕЗД',
     titleFull: 'Переезд',
     icon: iconTravel,
-    // Сумма шагов ниже (500+450+1450+0+136+0). Permesso — marca da bollo (€16) + KIT (€120),
-    // см. relocation_ru_seed.json → permesso_di_soggiorno.steps_ru.
-    budget: 2536,
     steps: [
-      { num: 1, title: 'Билеты в Италию', deadline: 'актуально', price: '€500', substeps: [] },
-      { num: 2, title: 'Поиск жилья', deadline: 'актуально', price: '€450', substeps: [] },
-      { num: 3, title: 'Первый месяц + депозит', deadline: '14 дней', price: '€1450', substeps: [] },
-      { num: 4, title: 'Codice fiscale', deadline: '7 дней', price: '€0', substeps: [] },
-      { num: 5, title: 'Permesso di soggiorno', deadline: '8 дней', price: '€136', substeps: [] },
-      { num: 6, title: 'Банковский счёт', deadline: '14 дней', price: '€0', substeps: [] },
+      { id: 'travel-flights', num: 1, title: 'Билеты в Италию (через третьи страны)', deadline: 'актуально', price: '€400', substeps: [], approx: true },
+      { id: 'travel-housing-fee', num: 2, title: 'Поиск жилья (агентство / бронь)', deadline: 'актуально', price: '€450', substeps: [], approx: true },
+      { id: 'travel-first-month', num: 3, title: 'Первый месяц аренды + депозит', deadline: '14 дней', price: '€1450', substeps: [], approx: true },
+      // Permesso di soggiorno (учёба, до 1 года): bollo €16 + kit €30 + пермессо €70,46.
+      // Источник: portaleimmigrazione.it → Tabelle Costi (2026).
+      { id: 'travel-permesso', num: 4, title: 'Permesso di soggiorno', deadline: '8 дней', price: '€116', substeps: [] },
+      { id: 'travel-sim', num: 5, title: 'SIM-карта (подключение)', deadline: '7 дней', price: '€10', substeps: [], approx: true },
+      { id: 'travel-codice', num: 6, title: 'Codice fiscale', deadline: '7 дней', price: '€0', substeps: [] },
+      { id: 'travel-bank', num: 7, title: 'Банковский счёт', deadline: '14 дней', price: '€0', substeps: [] },
     ],
   },
+  // В ПАРМЕ — годовые расходы жизни. Медицина — отдельный выбор (частная/SSN),
+  // подставляется в ExpensesPage, поэтому строки «медицина» здесь нет.
   parma: {
     title: 'В ПАРМЕ',
     titleFull: 'В Парме',
     icon: iconInParma,
-    budget: 3000,
     steps: [
-      { num: 1, title: 'Медицина', deadline: 'актуально', price: '€150', substeps: [] },
-      { num: 2, title: 'Транспорт', deadline: '7 дней', price: '€100', substeps: [] },
-      { num: 3, title: 'Стипендия ER.GO', deadline: 'до сентября', price: '€0', substeps: [] },
-      { num: 4, title: 'Подработка', deadline: 'актуально', price: '€0', substeps: [] },
-      { num: 5, title: 'Социальная жизнь', deadline: 'актуально', price: '€0', substeps: [] },
-      { num: 6, title: 'Когда тяжело', deadline: 'актуально', price: '€0', substeps: [] },
+      { id: 'parma-rent', num: 1, title: 'Аренда комнаты (оценка, год)', deadline: 'ежемесячно', price: '€6000', substeps: [], approx: true },
+      { id: 'parma-food', num: 2, title: 'Питание и быт (оценка, год)', deadline: 'ежемесячно', price: '€2400', substeps: [], approx: true },
+      { id: 'parma-transport', num: 3, title: 'Транспорт (TEP, студ. абонемент, год)', deadline: 'год', price: '€120', substeps: [] },
+      { id: 'parma-mobile', num: 4, title: 'Мобильная связь (год)', deadline: 'ежемесячно', price: '€120', substeps: [], approx: true },
     ],
   },
 };
@@ -127,4 +86,19 @@ export function parsePrice(price: string): number {
     return Math.round((a + b) / 2);
   }
   return parseInt(cleaned) || 0;
+}
+
+// Базовая сумма раздела = сумма его статей (заголовок = разбивка). Заменяет
+// прежнее хардкод-поле budget, которое расходилось с построчной разбивкой.
+// Раздел «Университет» считается отдельно (useCosts по стране/программе), а для
+// «Парма» строка «медицина» подставляется в ExpensesPage — здесь её нет.
+export function sectionStaticTotal(id: string): number {
+  const s = sectionsData[id];
+  if (!s?.steps) return 0;
+  return s.steps.reduce((sum: number, step: any) => {
+    if (step.substeps && step.substeps.length > 0) {
+      return sum + step.substeps.reduce((a: number, sub: any) => a + parsePrice(sub.price), 0);
+    }
+    return sum + parsePrice(step.price);
+  }, 0);
 }
