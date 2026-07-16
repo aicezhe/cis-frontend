@@ -4,6 +4,7 @@ import { useParmaLife } from '../hooks/useParmaLife';
 import { parmaIconComponent } from '../components/ParmaIcon';
 import { GridButton } from '../components/GridButton';
 import { HomeAddressInput } from '../components/HomeAddressInput';
+import { PARMA_GROUPS } from '../lib/parmaGroups';
 
 export default function ParmaLifeOverviewPage() {
   const navigate = useNavigate();
@@ -16,9 +17,6 @@ export default function ParmaLifeOverviewPage() {
       </div>
     );
   }
-
-  const isFoundation = (localStorage.getItem('cispr_program') || '') === 'foundation';
-  const subsections = parmaLife.subsections.filter((s) => isFoundation || !s.foundation_only);
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -57,17 +55,17 @@ export default function ParmaLifeOverviewPage() {
         <HomeAddressInput />
       </div>
 
-      {/* Подразделы — компактная сетка мелких плиток, как в Университете */}
-      <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
+      {/* Три общих раздела — плитки с анимацией. Внутри каждого — подразделы. */}
+      <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Разделы:</p>
       <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
-        {subsections.map((sec, i) => (
+        {PARMA_GROUPS.map((g, i) => (
           <GridButton
-            key={sec.id}
-            icon={parmaIconComponent(sec.id)}
-            title={sec.title_ru}
-            to={`/path/parma/${sec.id}`}
+            key={g.id}
+            icon={parmaIconComponent(g.iconSubId)}
+            title={g.title_ru}
+            to={`/path/parma/group/${g.id}`}
             seed={i + 1}
-            wide={subsections.length % 2 === 1 && i === subsections.length - 1}
+            wide={PARMA_GROUPS.length % 2 === 1 && i === PARMA_GROUPS.length - 1}
           />
         ))}
       </div>

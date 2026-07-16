@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronDown, TriangleAlert, Info } from 'lucide-react';
+import { TriangleAlert, Info } from 'lucide-react';
 import { useParmaLife } from '../hooks/useParmaLife';
 import { Price } from '../components/Price';
 import { ParmaIcon } from '../components/ParmaIcon';
@@ -32,31 +32,6 @@ function BulletList({ items, icon = '◆' }: { items: string[]; icon?: string })
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">{children}</p>;
-}
-
-// Сворачиваемая секция — золотой заголовок + шеврон, тап раскрывает содержимое.
-// Тот же паттерн, что «Шаги N» на других вкладышах.
-function CollapsibleSection({
-  title, defaultOpen = false, children,
-}: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="mx-6 mt-4">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between gap-3 py-1.5 text-left"
-      >
-        <span className="font-serif text-gold text-sm font-bold">{title}</span>
-        <ChevronDown
-          size={16}
-          className={'text-navy/40 transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')}
-        />
-      </button>
-      {open && (
-        <div className="bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4 mt-1">{children}</div>
-      )}
-    </div>
-  );
 }
 
 // Полноширинная navy-полоса «Важно для иностранцев» — без эмодзи, чистая
@@ -166,11 +141,14 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
 
-      {/* Зачем нужна (why) — раскрывается */}
+      {/* Зачем нужна (why) */}
       {sec.why_ru && (
-        <CollapsibleSection title="Зачем нужна" defaultOpen>
-          <BulletList items={sec.why_ru} />
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Зачем нужна</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
+            <BulletList items={sec.why_ru} />
+          </div>
+        </>
       )}
 
       {/* Важно для иностранцев — полноширинная navy-полоса */}
@@ -178,39 +156,51 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         <ForeignersBanner items={sec.important_for_foreigners_ru} />
       )}
 
-      {/* Шаги (steps) — раскрывается */}
+      {/* Шаги (steps) */}
       {sec.steps_ru && (
-        <CollapsibleSection title="Шаги">
-          <ol className="flex flex-col gap-2.5">
-            {sec.steps_ru.map((s, i) => (
-              <li key={i} className="flex gap-3 items-start">
-                <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-                <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
-              </li>
-            ))}
-          </ol>
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Шаги</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            <ol className="flex flex-col gap-2.5">
+              {sec.steps_ru.map((s, i) => (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
+                  <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </>
       )}
 
-      {/* Documents — раскрывается */}
+      {/* Documents */}
       {sec.documents_ru && (
-        <CollapsibleSection title="Документы">
-          <BulletList items={sec.documents_ru} />
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Документы</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            <BulletList items={sec.documents_ru} />
+          </div>
+        </>
       )}
 
-      {/* Requirements — раскрывается */}
+      {/* Requirements */}
       {sec.requirements_ru && (
-        <CollapsibleSection title="Требования">
-          <BulletList items={sec.requirements_ru} icon="✓" />
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Требования</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            <BulletList items={sec.requirements_ru} icon="✓" />
+          </div>
+        </>
       )}
 
-      {/* Functionality — раскрывается */}
+      {/* Functionality */}
       {sec.functionality_ru && (
-        <CollapsibleSection title="Что можно делать через SPID">
-          <BulletList items={sec.functionality_ru} icon="✓" />
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Что можно делать через SPID</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            <BulletList items={sec.functionality_ru} icon="✓" />
+          </div>
+        </>
       )}
 
       {/* Free option highlight */}
@@ -232,22 +222,25 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
 
-      {/* Procedure — раскрывается */}
+      {/* Procedure */}
       {sec.procedure_ru && (
-        <CollapsibleSection title="Процедура">
-          {Array.isArray(sec.procedure_ru) ? (
-            <ol className="flex flex-col gap-2.5">
-              {sec.procedure_ru.map((s, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-                  <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.procedure_ru}</p>
-          )}
-        </CollapsibleSection>
+        <>
+          <SectionLabel>Процедура</SectionLabel>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+            {Array.isArray(sec.procedure_ru) ? (
+              <ol className="flex flex-col gap-2.5">
+                {sec.procedure_ru.map((s, i) => (
+                  <li key={i} className="flex gap-3 items-start">
+                    <span className="font-serif text-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
+                    <p className="font-serif text-navy/80 text-sm leading-relaxed">{s}</p>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="font-serif text-navy/80 text-sm leading-relaxed">{sec.procedure_ru}</p>
+            )}
+          </div>
+        </>
       )}
 
       {/* Where */}

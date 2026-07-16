@@ -44,6 +44,7 @@ import PermessoPage from './pages/PermessoPage';
 import HousingSearchPage from './pages/HousingSearchPage';
 import CardsPage from './pages/CardsPage';
 import ParmaLifeOverviewPage from './pages/ParmaLifeOverviewPage';
+import ParmaGroupPage from './pages/ParmaGroupPage';
 import ParmaSubsectionPage from './pages/ParmaSubsectionPage';
 
 // MapLibre GL — тяжёлая либа (~500 KB gzip), нужна только на /map. Ленивая
@@ -93,6 +94,7 @@ export default function App() {
       <Route path="/path/travel/housing" element={<HousingSearchPage />} />
       <Route path="/path/travel/cards" element={<CardsPage />} />
       <Route path="/path/parma" element={<ParmaLifeOverviewPage />} />
+      <Route path="/path/parma/group/:groupId" element={<ParmaGroupPage />} />
       <Route path="/path/parma/:subsection" element={<ParmaSubsectionPage />} />
       <Route path="/path/:section" element={<SectionPage />} />
       <Route path="/laura" element={<LauraPage />} />
