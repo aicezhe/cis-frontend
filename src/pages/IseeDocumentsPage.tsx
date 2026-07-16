@@ -402,14 +402,26 @@ export default function IseeDocumentsPage() {
             Кнопка «&lt;18» — для членов семьи младше 18 (документы по ним не нужны)
           </p>
 
-          {minors.length > 0 && (
+          {/* Превью всех добавленных — и взрослых, и младше 18 — чипами сразу под
+              кнопками, чтобы было видно, что человек добавился (детали по
+              взрослым — ниже, в шаге 3). Метки берём из roster, чтобы совпадали
+              с карточками. */}
+          {roster.some((p) => p.removable) && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {members.filter((m) => !m.adult).map((m) => {
-                const t = isee.members_step.member_types.find((x) => x.id === m.typeId);
+              {roster.filter((p) => p.removable).map((p) => {
+                const uid = Number(p.key.slice(1));
                 return (
-                  <span key={m.uid} className="inline-flex items-center gap-1.5 font-serif text-navy/60 text-xs bg-cream border border-navy/15 rounded-full px-3 py-1.5">
-                    {t?.label_ru} (младше 18)
-                    <button onClick={() => removeMember(m.uid)} className="text-navy/40">×</button>
+                  <span
+                    key={p.key}
+                    className={
+                      'inline-flex items-center gap-1.5 font-serif text-xs rounded-full px-3 py-1.5 border ' +
+                      (p.adult
+                        ? 'text-navy/85 bg-soft-cream border-navy/25'
+                        : 'text-navy/55 bg-cream border-navy/15')
+                    }
+                  >
+                    {p.label}{!p.adult && ' (младше 18)'}
+                    <button onClick={() => removeMember(uid)} className="text-navy/40" aria-label="Убрать">×</button>
                   </span>
                 );
               })}
