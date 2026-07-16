@@ -21,10 +21,8 @@ interface LineItem {
 }
 
 // Медицина в Парме — выбор юзера: частная страховка (~€150/год) или запись в
-// госмедицину SSN (€700/год, тариф для студентов с 2024, подтверждён AUSL Parma).
-// Пока переключателя нет — дефолт частная; выбор добавим следующим шагом.
-function healthItem(): LineItem {
-  const ssn = localStorage.getItem('cispr_health_ssn') === 'true';
+// госмедицину SSN (€700/год — тариф для студентов с 2024, подтверждён AUSL Parma).
+function healthItem(ssn: boolean): LineItem {
   return ssn
     ? { id: 'parma-health', label: 'Медицина: SSN (год)', eur: 700 }
     : { id: 'parma-health', label: 'Медицина: частная страховка (год)', eur: 150, approx: true };
@@ -45,7 +43,6 @@ function staticItems(id: 'visa' | 'travel' | 'parma'): LineItem[] {
       if (eur > 0) items.push({ id: step.id, label: step.title, eur, approx: step.approx });
     }
   });
-  if (id === 'parma') items.push(healthItem());
   return items;
 }
 
@@ -63,11 +60,21 @@ export default function ExpensesPage() {
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [expanded, setExpanded] = useState<ExpenseCategory | 'all' | null>(null);
+  const [healthSsn, setHealthSsn] = useState(() => localStorage.getItem('cispr_health_ssn') === 'true');
 
-  const sectionItems = (id: ExpenseCategory): LineItem[] =>
-    id === 'uni'
-      ? uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }))
-      : staticItems(id);
+  function chooseHealth(ssn: boolean) {
+    localStorage.setItem('cispr_health_ssn', String(ssn));
+    setHealthSsn(ssn);
+  }
+
+  const sectionItems = (id: ExpenseCategory): LineItem[] => {
+    if (id === 'uni') {
+      return uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }));
+    }
+    const items = staticItems(id);
+    if (id === 'parma') items.push(healthItem(healthSsn));
+    return items;
+  };
 
   // База раздела = сумма его статей (заголовок = разбивка). Универ на время
   // загрузки сида — прежняя оценка, чтобы не мигало нулём.
@@ -110,7 +117,7 @@ export default function ExpensesPage() {
         <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Итого</p>
         <p className="font-serif text-cream text-3xl font-bold mt-1">{fmt(total)}</p>
         <p className="font-serif text-cream/60 text-xs mt-1">
-          Оценка по твоим данным (страна, программа, разделы) + расходы, добавленные вручную
+          Разовые расходы на старте (универ, виза, переезд) + первый год жизни в Парме. Оценки помечены «~».
         </p>
       </div>
 
@@ -176,6 +183,34 @@ export default function ExpensesPage() {
                           </div>
                         </div>
                       ))}
+
+                      {/* Выбор медицины — частная страховка (~€150) или SSN (€700).
+                          Меняет строку «медицина» и итог раздела. */}
+                      {id === 'parma' && (
+                        <div className="mt-1 pt-2 border-t border-navy/10 print:hidden">
+                          <p className="font-serif text-navy/50 text-[11px] mb-1.5">Медицина в Парме:</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => chooseHealth(false)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (!healthSsn ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              Частная ~{fmt(150)}
+                            </button>
+                            <button
+                              onClick={() => chooseHealth(true)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (healthSsn ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              SSN {fmt(700)}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
