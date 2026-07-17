@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { CreditCard } from 'lucide-react';
 import { useRelocation } from '../hooks/useRelocation';
+import { ContentPage, PageHeader, TldrCard } from '../components/content';
 
 // Инициалы провайдера для аватарки-плитки («Crédit Agricole — CartaConto…» → «CA»)
 function initials(name: string): string {
@@ -16,8 +16,8 @@ export default function CardsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
       </div>
     );
   }
@@ -29,52 +29,40 @@ export default function CardsPage() {
   const c = relocation.cards_ru;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate('/path/travel')} className="text-navy text-2xl">←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">{c.title_ru}</h1>
-      </div>
+    <ContentPage>
+      <PageHeader crumb="Переезд" title={c.title_ru} backTo="/path/travel" />
 
-      {/* Интро — с иконкой карты */}
-      <div className="mx-6 mt-5 flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-navy flex items-center justify-center flex-shrink-0">
-          <CreditCard className="w-4.5 h-4.5 text-gold" strokeWidth={1.75} style={{ width: 18, height: 18 }} />
-        </div>
-        <p className="font-serif text-navy/75 text-sm leading-relaxed flex-1">{c.intro_ru}</p>
-      </div>
+      <TldrCard>{c.intro_ru}</TldrCard>
 
-      <div className="px-6 mt-6 flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mt-5">
         {c.options.map((opt, i) => {
           const recommended = opt.tag_ru === 'рекомендуем';
           return (
             <div
               key={i}
               className={
-                'rounded-2xl px-4 py-4 border ' +
-                (recommended ? 'bg-soft-cream border-gold/60' : 'bg-soft-cream/60 border-navy/15')
+                'rounded-2xl px-4 py-4 border bg-content-surface ' +
+                (recommended ? 'border-content-gold' : 'border-content-line')
               }
             >
               <div className="flex items-center gap-3">
-                {/* Аватарка-плитка с инициалами провайдера */}
                 <div
                   className={
                     'w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ' +
-                    (recommended ? 'bg-navy' : 'bg-cream border border-navy/15')
+                    (recommended ? 'bg-content-navy' : 'bg-content-bg border border-content-line')
                   }
                 >
-                  <span className={'font-serif text-sm font-bold ' + (recommended ? 'text-gold' : 'text-navy/70')}>
+                  <span className={'text-sm font-bold ' + (recommended ? 'text-content-gold' : 'text-content-ink-2')}>
                     {initials(opt.name)}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-serif text-navy text-lg font-bold leading-tight">{opt.name}</p>
+                  <p className="text-content-navy text-lg font-semibold leading-tight">{opt.name}</p>
                   {opt.tag_ru && (
                     <span
                       className={
-                        'inline-block font-serif text-[10px] rounded-full px-2 py-0.5 leading-none mt-1 ' +
-                        (recommended
-                          ? 'bg-gold text-cream'
-                          : 'text-gold border border-gold/60')
+                        'inline-block text-[10px] rounded-full px-2 py-0.5 leading-none mt-1 font-semibold uppercase ' +
+                        (recommended ? 'bg-content-gold text-white' : 'text-content-gold bg-content-gold-bg')
                       }
                     >
                       {opt.tag_ru}
@@ -83,26 +71,21 @@ export default function CardsPage() {
                 </div>
               </div>
 
-              <p className="font-serif text-navy/80 text-sm leading-relaxed mt-3">{opt.how_ru}</p>
+              <p className="text-content-ink text-[14.5px] leading-relaxed mt-3">{opt.how_ru}</p>
 
               {opt.details_ru && (
-                <div className="flex flex-col gap-1.5 mt-3 pt-3 border-t border-navy/10">
+                <div className="flex flex-col gap-1.5 mt-3 pt-3 border-t border-content-line">
                   {opt.details_ru.map((d, j) => (
                     <div key={j} className="flex items-start gap-2">
-                      <span className="text-gold mt-0.5 text-xs flex-shrink-0">◆</span>
-                      <p className="font-serif text-navy/70 text-sm leading-relaxed">{d}</p>
+                      <span className="text-content-gold mt-0.5 text-xs flex-shrink-0">◆</span>
+                      <p className="text-content-ink-2 text-[14.5px] leading-relaxed">{d}</p>
                     </div>
                   ))}
                 </div>
               )}
 
               {opt.url && (
-                <a
-                  href={opt.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-serif text-gold text-xs underline mt-3 inline-block"
-                >
+                <a href={opt.url} target="_blank" rel="noreferrer" className="text-content-gold text-xs underline mt-3 inline-block">
                   {opt.url.replace('https://', '').replace(/\/$/, '')} ↗
                 </a>
               )}
@@ -112,8 +95,8 @@ export default function CardsPage() {
       </div>
 
       {c.disclaimer_ru && (
-        <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">{c.disclaimer_ru}</p>
+        <p className="text-content-ink-2 text-xs italic text-center mt-6">{c.disclaimer_ru}</p>
       )}
-    </div>
+    </ContentPage>
   );
 }
