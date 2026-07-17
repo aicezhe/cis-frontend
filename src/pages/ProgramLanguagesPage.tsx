@@ -1,102 +1,88 @@
-import { useNavigate } from 'react-router-dom';
+import { GraduationCap } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
+import { ContentPage, PageHeader, TldrCard, H2, InfoCard, Note } from '../components/content';
 
 export default function ProgramLanguagesPage() {
-  const navigate = useNavigate();
   const { program, loading } = useMyProgram();
-
   const completedFY = localStorage.getItem('cispr_completed_fy') === 'true';
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-cream"><p className="font-serif text-navy/60 italic">Загрузка…</p></div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
+      </div>
+    );
+  }
   if (!program) return null;
 
   const lr = program.language_requirements;
+  const stats = [
+    { value: lr.italian_taught_courses.level, label: 'итальянский' },
+    { value: lr.english_taught_courses.level, label: 'английский' },
+  ];
+
+  const certList = (certs: string[]) => (
+    <div className="flex flex-col gap-1.5 mt-1">
+      {certs.map((cert, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <span className="text-content-gold text-sm">◆</span>
+          <p className="text-content-ink text-[14.5px]">{cert}</p>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate('/path/uni/program')} className="text-navy text-2xl">←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">Языковые требования</h1>
-      </div>
+    <ContentPage>
+      <PageHeader crumb="Университет · Программа" title="Языковые требования" backTo="/path/uni/program" />
+
+      <TldrCard stats={stats}>
+        Для италоязычных программ нужен сертификат <b>итальянского</b>, для англоязычных —
+        <b> английского</b>. У UniPR есть собственный <b>бесплатный</b> языковой тест (CLA).
+      </TldrCard>
 
       {completedFY && (
-        <div className="mx-6 mt-5 bg-navy rounded-2xl px-5 py-4">
-          <p className="font-serif text-gold text-sm mb-1 font-bold">Foundation Year завершён</p>
-          <p className="font-serif text-cream text-sm leading-relaxed">
-            Сертификат Italstudio B2 из Foundation Year UniPR засчитывается для поступления на италоязычный бакалавриат автоматически.
-          </p>
-        </div>
+        <Note icon={<GraduationCap size={16} />}>
+          <b>Foundation Year завершён.</b> Сертификат Italstudio B2 из Foundation Year UniPR
+          засчитывается для поступления на италоязычный бакалавриат автоматически.
+        </Note>
       )}
 
-      <div className="px-6 mt-6">
-        <p className="font-serif text-gold text-sm mb-3 font-bold">Для программ на итальянском</p>
-        <div className="bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-          <div className="flex justify-between items-center mb-3">
-            <p className="font-serif text-navy text-base font-bold">Итальянский</p>
-            <span className="font-serif text-gold text-sm border border-gold/60 rounded-full px-3 py-1">
-              {lr.italian_taught_courses.level}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            {lr.italian_taught_courses.accepted_certificates.map((cert, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-gold text-sm">◆</span>
-                <p className="font-serif text-navy/80 text-sm">{cert}</p>
-              </div>
-            ))}
-          </div>
-          {lr.italian_taught_courses.exemption_for_fy && !completedFY && (
-            <p className="font-serif text-navy/60 text-xs italic mt-3 leading-relaxed">
-              💡 {lr.italian_taught_courses.exemption_for_fy}
-            </p>
-          )}
-        </div>
+      <H2>Для программ на итальянском</H2>
+      <div className="mt-4">
+        <InfoCard tag={lr.italian_taught_courses.level} title="Итальянский">
+          {certList(lr.italian_taught_courses.accepted_certificates)}
+        </InfoCard>
       </div>
+      {lr.italian_taught_courses.exemption_for_fy && !completedFY && (
+        <Note>{lr.italian_taught_courses.exemption_for_fy}</Note>
+      )}
 
-      <div className="px-6 mt-5">
-        <p className="font-serif text-gold text-sm mb-3 font-bold">Для программ на английском</p>
-        <div className="bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
-          <div className="flex justify-between items-center mb-3">
-            <p className="font-serif text-navy text-base font-bold">Английский</p>
-            <span className="font-serif text-gold text-sm border border-gold/60 rounded-full px-3 py-1">
-              {lr.english_taught_courses.level}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            {lr.english_taught_courses.accepted_certificates.map((cert, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-gold text-sm">◆</span>
-                <p className="font-serif text-navy/80 text-sm">{cert}</p>
-              </div>
-            ))}
-          </div>
-          {lr.english_taught_courses.exemption_ru && (
-            <p className="font-serif text-navy/60 text-xs italic mt-3 leading-relaxed">
-              💡 {lr.english_taught_courses.exemption_ru}
-            </p>
-          )}
-        </div>
+      <H2>Для программ на английском</H2>
+      <div className="mt-4">
+        <InfoCard tag={lr.english_taught_courses.level} title="Английский">
+          {certList(lr.english_taught_courses.accepted_certificates)}
+        </InfoCard>
       </div>
+      {lr.english_taught_courses.exemption_ru && <Note>{lr.english_taught_courses.exemption_ru}</Note>}
 
-      <div className="mx-6 mt-5 bg-soft-cream border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm mb-2 font-bold">🎓 UniPR Language Test — бесплатно</p>
-        <p className="font-serif text-navy/80 text-sm leading-relaxed">
-          UniPR предлагает собственный языковой тест через CLA (Centro Linguistico di Ateneo).
-          Он признаётся для поступления и не требует оплаты.
-          Можно сдать после приезда или уточнить возможность онлайн-сдачи.
-        </p>
-      </div>
+      <H2>Бесплатный тест UniPR</H2>
+      <Note icon={<GraduationCap size={16} />}>
+        UniPR предлагает собственный языковой тест через CLA (Centro Linguistico di Ateneo).
+        Он признаётся для поступления и <b>не требует оплаты</b>. Можно сдать после приезда или
+        уточнить возможность онлайн-сдачи.
+      </Note>
 
       {lr.duolingo_note_ru && (
-        <div className="mx-6 mt-4 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-          <p className="font-serif text-gold text-sm mb-1 font-bold">Про Duolingo</p>
-          <p className="font-serif text-navy/70 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
-        </div>
+        <>
+          <H2>Про Duolingo</H2>
+          <p className="text-content-ink text-[15px] leading-relaxed mt-3">{lr.duolingo_note_ru}</p>
+        </>
       )}
 
-      <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
+      <p className="text-content-ink-2 text-xs italic text-center mt-8">
         Актуальные требования — проверяй на странице своей программы
       </p>
-    </div>
+    </ContentPage>
   );
 }

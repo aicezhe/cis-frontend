@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsee } from '../hooks/useIsee';
 import { Price } from '../components/Price';
 import type { IseeSeed, IseePersonQuestion, IseeDocOption } from '../types/isee';
+import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
 
 // ── модель человека в опроснике ───────────────────────────────────────────────
 
@@ -45,11 +46,9 @@ function buildRoster(isee: IseeSeed, parentsChoice: string, members: Member[]): 
   return roster;
 }
 
-// вопросы, обязательные для человека с учётом follow-up (ипотека)
 function requiredQuestions(isee: IseeSeed, answers: Record<string, string> | undefined): IseePersonQuestion[] {
   return isee.person_questions.filter((q) => {
     if (!q.is_follow_up) return true;
-    // mortgage показываем только если по недвижимости выбрана опция с follow_up === q.id
     for (const main of isee.person_questions) {
       const chosen = answers?.[main.id];
       if (!chosen) continue;
@@ -78,47 +77,39 @@ function PersonCard({
   const done = answered === qs.length;
 
   return (
-    <div className={
-      'rounded-2xl border overflow-hidden ' +
-      (done ? 'border-gold/60 bg-soft-cream' : 'border-navy/20 bg-soft-cream')
-    }>
+    <div className={'rounded-2xl border overflow-hidden bg-content-surface ' + (done ? 'border-content-gold' : 'border-content-line')}>
       <div className="w-full px-4 py-3.5 flex items-center gap-3">
         <button onClick={onToggle} className="flex-1 flex items-center gap-3 text-left">
-          <span className={done ? 'text-gold' : 'text-navy/30'}>{done ? '✓' : '◆'}</span>
-          <span className="font-serif text-navy text-base font-bold flex-1">{person.label}</span>
-          <span className={'font-serif text-xs ' + (done ? 'text-gold' : 'text-navy/40')}>
+          <span className={done ? 'text-content-gold' : 'text-content-ink-2'}>{done ? '✓' : '◆'}</span>
+          <span className="text-content-navy text-base font-semibold flex-1">{person.label}</span>
+          <span className={'text-xs ' + (done ? 'text-content-gold' : 'text-content-ink-2')}>
             {answered}/{qs.length}
           </span>
-          <svg
-            width="14" height="14" viewBox="0 0 14 14"
-            className={'text-navy transition-transform ' + (open ? 'rotate-180' : '')}
-            fill="currentColor"
-          >
+          <svg width="14" height="14" viewBox="0 0 14 14"
+            className={'text-content-navy transition-transform ' + (open ? 'rotate-180' : '')} fill="currentColor">
             <path d="M7 10L1 4h12L7 10z" />
           </svg>
         </button>
         {onRemove && (
-          <button onClick={onRemove} className="text-navy/40 text-lg px-1" aria-label="Убрать">
-            ×
-          </button>
+          <button onClick={onRemove} className="text-content-ink-2 text-lg px-1" aria-label="Убрать">×</button>
         )}
       </div>
 
       {open && (
-        <div className="px-4 pb-4 border-t border-navy/10 pt-3 flex flex-col gap-4">
+        <div className="px-4 pb-4 border-t border-content-line pt-3 flex flex-col gap-4">
           {qs.map((q) => (
             <div key={q.id}>
-              <p className="font-serif text-navy text-sm font-bold mb-2">{q.question_ru}</p>
+              <p className="text-content-navy text-sm font-semibold mb-2">{q.question_ru}</p>
               <div className="flex flex-col gap-1.5">
                 {q.options.map((opt) => (
                   <button
                     key={opt.id}
                     onClick={() => onAnswer(q.id, opt.id)}
                     className={
-                      'w-full text-left rounded-xl px-3.5 py-2.5 font-serif text-sm transition-all border ' +
+                      'w-full text-left rounded-xl px-3.5 py-2.5 text-sm transition-all border ' +
                       (answers?.[q.id] === opt.id
-                        ? 'bg-navy text-cream border-navy'
-                        : 'bg-cream text-navy border-navy/15')
+                        ? 'bg-content-navy text-white border-content-navy'
+                        : 'bg-content-bg text-content-ink border-content-line')
                     }
                   >
                     {opt.label_ru}
@@ -137,43 +128,36 @@ function PersonCard({
 
 function OverviewDocs({ isee }: { isee: IseeSeed }) {
   const renderOpt = (opt: IseeDocOption) => (
-    <div key={opt.id} className="border-l-2 border-gold/50 pl-3 py-0.5">
-      <p className="font-serif text-navy text-sm font-medium">{opt.label_ru}</p>
-      {opt.note_ru && <p className="font-serif text-navy/50 text-xs italic mt-0.5">{opt.note_ru}</p>}
+    <div key={opt.id} className="border-l-2 border-content-gold pl-3 py-0.5">
+      <p className="text-content-navy text-sm font-medium">{opt.label_ru}</p>
+      {opt.note_ru && <p className="text-content-ink-2 text-xs italic mt-0.5">{opt.note_ru}</p>}
       {opt.documents_ru.map((d, i) => (
-        <p key={i} className="font-serif text-navy/65 text-xs leading-relaxed mt-0.5">— {d}</p>
+        <p key={i} className="text-content-ink-2 text-xs leading-relaxed mt-0.5">— {d}</p>
       ))}
-      {opt.cost_ru && <p className="font-serif text-gold/80 text-[11px] mt-0.5 font-bold">{opt.cost_ru}</p>}
+      {opt.cost_ru && <p className="text-content-gold text-[11px] mt-0.5 font-semibold">{opt.cost_ru}</p>}
     </div>
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Базовая справка */}
-      <div className="bg-cream border border-gold/40 rounded-xl px-4 py-3">
-        <p className="font-serif text-navy/50 text-[10px] uppercase tracking-widest mb-1">Всегда нужна — одна на семью</p>
-        <p className="font-serif text-navy text-sm">{isee.family_cert.document_ru}</p>
-        <p className="font-serif text-gold/80 text-[11px] mt-1 font-bold">{isee.family_cert.cost_ru}</p>
+    <div className="flex flex-col gap-4 mt-4">
+      <div className="bg-content-surface border border-content-line rounded-xl px-4 py-3">
+        <p className="text-content-ink-2 text-[10px] uppercase tracking-widest mb-1">Всегда нужна — одна на семью</p>
+        <p className="text-content-navy text-sm">{isee.family_cert.document_ru}</p>
+        <p className="text-content-gold text-[11px] mt-1 font-semibold">{isee.family_cert.cost_ru}</p>
       </div>
 
-      {/* Родители */}
-      <div className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-4">
-        <p className="font-serif text-navy text-sm font-bold mb-2">{isee.parents_step.question_ru}</p>
-        <div className="flex flex-col gap-2">
-          {isee.parents_step.options.map(renderOpt)}
-        </div>
-        <p className="font-serif text-navy text-sm font-bold mt-4 mb-2">{isee.parents_step.reason_question_ru}</p>
-        <div className="flex flex-col gap-2">
-          {isee.parents_step.reasons.map(renderOpt)}
-        </div>
+      <div className="bg-content-surface border border-content-line rounded-2xl px-4 py-4">
+        <p className="text-content-navy text-sm font-semibold mb-2">{isee.parents_step.question_ru}</p>
+        <div className="flex flex-col gap-2">{isee.parents_step.options.map(renderOpt)}</div>
+        <p className="text-content-navy text-sm font-semibold mt-4 mb-2">{isee.parents_step.reason_question_ru}</p>
+        <div className="flex flex-col gap-2">{isee.parents_step.reasons.map(renderOpt)}</div>
       </div>
 
-      {/* Вопросы по каждому человеку */}
-      <div className="bg-soft-cream border border-navy/15 rounded-2xl px-4 py-4">
-        <p className="font-serif text-gold text-xs mb-3 font-bold">Для КАЖДОГО члена семьи 18+ (включая тебя):</p>
+      <div className="bg-content-surface border border-content-line rounded-2xl px-4 py-4">
+        <p className="text-content-gold text-xs mb-3 font-semibold uppercase tracking-wide">Для каждого члена семьи 18+ (включая тебя):</p>
         {isee.person_questions.map((q) => (
           <div key={q.id} className="mb-4 last:mb-0">
-            <p className="font-serif text-navy text-sm font-bold mb-2">{q.question_ru}</p>
+            <p className="text-content-navy text-sm font-semibold mb-2">{q.question_ru}</p>
             <div className="flex flex-col gap-2">
               {q.options.filter((o) => o.documents_ru.length > 0).map(renderOpt)}
             </div>
@@ -201,8 +185,8 @@ export default function IseeDocumentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
       </div>
     );
   }
@@ -232,8 +216,6 @@ export default function IseeDocumentsPage() {
     });
   }
 
-  // ── собрать итоговый список ──
-  // стрелочная константа, а не function declaration — иначе TS теряет narrowing isee
   const collectResult = () => {
     type DocItem = { doc: string; note?: string; cost?: string };
     const familyDocs: DocItem[] = [
@@ -273,30 +255,24 @@ export default function IseeDocumentsPage() {
   const sch = isee.scholarship_estimate;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <ContentPage>
+      <PageHeader crumb="ISEE parificato" title="Документы для расчёта" />
 
-      {/* Хедер */}
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>
-        <div>
-          <p className="font-serif text-gold text-[10px] uppercase tracking-widest">ISEE parificato</p>
-          <h1 className="font-serif text-navy text-2xl font-bold leading-tight">Документы для расчёта</h1>
-        </div>
-      </div>
+      <TldrCard>
+        ISEE parificato — итальянский расчёт достатка семьи. От него зависит <b>плата за учёбу</b> и
+        <b> стипендия</b>. Собери документы по каждому взрослому члену семьи — калькулятор ниже соберёт
+        твой список.
+      </TldrCard>
 
-      {/* Кто в семье */}
-      <div className="mx-6 mt-5 bg-gold/10 border border-gold/50 rounded-2xl px-5 py-4">
-        <p className="font-serif text-navy text-sm font-bold mb-1.5">Кто входит в «семью» для ISEE?</p>
-        <p className="font-serif text-navy/80 text-sm leading-relaxed">{isee.intro_ru.family_definition_ru}</p>
-      </div>
+      <Note>{isee.intro_ru.family_definition_ru}</Note>
 
-      {/* Переключатель */}
-      <div className="px-6 mt-5 flex gap-2">
+      {/* Переключатель режимов */}
+      <div className="flex gap-2 mt-5">
         <button
           onClick={() => setMode('builder')}
           className={
-            'flex-1 rounded-xl py-3 font-serif text-sm transition-all ' +
-            (mode === 'builder' ? 'bg-navy text-cream' : 'bg-soft-cream text-navy border border-navy/20')
+            'flex-1 rounded-xl py-3 text-sm transition-all border ' +
+            (mode === 'builder' ? 'bg-content-navy text-white border-content-navy' : 'bg-content-surface text-content-ink border-content-line')
           }
         >
           Собрать мой список
@@ -304,44 +280,35 @@ export default function IseeDocumentsPage() {
         <button
           onClick={() => setMode('overview')}
           className={
-            'flex-1 rounded-xl py-3 font-serif text-sm transition-all ' +
-            (mode === 'overview' ? 'bg-navy text-cream' : 'bg-soft-cream text-navy border border-navy/20')
+            'flex-1 rounded-xl py-3 text-sm transition-all border ' +
+            (mode === 'overview' ? 'bg-content-navy text-white border-content-navy' : 'bg-content-surface text-content-ink border-content-line')
           }
         >
           Все документы
         </button>
       </div>
 
-      {/* ── OVERVIEW ── */}
       {mode === 'overview' && (
-        <div className="px-6 mt-5">
-          <div className="bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4 mb-4">
-            <p className="font-serif text-navy/80 text-sm leading-relaxed mb-2">{isee.intro_ru.what_is_ru}</p>
-            <p className="font-serif text-navy/70 text-sm leading-relaxed">{isee.intro_ru.where_ru}</p>
+        <>
+          <div className="bg-content-surface border border-content-line rounded-2xl px-5 py-4 mt-4">
+            <p className="text-content-ink text-[15px] leading-relaxed mb-2">{isee.intro_ru.what_is_ru}</p>
+            <p className="text-content-ink-2 text-[14.5px] leading-relaxed">{isee.intro_ru.where_ru}</p>
           </div>
           <OverviewDocs isee={isee} />
-        </div>
+        </>
       )}
 
-      {/* ── BUILDER ── */}
       {mode === 'builder' && (
-        <div className="px-6 mt-6">
-
-          {/* Шаг 1: родители */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className="font-serif text-gold font-bold">1.</span>
-            <p className="font-serif text-navy text-base font-bold">{isee.parents_step.question_ru}</p>
-          </div>
-          <div className="flex flex-col gap-2">
+        <>
+          <H2>Родители</H2>
+          <div className="flex flex-col gap-2 mt-4">
             {isee.parents_step.options.map((opt) => (
               <button
                 key={opt.id}
                 onClick={() => { setParentsChoice(opt.id); if (opt.id !== 'one') setParentsReason(''); }}
                 className={
-                  'w-full text-left rounded-xl px-4 py-3 font-serif text-sm transition-all border ' +
-                  (parentsChoice === opt.id
-                    ? 'bg-navy text-cream border-navy'
-                    : 'bg-soft-cream text-navy border-navy/20')
+                  'w-full text-left rounded-xl px-4 py-3 text-sm transition-all border ' +
+                  (parentsChoice === opt.id ? 'bg-content-navy text-white border-content-navy' : 'bg-content-surface text-content-ink border-content-line')
                 }
               >
                 {opt.label_ru}
@@ -351,18 +318,15 @@ export default function IseeDocumentsPage() {
 
           {parentsChoice === 'one' && (
             <div className="mt-4">
-              <p className="font-serif text-gold text-[11px] mb-1 font-bold">↳ уточни:</p>
-              <p className="font-serif text-navy text-sm font-bold mb-2">{isee.parents_step.reason_question_ru}</p>
+              <p className="text-content-navy text-sm font-semibold mb-2">{isee.parents_step.reason_question_ru}</p>
               <div className="flex flex-col gap-2">
                 {isee.parents_step.reasons.map((r) => (
                   <button
                     key={r.id}
                     onClick={() => setParentsReason(r.id)}
                     className={
-                      'w-full text-left rounded-xl px-4 py-3 font-serif text-sm transition-all border ' +
-                      (parentsReason === r.id
-                        ? 'bg-navy text-cream border-navy'
-                        : 'bg-soft-cream text-navy border-navy/20')
+                      'w-full text-left rounded-xl px-4 py-3 text-sm transition-all border ' +
+                      (parentsReason === r.id ? 'bg-content-navy text-white border-content-navy' : 'bg-content-surface text-content-ink border-content-line')
                     }
                   >
                     {r.label_ru}
@@ -372,25 +336,18 @@ export default function IseeDocumentsPage() {
             </div>
           )}
 
-          {/* Шаг 2: остальные прописанные */}
-          <div className="flex items-center gap-2 mt-8 mb-1">
-            <span className="font-serif text-gold font-bold">2.</span>
-            <p className="font-serif text-navy text-base font-bold">{isee.members_step.title_ru}</p>
-          </div>
-          <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">{isee.members_step.note_ru}</p>
+          <H2>Кто ещё прописан по твоему адресу?</H2>
+          <p className="text-content-ink-2 text-[14.5px] leading-relaxed mt-2">{isee.members_step.note_ru}</p>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mt-3">
             {isee.members_step.member_types.map((t) => (
-              <div key={t.id} className="flex rounded-full border border-navy/25 overflow-hidden">
-                <button
-                  onClick={() => addMember(t.id, true)}
-                  className="font-serif text-navy text-xs px-3 py-2 bg-soft-cream"
-                >
+              <div key={t.id} className="flex rounded-full border border-content-line overflow-hidden">
+                <button onClick={() => addMember(t.id, true)} className="text-content-ink text-xs px-3 py-2 bg-content-surface">
                   + {t.label_ru}
                 </button>
                 <button
                   onClick={() => addMember(t.id, false)}
-                  className="font-serif text-navy/50 text-[10px] px-2 py-2 bg-cream border-l border-navy/15"
+                  className="text-content-ink-2 text-[10px] px-2 py-2 bg-content-bg border-l border-content-line"
                   title="Младше 18 лет"
                 >
                   &lt;18
@@ -398,14 +355,10 @@ export default function IseeDocumentsPage() {
               </div>
             ))}
           </div>
-          <p className="font-serif text-navy/40 text-[10px] italic mt-1.5">
+          <p className="text-content-ink-2 text-[10px] italic mt-1.5">
             Кнопка «&lt;18» — для членов семьи младше 18 (документы по ним не нужны)
           </p>
 
-          {/* Превью всех добавленных — и взрослых, и младше 18 — чипами сразу под
-              кнопками, чтобы было видно, что человек добавился (детали по
-              взрослым — ниже, в шаге 3). Метки берём из roster, чтобы совпадали
-              с карточками. */}
           {roster.some((p) => p.removable) && (
             <div className="mt-3 flex flex-wrap gap-2">
               {roster.filter((p) => p.removable).map((p) => {
@@ -414,32 +367,25 @@ export default function IseeDocumentsPage() {
                   <span
                     key={p.key}
                     className={
-                      'inline-flex items-center gap-1.5 font-serif text-xs rounded-full px-3 py-1.5 border ' +
-                      (p.adult
-                        ? 'text-navy/85 bg-soft-cream border-navy/25'
-                        : 'text-navy/55 bg-cream border-navy/15')
+                      'inline-flex items-center gap-1.5 text-xs rounded-full px-3 py-1.5 border ' +
+                      (p.adult ? 'text-content-ink bg-content-surface border-content-line' : 'text-content-ink-2 bg-content-bg border-content-line')
                     }
                   >
                     {p.label}{!p.adult && ' (младше 18)'}
-                    <button onClick={() => removeMember(uid)} className="text-navy/40" aria-label="Убрать">×</button>
+                    <button onClick={() => removeMember(uid)} className="text-content-ink-2" aria-label="Убрать">×</button>
                   </span>
                 );
               })}
             </div>
           )}
 
-          {/* Шаг 3: вопросы по каждому 18+ */}
           {parentsDone && (
             <>
-              <div className="flex items-center gap-2 mt-8 mb-1">
-                <span className="font-serif text-gold font-bold">3.</span>
-                <p className="font-serif text-navy text-base font-bold">Теперь — про каждого (18+)</p>
-              </div>
-              <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">
+              <H2>Теперь — про каждого (18+)</H2>
+              <p className="text-content-ink-2 text-[14.5px] leading-relaxed mt-2">
                 Доходы, счета и имущество — отдельно по каждому взрослому из твоей семьи.
               </p>
-
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 mt-4">
                 {adults.map((p) => {
                   const member = p.removable ? members.find((m) => `m${m.uid}` === p.key) : undefined;
                   return (
@@ -451,10 +397,7 @@ export default function IseeDocumentsPage() {
                       open={openPerson === p.key}
                       onToggle={() => setOpenPerson(openPerson === p.key ? '' : p.key)}
                       onAnswer={(qId, optId) =>
-                        setPersonAnswers((a) => ({
-                          ...a,
-                          [p.key]: { ...a[p.key], [qId]: optId },
-                        }))
+                        setPersonAnswers((a) => ({ ...a, [p.key]: { ...a[p.key], [qId]: optId } }))
                       }
                       onRemove={member ? () => removeMember(member.uid) : undefined}
                     />
@@ -464,26 +407,12 @@ export default function IseeDocumentsPage() {
             </>
           )}
 
-          {/* Шаг 4: результат */}
-          <div className={
-            'relative rounded-2xl p-5 mt-8 transition-all ' +
-            (allAnswered ? 'bg-navy' : 'bg-navy/30')
-          }>
-            {allAnswered && (
-              <>
-                <span className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-gold" />
-                <span className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-gold" />
-                <span className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-gold" />
-                <span className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-gold" />
-              </>
-            )}
-
-            <p className="font-serif text-gold text-[10px] uppercase tracking-widest mb-3">
-              ⌐ твой список документов ¬
-            </p>
+          {/* Результат — navy-плашка в стиле TL;DR */}
+          <div className={'rounded-2xl p-5 mt-8 transition-all ' + (allAnswered ? 'bg-content-navy' : 'bg-content-navy/40')}>
+            <p className="text-content-gold text-[10px] uppercase tracking-widest mb-3 font-semibold">Твой список документов</p>
 
             {!allAnswered && (
-              <p className="font-serif text-cream/50 text-sm italic">
+              <p className="text-white/50 text-sm italic">
                 {!parentsDone
                   ? 'Ответь про родителей — и продолжим'
                   : 'Ответь на вопросы по каждому человеку — список сформируется здесь'}
@@ -492,48 +421,40 @@ export default function IseeDocumentsPage() {
 
             {result && (
               <>
-                <p className="font-serif text-cream/60 text-xs mb-4">
+                <p className="text-white/60 text-xs mb-4">
                   Итого документов: {result.totalDocs} · легализация примерно{' '}
-                  <span className="text-gold"><Price eur={result.costMin} /> – <Price eur={result.costMax} /></span>
+                  <span className="text-[#D8BC85]"><Price eur={result.costMin} /> – <Price eur={result.costMax} /></span>
                 </p>
 
-                {/* Семейные документы */}
                 <div className="mb-5">
-                  <h3 className="font-serif text-cream/70 text-sm font-bold uppercase tracking-wide mb-2">
-                    На всю семью
-                  </h3>
+                  <h3 className="text-white/70 text-sm font-semibold uppercase tracking-wide mb-2">На всю семью</h3>
                   <div className="flex flex-col gap-2.5">
                     {result.familyDocs.map((item, i) => (
                       <div key={i} className="flex gap-2 items-start">
-                        <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                        <span className="text-[#D8BC85] flex-shrink-0 mt-0.5 text-xs">◆</span>
                         <div className="flex-1 min-w-0">
-                          <p className="font-serif text-cream/90 text-xs leading-relaxed">{item.doc}</p>
-                          {item.cost && <p className="font-serif text-gold/70 text-[11px] mt-0.5">{item.cost}</p>}
+                          <p className="text-white/90 text-xs leading-relaxed">{item.doc}</p>
+                          {item.cost && <p className="text-[#D8BC85]/80 text-[11px] mt-0.5">{item.cost}</p>}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* По каждому человеку */}
                 {result.perPerson.map((block, bi) => (
                   <div key={bi} className="mb-5">
-                    <h3 className="font-serif text-cream/70 text-sm font-bold uppercase tracking-wide mb-2">
-                      {block.person}
-                    </h3>
+                    <h3 className="text-white/70 text-sm font-semibold uppercase tracking-wide mb-2">{block.person}</h3>
                     {block.docs.length === 0 ? (
-                      <p className="font-serif text-cream/40 text-xs italic">Документы не требуются</p>
+                      <p className="text-white/40 text-xs italic">Документы не требуются</p>
                     ) : (
                       <div className="flex flex-col gap-2.5">
                         {block.docs.map((item, ii) => (
                           <div key={ii} className="flex gap-2 items-start">
-                            <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                            <span className="text-[#D8BC85] flex-shrink-0 mt-0.5 text-xs">◆</span>
                             <div className="flex-1 min-w-0">
-                              <p className="font-serif text-cream/90 text-xs leading-relaxed">{item.doc}</p>
-                              {item.note && (
-                                <p className="font-serif text-cream/45 text-[11px] italic mt-0.5">{item.note}</p>
-                              )}
-                              {item.cost && <p className="font-serif text-gold/70 text-[11px] mt-0.5">{item.cost}</p>}
+                              <p className="text-white/90 text-xs leading-relaxed">{item.doc}</p>
+                              {item.note && <p className="text-white/45 text-[11px] italic mt-0.5">{item.note}</p>}
+                              {item.cost && <p className="text-[#D8BC85]/80 text-[11px] mt-0.5">{item.cost}</p>}
                             </div>
                           </div>
                         ))}
@@ -543,89 +464,80 @@ export default function IseeDocumentsPage() {
                 ))}
 
                 {minors.length > 0 && (
-                  <p className="font-serif text-cream/40 text-[11px] italic mb-4">
+                  <p className="text-white/40 text-[11px] italic mb-4">
                     Члены семьи младше 18 ({minors.length}) — просто в справке о составе семьи, документы не нужны.
                   </p>
                 )}
 
-                <div className="border-t border-cream/20 pt-3">
-                  <p className="font-serif text-cream/40 text-[11px] italic">{isee.legalization_cost.note_ru}</p>
+                <div className="border-t border-white/20 pt-3">
+                  <p className="text-white/40 text-[11px] italic">{isee.legalization_cost.note_ru}</p>
                 </div>
               </>
             )}
           </div>
 
-          {/* Стипендия — после результата */}
           {allAnswered && (
-            <div className="bg-soft-cream border border-gold/50 rounded-2xl px-5 py-4 mt-4">
-              <p className="font-serif text-gold text-sm mb-2 font-bold">{sch.title_ru}</p>
-              <p className="font-serif text-navy/70 text-xs leading-relaxed mb-3">{sch.threshold_note_ru}</p>
+            <div className="bg-content-surface border border-content-line rounded-2xl px-5 py-4 mt-4">
+              <p className="text-content-gold text-sm mb-2 font-semibold">{sch.title_ru}</p>
+              <p className="text-content-ink-2 text-xs leading-relaxed mb-3">{sch.threshold_note_ru}</p>
               <div className="flex flex-col gap-2 mb-3">
                 {sch.amounts.map((a) => (
                   <div
                     key={a.id}
-                    className={
-                      'flex justify-between items-center rounded-xl px-4 py-2.5 ' +
-                      (a.is_default ? 'bg-navy' : 'bg-cream border border-navy/10')
-                    }
+                    className={'flex justify-between items-center rounded-xl px-4 py-2.5 ' + (a.is_default ? 'bg-content-navy' : 'bg-content-bg border border-content-line')}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className={'font-serif text-xs leading-snug ' + (a.is_default ? 'text-cream' : 'text-navy/70')}>
-                        {a.label_ru}
-                      </p>
+                      <p className={'text-xs leading-snug ' + (a.is_default ? 'text-white' : 'text-content-ink-2')}>{a.label_ru}</p>
                       {a.note_ru && (
-                        <p className={'font-serif text-[10px] ' + (a.is_default ? 'text-gold font-bold' : 'text-navy/40')}>
-                          {a.note_ru}
-                        </p>
+                        <p className={'text-[10px] ' + (a.is_default ? 'text-[#D8BC85] font-semibold' : 'text-content-ink-2')}>{a.note_ru}</p>
                       )}
                     </div>
-                    <p className={'font-serif text-base font-bold flex-shrink-0 ml-3 ' + (a.is_default ? 'text-gold' : 'text-navy')}>
+                    <p className={'text-base font-bold flex-shrink-0 ml-3 ' + (a.is_default ? 'text-[#D8BC85]' : 'text-content-navy')}>
                       до <Price eur={a.amount_eur} />
                     </p>
                   </div>
                 ))}
               </div>
-              <p className="font-serif text-navy/60 text-xs leading-relaxed mb-3">{sch.bonuses_note_ru}</p>
+              <p className="text-content-ink-2 text-xs leading-relaxed mb-3">{sch.bonuses_note_ru}</p>
               <button
                 onClick={() => navigate('/scholarship')}
-                className="w-full font-serif text-navy bg-gold rounded-full py-2.5 text-sm"
+                className="w-full text-content-navy bg-content-gold-bg border border-content-line rounded-full py-2.5 text-sm font-medium"
               >
                 Рассчитать мою стипендию точнее →
               </button>
-              <p className="font-serif text-navy/40 text-[10px] italic mt-2">{sch.source_note_ru}</p>
+              <p className="text-content-ink-2 text-[10px] italic mt-2">{sch.source_note_ru}</p>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* Финальные шаги + советы */}
-      <div className="mx-6 mt-6 bg-soft-cream border border-navy/15 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm mb-3 font-bold">Что делать дальше</p>
+      {/* Что делать дальше */}
+      <H2>Что делать дальше</H2>
+      <div className="bg-content-surface border border-content-line rounded-2xl px-5 py-4 mt-4">
         <ol className="flex flex-col gap-2">
           {isee.final_steps_ru.map((step, i) => (
             <li key={i} className="flex gap-3 items-start">
-              <span className="font-serif text-gold font-bold text-sm flex-shrink-0">{i + 1}.</span>
-              <p className="font-serif text-navy/80 text-sm leading-relaxed">{step}</p>
+              <span className="text-content-gold font-bold text-sm flex-shrink-0">{i + 1}.</span>
+              <p className="text-content-ink text-[14.5px] leading-relaxed">{step}</p>
             </li>
           ))}
         </ol>
       </div>
 
-      <div className="mx-6 mt-4 bg-gold/10 border border-gold/40 rounded-2xl px-5 py-4">
-        <p className="font-serif text-gold text-sm mb-3 font-bold">Советы</p>
+      <Note>
         <div className="flex flex-col gap-2">
           {isee.tips_ru.map((tip, i) => (
             <div key={i} className="flex gap-2 items-start">
-              <span className="text-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
-              <p className="font-serif text-navy/80 text-sm leading-relaxed">{tip}</p>
+              <span className="text-content-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+              <p className="text-content-ink text-[14.5px] leading-relaxed">{tip}</p>
             </div>
           ))}
         </div>
-      </div>
+      </Note>
 
-      <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
+      <p className="text-content-ink-2 text-xs italic text-center mt-8">
         Требования актуальны на 2026/2027 — уточняй на unipr.it и er-go.it
       </p>
-    </div>
+    </ContentPage>
   );
 }
