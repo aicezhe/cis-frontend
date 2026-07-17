@@ -4,55 +4,40 @@ import { useRelocation, useLociRoutes } from '../hooks/useRelocation';
 import { Price } from '../components/Price';
 import { RouteCard } from '../components/RouteCard';
 import type { ArrivalStep } from '../types/relocation';
+import { ContentPage, PageHeader, TldrCard, H2, BodyText, Note } from '../components/content';
 
 function StepBox({ s }: { s: ArrivalStep }) {
   return (
-    // Фон чуть темнее страницы (#F4F1E9) — чтобы квадратики выделялись
-    <div className="border border-navy/10 rounded-xl px-3.5 py-3" style={{ backgroundColor: '#ECE5D4' }}>
+    <div className="border border-content-line rounded-xl px-3.5 py-3 bg-content-surface">
       <div className="flex justify-between items-baseline gap-2">
-        <p className="font-serif text-navy text-sm font-bold flex-1">{s.transport}</p>
-        <p className="font-serif text-navy text-sm font-bold flex-shrink-0">
-          <Price eur={s.cost_eur} />
-        </p>
+        <p className="text-content-navy text-sm font-semibold flex-1">{s.transport}</p>
+        <p className="text-content-navy text-sm font-bold flex-shrink-0"><Price eur={s.cost_eur} /></p>
       </div>
-      <p className="font-serif text-navy/70 text-xs leading-relaxed mt-0.5">
+      <p className="text-content-ink-2 text-xs leading-relaxed mt-0.5">
         {s.step}{s.duration_ru ? ` · ${s.duration_ru}` : ''}
       </p>
-      {s.note_ru && (
-        <p className="font-serif text-navy/50 text-[11px] italic mt-1 leading-relaxed">{s.note_ru}</p>
-      )}
+      {s.note_ru && <p className="text-content-ink-2 text-[11px] italic mt-1 leading-relaxed">{s.note_ru}</p>}
     </div>
   );
 }
 
-// Раскрывающийся раздел пути прибытия — без рамки-«кнопки», просто
-// кликабельный заголовок со стрелкой, как «Шаги» в остальных разделах.
-// Внутри — два уровня: варианты «до центра» (в Милане их два, в Болонье
-// один) и финальный поезд «до Пармы».
 function ArrivalSection({
   name, subtitle, steps, first = false,
 }: {
   name: string; subtitle?: string; steps: ArrivalStep[]; first?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  // Последний шаг — всегда поезд до Пармы, остальные — как добраться до центра.
   const toCenter = steps.slice(0, -1);
   const toParma = steps[steps.length - 1];
   return (
-    <div className={'px-6 ' + (first ? '' : 'pt-4 border-t border-navy/10')}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 text-left py-1"
-      >
-        <div className="flex-1">
-          <p className="font-serif text-navy text-lg font-bold">{name}</p>
-          {subtitle && <p className="font-serif text-navy/60 text-xs mt-0.5">{subtitle}</p>}
+    <div className={first ? '' : 'pt-4 border-t border-content-line'}>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 text-left py-1">
+        <div className="flex-1 min-w-0">
+          <p className="text-content-navy text-lg font-semibold">{name}</p>
+          {subtitle && <p className="text-content-ink-2 text-xs mt-0.5">{subtitle}</p>}
         </div>
-        <svg
-          width="14" height="14" viewBox="0 0 14 14"
-          className={'text-navy flex-shrink-0 transition-transform ' + (open ? 'rotate-180' : '')}
-          fill="currentColor"
-        >
+        <svg width="14" height="14" viewBox="0 0 14 14"
+          className={'text-content-navy flex-shrink-0 transition-transform ' + (open ? 'rotate-180' : '')} fill="currentColor">
           <path d="M7 10L1 4h12L7 10z" />
         </svg>
       </button>
@@ -61,7 +46,7 @@ function ArrivalSection({
         <div className="mt-3 pb-5">
           {toCenter.length > 0 && (
             <>
-              <p className="font-serif text-gold text-[11px] uppercase tracking-widest font-bold mb-2">
+              <p className="text-content-gold text-[11px] uppercase tracking-widest font-semibold mb-2">
                 Добраться до центра{toCenter.length > 1 ? ' — 2 варианта' : ''}
               </p>
               <div className="flex flex-col gap-2">
@@ -71,7 +56,7 @@ function ArrivalSection({
           )}
           {toParma && (
             <>
-              <p className="font-serif text-gold text-[11px] uppercase tracking-widest font-bold mb-2 mt-4">
+              <p className="text-content-gold text-[11px] uppercase tracking-widest font-semibold mb-2 mt-4">
                 Дальше → до Пармы
               </p>
               <StepBox s={toParma} />
@@ -88,42 +73,38 @@ export default function TravelRoutesPage() {
   const location = useLocation();
   const { relocation, loading } = useRelocation();
   const { routes: lociRoutes } = useLociRoutes();
-  // Пришли по ссылке из «Шаги переезда» — возвращаем назад тоже с раскрытым разделом.
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
+  const back = () => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
       </div>
     );
   }
-  // Нет детального seed'а для страны (ua/by/kz) — маршруты всё равно
-  // показываем, остальное (логика поездки, прибытие в Парму) недоступно.
+
+  const routesBlock = (
+    <>
+      <H2>Варианты маршрутов</H2>
+      <div className="flex flex-col gap-3 mt-4">
+        {lociRoutes.length === 0 ? (
+          <p className="text-content-ink-2 text-sm italic">Маршруты для твоей страны уточняются.</p>
+        ) : (
+          lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
+        )}
+      </div>
+    </>
+  );
+
+  // Нет детального seed'а для страны (ua/by/kz) — показываем только маршруты.
   if (!relocation) {
     return (
-      <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-        <div className="px-6 pt-12 flex items-center gap-4">
-          <button
-            onClick={() => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined)}
-            className="text-navy text-2xl"
-          >←</button>
-          <h1 className="font-serif text-navy text-2xl font-bold">Дорога в Парму</h1>
-        </div>
-
-        <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
-        <div className="px-5 flex flex-col gap-3">
-          {lociRoutes.length === 0 ? (
-            <p className="font-serif text-navy/50 text-sm italic px-1">Маршруты для твоей страны уточняются.</p>
-          ) : (
-            lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
-          )}
-        </div>
-
-        <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
-          Подробный гайд по дороге и первым дням для твоей страны в разработке.
-        </p>
-      </div>
+      <ContentPage>
+        <PageHeader crumb="Переезд" title="Дорога в Парму" onBack={back} />
+        <TldrCard>Основные маршруты в Парму — ниже. Подробный гайд по дороге и первым дням для твоей страны в разработке.</TldrCard>
+        {routesBlock}
+      </ContentPage>
     );
   }
 
@@ -131,52 +112,30 @@ export default function TravelRoutesPage() {
   const ar = relocation.arrival_routes;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined)}
-          className="text-navy text-2xl"
-        >←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">Дорога в Парму</h1>
-      </div>
+    <ContentPage>
+      <PageHeader crumb="Переезд" title="Дорога в Парму" onBack={back} />
 
-      {/* Логика первого переезда — просто текст, без коробки-плашки */}
-      <p className="font-serif text-navy/75 text-sm leading-relaxed px-6 mt-5">{tr.first_trip_logic_ru}</p>
-      <p className="font-serif text-navy/70 text-sm leading-relaxed px-6 mt-2">{tr.airports_ru}</p>
+      <TldrCard>{tr.first_trip_logic_ru}</TldrCard>
 
-      {/* Маршруты — карточки с цепочкой точек-транспорта */}
-      <p className="font-serif text-gold text-sm px-6 mt-6 mb-3 font-bold">Варианты маршрутов</p>
-      <div className="px-5 flex flex-col gap-3">
-        {lociRoutes.length === 0 ? (
-          <p className="font-serif text-navy/50 text-sm italic px-1">Маршруты для твоей страны уточняются.</p>
-        ) : (
-          lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
-        )}
-      </div>
+      <BodyText>{tr.airports_ru}</BodyText>
 
-      {/* Стоимость перелёта — просто текст, без коробки-плашки */}
-      <p className="font-serif text-navy/75 text-sm leading-relaxed px-6 mt-5">{tr.flight_cost_ru.estimate_ru}</p>
-      <p className="font-serif text-navy/50 text-xs italic leading-relaxed px-6 mt-2">{tr.flight_cost_ru.tip_ru}</p>
+      {routesBlock}
 
-      {/* Прибытие — два раскрывающихся раздела */}
-      <p className="font-serif text-gold text-sm px-6 mt-8 mb-2 font-bold">{ar.title_ru}</p>
+      <H2>Стоимость перелёта</H2>
+      <BodyText>{tr.flight_cost_ru.estimate_ru}</BodyText>
+      <p className="text-content-ink-2 text-xs italic leading-relaxed mt-2">{tr.flight_cost_ru.tip_ru}</p>
 
-      <div className="flex flex-col">
+      <H2>{ar.title_ru}</H2>
+      <div className="flex flex-col mt-4">
         <ArrivalSection name={ar.via_bologna.name_ru} steps={ar.via_bologna.steps_ru} first />
-        <ArrivalSection
-          name={ar.via_milan.name_ru}
-          subtitle={ar.via_milan.airports_ru}
-          steps={ar.via_milan.steps_ru}
-        />
+        <ArrivalSection name={ar.via_milan.name_ru} subtitle={ar.via_milan.airports_ru} steps={ar.via_milan.steps_ru} />
       </div>
 
-      <div className="mx-6 mt-4 bg-gold/10 border border-gold/40 rounded-2xl px-4 py-3">
-        <p className="font-serif text-navy/80 text-xs leading-relaxed">{ar.trenit_app_ru}</p>
-      </div>
+      <Note>{ar.trenit_app_ru}</Note>
 
-      <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
+      <p className="text-content-ink-2 text-xs italic text-center mt-8">
         Цены перелётов и тарифы — проверь перед поездкой
       </p>
-    </div>
+    </ContentPage>
   );
 }

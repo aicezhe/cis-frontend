@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { TriangleAlert } from 'lucide-react';
 import { useVisa } from '../hooks/useVisa';
 import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
+import { ContentPage, PageHeader, TldrCard, Note } from '../components/content';
 
 const CHECKS_KEY = 'cispr_visa_docs_checks';
 
@@ -11,21 +13,18 @@ function loadChecks(): string[] {
   try { return JSON.parse(localStorage.getItem(CHECKS_KEY) || '[]'); } catch { return []; }
 }
 
-// Круглый чекбокс в стиле остальных разделов
 function CheckBox({ id, checked, toggle }: { id: string; checked: boolean; toggle: (id: string) => void }) {
   return (
-    <button onClick={() => toggle(id)} className="w-5 h-5 mt-0.5 flex-shrink-0">
+    <button onClick={() => toggle(id)} className="w-5 h-5 mt-0.5 flex-shrink-0" aria-label="Отметить">
       {checked ? (
-        <div className="w-5 h-5 rounded-full bg-gold flex items-center justify-center text-cream text-[10px]">✓</div>
+        <div className="w-5 h-5 rounded-full bg-content-gold flex items-center justify-center text-white text-[10px]">✓</div>
       ) : (
-        <div className="w-5 h-5 rounded-full border-2 border-navy/30" />
+        <div className="w-5 h-5 rounded-full border-2 border-content-line" />
       )}
     </button>
   );
 }
 
-// Список пунктов с галочками — для checklist_ru/substeps_ru/requirements_ru
-// (реальные документы/требования этого шага, а не просто описательный текст).
 function CheckList({
   items, idPrefix, checked, toggle, numbered = false,
 }: {
@@ -39,10 +38,7 @@ function CheckList({
         return (
           <div key={i} className="flex gap-2 items-start">
             <CheckBox id={id} checked={done} toggle={toggle} />
-            <p className={
-              'font-serif text-sm leading-relaxed flex-1 ' +
-              (done ? 'text-navy/40 line-through' : 'text-navy/75')
-            }>
+            <p className={'text-[14.5px] leading-relaxed flex-1 ' + (done ? 'text-content-ink-2 line-through' : 'text-content-ink')}>
               {numbered ? `${i + 1}. ` : ''}{s}
             </p>
           </div>
@@ -52,9 +48,7 @@ function CheckList({
   );
 }
 
-// Признание диплома (CIMEA/DDV) — реальные данные по стране юзера (те же,
-// что на странице «Диплом»), встроены прямо в шаг «Документы об образовании»
-// вместо ссылки на другой раздел.
+// Признание диплома (CIMEA/DDV) — данные по стране юзера, встроены в шаг.
 function CimeaDdvBlock() {
   const { legalization, loading } = useMyLegalization();
   if (loading || !legalization) return null;
@@ -65,57 +59,55 @@ function CimeaDdvBlock() {
 
   return (
     <div className="flex flex-col gap-3 mt-1">
-      {/* Перевод — аккредитованный переводчик, до признания диплома */}
       {translation && (
-        <div className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
+        <div className="bg-content-bg border border-content-line rounded-xl px-3.5 py-3">
           <div className="flex justify-between items-baseline gap-2">
-            <p className="font-serif text-navy text-sm font-bold">{translation.title_ru}</p>
+            <p className="text-content-navy text-sm font-semibold">{translation.title_ru}</p>
             {translation.cost_eur_approx != null && (
-              <p className="font-serif text-navy text-xs font-bold flex-shrink-0">
+              <p className="text-content-navy text-xs font-bold flex-shrink-0">
                 ~{translation.cost_eur_approx} € · {translation.duration_days}
               </p>
             )}
           </div>
-          <p className="font-serif text-navy/70 text-xs leading-relaxed mt-1">{translation.description_ru}</p>
+          <p className="text-content-ink-2 text-xs leading-relaxed mt-1">{translation.description_ru}</p>
           {translation.cost_local && (
-            <p className="font-serif text-navy/50 text-xs mt-1">В местной валюте: {translation.cost_local}</p>
+            <p className="text-content-ink-2 text-xs mt-1">В местной валюте: {translation.cost_local}</p>
           )}
           {translation.warnings_ru && translation.warnings_ru.length > 0 && (
             <div className="flex flex-col gap-1 mt-2">
               {translation.warnings_ru.map((w, i) => (
-                <p key={i} className="font-serif text-gold text-xs">⚠ {w}</p>
+                <p key={i} className="text-content-gold text-xs">{w}</p>
               ))}
             </div>
           )}
         </div>
       )}
 
-      <p className="font-serif text-gold text-xs font-bold">{recognition.title_ru}</p>
+      <p className="text-content-gold text-xs font-semibold">{recognition.title_ru}</p>
       {recognition.options.map((opt, i) => (
-        <div key={i} className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
+        <div key={i} className="bg-content-bg border border-content-line rounded-xl px-3.5 py-3">
           <div className="flex justify-between items-baseline gap-2">
-            <p className="font-serif text-navy text-sm font-bold">{opt.name}</p>
-            <p className="font-serif text-navy text-xs font-bold flex-shrink-0">{opt.cost_eur} € · {opt.duration}</p>
+            <p className="text-content-navy text-sm font-semibold">{opt.name}</p>
+            <p className="text-content-navy text-xs font-bold flex-shrink-0">{opt.cost_eur} € · {opt.duration}</p>
           </div>
-          <p className="font-serif text-navy/70 text-xs leading-relaxed mt-1">{opt.description_ru}</p>
-          {/* Слоты/запись — то, что реально известно про эту опцию, без выдумывания цифр сверху */}
-          <p className="font-serif text-navy/50 text-xs mt-2 italic">
+          <p className="text-content-ink-2 text-xs leading-relaxed mt-1">{opt.description_ru}</p>
+          <p className="text-content-ink-2 text-xs mt-2 italic">
             {opt.name === 'CIMEA'
               ? 'Слоты: подача онлайн, но в пиковый сезон (июнь–сентябрь) у CIMEA бывают периоды, когда приём новых заявок временно закрыт — подавай заранее, не жди последний месяц.'
               : 'Слоты: запись на приём в консульство через Prenot@Mi — в пиковый сезон свободные даты разбирают быстро, проверяй портал регулярно и записывайся, как только освободится время.'}
           </p>
           <div className="flex flex-col gap-1 mt-2">
             {opt.pros_ru.map((p, j) => (
-              <p key={`p${j}`} className="font-serif text-navy/70 text-xs">✓ {p}</p>
+              <p key={`p${j}`} className="text-content-ink-2 text-xs">✓ {p}</p>
             ))}
             {opt.cons_ru.map((c, j) => (
-              <p key={`c${j}`} className="font-serif text-navy/50 text-xs">– {c}</p>
+              <p key={`c${j}`} className="text-content-ink-2/70 text-xs">– {c}</p>
             ))}
           </div>
         </div>
       ))}
       {recognition.recommendation_ru && (
-        <p className="font-serif text-navy/60 text-xs italic leading-relaxed">{recognition.recommendation_ru}</p>
+        <p className="text-content-ink-2 text-xs italic leading-relaxed">{recognition.recommendation_ru}</p>
       )}
     </div>
   );
@@ -126,8 +118,8 @@ function List({ items, icon = '◆' }: { items: string[]; icon?: string }) {
     <div className="flex flex-col gap-1.5">
       {items.map((s, i) => (
         <div key={i} className="flex gap-2 items-start">
-          <span className="text-gold flex-shrink-0 mt-0.5 text-xs">{icon}</span>
-          <p className="font-serif text-navy/75 text-sm leading-relaxed">{s}</p>
+          <span className="text-content-gold flex-shrink-0 mt-0.5 text-xs">{icon}</span>
+          <p className="text-content-ink text-[14.5px] leading-relaxed">{s}</p>
         </div>
       ))}
     </div>
@@ -145,9 +137,7 @@ function StepCard({
   const mainId = `visa-step-${step.id}`;
   const stepDone = checked.includes(mainId);
 
-  const template = step.sponsor_letter_template_id
-    ? seed.templates.sponsor_declaration
-    : null;
+  const template = step.sponsor_letter_template_id ? seed.templates.sponsor_declaration : null;
 
   async function copyTemplate() {
     if (!template) return;
@@ -155,55 +145,31 @@ function StepCard({
       await navigator.clipboard.writeText(template.body);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // clipboard может быть недоступен (http) — не падаем
-    }
+    } catch { /* clipboard может быть недоступен (http) */ }
   }
 
   return (
-    <div className={
-      'bg-soft-cream border rounded-2xl overflow-hidden ' +
-      (stepDone ? 'border-gold/60' : 'border-navy/20')
-    }>
+    <div className={'bg-content-surface border rounded-2xl overflow-hidden ' + (stepDone ? 'border-content-gold' : 'border-content-line')}>
       <div className="w-full px-4 py-4 flex items-center gap-3">
         <CheckBox id={mainId} checked={stepDone} toggle={toggle} />
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex-1 flex items-center gap-3 text-left"
-        >
-          <p className={
-            'font-serif text-base font-bold flex-1 ' +
-            (stepDone ? 'text-navy/50 line-through' : 'text-navy')
-          }>
+        <button onClick={() => setOpen(!open)} className="flex-1 flex items-center gap-3 text-left">
+          <p className={'text-base font-semibold flex-1 ' + (stepDone ? 'text-content-ink-2 line-through' : 'text-content-navy')}>
             {step.title_ru}
           </p>
-          <svg
-            width="14" height="14" viewBox="0 0 14 14"
-            className={'text-navy transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')}
-            fill="currentColor"
-          >
+          <svg width="14" height="14" viewBox="0 0 14 14"
+            className={'text-content-navy transition-transform flex-shrink-0 ' + (open ? 'rotate-180' : '')} fill="currentColor">
             <path d="M7 10L1 4h12L7 10z" />
           </svg>
         </button>
       </div>
 
       {open && (
-        <div className="px-4 pb-4 border-t border-navy/10 pt-3 flex flex-col gap-3">
-
-          {step.description_ru && (
-            <p className="font-serif text-navy/80 text-sm leading-relaxed">{step.description_ru}</p>
-          )}
+        <div className="px-4 pb-4 border-t border-content-line pt-3 flex flex-col gap-3">
+          {step.description_ru && <p className="text-content-ink text-[14.5px] leading-relaxed">{step.description_ru}</p>}
 
           {step.substeps_ru && (
-            <CheckList
-              items={step.substeps_ru}
-              idPrefix={`${mainId}-substep`}
-              checked={checked}
-              toggle={toggle}
-              numbered
-            />
+            <CheckList items={step.substeps_ru} idPrefix={`${mainId}-substep`} checked={checked} toggle={toggle} numbered />
           )}
-
           {step.checklist_ru && (
             <CheckList items={step.checklist_ru} idPrefix={`${mainId}-checklist`} checked={checked} toggle={toggle} />
           )}
@@ -214,155 +180,112 @@ function StepCard({
             <CheckList items={step.requirements_ru} idPrefix={`${mainId}-req`} checked={checked} toggle={toggle} />
           )}
 
-          {/* Финансы: best practice + спонсорское письмо */}
           {step.best_practice_ru && (
-            <div className="bg-cream border border-gold/40 rounded-xl px-3 py-2.5">
-              <p className="font-serif text-navy/80 text-xs leading-relaxed">💡 {step.best_practice_ru}</p>
+            <div className="bg-content-gold-bg rounded-xl px-3 py-2.5">
+              <p className="text-content-ink text-[13px] leading-relaxed">{step.best_practice_ru}</p>
             </div>
           )}
           {template && (
-            <button
-              onClick={copyTemplate}
-              className="w-full font-serif text-cream bg-navy rounded-full py-2.5 text-sm"
-            >
+            <button onClick={copyTemplate} className="w-full text-white bg-content-navy rounded-full py-2.5 text-sm">
               {copied ? '✓ Скопировано' : `Скопировать «${template.title_ru}»`}
             </button>
           )}
-          {step.extra_ru && (
-            <p className="font-serif text-navy/60 text-xs leading-relaxed">{step.extra_ru}</p>
-          )}
+          {step.extra_ru && <p className="text-content-ink-2 text-xs leading-relaxed">{step.extra_ru}</p>}
 
-          {/* Жильё: карточки вариантов */}
           {step.housing_search_ru && (
             <div>
-              <p className="font-serif text-gold text-xs mb-2 font-bold">{step.housing_search_ru.title_ru}</p>
+              <p className="text-content-gold text-xs mb-2 font-semibold">{step.housing_search_ru.title_ru}</p>
               <div className="flex flex-col gap-2">
                 {step.housing_search_ru.options.map((opt, i) => (
-                  <div key={i} className="bg-cream border border-navy/15 rounded-xl px-3.5 py-3">
+                  <div key={i} className="bg-content-bg border border-content-line rounded-xl px-3.5 py-3">
                     <div className="flex justify-between items-baseline gap-2">
-                      <p className="font-serif text-navy text-sm font-bold">{opt.name}</p>
+                      <p className="text-content-navy text-sm font-semibold">{opt.name}</p>
                       {opt.price_min_eur != null && opt.price_max_eur != null && (
-                        <p className="font-serif text-navy text-xs font-bold flex-shrink-0">
+                        <p className="text-content-navy text-xs font-bold flex-shrink-0">
                           <Price eur={opt.price_min_eur} />–<Price eur={opt.price_max_eur} />/мес
                         </p>
                       )}
                     </div>
-                    <p className="font-serif text-navy/65 text-xs leading-relaxed mt-1">{opt.pros_ru}</p>
+                    <p className="text-content-ink-2 text-xs leading-relaxed mt-1">{opt.pros_ru}</p>
                     {opt.url && (
-                      <a
-                        href={opt.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-serif text-gold text-xs underline mt-1 inline-block"
-                      >
+                      <a href={opt.url} target="_blank" rel="noreferrer" className="text-content-gold text-xs underline mt-1 inline-block">
                         {opt.url.replace('https://', '').replace(/\/$/, '')} ↗
                       </a>
                     )}
                   </div>
                 ))}
               </div>
-              <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">
-                {step.housing_search_ru.estimated_costs_ru}
-              </p>
+              <p className="text-content-ink-2 text-xs italic mt-2 leading-relaxed">{step.housing_search_ru.estimated_costs_ru}</p>
             </div>
           )}
 
-          {/* Страховка: рекомендация */}
           {step.recommended_ru && (
-            <div className="relative bg-navy rounded-xl px-4 py-3.5">
-              <p className="font-serif text-gold text-xs font-bold">рекомендуем</p>
+            <div className="rounded-xl bg-content-navy px-4 py-3.5">
+              <p className="text-content-gold text-xs font-semibold">рекомендуем</p>
               <div className="flex justify-between items-baseline gap-2 mt-0.5">
-                <p className="font-serif text-cream text-base font-bold">{step.recommended_ru.name}</p>
+                <p className="text-white text-base font-semibold">{step.recommended_ru.name}</p>
                 {step.recommended_ru.price_year_eur != null && (
-                  <p className="font-serif text-gold text-sm font-bold flex-shrink-0">
+                  <p className="text-[#D8BC85] text-sm font-bold flex-shrink-0">
                     <Price eur={step.recommended_ru.price_year_eur} />/год
                   </p>
                 )}
               </div>
-              <p className="font-serif text-cream/70 text-xs leading-relaxed mt-1">{step.recommended_ru.price_ru}</p>
-              <p className="font-serif text-cream/60 text-xs leading-relaxed mt-1">{step.recommended_ru.why_ru}</p>
-              <a
-                href={step.recommended_ru.url}
-                target="_blank"
-                rel="noreferrer"
-                className="font-serif text-gold text-xs underline mt-1.5 inline-block"
-              >
+              <p className="text-white/70 text-xs leading-relaxed mt-1">{step.recommended_ru.price_ru}</p>
+              <p className="text-white/60 text-xs leading-relaxed mt-1">{step.recommended_ru.why_ru}</p>
+              <a href={step.recommended_ru.url} target="_blank" rel="noreferrer" className="text-[#D8BC85] text-xs underline mt-1.5 inline-block">
                 {step.recommended_ru.url.replace('https://', '').replace(/\/$/, '')} ↗
               </a>
             </div>
           )}
-          {step.alternative_ru && (
-            <p className="font-serif text-navy/60 text-xs leading-relaxed">{step.alternative_ru}</p>
-          )}
-          {step.after_arrival_ru && (
-            <p className="font-serif text-navy/60 text-xs leading-relaxed">{step.after_arrival_ru}</p>
-          )}
+          {step.alternative_ru && <p className="text-content-ink-2 text-xs leading-relaxed">{step.alternative_ru}</p>}
+          {step.after_arrival_ru && <p className="text-content-ink-2 text-xs leading-relaxed">{step.after_arrival_ru}</p>}
 
-          {/* Слоты */}
           {step.slots_strategy_ru && (
-            <div className="bg-cream border border-gold/40 rounded-xl px-3.5 py-3">
-              <p className="font-serif text-gold text-xs mb-2 font-bold">{step.slots_strategy_ru.title_ru}</p>
+            <div className="bg-content-gold-bg rounded-xl px-3.5 py-3">
+              <p className="text-content-gold text-xs mb-2 font-semibold">{step.slots_strategy_ru.title_ru}</p>
               <List items={step.slots_strategy_ru.details_ru} icon="→" />
             </div>
           )}
 
-          {/* Предупреждение */}
           {step.warning_ru && (
-            <div className="bg-gold/10 border border-gold/60 rounded-xl px-3.5 py-2.5 flex gap-2">
-              <span className="text-gold flex-shrink-0 text-sm">⚠</span>
-              <p className="font-serif text-navy/80 text-xs leading-relaxed">{step.warning_ru}</p>
-            </div>
+            <Note icon={<TriangleAlert size={15} />}>{step.warning_ru}</Note>
           )}
 
-          {step.important_ru && (
-            <p className="font-serif text-navy/70 text-xs leading-relaxed">{step.important_ru}</p>
-          )}
+          {step.important_ru && <p className="text-content-ink-2 text-xs leading-relaxed">{step.important_ru}</p>}
           {step.link_to_section_ru && (
             <button
               onClick={() => navigate('/path/uni/program/documents')}
-              className="w-full font-serif text-navy border border-navy/30 rounded-full py-2.5 text-sm"
+              className="w-full text-content-navy border border-content-line rounded-full py-2.5 text-sm"
             >
               {step.link_to_section_ru} →
             </button>
           )}
-          {/* Признание диплома (CIMEA/DDV) — прямо в этом шаге, без ссылки на другой раздел */}
           {step.id === '2_education_docs' && <CimeaDdvBlock />}
 
-          {step.note_ru && (
-            <p className="font-serif text-navy/50 text-xs italic leading-relaxed">{step.note_ru}</p>
-          )}
+          {step.note_ru && <p className="text-content-ink-2 text-xs italic leading-relaxed">{step.note_ru}</p>}
           {step.prepare_ru && (
-            <div className="bg-cream border border-gold/40 rounded-xl px-3 py-2.5">
-              <p className="font-serif text-navy/80 text-xs leading-relaxed">💡 {step.prepare_ru}</p>
+            <div className="bg-content-gold-bg rounded-xl px-3 py-2.5">
+              <p className="text-content-ink text-[13px] leading-relaxed">{step.prepare_ru}</p>
             </div>
           )}
-          {step.check_ru && (
-            <p className="font-serif text-navy/70 text-xs leading-relaxed">{step.check_ru}</p>
-          )}
+          {step.check_ru && <p className="text-content-ink-2 text-xs leading-relaxed">{step.check_ru}</p>}
           {step.on_receipt_ru && (
-            <div className="bg-gold/10 border border-gold/40 rounded-xl px-3 py-2.5">
-              <p className="font-serif text-navy/80 text-xs leading-relaxed">✓ {step.on_receipt_ru}</p>
+            <div className="bg-content-gold-bg rounded-xl px-3 py-2.5">
+              <p className="text-content-ink text-[13px] leading-relaxed">✓ {step.on_receipt_ru}</p>
             </div>
           )}
 
-          {/* Лаура */}
           {step.laura_help_ru && (
             <button
               onClick={() => navigate('/laura')}
-              className="w-full font-serif text-navy bg-gold/20 border border-gold/50 rounded-full py-2.5 text-sm"
+              className="w-full text-content-navy bg-content-gold-bg border border-content-line rounded-full py-2.5 text-sm"
             >
               ✦ Спросить Лауру — {step.laura_help_ru.replace('Лаура может помочь ', '').replace(/\.$/, '')}
             </button>
           )}
 
-          {/* Внешняя ссылка шага */}
           {step.url && (
-            <a
-              href={step.url}
-              target="_blank"
-              rel="noreferrer"
-              className="font-serif text-gold text-xs underline"
-            >
+            <a href={step.url} target="_blank" rel="noreferrer" className="text-content-gold text-xs underline">
               {step.url.replace('https://www.', '').replace('https://', '')} ↗
             </a>
           )}
@@ -377,8 +300,6 @@ export default function VisaStepsPage() {
   const location = useLocation();
   const { visa, loading } = useVisa();
   const [checked, setChecked] = useState<string[]>(loadChecks);
-  // Пришли по ссылке из «Шаги получения визы» — возвращаем назад тоже с
-  // раскрытым тем разделом, а не на свёрнутую страницу.
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
   function toggle(id: string) {
@@ -391,8 +312,8 @@ export default function VisaStepsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
       </div>
     );
   }
@@ -402,24 +323,27 @@ export default function VisaStepsPage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/path/visa', openSteps ? { state: { openSteps: true } } : undefined)}
-          className="text-navy text-2xl"
-        >←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">Подробнее о документах</h1>
-      </div>
+    <ContentPage>
+      <PageHeader
+        crumb="Виза"
+        title="Подробнее о документах"
+        onBack={() => navigate('/path/visa', openSteps ? { state: { openSteps: true } } : undefined)}
+      />
 
-      <div className="px-6 mt-5 flex flex-col gap-3">
+      <TldrCard stats={[{ value: String(visa.steps.length), label: 'шагов' }]}>
+        Пошаговый чек-лист документов и действий для визы D. Отмечай сделанное —
+        <b> прогресс сохраняется</b>. Разверни шаг, чтобы увидеть детали.
+      </TldrCard>
+
+      <div className="flex flex-col gap-3 mt-5">
         {visa.steps.map((step) => (
           <StepCard key={step.id} step={step} seed={visa} checked={checked} toggle={toggle} />
         ))}
       </div>
 
-      <p className="font-serif text-navy/40 text-xs italic text-center px-6 mt-6">
+      <p className="text-content-ink-2 text-xs italic text-center mt-8">
         Суммы и требования меняются — перед подачей сверься с чек-листом своего консульства
       </p>
-    </div>
+    </ContentPage>
   );
 }
