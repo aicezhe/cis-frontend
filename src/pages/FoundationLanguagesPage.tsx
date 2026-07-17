@@ -1,56 +1,61 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFoundation } from '../hooks/useFoundation';
+import { ContentPage, PageHeader, TldrCard, H2, InfoCard, Note } from '../components/content';
 
 export default function FoundationLanguagesPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  // Пришли по ссылке из шага «Шаги поступления» — возвращаем назад тоже
-  // с раскрытыми шагами, а не на свёрнутую страницу.
+  // Пришли по ссылке из «Шаги поступления» — возвращаем назад тоже с
+  // раскрытыми шагами, а не на свёрнутую страницу.
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
   const { data, loading, error } = useFoundation();
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-cream"><p className="font-serif text-navy/60 italic">Загрузка…</p></div>;
-  if (error || !data) return <div className="min-h-screen flex items-center justify-center bg-cream px-6"><p className="font-serif text-navy text-center">Не удалось загрузить данные Foundation Year. Попробуй обновить страницу.</p></div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-content-bg">
+        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
+      </div>
+    );
+  }
+  if (error || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-content-bg px-6">
+        <p className="font-golos text-content-ink text-center">Не удалось загрузить данные Foundation Year. Попробуй обновить страницу.</p>
+      </div>
+    );
+  }
 
   const lr = data.language_requirements;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
-      <div className="px-6 pt-12 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/path/foundation', openSteps ? { state: { openSteps: true } } : undefined)}
-          className="text-navy text-2xl"
-        >←</button>
-        <h1 className="font-serif text-navy text-2xl font-bold">Языковые требования</h1>
-      </div>
+    <ContentPage>
+      <PageHeader
+        crumb="Foundation Year"
+        title="Языковые требования"
+        onBack={() => navigate('/path/foundation', openSteps ? { state: { openSteps: true } } : undefined)}
+      />
 
-      <div className="mx-6 mt-5 flex flex-col gap-3">
-        <div className="bg-soft-cream border border-navy/15 rounded-xl px-4 py-3">
-          <p className="font-serif text-navy/80 text-base leading-relaxed">
-            Зависит от трека: можно зайти{' '}
-            <span className="text-navy font-bold">с нуля</span>, с базовым итальянским{' '}
-            <span className="text-navy font-bold">A1/A2</span> либо с английским{' '}
-            <span className="text-navy font-bold">B2</span>.
-          </p>
-        </div>
+      <TldrCard>
+        Зависит от трека: можно зайти <b>с нуля</b>, с базовым итальянским <b>A1/A2</b> либо с
+        английским <b>B2</b>.
+      </TldrCard>
 
-        <div>
-          <p className="font-serif text-gold text-sm mb-1.5 font-bold">Если идёшь на англоязычный bachelor — нужен B2:</p>
-          <div className="flex flex-col gap-1">
+      <H2>Англоязычный bachelor — нужен B2</H2>
+      <div className="mt-4">
+        <InfoCard tag="B2" title="Принимаемые сертификаты английского">
+          <div className="flex flex-col gap-1 mt-1">
             {lr.accepted_english_b2_certificates.map((cert, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span className="text-gold mt-0.5 text-sm">◆</span>
-                <p className="font-serif text-navy/80 text-base">{cert}</p>
+                <span className="text-content-gold mt-0.5 text-sm">◆</span>
+                <p className="text-content-ink text-[15px]">{cert}</p>
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="bg-soft-cream border border-gold rounded-xl px-4 py-3">
-          <p className="font-serif text-gold text-sm mb-1 font-bold">Про Duolingo</p>
-          <p className="font-serif text-navy/80 text-sm leading-relaxed">{lr.duolingo_note_ru}</p>
-        </div>
+        </InfoCard>
       </div>
-    </div>
+
+      <H2>Про Duolingo</H2>
+      <Note>{lr.duolingo_note_ru}</Note>
+    </ContentPage>
   );
 }

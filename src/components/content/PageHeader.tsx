@@ -3,18 +3,19 @@ import { useNavigate } from 'react-router-dom';
 // Шапка контентной страницы: круглая кнопка «назад» (surface+line),
 // золотой uppercase-крамб раздела, H1 (Playfair 600), серый подзаголовок.
 export function PageHeader({
-  crumb, title, subtitle, backTo,
+  crumb, title, subtitle, backTo, onBack,
 }: {
   crumb?: string;
   title: string;
   subtitle?: string;
   backTo?: string;
+  onBack?: () => void; // кастомная навигация назад (напр. с сохранением state)
 }) {
   const navigate = useNavigate();
   return (
     <header className="pt-12">
       <button
-        onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
+        onClick={() => (onBack ? onBack() : backTo ? navigate(backTo) : navigate(-1))}
         aria-label="Назад"
         className="w-10 h-10 rounded-full bg-content-surface border border-content-line flex items-center justify-center text-content-navy text-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-content-gold"
       >
