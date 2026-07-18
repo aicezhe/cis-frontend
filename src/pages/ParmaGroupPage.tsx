@@ -11,15 +11,18 @@ function SubsectionCard({ sec, onClick }: { sec: ParmaSubsection; onClick: () =>
   return (
     <button
       onClick={onClick}
-      className="relative w-full h-28 rounded-2xl overflow-hidden border-2 border-gold/50 bg-soft-cream text-left"
+      className="relative w-full min-h-[112px] rounded-2xl overflow-hidden border-2 border-gold/50 bg-soft-cream text-left flex items-stretch"
     >
-      {/* Навайный треугольник (верх-лево), диагональ из верх-право в низ-лево */}
+      {/* Навайный клин слева (диагональ) — только под иконку, узкий, чтобы
+          заголовок в правой кремовой зоне не наезжал на него при любой длине. */}
       <span
         className="absolute inset-0 bg-navy"
-        style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+        style={{ clipPath: 'polygon(0 0, 46% 0, 0 100%)' }}
       />
-      <ParmaIcon id={sec.id} className="absolute top-4 left-4 w-8 h-8 text-gold" strokeWidth={1.5} />
-      <div className="absolute bottom-3 right-4 left-1/2 text-right">
+      <div className="relative flex items-start p-4 w-[38%] flex-shrink-0">
+        <ParmaIcon id={sec.id} className="w-8 h-8 text-gold" strokeWidth={1.5} />
+      </div>
+      <div className="relative flex-1 flex flex-col justify-center items-end text-right py-4 pr-4 pl-1">
         <p className="font-serif text-navy text-lg font-bold leading-tight">{sec.title_ru}</p>
         {sec.subtitle_ru && (
           <p className="font-serif text-gold text-[11px] leading-tight mt-0.5">{sec.subtitle_ru}</p>
