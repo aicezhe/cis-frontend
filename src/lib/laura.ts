@@ -1,5 +1,5 @@
 // Хелперы для Лауры: localStorage история, профиль из онбординга, SSE-стриминг.
-import { API_BASE, getToken, ApiError } from './api';
+import { API_BASE, getToken, ApiError, refreshAccessToken, clearToken } from './api';
 import type { LauraProfile, Message } from '../types/laura';
 
 const STORAGE_KEY = 'cispr_laura_history';
@@ -92,11 +92,11 @@ export async function fileToAttachment(file: File): Promise<LauraAttachment> {
  *
  * Throws ApiError при HTTP-ошибках (401 → надо логиниться, 429 → лимит, 503 → выключена).
  */
-export async function* streamLaura(
-  messages: Message[],
-  profile?: LauraProfile,
-  attachment?: LauraAttachment | null,
-): AsyncGenerator<string, void, void> {
+// POST на /laura/chat с той же логикой once-retry, что и request() в api.ts:
+// при 401 (токен протух) ИЛИ 403 (токена нет в памяти — так отвечает HTTPBearer
+// сразу после перезагрузки страницы) один раз тихо обновляем access через
+// refresh-cookie и повторяем. Без этого сообщение сразу после reload падало.
+async function postLauraChat(bodyStr: string, retried = false): Promise<Response> {
   const token = getToken();
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -107,15 +107,32 @@ export async function* streamLaura(
       method: 'POST',
       headers,
       credentials: 'include', // httpOnly refresh-cookie
-      body: JSON.stringify({
-        messages: toBackendMessages(messages),
-        profile: profile ?? null,
-        attachment: attachment ?? null,
-      }),
+      body: bodyStr,
     });
   } catch {
     throw new ApiError(0, 'Не удаётся связаться с сервером. Проверь интернет.');
   }
+
+  if ((res.status === 401 || res.status === 403) && !retried) {
+    const ok = await refreshAccessToken();
+    if (ok) return postLauraChat(bodyStr, true);
+    clearToken();
+  }
+  return res;
+}
+
+export async function* streamLaura(
+  messages: Message[],
+  profile?: LauraProfile,
+  attachment?: LauraAttachment | null,
+): AsyncGenerator<string, void, void> {
+  const bodyStr = JSON.stringify({
+    messages: toBackendMessages(messages),
+    profile: profile ?? null,
+    attachment: attachment ?? null,
+  });
+
+  const res = await postLauraChat(bodyStr);
 
   if (!res.ok) {
     // По SSE-эндпоинту FastAPI кидает JSON-ошибку обычным application/json

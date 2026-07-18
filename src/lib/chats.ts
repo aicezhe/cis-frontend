@@ -1,4 +1,4 @@
-import { API_BASE, ApiError, getToken } from './api';
+import { API_BASE, ApiError, getToken, refreshAccessToken, clearToken } from './api';
 
 export interface Chat {
   id: string;
@@ -24,12 +24,21 @@ function authHeaders(): Record<string, string> {
 
 // Все запросы к чатам идут через этот хелпер: добавляет Bearer-токен и
 // credentials:'include' (иначе httpOnly refresh-cookie не поедет на бэк).
-function chatFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  return fetch(`${API_BASE}${path}`, {
+// Та же логика once-retry, что в request()/expenses: при 401 (токен протух)
+// ИЛИ 403 (токена нет в памяти — HTTPBearer сразу после перезагрузки страницы)
+// один раз тихо обновляем access через refresh-cookie и повторяем.
+async function chatFetch(path: string, init: RequestInit = {}, _retried = false): Promise<Response> {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { ...authHeaders(), ...(init.headers ?? {}) },
     credentials: 'include',
   });
+  if ((res.status === 401 || res.status === 403) && !_retried) {
+    const ok = await refreshAccessToken();
+    if (ok) return chatFetch(path, init, true);
+    clearToken();
+  }
+  return res;
 }
 
 async function ok<T>(res: Response): Promise<T> {
