@@ -56,12 +56,13 @@ export default function RelocationOverviewPage() {
 
         <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
         <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
-          <GridButton icon={Route} title="Дорога в Парму" to="/path/travel/routes" seed={1}
-            wide={country !== 'kz'} />
+          <GridButton icon={Route} title="Дорога в Парму" to="/path/travel/routes" seed={1} />
+          {/* Поиск жилья одинаков для всех стран — показываем и для ua, и для kz */}
+          <GridButton icon={Home} title="Поиск жилья" to="/path/travel/housing" seed={2} />
           {country === 'kz' && (
             <>
-              <GridButton icon={Smartphone} title="Связь и SIM" to="/path/travel/kz-sim" seed={2} />
-              <GridButton icon={CreditCard} title="Карты и оплата" to="/path/travel/kz-cards" seed={3} wide />
+              <GridButton icon={Smartphone} title="Связь и SIM" to="/path/travel/kz-sim" seed={3} />
+              <GridButton icon={CreditCard} title="Карты и оплата" to="/path/travel/kz-cards" seed={4} />
             </>
           )}
         </div>
