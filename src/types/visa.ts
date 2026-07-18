@@ -116,6 +116,7 @@ export interface VisaUaSeed {
   temporary_protection: {
     title_ru: string;
     what_ru: string;
+    validity_ru?: string;
     gives_ru: string[];
     who_ru: string[];
     first_step_ru: string;
@@ -133,6 +134,16 @@ export interface VisaUaSeed {
     how_ru: string[];
     include_ru: string[];
     warning_ru: string;
+  };
+  path_choice_ru?: {
+    title_ru: string;
+    short_answer_ru: string;
+    tp_pros_ru: string[];
+    tp_cons_ru: string[];
+    study_pros_ru: string[];
+    study_cons_ru: string[];
+    longterm_ru: { title_ru: string; intro_ru: string; points_ru: string[] };
+    bottom_line_ru: string;
   };
   tips_ru: string[];
 }
