@@ -106,7 +106,9 @@ export default function LauraPage() {
       const list = await listChats();
       setChats(list);
       if (list.length > 0) {
-        await selectChatById(list[0].id, list[0]);
+        // Приветствие показываем только у самого первого чата (когда он один
+        // и пустой). Остальные новые чаты стартуют без приветствия.
+        await selectChatById(list[0].id, list[0], list.length === 1);
       } else {
         const chat = await createChat('Новый чат');
         setChats([chat]);
@@ -127,14 +129,16 @@ export default function LauraPage() {
     loadInitialChats();
   }, [authed, loadInitialChats]);
 
-  async function selectChatById(chatId: string, chatMeta?: Chat) {
+  async function selectChatById(chatId: string, chatMeta?: Chat, allowGreeting = false) {
     setActiveChatId(chatId);
     setSidebarOpen(false);
     setError(null);
     try {
       const dbMsgs = await getChatMessages(chatId);
       if (dbMsgs.length === 0) {
-        setMessages([INITIAL_GREETING]);
+        // Приветствие — только в первом чате; в остальных пустой чат стартует
+        // с чистого листа (empty state ниже).
+        setMessages(allowGreeting ? [INITIAL_GREETING] : []);
         isFirstMessage.current = true;
       } else {
         setMessages(dbMessagesToLocal(dbMsgs));
@@ -156,7 +160,8 @@ export default function LauraPage() {
       const chat = await createChat('Новый чат');
       setChats((prev) => [chat, ...prev]);
       setActiveChatId(chat.id);
-      setMessages([INITIAL_GREETING]);
+      // Новый чат (когда у тебя уже есть чаты) стартует без приветствия.
+      setMessages([]);
       isFirstMessage.current = true;
       setSidebarOpen(false);
       setError(null);
@@ -490,6 +495,15 @@ export default function LauraPage() {
         {chatsLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <TypingDots />
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+            <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center mb-3">
+              <span className="font-serif text-gold text-xl">L</span>
+            </div>
+            <p className="font-serif text-navy/70 text-base leading-relaxed">
+              Спроси что-нибудь про Парму, поступление или визу.
+            </p>
           </div>
         ) : (
           messages.map((msg) => {
