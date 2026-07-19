@@ -14,6 +14,7 @@ import {
   listChats,
   renameChat,
 } from '../lib/chats';
+import { extractMemory } from '../lib/memory';
 import type { Message } from '../types/laura';
 
 function autoGrow(el: HTMLTextAreaElement | null) {
@@ -265,6 +266,12 @@ export default function LauraPage() {
             setChats((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
           });
         }
+      }
+
+      // Долговременная память: выделяем факты о юзере из обмена (best-effort,
+      // общая на все чаты — не зависит от того, сохранился ли чат в БД).
+      if (lauraText) {
+        void extractMemory(trimmed, lauraText);
       }
     } catch (e) {
       const apiErr = e as ApiError;
