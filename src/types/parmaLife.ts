@@ -64,6 +64,8 @@ export interface ParmaSubsection {
   contracts_ru?: ParmaContracts;
   tip_ru?: string;
 
+  // Ссылка на общий блок «SSN и tessera sanitaria» в разделе Переезд
+  link_to_ssn?: string;
   // ER.GO + FY переход
   link_to_isee?: string;
   link_to_scholarship?: string;

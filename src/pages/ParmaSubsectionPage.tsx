@@ -253,6 +253,15 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
 
       {sec.important_ru && <Note>{sec.important_ru}</Note>}
 
+      {sec.link_to_ssn && (
+        <button
+          onClick={() => navigate(sec.link_to_ssn!)}
+          className="w-full text-white bg-content-navy rounded-full py-3 text-sm mt-4"
+        >
+          Подробнее: SSN и tessera sanitaria →
+        </button>
+      )}
+
       {(sec.link_to_isee || sec.link_to_scholarship) && (
         <div className="flex flex-col gap-3 mt-4">
           {sec.link_to_isee && (
