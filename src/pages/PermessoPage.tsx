@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TriangleAlert } from 'lucide-react';
 import { useRelocation } from '../hooks/useRelocation';
+import { useMod209 } from '../hooks/useMod209';
 import { Price } from '../components/Price';
 import { ContentPage, PageHeader, TldrCard, H2, Steps, Step, Note } from '../components/content';
 
 export default function PermessoPage() {
   const navigate = useNavigate();
   const { relocation, loading } = useRelocation();
+  const { mod209 } = useMod209();
+  const [m209Open, setM209Open] = useState(false);
 
   if (loading) {
     return (
@@ -76,6 +80,63 @@ export default function PermessoPage() {
           {pm.tracking_url.replace('https://', '')} ↗
         </a>
       </div>
+
+      {/* Разбор Mod. 209 — по полям. Сворачиваемо, чтобы не раздувать страницу. */}
+      {mod209 && (
+        <div className="mt-8">
+          <button
+            onClick={() => setM209Open(!m209Open)}
+            className="w-full flex items-center gap-3 text-left"
+          >
+            <div className="flex-1">
+              <p className="text-content-navy text-lg font-semibold leading-tight">{mod209.meta.title_ru}</p>
+              <p className="text-content-gold text-xs font-semibold mt-0.5">{mod209.meta.subtitle_ru}</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 14 14"
+              className={'text-content-navy flex-shrink-0 transition-transform ' + (m209Open ? 'rotate-180' : '')} fill="currentColor">
+              <path d="M7 10L1 4h12L7 10z" />
+            </svg>
+          </button>
+
+          {m209Open && (
+            <div className="mt-4 flex flex-col gap-4">
+              <Note icon={<TriangleAlert size={15} />}>{mod209.meta.disclaimer_ru}</Note>
+
+              <p className="text-content-ink text-[14.5px] leading-relaxed">{mod209.what_ru}</p>
+
+              {/* Куда подавать */}
+              <div className="rounded-2xl bg-content-surface border border-content-line px-4 py-4">
+                <p className="text-content-gold text-xs font-semibold uppercase tracking-wide mb-2">{mod209.submit_ru.title_ru}</p>
+                <div className="flex flex-col gap-2">
+                  {mod209.submit_ru.points_ru.map((p, i) => (
+                    <div key={i} className="flex gap-2 items-start">
+                      <span className="text-content-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                      <p className="text-content-ink text-[14px] leading-relaxed">{p}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Поля Modulo 1 */}
+              <H2>Modulo 1 — поле за полем</H2>
+              <div className="flex flex-col gap-2.5">
+                {mod209.fields_ru.map((f) => (
+                  <div key={f.n} className="rounded-2xl bg-content-surface border border-content-line px-4 py-3 flex gap-3">
+                    <span className="flex-shrink-0 w-[26px] h-[26px] rounded-full bg-content-gold-bg text-content-gold font-bold text-xs flex items-center justify-center">{f.n}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-content-navy text-[14.5px] font-semibold leading-snug">{f.label_ru}</p>
+                      <p className="text-content-ink-2 text-[13.5px] leading-relaxed mt-0.5">{f.note_ru}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Note>{mod209.payments_note_ru}</Note>
+              <Note icon={<TriangleAlert size={15} />}>{mod209.bottom_note_ru}</Note>
+            </div>
+          )}
+        </div>
+      )}
     </ContentPage>
   );
 }
