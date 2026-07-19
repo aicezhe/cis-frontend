@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { TriangleAlert } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { useVisaUa } from '../hooks/useVisa';
@@ -68,8 +68,20 @@ function ProsCons({ title, items, positive }: { title: string; items: string[]; 
 
 export default function VisaUkrainePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { visa, loading } = useVisaUa();
   const [protOpen, setProtOpen] = useState(false);
+  // Пришли по ссылке из блока «SSN и tessera sanitaria» — прокручиваем к развилке.
+  // Страница длинная: скроллим с задержкой, чтобы вёрстка успела разложиться.
+  const pathChoiceRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const focus = (location.state as { focus?: string } | null)?.focus;
+    if (focus !== 'ua-path-choice') return;
+    const t = setTimeout(() => {
+      pathChoiceRef.current?.scrollIntoView({ block: 'start' });
+    }, 150);
+    return () => clearTimeout(t);
+  }, [location.state, visa]);
 
   if (loading) {
     return (
@@ -219,7 +231,7 @@ export default function VisaUkrainePage() {
 
       {/* Какой путь выбрать (новый блок) */}
       {pc && (
-        <>
+        <div ref={pathChoiceRef} className="scroll-mt-4">
           <H2>{pc.title_ru}</H2>
           <p className="text-content-ink text-[15px] leading-relaxed mt-2">{pc.short_answer_ru}</p>
           <div className="flex flex-col gap-3 mt-4">
@@ -243,7 +255,7 @@ export default function VisaUkrainePage() {
           </div>
 
           <Note>{pc.bottom_line_ru}</Note>
-        </>
+        </div>
       )}
 
       {/* Доверенность перед отъездом */}

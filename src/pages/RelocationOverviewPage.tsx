@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Route, PackageOpen, FileText, IdCard, Home, CreditCard } from 'lucide-react';
+import { Route, PackageOpen, FileText, IdCard, Home, CreditCard, HeartPulse } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
@@ -51,12 +51,21 @@ export default function RelocationOverviewPage() {
             <p className="font-serif text-navy/60 text-base leading-relaxed mb-6">
               Детальный гайд для твоей страны в разработке. Типовые маршруты уже можно посмотреть.
             </p>
-            <button
-              onClick={() => navigate('/path/travel/routes')}
-              className="font-serif text-cream bg-navy rounded-full px-8 py-3"
-            >
-              Дорога в Парму →
-            </button>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => navigate('/path/travel/routes')}
+                className="font-serif text-cream bg-navy rounded-full px-8 py-3"
+              >
+                Дорога в Парму →
+              </button>
+              {/* SSN — общий блок, доступен всем странам */}
+              <button
+                onClick={() => navigate('/path/travel/ssn')}
+                className="font-serif text-navy border border-navy/30 rounded-full px-8 py-3"
+              >
+                SSN и tessera sanitaria →
+              </button>
+            </div>
           </div>
         </div>
         <TabBar active="path" />
@@ -71,6 +80,7 @@ export default function RelocationOverviewPage() {
     { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
     { icon: Home, title: 'Поиск жилья', to: '/path/travel/housing', seed: 5 },
     { icon: CreditCard, title: 'Карты и оплата', to: '/path/travel/cards', seed: 6 },
+    { icon: HeartPulse, title: 'SSN и tessera sanitaria', to: '/path/travel/ssn', seed: 7 },
   ];
 
   return (
@@ -191,6 +201,14 @@ export default function RelocationOverviewPage() {
                     ))}
                   </div>
                 )}
+                {/* SSN упомянут выше (≈700 €/год) — ссылка на подробный общий блок */}
+                <button
+                  onClick={() => navigate('/path/travel/ssn')}
+                  className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm font-bold"
+                >
+                  <span>Подробнее про SSN и tessera sanitaria</span>
+                  <span>→</span>
+                </button>
               </div>
             )}
 

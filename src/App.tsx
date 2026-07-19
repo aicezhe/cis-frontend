@@ -43,6 +43,7 @@ import CodiceFiscalePage from './pages/CodiceFiscalePage';
 import PermessoPage from './pages/PermessoPage';
 import HousingSearchPage from './pages/HousingSearchPage';
 import CardsPage from './pages/CardsPage';
+import SsnTesseraPage from './pages/SsnTesseraPage';
 import ParmaLifeOverviewPage from './pages/ParmaLifeOverviewPage';
 import ParmaGroupPage from './pages/ParmaGroupPage';
 import ParmaSubsectionPage from './pages/ParmaSubsectionPage';
@@ -93,6 +94,7 @@ export default function App() {
       <Route path="/path/travel/permesso" element={<PermessoPage />} />
       <Route path="/path/travel/housing" element={<HousingSearchPage />} />
       <Route path="/path/travel/cards" element={<CardsPage />} />
+      <Route path="/path/travel/ssn" element={<SsnTesseraPage />} />
       <Route path="/path/parma" element={<ParmaLifeOverviewPage />} />
       <Route path="/path/parma/group/:groupId" element={<ParmaGroupPage />} />
       <Route path="/path/parma/:subsection" element={<ParmaSubsectionPage />} />
