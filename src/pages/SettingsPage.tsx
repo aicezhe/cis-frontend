@@ -270,6 +270,17 @@ export default function SettingsPage() {
       </h3>
       <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
 
+        <button
+          onClick={() => navigate('/settings/memory')}
+          className="w-full flex items-center justify-between px-5 py-4 border-b border-navy/10"
+        >
+          <div className="text-left">
+            <span className="font-serif text-navy text-base block">Память Лауры</span>
+            <span className="font-serif text-gold text-xs font-bold">что Лаура о тебе помнит</span>
+          </div>
+          <span className="text-navy/60 text-xl">→</span>
+        </button>
+
         {isInstalledApp && (
           <div className="flex items-center justify-between px-5 py-4 border-b border-navy/10">
             <span className="font-serif text-navy text-base">Уведомления</span>

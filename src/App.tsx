@@ -15,6 +15,7 @@ import ChangeCoursePage from './pages/ChangeCoursePage';
 import CoursePage from './pages/CoursePage';
 import ScholarshipPage from './pages/ScholarshipPage';
 import SettingsPage from './pages/SettingsPage';
+import MemoryPage from './pages/MemoryPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import ChangeEmailPage from './pages/ChangeEmailPage';
 import VerifyCodePage from './pages/VerifyCodePage';
@@ -120,6 +121,7 @@ export default function App() {
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/settings/change-password" element={<ChangePasswordPage />} />
       <Route path="/settings/change-email" element={<ChangeEmailPage />} />
+      <Route path="/settings/memory" element={<MemoryPage />} />
       <Route path="/verify-code" element={<VerifyCodePage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
