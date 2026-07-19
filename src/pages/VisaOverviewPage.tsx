@@ -5,6 +5,7 @@ import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useVisa, getConsularDistrict } from '../hooks/useVisa';
 import VisaUkrainePage from './VisaUkrainePage';
+import VisaBelarusPage from './VisaBelarusPage';
 
 function Corners() {
   return (
@@ -27,6 +28,8 @@ export default function VisaOverviewPage() {
   const country = localStorage.getItem('cispr_country') || 'ru';
   // у Украины свой трек: безвиз + permesso / временная защита, без визы D
   if (country === 'ua') return <VisaUkrainePage />;
+  // Беларусь: виза D, но подача напрямую в посольство в Минске
+  if (country === 'by') return <VisaBelarusPage />;
   return <VisaRuOverview />;
 }
 

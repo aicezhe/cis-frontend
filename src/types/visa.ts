@@ -148,6 +148,56 @@ export interface VisaUaSeed {
   tips_ru: string[];
 }
 
+// ── Беларусь: виза D через посольство в Минске ────────────────────────────────
+// Только страновая специфика. Общий чек-лист документов, причины отказа и
+// шаблоны переиспользуются из visa_ru_seed.json (см. useVisa), поэтому здесь
+// их нет — не дублируем текст.
+
+export interface VisaByStep {
+  title_ru: string;
+  description_ru: string;
+  details_ru?: string[];
+  warning_ru?: string;
+}
+
+export interface VisaBySeed {
+  meta: {
+    country_code: string;
+    country_name_ru: string;
+    source: string;
+    academic_year: string;
+    last_updated: string;
+    data_policy: string;
+  };
+  embassy_ru: {
+    title_ru: string;
+    lead_ru: string;
+    name_ru: string;
+    address_ru: string;
+    hours_ru: string;
+    website: string;
+    prenotami_url: string;
+    tls_note_ru: string;
+    availability_note_ru: string;
+  };
+  // Шаги 3–5 (Prenot@Mi → подача в посольство → ожидание), заменяющие
+  // российские шаги «визовый центр/подача/ожидание». Шаги 1–2 и 6–7 общие —
+  // берутся из visa_ru_seed.json.
+  embassy_steps_ru: {
+    disclaimer_ru: string;
+    steps: VisaByStep[];
+  };
+  docs_specifics_ru: {
+    title_ru: string;
+    intro_ru: string;
+    items_ru: string[];
+  };
+  travel_ru: {
+    title_ru: string;
+    body_ru: string;
+  };
+}
+
 export interface VisaActionStep {
   title_ru: string;
   description_ru: string;

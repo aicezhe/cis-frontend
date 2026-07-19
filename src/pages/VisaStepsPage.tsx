@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TriangleAlert } from 'lucide-react';
-import { useVisa } from '../hooks/useVisa';
+import { useVisa, useVisaBy } from '../hooks/useVisa';
 import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
-import { ContentPage, PageHeader, TldrCard, Note } from '../components/content';
+import { ContentPage, PageHeader, TldrCard, Note, InfoCard } from '../components/content';
 
 const CHECKS_KEY = 'cispr_visa_docs_checks';
 
@@ -298,7 +298,8 @@ function StepCard({
 export default function VisaStepsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { visa, loading } = useVisa();
+  const { visa, loading, country } = useVisa();
+  const { by } = useVisaBy();
   const [checked, setChecked] = useState<string[]>(loadChecks);
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
@@ -334,6 +335,23 @@ export default function VisaStepsPage() {
         Пошаговый чек-лист документов и действий для визы D. Отмечай сделанное —
         <b> прогресс сохраняется</b>. Разверни шаг, чтобы увидеть детали.
       </TldrCard>
+
+      {/* Беларуская специфика документов — над общим чек-листом */}
+      {country === 'by' && by && (
+        <div className="mt-5">
+          <InfoCard title={by.docs_specifics_ru.title_ru}>
+            <p className="leading-relaxed">{by.docs_specifics_ru.intro_ru}</p>
+            <div className="flex flex-col gap-2 mt-2.5">
+              {by.docs_specifics_ru.items_ru.map((item, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <span className="text-content-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
+                  <p className="text-content-ink text-[14px] leading-relaxed">{item}</p>
+                </div>
+              ))}
+            </div>
+          </InfoCard>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3 mt-5">
         {visa.steps.map((step) => (
