@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import { useRelocation } from '../hooks/useRelocation';
+import { useHousingSearch } from '../hooks/useHousingSearch';
 import { ContentPage, PageHeader, TldrCard, InfoCard } from '../components/content';
 
 export default function HousingSearchPage() {
-  const navigate = useNavigate();
-  const { relocation, loading } = useRelocation();
+  // Поиск жилья одинаков для всех стран — грузим из единого источника, а не из
+  // relocation-сида конкретной страны (у ua/kz его нет).
+  const { housing, loading } = useHousingSearch();
 
   if (loading) {
     return (
@@ -13,12 +13,9 @@ export default function HousingSearchPage() {
       </div>
     );
   }
-  if (!relocation) {
-    navigate('/path/travel');
-    return null;
-  }
+  if (!housing) return null;
 
-  const hs = relocation.housing_search;
+  const hs = housing;
 
   return (
     <ContentPage>

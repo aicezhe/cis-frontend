@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Route, PackageOpen, FileText, IdCard, Home, CreditCard, HeartPulse } from 'lucide-react';
+import { Route, PackageOpen, FileText, IdCard, Home, CreditCard, Smartphone, HeartPulse } from 'lucide-react';
 import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
@@ -15,7 +15,7 @@ function loadStepsChecks(): string[] {
 export default function RelocationOverviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { relocation, loading } = useRelocation();
+  const { relocation, loading, country } = useRelocation();
   // Пришли по ссылке из шага (маршруты/LOCI) — возвращаем назад тоже с
   // раскрытыми «Шагами переезда».
   const [stepsOpen, setStepsOpen] = useState(() => Boolean((location.state as { openSteps?: boolean } | null)?.openSteps));
@@ -45,28 +45,28 @@ export default function RelocationOverviewPage() {
         <div className="px-6 pt-12">
           <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
         </div>
-        <div className="flex-1 flex items-center justify-center px-8">
-          <div className="text-center">
-            <p className="font-serif text-navy text-2xl font-bold mb-3">Переезд</p>
-            <p className="font-serif text-navy/60 text-base leading-relaxed mb-6">
-              Детальный гайд для твоей страны в разработке. Типовые маршруты уже можно посмотреть.
-            </p>
-            <div className="flex flex-col items-center gap-3">
-              <button
-                onClick={() => navigate('/path/travel/routes')}
-                className="font-serif text-cream bg-navy rounded-full px-8 py-3"
-              >
-                Дорога в Парму →
-              </button>
-              {/* SSN — общий блок, доступен всем странам */}
-              <button
-                onClick={() => navigate('/path/travel/ssn')}
-                className="font-serif text-navy border border-navy/30 rounded-full px-8 py-3"
-              >
-                SSN и tessera sanitaria →
-              </button>
-            </div>
-          </div>
+        <div className="mt-4 px-6 text-center">
+          <h1 className="font-serif text-navy text-3xl font-bold">Переезд</h1>
+          <p className="font-serif text-gold text-base mt-1 italic">Дорога и первые дни</p>
+          <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
+        </div>
+        <p className="font-serif text-navy/70 text-sm text-center px-6 mt-5 leading-relaxed">
+          Детальный гайд для твоей страны в разработке. Типовые маршруты уже можно посмотреть.
+        </p>
+
+        <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
+        <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
+          <GridButton icon={Route} title="Дорога в Парму" to="/path/travel/routes" seed={1} />
+          {/* Поиск жилья и SSN — общие для всех стран */}
+          <GridButton icon={Home} title="Поиск жилья" to="/path/travel/housing" seed={2} />
+          <GridButton icon={HeartPulse} title="SSN и tessera sanitaria" to="/path/travel/ssn" seed={3}
+            wide={country !== 'kz'} />
+          {country === 'kz' && (
+            <>
+              <GridButton icon={Smartphone} title="Связь и SIM" to="/path/travel/kz-sim" seed={4} />
+              <GridButton icon={CreditCard} title="Карты и оплата" to="/path/travel/kz-cards" seed={5} wide />
+            </>
+          )}
         </div>
         <TabBar active="path" />
       </div>
