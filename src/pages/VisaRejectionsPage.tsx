@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useVisa } from '../hooks/useVisa';
+import { TriangleAlert } from 'lucide-react';
+import { useVisa, useVisaKz } from '../hooks/useVisa';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
 
 export default function VisaRejectionsPage() {
   const navigate = useNavigate();
-  const { visa, loading } = useVisa();
+  const { visa, loading, country } = useVisa();
+  const { kz } = useVisaKz();
 
   if (loading) {
     return (
@@ -25,6 +27,11 @@ export default function VisaRejectionsPage() {
       <PageHeader crumb="Виза" title={rj.title_ru} backTo="/path/visa" />
 
       <TldrCard>{rj.intro_ru}</TldrCard>
+
+      {/* Казахстанский акцент: выписка Kaspi — топовая страновая причина отказа */}
+      {country === 'kz' && kz?.rejection_note_ru && (
+        <Note icon={<TriangleAlert size={15} />}>{kz.rejection_note_ru}</Note>
+      )}
 
       <H2>Причины отказа</H2>
       <div className="flex flex-col gap-3 mt-4">

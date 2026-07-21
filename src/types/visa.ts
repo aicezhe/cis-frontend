@@ -198,6 +198,45 @@ export interface VisaBySeed {
   };
 }
 
+// ── Казахстан: виза D, канал подачи нестабилен ────────────────────────────────
+// Только страновая специфика. Общий чек-лист документов, причины отказа и
+// шаблоны переиспользуются из visa_ru_seed.json (см. useVisa). Шаги подачи —
+// VisaByStep (та же форма, что у Беларуси).
+
+export interface VisaKzSeed {
+  meta: {
+    country_code: string;
+    country_name_ru: string;
+    source: string;
+    academic_year: string;
+    last_updated: string;
+    data_policy: string;
+  };
+  // «Куда подаёшься» — вместо чистого адреса тут предупреждение о
+  // нестабильности канала + что известно на момент обновления.
+  channel_ru: {
+    title_ru: string;
+    lead_ru: string;
+    known_title_ru: string;
+    known_ru: string[];
+    website: string;
+    prenotami_url: string;
+  };
+  // Шаги 3–5 (канал/запись → подача → ожидание), заменяющие российские
+  // «визовый центр/подача/ожидание». Шаги 1–2 и 6–7 общие — из visa_ru_seed.json.
+  embassy_steps_ru: {
+    disclaimer_ru: string;
+    steps: VisaByStep[];
+  };
+  docs_specifics_ru: {
+    title_ru: string;
+    intro_ru: string;
+    items_ru: string[];
+  };
+  // Казахстанский акцент для раздела «Причины отказа».
+  rejection_note_ru: string;
+}
+
 export interface VisaActionStep {
   title_ru: string;
   description_ru: string;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TriangleAlert } from 'lucide-react';
-import { useVisa, useVisaBy } from '../hooks/useVisa';
+import { useVisa, useVisaBy, useVisaKz } from '../hooks/useVisa';
 import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
@@ -300,7 +300,11 @@ export default function VisaStepsPage() {
   const location = useLocation();
   const { visa, loading, country } = useVisa();
   const { by } = useVisaBy();
+  const { kz } = useVisaKz();
   const [checked, setChecked] = useState<string[]>(loadChecks);
+  // Страновая специфика документов над общим чек-листом (by/kz).
+  const docsSpecifics =
+    country === 'by' ? by?.docs_specifics_ru : country === 'kz' ? kz?.docs_specifics_ru : null;
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
 
   function toggle(id: string) {
@@ -336,13 +340,13 @@ export default function VisaStepsPage() {
         <b> прогресс сохраняется</b>. Разверни шаг, чтобы увидеть детали.
       </TldrCard>
 
-      {/* Беларуская специфика документов — над общим чек-листом */}
-      {country === 'by' && by && (
+      {/* Страновая специфика документов (Беларусь/Казахстан) — над общим чек-листом */}
+      {docsSpecifics && (
         <div className="mt-5">
-          <InfoCard title={by.docs_specifics_ru.title_ru}>
-            <p className="leading-relaxed">{by.docs_specifics_ru.intro_ru}</p>
+          <InfoCard title={docsSpecifics.title_ru}>
+            <p className="leading-relaxed">{docsSpecifics.intro_ru}</p>
             <div className="flex flex-col gap-2 mt-2.5">
-              {by.docs_specifics_ru.items_ru.map((item, i) => (
+              {docsSpecifics.items_ru.map((item, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <span className="text-content-gold flex-shrink-0 mt-0.5 text-xs">◆</span>
                   <p className="text-content-ink text-[14px] leading-relaxed">{item}</p>

@@ -6,6 +6,7 @@ import { GridButton } from '../components/GridButton';
 import { useVisa, getConsularDistrict } from '../hooks/useVisa';
 import VisaUkrainePage from './VisaUkrainePage';
 import VisaBelarusPage from './VisaBelarusPage';
+import VisaKazakhstanPage from './VisaKazakhstanPage';
 
 function Corners() {
   return (
@@ -30,6 +31,8 @@ export default function VisaOverviewPage() {
   if (country === 'ua') return <VisaUkrainePage />;
   // Беларусь: виза D, но подача напрямую в посольство в Минске
   if (country === 'by') return <VisaBelarusPage />;
+  // Казахстан: виза D, канал подачи нестабилен
+  if (country === 'kz') return <VisaKazakhstanPage />;
   return <VisaRuOverview />;
 }
 

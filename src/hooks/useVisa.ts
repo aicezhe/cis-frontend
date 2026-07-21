@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import type { VisaSeed, VisaUaSeed, VisaBySeed } from '../types/visa';
+import type { VisaSeed, VisaUaSeed, VisaBySeed, VisaKzSeed } from '../types/visa';
 
 // Какой сид формата VisaSeed отдаёт общие данные визы D по стране.
-// Беларусь переиспользует общий сид России (чек-лист документов, причины
-// отказа, шаблоны — они одинаковы), а страновая специфика Беларуси лежит
-// отдельно в visa_by_seed.json (см. useVisaBy). Так не дублируем текст.
-const SHARED_VISA_SEED: Record<string, string> = { ru: 'ru', by: 'ru' };
+// Беларусь и Казахстан переиспользуют общий сид России (чек-лист документов,
+// причины отказа, шаблоны — они одинаковы), а страновая специфика лежит
+// отдельно в visa_by_seed.json / visa_kz_seed.json. Так не дублируем текст.
+const SHARED_VISA_SEED: Record<string, string> = { ru: 'ru', by: 'ru', kz: 'ru' };
 
 const _cache: Record<string, VisaSeed | null> = {};
 
@@ -63,6 +63,37 @@ export function useVisaBy() {
   }, []);
 
   return { by: data, loading };
+}
+
+// Казахстан: страновая специфика поверх общего сида (нестабильный канал подачи,
+// шаги 3–5, специфика документов — финансы/Kaspi, апостиль в РК).
+let _kzCache: VisaKzSeed | null = null;
+
+export function useVisaKz() {
+  const [data, setData] = useState<VisaKzSeed | null>(_kzCache);
+  const [loading, setLoading] = useState(!_kzCache);
+
+  useEffect(() => {
+    if (_kzCache) return;
+    let cancelled = false;
+    fetch('/data/visa_kz_seed.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled) return;
+        _kzCache = d;
+        setData(d);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return { kz: data, loading };
 }
 
 // Украина: свой формат seed (безвиз + permesso / временная защита)
