@@ -1,5 +1,6 @@
 // Загрузка данных Foundation Year из public/data/foundation_seed.json.
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type {
   FoundationSeed,
   FoundationTrackId,
@@ -29,7 +30,7 @@ export function useFoundation(): FoundationState {
       return;
     }
     let cancelled = false;
-    fetch('/data/foundation_seed.json')
+    fetch(seedUrl('/data/foundation_seed.json'))
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json() as Promise<FoundationSeed>;
@@ -63,7 +64,7 @@ export async function loadLegalizationFor(
 ): Promise<FoundationLegalizationSeed | null> {
   if (_legalCache[countryCode]) return _legalCache[countryCode];
   try {
-    const r = await fetch(`/data/foundation_legalization_${countryCode}.json`);
+    const r = await fetch(seedUrl(`/data/foundation_legalization_${countryCode}.json`));
     if (!r.ok) return null;
     const data = (await r.json()) as FoundationLegalizationSeed;
     _legalCache[countryCode] = data;

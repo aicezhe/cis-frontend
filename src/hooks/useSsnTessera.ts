@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 
 // Блок «SSN и tessera sanitaria» общий для всех стран — процесс зависит от
 // типа статуса, а не от гражданства. Один статический сид, без страновых
@@ -35,7 +36,7 @@ export function useSsnTessera() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch('/data/ssn_tessera.json')
+    fetch(seedUrl('/data/ssn_tessera.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;

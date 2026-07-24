@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type { LaureaSeed, NumeroChiusoSeed, ProgramType } from '../types/laurea';
 
 const _cache: Partial<Record<ProgramType, LaureaSeed>> = {};
@@ -7,7 +8,7 @@ export async function loadProgramSeed(type: ProgramType): Promise<LaureaSeed | n
   if (_cache[type]) return _cache[type]!;
   try {
     const file = type === 'bachelor' ? 'laurea_seed.json' : 'magistrale_seed.json';
-    const r = await fetch(`/data/${file}`);
+    const r = await fetch(seedUrl(`/data/${file}`));
     if (!r.ok) return null;
     const data = (await r.json()) as LaureaSeed;
     _cache[type] = data;
@@ -45,7 +46,7 @@ export function useNumeroChiuso(): NumeroChiusoSeed | null {
 
   useEffect(() => {
     if (_ncCache) return;
-    fetch('/data/numero_chiuso_seed.json')
+    fetch(seedUrl('/data/numero_chiuso_seed.json'))
       .then((r) => r.json())
       .then((d: NumeroChiusoSeed) => {
         _ncCache = d;

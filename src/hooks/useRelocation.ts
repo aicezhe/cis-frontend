@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type { RelocationSeed, LociRoute } from '../types/relocation';
 
 const _cache: Record<string, RelocationSeed | null> = {};
@@ -10,7 +11,7 @@ export function useRelocation() {
 
   useEffect(() => {
     if (country in _cache) return;
-    fetch(`/data/relocation_${country}_seed.json`)
+    fetch(seedUrl(`/data/relocation_${country}_seed.json`))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         _cache[country] = d;
@@ -35,7 +36,7 @@ export function useLociRoutes() {
 
   useEffect(() => {
     if (_lociCache) return;
-    fetch('/data/loci_routes_seed.json')
+    fetch(seedUrl('/data/loci_routes_seed.json'))
       .then((r) => r.json())
       .then((d) => {
         _lociCache = d.routes_by_country;

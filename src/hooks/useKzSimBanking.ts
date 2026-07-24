@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 
 // KZ-блоки «Связь/SIM» и «Карты и оплата». Лежат отдельным файлом, а не в
 // relocation_kz_seed — полного гайда переезда для KZ пока нет, а эти два блока
@@ -32,7 +33,7 @@ export function useKzSimBanking() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch('/data/kz_sim_banking.json')
+    fetch(seedUrl('/data/kz_sim_banking.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled) { _cache = d; setData(d); setLoading(false); } })
       .catch(() => { if (!cancelled) setLoading(false); });

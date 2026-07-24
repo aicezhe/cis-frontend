@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 
 // Разбор Mod. 209 (KIT permesso) — общий для всех стран (процесс одинаков для
 // не-ЕС), поэтому отдельный статический сид, не зависящий от relocation.
@@ -28,7 +29,7 @@ export function useMod209() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch('/data/mod209.json')
+    fetch(seedUrl('/data/mod209.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;

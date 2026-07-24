@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type { ParmaLifeSeed } from '../types/parmaLife';
 
 let _cache: ParmaLifeSeed | null = null;
@@ -9,7 +10,7 @@ export function useParmaLife() {
 
   useEffect(() => {
     if (_cache) return;
-    fetch('/data/parma_life_seed.json')
+    fetch(seedUrl('/data/parma_life_seed.json'))
       .then((r) => r.json())
       .then((d: ParmaLifeSeed) => {
         _cache = d;

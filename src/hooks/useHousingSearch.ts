@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type { RelocationHousingOption } from '../types/relocation';
 
 export interface HousingSearch {
@@ -18,7 +19,7 @@ export function useHousingSearch() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch('/data/relocation_ru_seed.json')
+    fetch(seedUrl('/data/relocation_ru_seed.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;

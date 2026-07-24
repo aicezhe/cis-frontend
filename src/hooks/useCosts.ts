@@ -1,6 +1,7 @@
 // Динамический расчёт расходов по стране и программе.
 // Читает /data/costs_seed.json и возвращает разбивку + итог для раздела «Универ».
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 
 type CountryCode = 'ru' | 'ua' | 'by' | 'kz';
 type ProgramKey = 'foundation' | 'bachelor' | 'master';
@@ -26,7 +27,7 @@ let _cache: any | null = null;
 
 async function loadCostsSeed(): Promise<any> {
   if (_cache) return _cache;
-  const r = await fetch('/data/costs_seed.json');
+  const r = await fetch(seedUrl('/data/costs_seed.json'));
   if (!r.ok) throw new Error('costs_seed not found');
   _cache = await r.json();
   return _cache;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { seedUrl } from '../lib/seed';
 import type { VisaSeed, VisaUaSeed, VisaBySeed, VisaKzSeed } from '../types/visa';
 
 // Какой сид формата VisaSeed отдаёт общие данные визы D по стране.
@@ -18,7 +19,7 @@ export function useVisa() {
 
   useEffect(() => {
     if (!supported || seedCountry in _cache) return;
-    fetch(`/data/visa_${seedCountry}_seed.json`)
+    fetch(seedUrl(`/data/visa_${seedCountry}_seed.json`))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         _cache[seedCountry] = d;
@@ -45,7 +46,7 @@ export function useVisaBy() {
   useEffect(() => {
     if (_byCache) return;
     let cancelled = false;
-    fetch('/data/visa_by_seed.json')
+    fetch(seedUrl('/data/visa_by_seed.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;
@@ -76,7 +77,7 @@ export function useVisaKz() {
   useEffect(() => {
     if (_kzCache) return;
     let cancelled = false;
-    fetch('/data/visa_kz_seed.json')
+    fetch(seedUrl('/data/visa_kz_seed.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;
@@ -105,7 +106,7 @@ export function useVisaUa() {
 
   useEffect(() => {
     if (_uaCache) return;
-    fetch('/data/visa_ua_seed.json')
+    fetch(seedUrl('/data/visa_ua_seed.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         _uaCache = d;
