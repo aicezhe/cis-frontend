@@ -507,10 +507,10 @@ export default function LauraPage() {
           <div className="flex-1 flex items-center justify-center px-8">
             {/* Приветствие: текст ровный, фирменным serif; каллиграфическая —
                 только заглавная «L» (как в логотипе). */}
-            <p className="font-serif text-navy text-2xl font-bold text-center leading-snug max-w-[280px]">
+            <p className="font-serif text-navy text-2xl text-center max-w-[300px]" style={{ lineHeight: 1.4 }}>
               <span
                 className="font-script text-gold font-normal"
-                style={{ fontSize: '1.6em', lineHeight: 1, verticalAlign: '-0.12em', marginRight: '0.02em' }}
+                style={{ fontSize: '2.4em', lineHeight: 0, verticalAlign: '-0.3em' }}
               >
                 L
               </span>
