@@ -38,7 +38,9 @@ export default function RelocationOverviewPage() {
     );
   }
 
-  // нет seed для страны (ua/by/kz) — заглушка, но типовые маршруты всё равно доступны
+  // Нет relocation-сида (сейчас — только Украина: у неё принципиально другой
+  // трек легализации без визы D) — облегчённая заглушка, но маршруты и общие
+  // блоки (жильё, SSN) всё равно доступны.
   if (!relocation) {
     return (
       <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
@@ -57,30 +59,29 @@ export default function RelocationOverviewPage() {
         <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
         <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
           <GridButton icon={Route} title="Дорога в Парму" to="/path/travel/routes" seed={1} />
-          {/* Поиск жилья и SSN — общие для всех стран */}
           <GridButton icon={Home} title="Поиск жилья" to="/path/travel/housing" seed={2} />
-          <GridButton icon={HeartPulse} title="SSN и tessera sanitaria" to="/path/travel/ssn" seed={3}
-            wide={country !== 'kz'} />
-          {country === 'kz' && (
-            <>
-              <GridButton icon={Smartphone} title="Связь и SIM" to="/path/travel/kz-sim" seed={4} />
-              <GridButton icon={CreditCard} title="Карты и оплата" to="/path/travel/kz-cards" seed={5} wide />
-            </>
-          )}
+          <GridButton icon={HeartPulse} title="SSN и tessera sanitaria" to="/path/travel/ssn" seed={3} wide />
         </div>
         <TabBar active="path" />
       </div>
     );
   }
 
+  // Общие для ru/by/kz (одна и та же итальянская бюрократия) + страновые
+  // добавки. «После приезда» и «Карты и оплата» — РФ-специфика (обходные
+  // схемы для российских карт), у Казахстана для этого свои страницы.
   const gridButtons = [
     { icon: Route, title: 'Дорога в Парму', to: '/path/travel/routes', seed: 1 },
-    { icon: PackageOpen, title: 'После приезда', to: '/path/travel/after', seed: 2 },
+    ...(country === 'ru' ? [{ icon: PackageOpen, title: 'После приезда', to: '/path/travel/after', seed: 2 }] : []),
     { icon: FileText, title: 'Codice Fiscale', to: '/path/travel/codice-fiscale', seed: 3 },
     { icon: IdCard, title: 'Permesso di soggiorno', to: '/path/travel/permesso', seed: 4 },
     { icon: Home, title: 'Поиск жилья', to: '/path/travel/housing', seed: 5 },
-    { icon: CreditCard, title: 'Карты и оплата', to: '/path/travel/cards', seed: 6 },
+    ...(country === 'ru' ? [{ icon: CreditCard, title: 'Карты и оплата', to: '/path/travel/cards', seed: 6 }] : []),
     { icon: HeartPulse, title: 'SSN и tessera sanitaria', to: '/path/travel/ssn', seed: 7 },
+    ...(country === 'kz' ? [
+      { icon: Smartphone, title: 'Связь и SIM', to: '/path/travel/kz-sim', seed: 8 },
+      { icon: CreditCard, title: 'Карты и оплата', to: '/path/travel/kz-cards', seed: 9 },
+    ] : []),
   ];
 
   return (

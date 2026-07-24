@@ -12,7 +12,7 @@ function loadChecks(): string[] {
 
 export default function AfterArrivalPage() {
   const navigate = useNavigate();
-  const { relocation, loading } = useRelocation();
+  const { relocation, loading, country } = useRelocation();
   const [checks, setChecks] = useState<string[]>(loadChecks);
 
   function toggle(id: string) {
@@ -38,7 +38,9 @@ export default function AfterArrivalPage() {
 
   const aa = relocation.after_arrival;
   const sim = aa.steps.find((s) => s.id === 'sim');
-  const cash = aa.steps.find((s) => s.id === 'cash_card');
+  // РФ-специфика (обходные схемы для российских карт) — у других стран для
+  // этого свои страницы (например, KzCardsPage), не показываем здесь.
+  const cash = country === 'ru' ? aa.steps.find((s) => s.id === 'cash_card') : undefined;
 
   const CheckBox = ({ id }: { id: string }) => (
     <button onClick={() => toggle(id)} className="w-6 h-6 mt-0.5 flex-shrink-0" aria-label="Отметить">
