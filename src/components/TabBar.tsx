@@ -29,11 +29,11 @@ export default function TabBar({ active }: TabBarProps) {
             /* Лаура — фирменная каллиграфическая «L» вместо SVG-паттерна */
             <span
               className={
-                'w-7 h-7 rounded-lg bg-navy flex items-center justify-center ' +
+                'w-7 h-7 rounded-sm bg-navy flex items-center justify-center ' +
                 (active === tab.id ? 'opacity-100' : 'opacity-40')
               }
             >
-              <span className="font-script text-gold text-lg leading-none" style={{ marginTop: '-0.15em' }}>L</span>
+              <span className="font-script text-white text-lg leading-none" style={{ marginTop: '-0.15em' }}>L</span>
             </span>
           ) : (
             <img
