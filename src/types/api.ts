@@ -11,6 +11,7 @@ export interface User {
   username: string;
   age: number | null;
   country: string | null;
+  city: string | null;
   program_level: string | null;
   onboarding_completed: boolean;
   course_id: string | null;

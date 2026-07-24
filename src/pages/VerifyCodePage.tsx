@@ -85,6 +85,9 @@ export default function VerifyCodePage() {
       const user = await api.me();
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
+      // Страна set-once: восстанавливаем из профиля (аналогично LoginPage)
+      if (user.country) localStorage.setItem('cispr_country', user.country);
+      if (user.city) localStorage.setItem('cispr_city', user.city);
       if (user.course_id) {
         localStorage.setItem('cispr_course_id', user.course_id);
         // имя курса нужно Настройкам и Лауре, в профиле его нет — тянем фоном

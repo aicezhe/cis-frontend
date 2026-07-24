@@ -34,6 +34,10 @@ export default function LoginPage() {
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
       cacheAvatar(user.avatar_b64 || null);
+      // Страна фиксируется при регистрации и в Настройках не меняется —
+      // на новом устройстве обязана восстановиться из профиля (иначе дефолт ru).
+      if (user.country) localStorage.setItem('cispr_country', user.country);
+      if (user.city) localStorage.setItem('cispr_city', user.city);
       if (user.course_id) {
         localStorage.setItem('cispr_course_id', user.course_id);
         // имя курса нужно Настройкам и Лауре, в профиле его нет — тянем фоном

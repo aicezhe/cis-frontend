@@ -125,14 +125,10 @@ export default function SettingsPage() {
     };
   }, [courseName]);
 
+  // Страна задаётся один раз при регистрации — менять её нельзя (на неё
+  // завязаны визовый трек, переезд и цены). Показываем read-only.
   const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
-  const [country, setCountryState] = useState(localStorage.getItem('cispr_country') || '');
-
-  function handleCountryChange(code: string) {
-    setCountryState(code);
-    localStorage.setItem('cispr_country', code);
-    try { api.updateProfile({ country: code }); } catch { /* non-critical */ }
-  }
+  const country = localStorage.getItem('cispr_country') || '';
 
   return (
     <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-10">
@@ -255,30 +251,16 @@ export default function SettingsPage() {
           <span className="text-navy/60 text-xl flex-shrink-0">→</span>
         </button>
 
-        {/* Страна — влияет на расчёт расходов и блок легализации документов */}
-        <div className="px-5 py-4">
-          <span className="font-serif text-navy text-base block mb-2">Моя страна</span>
-          <div className="flex gap-2 flex-wrap">
-            {(['ru', 'ua', 'by', 'kz'] as const).map((code) => (
-              <button
-                key={code}
-                onClick={() => handleCountryChange(code)}
-                className={
-                  'font-serif text-sm rounded-xl px-3 py-1.5 border transition-colors ' +
-                  (country === code
-                    ? 'bg-navy text-gold border-navy'
-                    : 'bg-cream text-navy border-navy/25')
-                }
-              >
-                {COUNTRY_LABELS[code]}
-              </button>
-            ))}
+        {/* Страна — read-only: задаётся при регистрации, от неё зависят
+            визовый трек, переезд и цены */}
+        <div className="px-5 py-4 flex items-baseline justify-between gap-3">
+          <div>
+            <span className="font-serif text-navy text-base block">Моя страна</span>
+            <span className="font-serif text-navy/50 text-xs italic">задаётся при регистрации</span>
           </div>
-          {country && (
-            <p className="font-serif text-navy/50 text-xs italic mt-2">
-              Влияет на расходы и инструкцию по документам
-            </p>
-          )}
+          <span className="font-serif text-gold text-sm font-bold flex-shrink-0">
+            {COUNTRY_LABELS[country] || 'не указана'}
+          </span>
         </div>
 
       </div>
