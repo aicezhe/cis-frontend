@@ -2,10 +2,43 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
 import { isAuthed } from '../lib/api';
+import { getLauraProfile } from '../lib/laura';
 import { listMemory, deleteMemory, clearMemory, type MemoryItem } from '../lib/memory';
+
+const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
+const PROGRAM_LABELS: Record<string, string> = {
+  foundation: 'Foundation Year',
+  bachelor: 'Бакалавриат',
+  master: 'Магистратура',
+};
+const STAGE_LABELS: Record<string, string> = {
+  uni: 'выбор программы / поступление',
+  visa: 'оформление визы',
+  travel: 'переезд',
+  parma: 'уже в Парме',
+};
+
+// Базовые данные из профиля — Лаура получает их в каждом чате автоматически.
+// Здесь показываем их read-only, чтобы экран памяти честно отражал, что она
+// знает. В user_memory их не дублируем: профиль — источник истины (изменится
+// в Настройках — тут сразу обновится).
+function profileFacts(): { label: string; value: string }[] {
+  const p = getLauraProfile();
+  const rows: { label: string; value: string }[] = [];
+  if (p.nickname) rows.push({ label: 'Имя/ник', value: p.nickname });
+  if (p.age) rows.push({ label: 'Возраст', value: String(p.age) });
+  if (p.country) rows.push({ label: 'Страна', value: COUNTRY_LABELS[p.country] ?? p.country });
+  if (p.city) rows.push({ label: 'Город', value: p.city });
+  if (p.program) rows.push({ label: 'Программа', value: PROGRAM_LABELS[p.program] ?? p.program });
+  if (p.course_name) rows.push({ label: 'Курс', value: p.course_name });
+  if (p.passed_quiz) rows.push({ label: 'Этап пути', value: STAGE_LABELS[p.passed_quiz] ?? p.passed_quiz });
+  if (p.home_address) rows.push({ label: 'Адрес в Парме', value: p.home_address });
+  return rows;
+}
 
 export default function MemoryPage() {
   const navigate = useNavigate();
+  const profile = profileFacts();
   const [items, setItems] = useState<MemoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,10 +87,34 @@ export default function MemoryPage() {
       </div>
 
       <p className="font-serif text-navy/70 text-sm leading-relaxed px-6 mt-1">
-        Лаура запоминает ключевые факты о тебе из разговоров (страна, программа,
-        этап, что уже сделано) и учитывает их во всех чатах. Здесь можно
-        посмотреть и удалить то, что она помнит.
+        Лаура знает базовое из твоего профиля и запоминает новые факты из
+        разговоров — всё это она учитывает в каждом чате. Здесь видно и то,
+        и другое; факты из разговоров можно удалять.
       </p>
+
+      {/* Базовое из профиля — read-only, всегда актуально (источник — Настройки) */}
+      {profile.length > 0 && (
+        <>
+          <h3 className="font-serif text-gold text-sm italic px-6 mt-6 mb-2">Из профиля</h3>
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
+            {profile.map((row, i) => (
+              <div
+                key={row.label}
+                className={
+                  'flex items-baseline justify-between gap-3 px-5 py-3 ' +
+                  (i < profile.length - 1 ? 'border-b border-navy/10' : '')
+                }
+              >
+                <span className="font-serif text-navy/60 text-sm flex-shrink-0">{row.label}</span>
+                <span className="font-serif text-navy text-sm font-bold text-right truncate">{row.value}</span>
+              </div>
+            ))}
+          </div>
+          <p className="font-serif text-navy/40 text-xs italic px-6 mt-2">
+            Меняется в Настройках — Лаура всегда видит актуальное.
+          </p>
+        </>
+      )}
 
       {error && (
         <div
@@ -68,17 +125,19 @@ export default function MemoryPage() {
         </div>
       )}
 
+      <h3 className="font-serif text-gold text-sm italic px-6 mt-6 mb-2">Из разговоров</h3>
       {loading ? (
-        <p className="font-serif text-navy/50 italic px-6 mt-8">Загрузка…</p>
+        <p className="font-serif text-navy/50 italic px-6 mt-2">Загрузка…</p>
       ) : items.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-10 mt-10">
-          <p className="font-serif text-navy/60 text-base leading-relaxed">
-            Пока пусто. Лаура запомнит факты о тебе по ходу разговоров.
+        <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
+          <p className="font-serif text-navy/60 text-sm leading-relaxed">
+            Пока пусто. Новые факты появятся сами по ходу общения с Лаурой —
+            например, «уже получил(а) codice fiscale» или «нужна стипендия ER.GO».
           </p>
         </div>
       ) : (
         <>
-          <div className="mx-6 mt-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
+          <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl overflow-hidden">
             {items.map((item, i) => (
               <div
                 key={item.id}
