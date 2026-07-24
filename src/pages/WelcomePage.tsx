@@ -168,8 +168,10 @@ export default function WelcomePage() {
         </p>
       </div>
 
-      {/* Заполнитель: совсем небольшой — пустого центра не хотим */}
-      <div className="flex-1 min-h-[16px]" />
+      {/* Зазор до CTA фиксированный: раньше тут был flex-1, и на высоких
+          экранах кнопка «уезжала» далеко от текста. Лишнюю высоту теперь
+          забирает нижний резерв под зданиями. */}
+      <div className="min-h-[40px]" />
 
       {/* CTA: войти — primary, регистрация — secondary link */}
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
@@ -193,8 +195,9 @@ export default function WelcomePage() {
         </button>
       </div>
 
-      {/* Резерв снизу под здания-watermark — больше, чтобы CTA поднялась */}
-      <div className="min-h-[220px]" />
+      {/* Резерв снизу под здания-watermark: теперь он тянется (flex-1), чтобы
+          лишняя высота экрана уходила сюда, а не в зазор текст↔кнопка */}
+      <div className="flex-1 min-h-[220px]" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
       <div className={`relative z-10 h-0.5 bg-gold/60 mb-4 ${frameCls}`} />
