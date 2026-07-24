@@ -321,7 +321,7 @@ export default function LauraPage() {
         <div className="px-6 pt-12 pb-4 border-b border-navy/10">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center">
-              <span className="font-script text-gold text-2xl leading-none" style={{ transform: 'translate(-8%, -5%)' }}>L</span>
+              <span className="font-script text-gold text-2xl leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
             </div>
             <div>
               <h1 className="font-serif text-navy text-2xl font-bold">Laura</h1>
@@ -467,7 +467,7 @@ export default function LauraPage() {
           ☰
         </button>
         <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-          <span className="font-script text-gold text-xl leading-none" style={{ transform: 'translate(-8%, -5%)' }}>L</span>
+          <span className="font-script text-gold text-xl leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-navy text-xl font-bold leading-tight truncate">

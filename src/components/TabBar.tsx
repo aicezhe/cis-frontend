@@ -33,7 +33,7 @@ export default function TabBar({ active }: TabBarProps) {
                 (active === tab.id ? 'opacity-100' : 'opacity-40')
               }
             >
-              <span className="font-script text-white text-lg leading-none" style={{ transform: 'translate(-8%, -5%)' }}>L</span>
+              <span className="font-script text-white text-lg leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
             </span>
           ) : (
             <img
