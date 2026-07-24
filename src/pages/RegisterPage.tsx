@@ -252,8 +252,11 @@ export default function RegisterPage() {
             <h1 className="font-serif text-navy text-3xl mb-10 text-center">
               Из какой ты страны?
             </h1>
-            <p className="font-serif text-navy/60 text-sm italic text-center mb-8 -mt-6">
+            <p className="font-serif text-navy/60 text-sm italic text-center mb-2 -mt-6">
               Подберём процесс легализации документов под твою страну
+            </p>
+            <p className="font-serif text-gold text-xs text-center mb-8 font-bold">
+              Этот выбор нельзя будет изменить после регистрации
             </p>
             <div className="w-full flex flex-col gap-3">
               {[

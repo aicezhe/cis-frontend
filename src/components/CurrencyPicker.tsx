@@ -1,9 +1,21 @@
-import { CURRENCIES, type CurrencyCode } from "../config/currencies";
+import { useEffect } from "react";
+import { CURRENCIES, COUNTRY_CURRENCY_MAP, type CurrencyCode } from "../config/currencies";
 import { useCurrency } from "../hooks/useCurrency";
 
 export function CurrencyPicker() {
   const { currency, setCurrency } = useCurrency();
-  const codes: CurrencyCode[] = ["EUR", "RUB", "UAH", "BYN", "KZT"];
+  // Страна фиксируется при регистрации → на выбор только её валюта и евро.
+  // Чужие валюты не показываем — они не имеют смысла для юзера.
+  const country = localStorage.getItem("cispr_country") || "";
+  const local = COUNTRY_CURRENCY_MAP[country];
+  const codes: CurrencyCode[] = local && local !== "EUR" ? [local, "EUR"] : ["EUR"];
+
+  // Если в хранилище осталась «чужая» валюта (старые версии давали выбрать
+  // любую) — тихо приводим к евро.
+  useEffect(() => {
+    if (!codes.includes(currency)) setCurrency("EUR");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency]);
 
   return (
     <div className="space-y-2">

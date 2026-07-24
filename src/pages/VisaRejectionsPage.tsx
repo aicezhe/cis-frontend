@@ -21,12 +21,17 @@ export default function VisaRejectionsPage() {
   }
 
   const rj = visa.rejection_reasons_ru;
+  // Интро в общем сиде написано «по-российски» (мультивизы россиянам) — для
+  // других стран показываем нейтральную формулировку без сравнений.
+  const intro = country === 'ru'
+    ? rj.intro_ru
+    : 'Проверка заявлений на визу D ужесточилась. Все основания для отказа — в статье 32 Визового кодекса ЕС.';
 
   return (
     <ContentPage>
       <PageHeader crumb="Виза" title={rj.title_ru} backTo="/path/visa" />
 
-      <TldrCard>{rj.intro_ru}</TldrCard>
+      <TldrCard>{intro}</TldrCard>
 
       {/* Казахстанский акцент: выписка Kaspi — топовая страновая причина отказа */}
       {country === 'kz' && kz?.rejection_note_ru && (

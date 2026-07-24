@@ -327,6 +327,22 @@ export default function VisaStepsPage() {
     return null;
   }
 
+  // Для Беларуси/Казахстана общий чек-лист должен читаться «под свою страну»:
+  // пункты про РФ, рубли и российские сервисы скрываем — их страновая
+  // специфика показана отдельным блоком выше.
+  const RU_ONLY = /РФ|₽|росси|Cherehapa|OneTwoTrip|Ингосстрах|АльфаСтрахование/i;
+  const noRu = (xs?: string[]) => xs?.filter((x) => !RU_ONLY.test(x));
+  const steps = country === 'ru'
+    ? visa.steps
+    : visa.steps.map((s) => ({
+        ...s,
+        checklist_ru: noRu(s.checklist_ru),
+        options_ru: noRu(s.options_ru),
+        details_ru: noRu(s.details_ru),
+        substeps_ru: noRu(s.substeps_ru),
+        alternative_ru: s.alternative_ru && RU_ONLY.test(s.alternative_ru) ? undefined : s.alternative_ru,
+      }));
+
   return (
     <ContentPage>
       <PageHeader
@@ -335,7 +351,7 @@ export default function VisaStepsPage() {
         onBack={() => navigate('/path/visa', openSteps ? { state: { openSteps: true } } : undefined)}
       />
 
-      <TldrCard stats={[{ value: String(visa.steps.length), label: 'шагов' }]}>
+      <TldrCard stats={[{ value: String(steps.length), label: 'шагов' }]}>
         Пошаговый чек-лист документов и действий для визы D. Отмечай сделанное —
         <b> прогресс сохраняется</b>. Разверни шаг, чтобы увидеть детали.
       </TldrCard>
@@ -358,7 +374,7 @@ export default function VisaStepsPage() {
       )}
 
       <div className="flex flex-col gap-3 mt-5">
-        {visa.steps.map((step) => (
+        {steps.map((step) => (
           <StepCard key={step.id} step={step} seed={visa} checked={checked} toggle={toggle} />
         ))}
       </div>
