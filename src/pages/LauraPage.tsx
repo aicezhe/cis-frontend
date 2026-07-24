@@ -505,12 +505,16 @@ export default function LauraPage() {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center px-8">
-            {/* Рукописное приветствие — как записка от Лауры на бумаге */}
-            <p
-              className="font-script text-navy text-4xl leading-snug text-center max-w-[280px]"
-              style={{ transform: 'rotate(-4deg)' }}
-            >
-              <span className="text-gold">L</span>aura готова тебе помочь!
+            {/* Приветствие: текст ровный, фирменным serif; каллиграфическая —
+                только заглавная «L» (как в логотипе). */}
+            <p className="font-serif text-navy text-2xl font-bold text-center leading-snug max-w-[280px]">
+              <span
+                className="font-script text-gold font-normal"
+                style={{ fontSize: '1.6em', lineHeight: 1, verticalAlign: '-0.12em', marginRight: '0.02em' }}
+              >
+                L
+              </span>
+              aura готова тебе помочь!
             </p>
           </div>
         ) : (

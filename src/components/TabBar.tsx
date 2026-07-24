@@ -25,11 +25,23 @@ export default function TabBar({ active }: TabBarProps) {
           onClick={() => navigate(tab.route)}
           className="flex flex-col items-center gap-1"
         >
-          <img
-            src={tab.icon}
-            alt={tab.label}
-            className={'w-7 h-7 ' + (active === tab.id ? 'opacity-100' : 'opacity-40')}
-          />
+          {tab.id === 'laura' ? (
+            /* Лаура — фирменная каллиграфическая «L» вместо SVG-паттерна */
+            <span
+              className={
+                'w-7 h-7 rounded-lg bg-navy flex items-center justify-center ' +
+                (active === tab.id ? 'opacity-100' : 'opacity-40')
+              }
+            >
+              <span className="font-script text-gold text-lg leading-none" style={{ marginTop: '-0.15em' }}>L</span>
+            </span>
+          ) : (
+            <img
+              src={tab.icon}
+              alt={tab.label}
+              className={'w-7 h-7 ' + (active === tab.id ? 'opacity-100' : 'opacity-40')}
+            />
+          )}
           <span
             className={
               'font-serif text-xs ' +
