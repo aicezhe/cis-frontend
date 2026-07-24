@@ -25,6 +25,8 @@ export default {
         serif: ['"Playfair Display"', 'serif'],
         sans: ['Inter', 'sans-serif'],
         golos: ['"Golos Text"', '-apple-system', 'sans-serif'],
+        // Рукописный (кириллица) — подпись Лауры: «L» в аватарке и приветствие
+        script: ['"Marck Script"', 'cursive'],
       },
     },
   },

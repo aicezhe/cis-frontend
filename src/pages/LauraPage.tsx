@@ -321,7 +321,7 @@ export default function LauraPage() {
         <div className="px-6 pt-12 pb-4 border-b border-navy/10">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center">
-              <span className="font-serif text-gold text-xl">L</span>
+              <span className="font-script text-gold text-2xl leading-none">L</span>
             </div>
             <div>
               <h1 className="font-serif text-navy text-2xl font-bold">Laura</h1>
@@ -467,7 +467,7 @@ export default function LauraPage() {
           ☰
         </button>
         <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-          <span className="font-serif text-gold text-base">L</span>
+          <span className="font-script text-gold text-xl leading-none">L</span>
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-navy text-xl font-bold leading-tight truncate">
@@ -504,12 +504,13 @@ export default function LauraPage() {
             <TypingDots />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-            <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center mb-3">
-              <span className="font-serif text-gold text-xl">L</span>
-            </div>
-            <p className="font-serif text-navy/70 text-base leading-relaxed">
-              Спроси что-нибудь про Парму, поступление или визу.
+          <div className="flex-1 flex items-center justify-center px-8">
+            {/* Рукописное приветствие — как записка от Лауры на бумаге */}
+            <p
+              className="font-script text-navy text-4xl leading-snug text-center max-w-[280px]"
+              style={{ transform: 'rotate(-4deg)' }}
+            >
+              <span className="text-gold">L</span>aura готова тебе помочь!
             </p>
           </div>
         ) : (
