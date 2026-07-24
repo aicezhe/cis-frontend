@@ -104,7 +104,26 @@ export default function SettingsPage() {
     navigate('/change-course');
   }
 
-  const courseName = localStorage.getItem('cispr_course_name');
+  const [courseName, setCourseName] = useState(localStorage.getItem('cispr_course_name'));
+  // Старый вход восстанавливал только course_id без имени — Настройки писали
+  // «курс ещё не выбран», хотя курс выбран. Лечим: тянем имя по id.
+  useEffect(() => {
+    if (courseName) return;
+    const id = localStorage.getItem('cispr_course_id');
+    if (!id) return;
+    let cancelled = false;
+    api
+      .getCourse(id)
+      .then((c) => {
+        if (cancelled) return;
+        localStorage.setItem('cispr_course_name', c.name);
+        setCourseName(c.name);
+      })
+      .catch(() => { /* нет сети — покажем «не выбран», вылечится позже */ });
+    return () => {
+      cancelled = true;
+    };
+  }, [courseName]);
 
   const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
   const [country, setCountryState] = useState(localStorage.getItem('cispr_country') || '');
@@ -230,7 +249,7 @@ export default function SettingsPage() {
           <div className="text-left min-w-0 pr-3">
             <span className="font-serif text-navy text-base block">Поменять мой курс</span>
             <span className="font-serif text-gold text-xs truncate block font-bold">
-              {courseName || 'курс ещё не выбран'}
+              {courseName ? `✓ выбран: ${courseName}` : 'курс ещё не выбран'}
             </span>
           </div>
           <span className="text-navy/60 text-xl flex-shrink-0">→</span>

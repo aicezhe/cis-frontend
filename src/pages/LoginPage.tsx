@@ -34,7 +34,13 @@ export default function LoginPage() {
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
       cacheAvatar(user.avatar_b64 || null);
-      if (user.course_id) localStorage.setItem('cispr_course_id', user.course_id);
+      if (user.course_id) {
+        localStorage.setItem('cispr_course_id', user.course_id);
+        // имя курса нужно Настройкам и Лауре, в профиле его нет — тянем фоном
+        void api.getCourse(user.course_id)
+          .then((c) => localStorage.setItem('cispr_course_name', c.name))
+          .catch(() => { /* не критично, подлечится в Настройках */ });
+      }
       if (user.program_level) localStorage.setItem('cispr_program', user.program_level);
       navigate('/path');
     } catch (e) {

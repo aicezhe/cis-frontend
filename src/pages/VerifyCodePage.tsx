@@ -85,7 +85,13 @@ export default function VerifyCodePage() {
       const user = await api.me();
       localStorage.setItem('cispr_email', user.email);
       localStorage.setItem('cispr_nickname', user.username);
-      if (user.course_id) localStorage.setItem('cispr_course_id', user.course_id);
+      if (user.course_id) {
+        localStorage.setItem('cispr_course_id', user.course_id);
+        // имя курса нужно Настройкам и Лауре, в профиле его нет — тянем фоном
+        void api.getCourse(user.course_id)
+          .then((c) => localStorage.setItem('cispr_course_name', c.name))
+          .catch(() => { /* не критично, подлечится в Настройках */ });
+      }
       if (user.program_level) localStorage.setItem('cispr_program', user.program_level);
     } catch {
       // не критично — данные подтянутся при следующем открытии страниц
