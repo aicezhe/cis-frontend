@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import { MapContainer, Marker, Popup, useMap } from 'react-leaflet';
@@ -82,6 +83,7 @@ function googleMapsRoute(to: LociPlace) {
 }
 
 export default function MapPage() {
+  useTrackSection('map');
   const { data, loading } = useLociPlaces();
   const location = useLocation();
   const focusId = (location.state as { focus?: string } | null)?.focus;

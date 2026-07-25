@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
@@ -43,6 +44,7 @@ function dbMessagesToLocal(dbMsgs: Awaited<ReturnType<typeof getChatMessages>>):
 }
 
 export default function LauraPage() {
+  useTrackSection('laura');
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const authed = isAuthed();

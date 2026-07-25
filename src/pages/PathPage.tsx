@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/TabBar';
 import { NewsWidget } from '../components/NewsWidget';
@@ -121,6 +122,7 @@ function getSectionProgress(sectionKey: string, isCompletedSection: boolean): nu
 }
 
 export default function PathPage() {
+  useTrackSection('path');
   const navigate = useNavigate();
   const uniCosts = useUniCosts();
   const { totalByCategory: customExpenses } = useExpenses();

@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FileText, XCircle } from 'lucide-react';
 import TabBar from '../components/TabBar';
@@ -26,6 +27,7 @@ function loadActionChecks(): string[] {
 }
 
 export default function VisaOverviewPage() {
+  useTrackSection('visa');
   const country = localStorage.getItem('cispr_country') || 'ru';
   // у Украины свой трек: безвиз + permesso / временная защита, без визы D
   if (country === 'ua') return <VisaUkrainePage />;

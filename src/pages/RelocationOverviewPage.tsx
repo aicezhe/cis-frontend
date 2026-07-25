@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Route, PackageOpen, FileText, IdCard, Home, CreditCard, Smartphone, HeartPulse } from 'lucide-react';
 import TabBar from '../components/TabBar';
@@ -13,6 +14,7 @@ function loadStepsChecks(): string[] {
 }
 
 export default function RelocationOverviewPage() {
+  useTrackSection('travel');
   const navigate = useNavigate();
   const location = useLocation();
   const { relocation, loading, country } = useRelocation();

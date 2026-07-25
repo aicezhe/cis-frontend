@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, FileText, BookOpen, Euro, Languages, PenLine } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
@@ -75,6 +76,7 @@ function loadList(key: string): string[] {
 }
 
 export default function ProgramOverviewPage() {
+  useTrackSection('uni');
   const navigate = useNavigate();
   const { program, programType, loading } = useMyProgram();
 

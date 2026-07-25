@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTrackSection } from '../hooks/useTrackSection';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Euro, Languages, BookOpen } from 'lucide-react';
 import TabBar from '../components/TabBar';
@@ -11,6 +12,7 @@ import { formatPrice } from '../utils/formatPrice';
 const CHECKS_KEY = 'cispr_foundation_checks';
 
 export default function FoundationOverviewPage() {
+  useTrackSection('uni');
   const navigate = useNavigate();
   const location = useLocation();
   const { data, loading, error } = useFoundation();

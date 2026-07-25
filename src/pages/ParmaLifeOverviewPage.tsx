@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTrackSection } from '../hooks/useTrackSection';
 import TabBar from '../components/TabBar';
 import { useParmaLife } from '../hooks/useParmaLife';
 import { parmaIconComponent } from '../components/ParmaIcon';
@@ -7,6 +8,7 @@ import { HomeAddressInput } from '../components/HomeAddressInput';
 import { PARMA_GROUPS } from '../lib/parmaGroups';
 
 export default function ParmaLifeOverviewPage() {
+  useTrackSection('parma');
   const navigate = useNavigate();
   const { parmaLife, loading } = useParmaLife();
 
