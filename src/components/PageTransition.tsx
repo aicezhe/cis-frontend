@@ -11,7 +11,7 @@
 // вёрстки, но требует перевести все вызовы navigate() на роутерный
 // viewTransition.
 
-import { useEffect, type ReactNode } from 'react';
+import { useLayoutEffect, type ReactNode } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 // Маршруты со своей режиссурой входа: небо на Welcome, SkyIntro на логине,
@@ -25,7 +25,12 @@ export function PageTransition({ children }: { children: ReactNode }) {
   // SPA сохраняет прокрутку документа между роутами: без сброса новая страница
   // проявляется уже промотанной вниз. На POP не трогаем — там пользователь
   // возвращается назад и ожидает застать экран примерно там же, где оставил.
-  useEffect(() => {
+  //
+  // Именно useLayoutEffect, а не useEffect: обычный эффект выполняется ПОСЛЕ
+  // отрисовки, поэтому браузер успевал показать один кадр новой страницы на
+  // старой прокрутке и только потом дёрнуть её вверх. Этот кадр и читался как
+  // рывок в начале перехода.
+  useLayoutEffect(() => {
     if (navType !== 'POP') window.scrollTo(0, 0);
   }, [location.pathname, navType]);
 
