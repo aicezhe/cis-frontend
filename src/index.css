@@ -7,6 +7,25 @@ body {
   margin: 0;
 }
 
+/* ── Дизайн-система «Маршрут» ────────────────────────────────────────────────
+   Дубликаты токенов из tailwind.config для мест, где Tailwind неудобен:
+   пунктир сегмента маршрута, подложка термина, гало вокруг ромба-маркера. */
+:root {
+  --rt-paper: #f4f1eb;
+  --rt-paper-2: #fbf9f5;
+  --rt-ink: #16253e;
+  --rt-ink-2: #3e4b60;
+  --rt-ink-3: #5a6577;
+  --rt-gold: #b08f4f;
+  --rt-gold-ink: #7e5f2a;
+  --rt-gold-lite: #d4b36a;
+  --rt-gold-soft: #e2d6ba;
+  --rt-navy: #17283f;
+  --rt-navy-2: #0e1b2e;
+  --rt-line: #dfd8ca;
+  --rt-on-navy: #d9d3c6;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -155,6 +174,101 @@ body {
   to   { opacity: 1; }
 }
 .page-fade { animation: page-fade 0.22s ease-out both; }
+
+/* ── «Маршрут»: то, что не выражается утилитами Tailwind ─────────────────────
+   Всё внутри .rt-page, чтобы ни одно правило не утекло на LAURA/LOCI. */
+
+.rt-page :focus-visible {
+  outline: 2px solid var(--rt-gold-ink);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Сегмент линии до следующей станции. Сплошной navy у подтверждённой,
+   золотой пунктир у той, что просит проверки. Пунктир рисуем градиентом,
+   а не border-style: dashed — так шаг ритма задаётся точно (6px). */
+.rt-stop::before {
+  content: '';
+  position: absolute;
+  left: -27px;
+  top: 18px;
+  bottom: 0;
+  width: 1.5px;
+  background: var(--rt-navy);
+}
+.rt-stop--verify::before {
+  background: transparent;
+  background-image: linear-gradient(var(--rt-gold) 50%, transparent 50%);
+  background-size: 1.5px 6px;
+}
+.rt-stop:last-child::before {
+  display: none;
+}
+
+/* Ромб-маркер станции. box-shadow цветом бумаги — это гало, которое
+   разрывает линию под ромбом, иначе она просвечивает сквозь угол. */
+.rt-stop::after {
+  content: '';
+  position: absolute;
+  left: -32px;
+  top: 7px;
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  background: var(--rt-navy);
+  box-shadow: 0 0 0 5px var(--rt-paper);
+}
+.rt-stop--verify::after {
+  background: var(--rt-paper);
+  border: 1.5px solid var(--rt-gold);
+}
+
+/* Ключевой термин: золотая подложка под нижней третью строки. Это
+   единственный градиент вне DarkBand — он тут вместо background-position,
+   чтобы подложка не зависела от кегля. */
+.rt-term {
+  font-weight: 600;
+  color: var(--rt-gold-ink);
+  background: linear-gradient(transparent 68%, var(--rt-gold-soft) 68%);
+}
+/* На тёмном фоне подложка не читается — там термин подчёркивается линией */
+.rt-band .rt-term {
+  color: var(--rt-gold-lite);
+  background: none;
+  border-bottom: 1px solid rgba(212, 179, 106, 0.35);
+}
+
+/* Декоративный контур-ромб в правом верхнем углу тёмного блока */
+.rt-band::after {
+  content: '';
+  position: absolute;
+  right: -26px;
+  top: -26px;
+  width: 70px;
+  height: 70px;
+  border: 1px solid rgba(212, 179, 106, 0.22);
+  transform: rotate(45deg);
+}
+
+/* Появление станции при скролле — единственная анимация раздела */
+.rt-stop {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.rt-stop.rt-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-stop {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 
 /* ── Заставка загрузки (components/Loader.tsx) ───────────────────────────────
    Кольца печати дышат волной от внешнего к внутреннему: увеличиваются и
