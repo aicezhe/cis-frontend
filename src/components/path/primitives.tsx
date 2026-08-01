@@ -48,10 +48,7 @@ export function withTerms(text: string): ReactNode[] {
 /** Светлая карточка — основная поверхность для текста станции. */
 export function Card({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="rounded-[14px] border border-rt-line bg-rt-paper-2 px-[18px] py-[17px]"
-      style={{ boxShadow: '0 1px 2px rgba(22, 37, 62, 0.04)' }}
-    >
+    <div className="rounded-2xl border border-rt-line bg-rt-paper-2 px-[18px] py-[17px]">
       {children}
     </div>
   );
@@ -59,11 +56,26 @@ export function Card({ children }: { children: ReactNode }) {
 
 /** Абзац внутри карточки. */
 export function CardText({ children }: { children: ReactNode }) {
-  return <p className="text-[15.5px] leading-[1.55] text-rt-ink-2">{children}</p>;
+  return <p className="font-golos text-[15px] leading-[1.55] text-rt-ink-2">{children}</p>;
+}
+
+/** Уголки-скобки — фирменный мотив тёмных плашек приложения. */
+function Corners() {
+  const base = 'absolute w-3 h-3 border-rt-gold';
+  return (
+    <>
+      <span className={base + ' left-3 top-3 border-l-2 border-t-2'} />
+      <span className={base + ' right-3 top-3 border-r-2 border-t-2'} />
+      <span className={base + ' bottom-3 left-3 border-b-2 border-l-2'} />
+      <span className={base + ' bottom-3 right-3 border-b-2 border-r-2'} />
+    </>
+  );
 }
 
 /**
- * Тёмный блок — единственное место в системе, где разрешён градиент.
+ * Тёмный блок для того, что нельзя пропустить. Плоская navy-плашка с
+ * золотыми уголками — как остальные тёмные блоки приложения; градиента из
+ * макета здесь нет намеренно, он выбивался из общего языка.
  * Он же единственный носитель ссылки на первоисточник.
  */
 export function DarkBand({
@@ -76,21 +88,21 @@ export function DarkBand({
   link?: { href: string; label: string };
 }) {
   return (
-    <div
-      className="rt-band relative overflow-hidden rounded-[14px] p-[18px]"
-      style={{ background: 'linear-gradient(160deg, var(--rt-navy) 0%, var(--rt-navy-2) 100%)' }}
-    >
-      <p className="mb-[10px] flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-rt-gold-lite">
+    <div className="rt-band relative overflow-hidden rounded-2xl bg-rt-navy p-5">
+      <Corners />
+      <p className="mb-[10px] flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-rt-gold-lite">
         <Diamond size={6} className="bg-rt-gold-lite" />
         {label}
       </p>
-      <div className="relative text-[15.5px] leading-[1.58] text-rt-on-navy">{children}</div>
+      <div className="relative font-golos text-[15px] leading-[1.58] text-rt-on-navy">
+        {children}
+      </div>
       {link && (
         <a
           href={link.href}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 inline-block border-b-[1.5px] border-rt-gold-lite pb-0.5 font-mono text-[13px] text-white"
+          className="mt-3 inline-block border-b-[1.5px] border-rt-gold-lite pb-0.5 font-golos text-[13px] text-white"
         >
           {link.label}
         </a>
@@ -107,7 +119,7 @@ export function DiamondList({ items }: { items: ReactNode[] }) {
         <li
           key={i}
           className={
-            'relative py-[10px] pl-5 text-[15.5px] leading-[1.5] text-rt-ink-2 ' +
+            'relative py-[10px] pl-5 font-golos text-[15px] leading-[1.5] text-rt-ink-2 ' +
             (i < items.length - 1 ? 'border-b border-rt-line' : 'pb-0')
           }
         >
@@ -125,8 +137,11 @@ export function DiamondList({ items }: { items: ReactNode[] }) {
 /** Строка под блоком: что именно стоит перепроверить и почему. */
 export function TtlNote({ children }: { children: ReactNode }) {
   return (
-    <p className="ml-0.5 mt-[10px] flex items-center gap-[7px] font-mono text-[9.5px] tracking-[0.08em] text-rt-gold-ink">
-      <Diamond size={5} />
+    <p className="ml-0.5 mt-[10px] flex items-start gap-[7px] font-mono text-[11px] italic leading-snug text-rt-gold-ink">
+      {/* ромбик выравниваем по первой строке, а не по центру блока */}
+      <span className="mt-1.5">
+        <Diamond size={5} />
+      </span>
       {children}
     </p>
   );

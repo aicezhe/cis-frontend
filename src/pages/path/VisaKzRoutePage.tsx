@@ -8,6 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTrackSection } from '../../hooks/useTrackSection';
 import { useVisaKz } from '../../hooks/useVisa';
 import { LoadingScreen } from '../../components/Loader';
+// Таббар общий с остальным приложением: свой, «маршрутный», сделал бы в
+// приложении два разных нижних меню (см. RouteTabBar — оставлен в системе,
+// но не применён).
+import TabBar from '../../components/TabBar';
 import { buildVisaKzGuide } from '../../lib/guides/visaKz';
 import type { GuideBlock } from '../../types/guide';
 import {
@@ -22,7 +26,6 @@ import {
   RoutePage,
   RouteSpine,
   RouteStop,
-  RouteTabBar,
   StopHeader,
   TtlNote,
   withTerms,
@@ -69,7 +72,7 @@ export default function VisaKzRoutePage() {
         <p className="pt-10 text-[15.5px] leading-[1.55] text-rt-ink-2">
           Не удалось загрузить гайд по визе. Попробуй обновить страницу.
         </p>
-        <RouteTabBar active="path" />
+        <TabBar active="path" />
       </RoutePage>
     );
   }
@@ -136,7 +139,7 @@ export default function VisaKzRoutePage() {
         </RouteStop>
       </RouteSpine>
 
-      <RouteTabBar active="path" />
+      <TabBar active="path" />
     </RoutePage>
   );
 }

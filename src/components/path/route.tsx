@@ -3,55 +3,42 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Diamond } from './primitives';
 import type { Confidence } from '../../types/guide';
 
-/** Обёртка страницы: колонка 430px, фон бумаги, место под таббар. */
+/**
+ * Обёртка страницы. Колонка max-w-md и отступ pb-28 под таббар — те же, что
+ * на остальных экранах приложения, чтобы ширина и ритм не прыгали при
+ * переходе между разделами.
+ */
 export function RoutePage({ children }: { children: ReactNode }) {
   return (
-    <div className="rt-page min-h-screen bg-rt-paper">
-      <div className="mx-auto max-w-[430px] px-5 pb-[110px]">{children}</div>
+    <div className="rt-page relative mx-auto min-h-screen max-w-md bg-rt-paper px-6 pb-28">
+      {children}
+    </div>
+  );
+}
+
+/** Возврат назад — той же стрелкой и в том же месте, что на всех страницах. */
+export function RouteBar({ onBack }: { onBack?: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <div className="pt-12">
+      <button
+        onClick={() => (onBack ? onBack() : navigate(-1))}
+        aria-label="Назад"
+        className="text-2xl text-rt-ink"
+      >
+        ←
+      </button>
     </div>
   );
 }
 
 /**
- * Липкая шапка бренда. Нижняя граница появляется только когда страница
- * прокручена — на нуле линия под заголовком выглядела бы лишней чертой.
+ * Титул страницы — канон приложения: заголовок антиквой, курсивный золотой
+ * подзаголовок, мета, золотая линия 72×1 по центру. Порядок и центровка те же,
+ * что на остальных разделах, чтобы страница не выглядела чужой.
  */
-export function RouteBar({ onBack }: { onBack?: () => void }) {
-  const navigate = useNavigate();
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const onScroll = () => ref.current?.classList.toggle('border-rt-line', window.scrollY > 12);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  return (
-    <header
-      ref={ref}
-      className="sticky top-0 z-30 -mx-5 flex items-center justify-between border-b border-transparent px-5 py-[14px] transition-colors"
-      style={{ background: 'rgba(244, 241, 235, 0.9)', backdropFilter: 'blur(12px)' }}
-    >
-      <button
-        onClick={() => (onBack ? onBack() : navigate(-1))}
-        aria-label="Назад"
-        className="text-base leading-none text-rt-ink"
-      >
-        ←
-      </button>
-      <span className="flex items-center gap-[7px] font-mono text-[10px] uppercase tracking-[0.22em] text-rt-ink-3">
-        <Diamond size={6} />
-        CIS.PR · PATH
-      </span>
-    </header>
-  );
-}
-
-/** Титул страницы. Всё по левому краю — центровки в системе нет. */
 export function GuideHero({
   eyebrow,
   title,
@@ -64,20 +51,14 @@ export function GuideHero({
   lead?: string;
 }) {
   return (
-    <section className="pb-1 pt-[26px]">
-      {eyebrow && (
-        <p className="mb-[14px] font-mono text-[10px] uppercase tracking-[0.2em] text-rt-ink-3">
-          {eyebrow}
-        </p>
+    <section className="mt-4 text-center">
+      <h1 className="font-display text-3xl font-bold text-rt-ink">{title}</h1>
+      {gloss && <p className="mt-1 font-gloss text-base italic text-rt-gold-ink">{gloss}</p>}
+      {eyebrow && <p className="mt-1 font-display text-xs text-rt-ink-3">{eyebrow}</p>}
+      <span className="mx-auto mt-3 block bg-rt-gold/60" style={{ width: 72, height: 1 }} />
+      {lead && (
+        <p className="mt-5 font-display text-sm leading-relaxed text-rt-ink-2">{lead}</p>
       )}
-      <h1 className="mb-[10px] font-display text-[32px] font-medium leading-none tracking-[-0.035em] text-rt-ink">
-        {title}
-      </h1>
-      {gloss && (
-        <p className="font-gloss text-xl font-medium italic text-rt-gold-ink">{gloss}</p>
-      )}
-      <div className="my-[18px] h-[1.5px] w-11 bg-rt-gold" />
-      {lead && <p className="max-w-[33ch] text-[17px] leading-[1.5] text-rt-ink-2">{lead}</p>}
     </section>
   );
 }
@@ -85,7 +66,7 @@ export function GuideHero({
 /** Легенда: что означают залитый и полый ромбы. */
 export function ConfidenceLegend() {
   return (
-    <div className="mb-[30px] mt-6 flex gap-4 rounded-[10px] border border-rt-line bg-rt-paper-2 px-[14px] py-[11px] font-mono text-[9px] uppercase tracking-[0.09em] text-rt-ink-3">
+    <div className="mb-[30px] mt-6 flex gap-4 rounded-2xl border border-rt-line bg-rt-paper-2 px-[14px] py-[11px] font-mono text-[10px] uppercase tracking-[0.12em] text-rt-ink-3">
       <span className="inline-flex items-center gap-[7px]">
         <span aria-hidden="true" className="h-[9px] w-[9px] flex-none rotate-45 bg-rt-navy" />
         подтверждено
@@ -174,7 +155,7 @@ export function StopHeader({
   return (
     <>
       <div className="mb-[7px] flex items-center gap-[9px]">
-        <span className="font-mono text-[10px] font-medium tracking-[0.1em] text-rt-gold">
+        <span className="font-mono text-[11px] font-bold tracking-[0.14em] text-rt-gold">
           {String(index).padStart(2, '0')}
         </span>
         {/* глоссы может не быть — итальянский термин не выдумываем */}
@@ -182,12 +163,12 @@ export function StopHeader({
           <span className="font-gloss text-[15px] italic leading-none text-rt-gold-ink">{gloss}</span>
         )}
         {confidence === 'verify' && (
-          <span className="ml-auto whitespace-nowrap rounded-sm border border-rt-gold-soft px-1.5 py-[3px] font-mono text-[8.5px] uppercase tracking-[0.12em] text-rt-gold-ink">
-            ⟳ проверь
+          <span className="ml-auto whitespace-nowrap rounded-full border border-rt-gold-soft px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.1em] text-rt-gold-ink">
+            проверь
           </span>
         )}
       </div>
-      <h2 className="mb-[13px] text-[19px] font-semibold leading-[1.25] tracking-[-0.015em] text-rt-ink">
+      <h2 className="mb-[13px] font-display text-[19px] font-bold leading-[1.25] text-rt-ink">
         {title}
       </h2>
     </>
