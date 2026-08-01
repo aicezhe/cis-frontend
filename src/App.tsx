@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { PageTransition } from './components/PageTransition';
 import WelcomePage from './pages/WelcomePage';
 import RegisterPage from './pages/RegisterPage';
 import ChangeStagePage from './pages/ChangeStagePage';
@@ -65,66 +66,68 @@ function MapPageFallback() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<WelcomePage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/change-stage" element={<ChangeStagePage />} />
-      <Route path="/onboarding" element={<OnboardingPage />} />
-      <Route path="/quiz-visa" element={<QuizVisaPage />} />
-      <Route path="/quiz-travel" element={<QuizTravelPage />} />
-      <Route path="/path" element={<PathPage />} />
-      <Route path="/path/expenses" element={<ExpensesPage />} />
-      <Route path="/path/foundation" element={<FoundationOverviewPage />} />
-      <Route path="/path/foundation/structure" element={<FoundationStructurePage />} />
-      <Route path="/path/foundation/finance" element={<FoundationFinancePage />} />
-      <Route path="/path/foundation/languages" element={<FoundationLanguagesPage />} />
-      <Route path="/path/uni/program" element={<ProgramOverviewPage />} />
-      <Route path="/path/uni/program/structure" element={<ProgramStructurePage />} />
-      <Route path="/path/uni/program/documents" element={<ProgramDocumentsPage />} />
-      <Route path="/path/uni/program/diploma" element={<ProgramDiplomaPage />} />
-      <Route path="/path/uni/program/finance" element={<ProgramFinancePage />} />
-      <Route path="/path/uni/program/languages" element={<ProgramLanguagesPage />} />
-      <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
-      <Route path="/path/uni/program/isee" element={<IseeDocumentsPage />} />
-      <Route path="/path/parma/isee" element={<IseeDocumentsPage />} />
-      <Route path="/path/visa" element={<VisaOverviewPage />} />
-      <Route path="/path/visa/steps" element={<VisaStepsPage />} />
-      <Route path="/path/visa/rejections" element={<VisaRejectionsPage />} />
-      <Route path="/path/travel" element={<RelocationOverviewPage />} />
-      <Route path="/path/travel/routes" element={<TravelRoutesPage />} />
-      <Route path="/path/travel/after" element={<AfterArrivalPage />} />
-      <Route path="/path/travel/codice-fiscale" element={<CodiceFiscalePage />} />
-      <Route path="/path/travel/permesso" element={<PermessoPage />} />
-      <Route path="/path/travel/housing" element={<HousingSearchPage />} />
-      <Route path="/path/travel/cards" element={<CardsPage />} />
-      <Route path="/path/travel/ssn" element={<SsnTesseraPage />} />
-      <Route path="/path/travel/kz-sim" element={<KzSimPage />} />
-      <Route path="/path/travel/kz-cards" element={<KzCardsPage />} />
-      <Route path="/path/parma" element={<ParmaLifeOverviewPage />} />
-      <Route path="/path/parma/group/:groupId" element={<ParmaGroupPage />} />
-      <Route path="/path/parma/:subsection" element={<ParmaSubsectionPage />} />
-      <Route path="/path/:section" element={<SectionPage />} />
-      <Route path="/laura" element={<LauraPage />} />
-      <Route
-        path="/map"
-        element={
-          <Suspense fallback={<MapPageFallback />}>
-            <MapPage />
-          </Suspense>
-        }
-      />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/choice-program" element={<ChoiceProgramPage />} />
-      <Route path="/change-course" element={<ChangeCoursePage />} />
-      <Route path="/course/:id" element={<CoursePage />} />
-      <Route path="/scholarship" element={<ScholarshipPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/settings/change-password" element={<ChangePasswordPage />} />
-      <Route path="/settings/change-email" element={<ChangeEmailPage />} />
-      <Route path="/settings/memory" element={<MemoryPage />} />
-      <Route path="/verify-code" element={<VerifyCodePage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
-    </Routes>
+    <PageTransition>
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/change-stage" element={<ChangeStagePage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/quiz-visa" element={<QuizVisaPage />} />
+        <Route path="/quiz-travel" element={<QuizTravelPage />} />
+        <Route path="/path" element={<PathPage />} />
+        <Route path="/path/expenses" element={<ExpensesPage />} />
+        <Route path="/path/foundation" element={<FoundationOverviewPage />} />
+        <Route path="/path/foundation/structure" element={<FoundationStructurePage />} />
+        <Route path="/path/foundation/finance" element={<FoundationFinancePage />} />
+        <Route path="/path/foundation/languages" element={<FoundationLanguagesPage />} />
+        <Route path="/path/uni/program" element={<ProgramOverviewPage />} />
+        <Route path="/path/uni/program/structure" element={<ProgramStructurePage />} />
+        <Route path="/path/uni/program/documents" element={<ProgramDocumentsPage />} />
+        <Route path="/path/uni/program/diploma" element={<ProgramDiplomaPage />} />
+        <Route path="/path/uni/program/finance" element={<ProgramFinancePage />} />
+        <Route path="/path/uni/program/languages" element={<ProgramLanguagesPage />} />
+        <Route path="/path/uni/program/numero-chiuso" element={<NumeroChiusoPage />} />
+        <Route path="/path/uni/program/isee" element={<IseeDocumentsPage />} />
+        <Route path="/path/parma/isee" element={<IseeDocumentsPage />} />
+        <Route path="/path/visa" element={<VisaOverviewPage />} />
+        <Route path="/path/visa/steps" element={<VisaStepsPage />} />
+        <Route path="/path/visa/rejections" element={<VisaRejectionsPage />} />
+        <Route path="/path/travel" element={<RelocationOverviewPage />} />
+        <Route path="/path/travel/routes" element={<TravelRoutesPage />} />
+        <Route path="/path/travel/after" element={<AfterArrivalPage />} />
+        <Route path="/path/travel/codice-fiscale" element={<CodiceFiscalePage />} />
+        <Route path="/path/travel/permesso" element={<PermessoPage />} />
+        <Route path="/path/travel/housing" element={<HousingSearchPage />} />
+        <Route path="/path/travel/cards" element={<CardsPage />} />
+        <Route path="/path/travel/ssn" element={<SsnTesseraPage />} />
+        <Route path="/path/travel/kz-sim" element={<KzSimPage />} />
+        <Route path="/path/travel/kz-cards" element={<KzCardsPage />} />
+        <Route path="/path/parma" element={<ParmaLifeOverviewPage />} />
+        <Route path="/path/parma/group/:groupId" element={<ParmaGroupPage />} />
+        <Route path="/path/parma/:subsection" element={<ParmaSubsectionPage />} />
+        <Route path="/path/:section" element={<SectionPage />} />
+        <Route path="/laura" element={<LauraPage />} />
+        <Route
+          path="/map"
+          element={
+            <Suspense fallback={<MapPageFallback />}>
+              <MapPage />
+            </Suspense>
+          }
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/choice-program" element={<ChoiceProgramPage />} />
+        <Route path="/change-course" element={<ChangeCoursePage />} />
+        <Route path="/course/:id" element={<CoursePage />} />
+        <Route path="/scholarship" element={<ScholarshipPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/settings/change-password" element={<ChangePasswordPage />} />
+        <Route path="/settings/change-email" element={<ChangeEmailPage />} />
+        <Route path="/settings/memory" element={<MemoryPage />} />
+        <Route path="/verify-code" element={<VerifyCodePage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+      </Routes>
+    </PageTransition>
   );
 }

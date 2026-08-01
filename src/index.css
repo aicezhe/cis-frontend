@@ -142,7 +142,22 @@ body {
 .page-rise    { animation: page-rise 0.6s ease-out 0.15s both; }
 .page-descend { animation: page-descend 0.6s ease-out both; }
 
+/* ── Переход между страницами (см. components/PageTransition.tsx) ────────────
+   Только opacity — и это не лень, а ограничение вёрстки. Обёртка перехода
+   лежит выше страниц, а любой transform на предке делает его containing block
+   для position: fixed внутри: TabBar и нижняя панель действий на время
+   анимации отвязываются от экрана и уезжают к концу длинной страницы. Проверено
+   на /path/visa — при сдвиге на 18px таббар прыгал с 812px на 1330px.
+   Поэтому никаких translate/scale/filter здесь: opacity создаёт только
+   контекст наложения и на fixed не влияет. */
+@keyframes page-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.page-fade { animation: page-fade 0.22s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
   .wp-grad, .wp-solid, .wp-starfall, .wp-fly-left, .wp-fly-right, .wp-fade,
-  .wp-cream-in, .sky-intro, .page-rise, .page-descend { animation: none; }
+  .wp-cream-in, .sky-intro, .page-rise, .page-descend,
+  .page-fade { animation: none; }
 }
