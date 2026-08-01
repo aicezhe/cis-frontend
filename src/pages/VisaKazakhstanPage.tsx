@@ -6,6 +6,7 @@ import { GridButton } from '../components/GridButton';
 import { useVisa, useVisaKz } from '../hooks/useVisa';
 import type { VisaByStep } from '../types/visa';
 import { LoadingScreen } from '../components/Loader';
+import { Collapse } from '../components/Collapse';
 
 function Corners() {
   return (
@@ -157,7 +158,8 @@ export default function VisaKazakhstanPage() {
             </svg>
           </button>
 
-          {stepsOpen && (
+          <Collapse open={stepsOpen}>
+
             <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
               <p className="font-serif text-gold text-sm text-center italic">
                 {visa.action_steps_ru.audience_note_ru}
@@ -235,7 +237,7 @@ export default function VisaKazakhstanPage() {
                 {kz.embassy_steps_ru.disclaimer_ru}
               </p>
             </div>
-          )}
+        </Collapse>
         </div>
 
         {/* Плитки — как в России */}

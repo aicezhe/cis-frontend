@@ -7,6 +7,7 @@ import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
 import { HomeAddressInput } from '../components/HomeAddressInput';
 import { LoadingScreen } from '../components/Loader';
+import { Collapse } from '../components/Collapse';
 
 const STEPS_CHECKS_KEY = 'cispr_travel_steps_checks';
 
@@ -126,7 +127,7 @@ export default function RelocationOverviewPage() {
           </svg>
         </button>
 
-        {stepsOpen && (() => {
+        <Collapse open={stepsOpen}>{(() => {
           const allSteps = relocation.steps_overview_ru.steps;
           // Последний пункт — не пронумерованный шаг с галочкой, а заметка
           // в конце (ожидание после подачи не требует «сделать» действия).
@@ -219,7 +220,7 @@ export default function RelocationOverviewPage() {
             </p>
           </div>
           );
-        })()}
+        })()}</Collapse>
       </div>
 
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}

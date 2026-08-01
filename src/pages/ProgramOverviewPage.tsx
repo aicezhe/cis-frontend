@@ -8,6 +8,7 @@ import { Price } from '../components/Price';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { GridButton } from '../components/GridButton';
 import { LoadingScreen } from '../components/Loader';
+import { Collapse } from '../components/Collapse';
 
 // Ключевые термины в «Важно знать» подсвечиваем золотым,
 // чтобы взгляд цеплялся за смысл, а не за стену текста.
@@ -195,7 +196,8 @@ export default function ProgramOverviewPage() {
             </svg>
           </button>
 
-          {stepsOpen && (
+          <Collapse open={stepsOpen}>
+
             <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
               <p className="font-serif text-gold text-base text-center italic mb-1">
                 ~ Приём 2026/2027 ~
@@ -329,7 +331,7 @@ export default function ProgramOverviewPage() {
                 Перейти к разделу Виза →
               </button>
             </div>
-          )}
+        </Collapse>
         </div>
 
         {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}

@@ -9,6 +9,7 @@ import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
 import { LoadingScreen } from '../components/Loader';
+import { Collapse } from '../components/Collapse';
 
 const CHECKS_KEY = 'cispr_foundation_checks';
 
@@ -169,7 +170,8 @@ export default function FoundationOverviewPage() {
             </svg>
           </button>
 
-          {stepsOpen && (
+          <Collapse open={stepsOpen}>
+
             <div className="mt-4 pt-4 border-t border-navy/10 flex flex-col gap-3">
               <p className="font-serif text-gold text-base text-center italic">
                 ~ Приём {data.apply_meta.target_year_ru} ~
@@ -285,7 +287,7 @@ export default function FoundationOverviewPage() {
                 </div>
               </div>
             </div>
-          )}
+        </Collapse>
         </div>
 
         {/* Остальное — компактная сетка мелких плиток вместо длинных строк */}

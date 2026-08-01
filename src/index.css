@@ -180,6 +180,18 @@ body {
 }
 .page-fade { animation: page-fade 0.34s cubic-bezier(0.33, 1, 0.68, 1) both; }
 
+/* Раскрытие свёрнутых списков (components/Collapse.tsx).
+   Кривая симметричная (easeInOutCubic), а не easeOut как у перехода между
+   экранами: тут анимация идёт в обе стороны, и односторонняя кривая на
+   закрытии срабатывала рывком — список схлопывался почти мгновенно, а потом
+   долго доезжал последние пиксели. */
+.collapse-grid {
+  transition: grid-template-rows 0.34s cubic-bezier(0.65, 0, 0.35, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .collapse-grid { transition: none; }
+}
+
 /* ── «Маршрут»: то, что не выражается утилитами Tailwind ─────────────────────
    Всё внутри .rt-page, чтобы ни одно правило не утекло на LAURA/LOCI. */
 
