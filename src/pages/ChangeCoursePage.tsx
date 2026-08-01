@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../lib/api';
+import { courseChanged, resetUniProgress } from '../lib/courseProgress';
 import type { CourseCatalog, ProgramLevel } from '../types/api';
 
 type Stage = 'foundation' | 'bachelor' | 'master';
@@ -99,9 +100,12 @@ export default function ChangeCoursePage() {
     } catch {
       // не залогинен / сеть — сохраняем локально, не блокируем
     }
+    // сначала считаем «поменялось ли», пока в localStorage ещё старые значения
+    const changed = courseChanged(initialStage, programLevel, savedCourseId, selected.id);
     localStorage.setItem('cispr_course_id', selected.id);
     localStorage.setItem('cispr_course_name', selected.name);
     localStorage.setItem('cispr_program', programLevel);
+    if (changed) resetUniProgress();
     setSaving(false);
     navigate('/settings');
   }
@@ -114,10 +118,12 @@ export default function ChangeCoursePage() {
     } catch {
       // не критично
     }
+    const changed = initialStage !== 'foundation';
     localStorage.setItem('cispr_program', 'foundation');
     // у Foundation нет конкретной специальности — чистим выбранный курс
     localStorage.removeItem('cispr_course_id');
     localStorage.removeItem('cispr_course_name');
+    if (changed) resetUniProgress();
     setSaving(false);
     navigate('/settings');
   }

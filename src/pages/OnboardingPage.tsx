@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
+import { resetUniProgress } from '../lib/courseProgress';
 import {
   AREA_TO_DEPT,
   languageToFilter,
@@ -65,7 +66,13 @@ export default function OnboardingPage() {
     });
     // запоминаем тип программы — по нему раздел «Университет» ветвится
     const programLevel = levelToProgramLevel(level);
-    if (programLevel) localStorage.setItem('cispr_program', programLevel);
+    if (programLevel) {
+      // смена этапа обнуляет прогресс «Университета»: у Foundation и
+      // бакалавриата разные чек-листы, старые галочки к новому не относятся
+      const prev = localStorage.getItem('cispr_program');
+      if (prev && prev !== programLevel) resetUniProgress();
+      localStorage.setItem('cispr_program', programLevel);
+    }
     // пишем уровень/язык в профиль (не блокируем переход при ошибке/без токена)
     try {
       await api.updateProfile({

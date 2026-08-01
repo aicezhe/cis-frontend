@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../lib/api';
+import { resetUniProgress } from '../lib/courseProgress';
 import { loadQuizFilters } from '../lib/quiz';
 import type { CourseCatalog } from '../types/api';
 
@@ -106,6 +107,9 @@ export default function ChoiceProgramPage() {
     } catch {
       // если не залогинен — всё равно продолжаем (прототип), курс сохраним локально
     } finally {
+      // другая специальность — другие документы и шаги, прошлые галочки не в счёт
+      const prevCourseId = localStorage.getItem('cispr_course_id');
+      if (prevCourseId && prevCourseId !== selected.id) resetUniProgress();
       localStorage.setItem('cispr_course_id', selected.id);
       localStorage.setItem('cispr_course_name', selected.name);
       // стадию ставим только при первом прохождении онбординга (значения ещё нет).
