@@ -171,11 +171,14 @@ body {
    на /path/visa — при сдвиге на 18px таббар прыгал с 812px на 1330px.
    Поэтому никаких translate/scale/filter здесь: opacity создаёт только
    контекст наложения и на fixed не влияет. */
+/* Стартуем не с нуля, а с 0.35: экран не вспыхивает из пустоты, а как будто
+   доводится до плотности — на глаз это мягче любой кривой. Кривая — easeOutCubic
+   с длинным хвостом, чтобы конец перехода не обрывался. */
 @keyframes page-fade {
-  from { opacity: 0; }
+  from { opacity: 0.35; }
   to   { opacity: 1; }
 }
-.page-fade { animation: page-fade 0.22s ease-out both; }
+.page-fade { animation: page-fade 0.34s cubic-bezier(0.33, 1, 0.68, 1) both; }
 
 /* ── «Маршрут»: то, что не выражается утилитами Tailwind ─────────────────────
    Всё внутри .rt-page, чтобы ни одно правило не утекло на LAURA/LOCI. */
