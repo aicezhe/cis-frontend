@@ -265,14 +265,19 @@ body {
 
    transform-box: fill-box даёт кругу собственный центр как точку отсчёта —
    иначе scale поехал бы от угла вьюбокса. */
+/* Два кадра плюс alternate вместо трёх кадров в одну сторону: так ease-in-out
+   ложится на каждое полудвижение и кольцо тормозит перед разворотом, а не
+   меняет направление рывком на середине цикла.
+   backwards нужен из-за расфазировки: без него кольцо с задержкой до старта
+   висит в натуральном размере и в первый момент прыгает. */
 @keyframes loader-ring {
-  0%, 100% { transform: scale(0.84); opacity: 0.35; }
-  50%      { transform: scale(1);    opacity: 1; }
+  from { transform: scale(0.9); opacity: 0.5; }
+  to   { transform: scale(1);   opacity: 1; }
 }
 .loader-ring {
   transform-box: fill-box;
   transform-origin: center;
-  animation: loader-ring 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: loader-ring 1.6s ease-in-out infinite alternate backwards;
   will-change: transform, opacity;
 }
 

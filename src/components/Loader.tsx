@@ -10,13 +10,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-// Длительность одного круга анимации. Должна совпадать с loader-ring в index.css.
-export const LOADER_CYCLE_MS = 1400;
+// Одно движение кольца — вдох от малого к большому. Должно совпадать с
+// длительностью loader-ring в index.css (там оно повторяется через alternate,
+// поэтому полный вдох-выдох занимает вдвое больше).
+export const LOADER_CYCLE_MS = 1600;
 
 const RINGS = [
   { r: 446, stroke: '#D4A67F', width: 7, delay: '0ms' },
-  { r: 396, stroke: '#1C2A48', width: 8, delay: '160ms' },
-  { r: 271, stroke: '#1C2A48', width: 8, delay: '320ms' },
+  { r: 396, stroke: '#1C2A48', width: 8, delay: '200ms' },
+  { r: 271, stroke: '#1C2A48', width: 8, delay: '400ms' },
 ];
 
 export function Loader({ size = 72, className = '' }: { size?: number; className?: string }) {
