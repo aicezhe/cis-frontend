@@ -9,6 +9,7 @@ import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { GridButton } from '../components/GridButton';
 import { LoadingScreen } from '../components/Loader';
 import { Collapse } from '../components/Collapse';
+import { SectionCard, CardHeader, NavyNote, CompareTable } from '../components/cards';
 
 // Ключевые термины в «Важно знать» подсвечиваем золотым,
 // чтобы взгляд цеплялся за смысл, а не за стену текста.
@@ -139,33 +140,62 @@ export default function ProgramOverviewPage() {
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
 
-      {/* Шапка раздела — без коробки-плашки, текст прямо на странице */}
-      <div className="mt-4 px-6 text-center">
-        <h1 className="font-serif text-navy text-3xl font-bold">
-          {p.name_ru.replace(/\s*\(.*\)/, '')}
-        </h1>
-        <p className="font-serif text-gold text-lg mt-0.5 italic">{p.name_it}</p>
-        <p className="font-serif text-navy/60 text-xs mt-1">
-          {p.duration_years} {p.duration_years === 2 ? 'года' : 'лет'} · {p.ects_total} CFU · {p.title_after}
-        </p>
-        <span className="block bg-gold/60 mx-auto mt-3" style={{ width: 72, height: 1 }} />
-      </div>
+      {/* Карточка программы. Раньше здесь была центрованная шапка и следом
+          синий блок с двумя абзацами important_notes_ru. Второй абзац —
+          сплошной текст про libero accesso против numero chiuso: чтобы
+          поймать разницу, его приходилось читать целиком и держать оба
+          описания в голове. Разложен в таблицу построчно; факты те же. */}
+      <SectionCard>
+        <CardHeader
+          title={p.name_ru.replace(/\s*\(.*\)/, '')}
+          gloss={p.name_it}
+          meta={[
+            `${p.duration_years} ${p.duration_years === 2 ? 'года' : 'лет'}`,
+            `${p.ects_total} CFU`,
+          ]}
+        />
 
-      {/* Важные заметки — длинный синий блок, без декора */}
-      {p.important_notes_ru.length > 0 && (
-        <div className="mx-6 mt-6 bg-navy rounded-2xl px-5 py-5">
-          <div className="flex flex-col gap-4">
-            {p.important_notes_ru.map((note, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <span className="text-gold text-[10px] mt-1.5 flex-shrink-0">◆</span>
-                <p className="font-sans text-cream/90 text-[13px] leading-[1.7]">
-                  {renderHighlights(note)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        {/* Правило 12 лет и развилка доступа — только у бакалавриата.
+            У магистратуры свои important_notes_ru (pre-evaluation, recupero
+            requisiti), про libero/chiuso там нет ни слова, поэтому её заметки
+            остаются списком: подгонять их под таблицу было бы выдумыванием. */}
+        {isBachelor ? (
+          <>
+            <NavyNote detail="RU · BY · UA · KZ — 11 лет → сначала Foundation Year или 1 год вуза дома.">
+              Диплом за <span className="text-gold">12 лет</span> обучения — обязателен для non-EU.
+            </NavyNote>
+
+            <CompareTable
+              columns={['Libero accesso', 'Numero chiuso']}
+              rows={[
+                { label: 'Кто берёт', left: 'всех по диплому и языку', right: 'лучших по рейтингу' },
+                { label: 'Тест', left: 'проверка знаний', right: 'отборочный' },
+                {
+                  label: 'Низкий балл',
+                  left: 'возьмут, досдашь на 1 курсе',
+                  leftTone: 'good',
+                  right: 'не зачислят',
+                  rightTone: 'bad',
+                },
+              ]}
+              note="Numero chiuso: медицина, архитектура, здравоохранение, ветеринария"
+            />
+          </>
+        ) : (
+          p.important_notes_ru.length > 0 && (
+            <div className="mt-5 rounded-2xl bg-navy px-5 py-4 flex flex-col gap-3">
+              {p.important_notes_ru.map((note, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <span className="text-gold text-[10px] mt-1.5 flex-shrink-0">◆</span>
+                  <p className="font-golos text-cream/90 text-[14px] leading-relaxed">
+                    {renderHighlights(note)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )
+        )}
+      </SectionCard>
 
       <h3 className="font-serif text-navy text-xl font-bold px-6 mt-8 mb-4">
         Об универе
