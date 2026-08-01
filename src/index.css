@@ -156,8 +156,62 @@ body {
 }
 .page-fade { animation: page-fade 0.22s ease-out both; }
 
+/* ── Чат Лауры ───────────────────────────────────────────────────────────────
+   Высота таббара считается из его же вёрстки и не меняется: py-3 (12+12) +
+   иконка 28 + gap 4 + подпись text-xs 16 + рамка 1 = 73px. Нужна здесь, чтобы
+   экран чата занимал ровно остаток вьюпорта и строка ввода стояла над таббаром. */
+:root { --tabbar-h: 73px; }
+
+/* Появление реплики: своей — после отправки, ответа Лауры — на первом чанке */
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.msg-in { animation: msg-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Точки «Лаура печатает». Свой keyframe вместо tailwind-овского animate-bounce:
+   тот прыгает высоко и резко, здесь нужна спокойная волна. */
+@keyframes typing-dot {
+  0%, 65%, 100% { opacity: 0.2; transform: translateY(0); }
+  32%           { opacity: 0.7; transform: translateY(-3px); }
+}
+.typing-dot { animation: typing-dot 1.2s ease-in-out infinite; }
+
+/* Лента гасит текст у верхней и нижней кромки, вместо того чтобы резать строку
+   пополам под шапкой и над строкой ввода. Маска не создаёт containing block,
+   поэтому таббару и композеру она не мешает. */
+.chat-fade-edges {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%);
+}
+
+/* Курсор в конце ответа, пока текст ещё стримится.
+   Псевдоэлемент на последнем блоке, а не отдельный span: span вставал бы новой
+   строкой под текстом (внутри markdown всё блочное), а нужно — впритык к
+   последнему слову. Отсюда три селектора: последним блоком может оказаться
+   абзац или список. */
+@keyframes stream-caret {
+  0%, 100% { opacity: 0.12; }
+  50%      { opacity: 0.55; }
+}
+.streaming > p:last-child::after,
+.streaming > ul:last-child > li:last-child::after,
+.streaming > ol:last-child > li:last-child::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: stream-caret 1s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wp-grad, .wp-solid, .wp-starfall, .wp-fly-left, .wp-fly-right, .wp-fade,
   .wp-cream-in, .sky-intro, .page-rise, .page-descend,
-  .page-fade { animation: none; }
+  .page-fade, .msg-in, .typing-dot { animation: none; }
+  .streaming > p:last-child::after,
+  .streaming > ul:last-child > li:last-child::after,
+  .streaming > ol:last-child > li:last-child::after { animation: none; opacity: 0.4; }
 }

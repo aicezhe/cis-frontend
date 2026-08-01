@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
 import { ApiError, isAuthed } from '../lib/api';
 import { INITIAL_GREETING, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
-import { Paperclip, X, FileText, Image as ImageIcon, Pencil, Check } from 'lucide-react';
+import { Paperclip, X, FileText, Image as ImageIcon, Pencil, Check, Menu, Plus, ArrowUp } from 'lucide-react';
 import {
   type Chat,
   appendMessages,
@@ -99,9 +99,29 @@ export default function LauraPage() {
   const isFirstMessage = useRef(true);
 
   // ── авто-скролл ──
+  // Во время стрима ответ растёт по кусочкам: smooth на каждый чанк дерётся сам
+  // с собой и дёргает экран, поэтому пока стримит — доводим мгновенно. И не
+  // тянем вниз, если человек сам отмотал вверх перечитать историю.
+  const pinnedToBottom = useRef(true);
+
+  function handleListScroll() {
+    const el = listRef.current;
+    if (!el) return;
+    pinnedToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  }
+
   useEffect(() => {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages]);
+    const el = listRef.current;
+    if (!el || !pinnedToBottom.current) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: isStreaming ? 'auto' : 'smooth' });
+  }, [messages, isStreaming]);
+
+  // Высоту поля пересчитываем после коммита, а не в момент setInput(''):
+  // на отправке в DOM ещё лежит старый текст, и поле оставалось раздутым на
+  // два ряда с пустой второй строкой.
+  useEffect(() => {
+    autoGrow(inputRef.current);
+  }, [input]);
 
   // ── загрузка чатов при старте ──
   const loadInitialChats = useCallback(async () => {
@@ -349,8 +369,15 @@ export default function LauraPage() {
   }
 
   // ── основной экран ──
+  // Высота ровно в вьюпорт (h-dvh, а не min-h-screen) и overflow-hidden: иначе
+  // лента растёт вниз и выталкивает строку ввода под экран. Вся прокрутка живёт
+  // внутри ленты, композер остаётся последним элементом колонки — то есть
+  // всегда на виду, прямо над таббаром.
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-24 overflow-hidden">
+    <div
+      className="relative h-dvh max-w-md mx-auto bg-cream flex flex-col overflow-hidden"
+      style={{ paddingBottom: 'var(--tabbar-h)' }}
+    >
 
       {/* ── Sidebar overlay ── */}
       {sidebarOpen && (
@@ -459,30 +486,30 @@ export default function LauraPage() {
         </div>
       </aside>
 
-      {/* ── Header ── */}
-      <div className="px-4 pt-12 pb-4 border-b border-navy/10 flex items-center gap-3 flex-shrink-0">
+      {/* ── Header ──
+          Тонкая полоса вместо блока-шапки: в чате главное — сам разговор.
+          Подзаголовок «твой гид по Парме» переехал на пустой экран, название
+          чата идёт спокойным текстом, а «новый чат» — иконкой. */}
+      <div className="px-4 pt-11 pb-2.5 flex items-center gap-2.5 flex-shrink-0">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-navy/60 hover:text-navy text-xl leading-none flex-shrink-0"
+          className="text-navy/45 hover:text-navy transition-colors flex-shrink-0 -ml-0.5"
           aria-label="Открыть список чатов"
         >
-          ☰
+          <Menu size={19} />
         </button>
-        <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-          <span className="font-script text-gold text-xl leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
-        </div>
-        <div className="flex-1 min-w-0">
-          <h1 className="font-serif text-navy text-xl font-bold leading-tight truncate">
-            {chats.find((c) => c.id === activeChatId)?.title || 'Laura'}
-          </h1>
-          <p className="font-serif text-gold text-xs font-bold">твой гид по Парме</p>
-        </div>
+        <span className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+          <span className="font-script text-gold text-base leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
+        </span>
+        <h1 className="font-serif text-navy/70 text-sm flex-1 min-w-0 truncate">
+          {chats.find((c) => c.id === activeChatId)?.title || 'Laura'}
+        </h1>
         <button
           onClick={() => void handleNewChat()}
-          className="font-serif text-navy/40 text-xs hover:text-navy/70 transition-colors flex-shrink-0"
+          className="text-navy/45 hover:text-navy transition-colors flex-shrink-0"
           aria-label="Новый чат"
         >
-          + новый
+          <Plus size={19} />
         </button>
       </div>
 
@@ -499,14 +526,15 @@ export default function LauraPage() {
       {/* Messages */}
       <div
         ref={listRef}
-        className="flex-1 px-4 py-4 flex flex-col gap-3 overflow-y-auto no-scrollbar"
+        onScroll={handleListScroll}
+        className="chat-fade-edges flex-1 min-h-0 px-5 pt-3 pb-6 flex flex-col gap-6 overflow-y-auto no-scrollbar"
       >
         {chatsLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <TypingDots />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center px-8">
+          <div className="flex-1 flex flex-col items-center justify-center px-8 gap-2">
             {/* Приветствие: текст ровный, фирменным serif; каллиграфическая —
                 только заглавная «L» (как в логотипе). */}
             <p className="font-serif text-navy text-2xl text-center max-w-[300px]" style={{ lineHeight: 1.4 }}>
@@ -518,6 +546,7 @@ export default function LauraPage() {
               </span>
               aura готова тебе помочь!
             </p>
+            <p className="font-serif text-gold text-sm italic">твой гид по Парме</p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -529,17 +558,24 @@ export default function LauraPage() {
             // голос от голоса ассистента (паттерн ChatGPT/Claude).
             if (isLaura) {
               return (
-                <div key={msg.id} className="self-stretch w-full">
-                  {isEmpty ? <TypingDots /> : <LauraMarkdown text={msg.text} />}
+                <div key={msg.id} className="self-stretch w-full msg-in">
+                  {isEmpty ? (
+                    <TypingDots />
+                  ) : (
+                    <LauraMarkdown
+                      text={msg.text}
+                      streaming={isStreaming && msg.id === messages[messages.length - 1]?.id}
+                    />
+                  )}
                 </div>
               );
             }
             return (
               <div
                 key={msg.id}
-                className="self-end max-w-[85%] rounded-2xl px-4 py-3 bg-navy"
+                className="self-end max-w-[82%] rounded-3xl rounded-br-lg px-4 py-2.5 bg-navy msg-in"
               >
-                <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap break-words text-cream">
+                <p className="font-serif text-cream text-[15px] leading-relaxed whitespace-pre-wrap break-words">
                   {msg.text}
                 </p>
               </div>
@@ -548,8 +584,8 @@ export default function LauraPage() {
         )}
       </div>
 
-      {/* Input */}
-      <div className="px-4 pb-4 flex-shrink-0">
+      {/* Input — последний элемент колонки, поэтому всегда виден над таббаром */}
+      <div className="px-4 pt-1 pb-3 flex-shrink-0">
         {attachment && (
           <div className="flex items-center gap-2 bg-soft-cream border border-navy/20 rounded-2xl px-4 py-2 mb-2">
             {attachment.media_type === 'application/pdf' ? (
@@ -567,7 +603,7 @@ export default function LauraPage() {
             </button>
           </div>
         )}
-        <div className="flex items-end gap-2 bg-soft-cream border border-navy/20 rounded-3xl px-5 py-3">
+        <div className="flex items-end gap-2 bg-soft-cream border border-navy/15 rounded-3xl pl-4 pr-2 py-2 shadow-[0_1px_8px_rgba(28,42,72,0.05)]">
           <input
             ref={fileInputRef}
             type="file"
@@ -578,10 +614,10 @@ export default function LauraPage() {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isStreaming || chatsLoading || attachmentLoading}
-            className="text-navy/50 hover:text-navy flex-shrink-0 disabled:opacity-40"
+            className="text-navy/40 hover:text-navy transition-colors flex-shrink-0 disabled:opacity-40 mb-1.5"
             aria-label="Прикрепить файл"
           >
-            <Paperclip size={18} />
+            <Paperclip size={17} />
           </button>
           <textarea
             ref={inputRef}
@@ -592,19 +628,26 @@ export default function LauraPage() {
             disabled={isStreaming || chatsLoading}
             rows={1}
             autoComplete="off"
-            className="font-sans text-navy text-base flex-1 bg-transparent outline-none resize-none placeholder:text-navy/40 leading-snug disabled:opacity-50"
+            // no-scrollbar: autoGrow выставляет height ровно в scrollHeight, и на
+            // округлении вылезала нативная полоса прокрутки — тонкая вертикальная
+            // чёрточка у правого края поля.
+            className="no-scrollbar font-sans text-navy text-[15px] flex-1 bg-transparent outline-none resize-none placeholder:text-navy/35 leading-relaxed disabled:opacity-50 py-1.5"
             style={{ maxHeight: '110px' }}
           />
+          {/* Кнопка отправки «наливается» золотом, когда есть что отправить —
+              это единственный акцент во всей строке, поэтому она круглая. */}
           <button
             onClick={() => void sendMessage(input)}
             disabled={input.trim() === '' || isStreaming || chatsLoading}
             className={
-              'font-serif text-base font-bold flex-shrink-0 ' +
-              (input.trim() === '' || isStreaming || chatsLoading ? 'text-navy/30' : 'text-gold')
+              'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 ' +
+              (input.trim() === '' || isStreaming || chatsLoading
+                ? 'bg-navy/10 text-navy/30'
+                : 'bg-gold text-cream scale-100 active:scale-90')
             }
             aria-label="Отправить"
           >
-            ↑
+            <ArrowUp size={17} strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -614,21 +657,30 @@ export default function LauraPage() {
   );
 }
 
-function LauraMarkdown({ text }: { text: string }) {
+// Типографика ответа намеренно «лёгкая»: крупнее кегль, больше интерлиньяж и
+// воздуха между блоками, полужирный вместо жирного. Ответ Лауры читают с
+// телефона по дороге в квестуру — плотный текст в рамках здесь не работает.
+function LauraMarkdown({ text, streaming = false }: { text: string; streaming?: boolean }) {
   const navigate = useNavigate();
   return (
-    <div className="font-serif text-sm text-navy leading-relaxed break-words space-y-2">
+    <div
+      className={'font-serif text-[15px] text-navy/90 break-words space-y-3' + (streaming ? ' streaming' : '')}
+      style={{ lineHeight: 1.65 }}
+    >
       <ReactMarkdown
         components={{
-          p: ({ children }) => <p className="leading-relaxed">{children}</p>,
-          strong: ({ children }) => <strong className="font-bold text-navy">{children}</strong>,
-          em: ({ children }) => <em className="italic text-navy/80">{children}</em>,
-          ul: ({ children }) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal pl-5 space-y-1">{children}</ol>,
-          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-          h1: ({ children }) => <p className="font-bold text-base">{children}</p>,
-          h2: ({ children }) => <p className="font-bold">{children}</p>,
-          h3: ({ children }) => <p className="font-bold">{children}</p>,
+          p: ({ children }) => <p>{children}</p>,
+          // semibold, а не bold: жирный выделяет, только пока его мало
+          strong: ({ children }) => <strong className="font-semibold text-navy">{children}</strong>,
+          em: ({ children }) => <em className="italic text-navy/70">{children}</em>,
+          ul: ({ children }) => <ul className="list-disc pl-5 space-y-1.5 marker:text-gold/70">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-5 space-y-1.5 marker:text-gold/70">{children}</ol>,
+          li: ({ children }) => <li className="pl-0.5">{children}</li>,
+          // Заголовки внутри реплики — это всё ещё речь, а не документ:
+          // отделяем воздухом сверху, а не размером и жирностью.
+          h1: ({ children }) => <p className="font-semibold text-navy pt-1">{children}</p>,
+          h2: ({ children }) => <p className="font-semibold text-navy pt-1">{children}</p>,
+          h3: ({ children }) => <p className="font-semibold text-navy pt-1">{children}</p>,
           a: ({ href, children }) => {
             if (!href) return <span>{children}</span>;
             if (href.startsWith('/')) {
@@ -653,10 +705,14 @@ function LauraMarkdown({ text }: { text: string }) {
 
 function TypingDots() {
   return (
-    <div className="flex items-center gap-1 py-0.5">
-      <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-      <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-      <span className="w-1.5 h-1.5 rounded-full bg-navy/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+    <div className="flex items-center gap-1.5 py-1">
+      {[0, 180, 360].map((delay) => (
+        <span
+          key={delay}
+          className="typing-dot w-1.5 h-1.5 rounded-full bg-navy"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      ))}
     </div>
   );
 }
