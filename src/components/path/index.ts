@@ -4,7 +4,6 @@ export {
   RoutePage,
   RouteBar,
   GuideHero,
-  ConfidenceLegend,
   RouteSpine,
   RouteStop,
   StopHeader,

@@ -63,25 +63,6 @@ export function GuideHero({
   );
 }
 
-/** Легенда: что означают залитый и полый ромбы. */
-export function ConfidenceLegend() {
-  return (
-    <div className="mb-[30px] mt-6 flex gap-4 rounded-2xl border border-rt-line bg-rt-paper-2 px-[14px] py-[11px] font-mono text-[10px] uppercase tracking-[0.12em] text-rt-ink-3">
-      <span className="inline-flex items-center gap-[7px]">
-        <span aria-hidden="true" className="h-[9px] w-[9px] flex-none rotate-45 bg-rt-navy" />
-        подтверждено
-      </span>
-      <span className="inline-flex items-center gap-[7px]">
-        <span
-          aria-hidden="true"
-          className="h-[9px] w-[9px] flex-none rotate-45 border-[1.5px] border-rt-gold"
-        />
-        проверь сам
-      </span>
-    </div>
-  );
-}
-
 /**
  * Контейнер маршрута. Отступ слева держит вертикальную линию и ромбы,
  * которые вынесены в отрицательные координаты (см. .rt-stop в index.css).

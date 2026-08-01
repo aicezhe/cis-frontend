@@ -17,7 +17,6 @@ import type { GuideBlock } from '../../types/guide';
 import {
   Card,
   CardText,
-  ConfidenceLegend,
   DarkBand,
   DiamondList,
   GuideHero,
@@ -89,8 +88,6 @@ export default function VisaKzRoutePage() {
         gloss={guide.gloss}
         lead={guide.lead}
       />
-
-      <ConfidenceLegend />
 
       <RouteSpine>
         {guide.sections.map((s) => (
