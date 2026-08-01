@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CURRENCIES, COUNTRY_CURRENCY_MAP, type CurrencyCode } from "../config/currencies";
 import { useCurrency } from "../hooks/useCurrency";
+import { FlagIcon } from "./FlagIcon";
 
 export function CurrencyPicker() {
   const { currency, setCurrency } = useCurrency();
@@ -36,8 +37,9 @@ export function CurrencyPicker() {
                   : "bg-white/70 text-navy border-navy/10 hover:bg-cream"
               }`}
             >
-              <div className="font-serif text-base">
-                {info.flag} {info.code}
+              <div className="font-serif text-base flex items-center gap-2">
+                <FlagIcon code={c} className="text-gold" />
+                {info.code}
               </div>
               <div className={`font-sans text-xs ${active ? "text-cream/70" : "text-navy/60"}`}>
                 {info.name_ru}
