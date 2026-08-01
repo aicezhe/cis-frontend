@@ -7,7 +7,7 @@ import { GridButton } from '../components/GridButton';
 import { useVisa, getConsularDistrict } from '../hooks/useVisa';
 import VisaUkrainePage from './VisaUkrainePage';
 import VisaBelarusPage from './VisaBelarusPage';
-import VisaKzRoutePage from './path/VisaKzRoutePage';
+import VisaKazakhstanPage from './VisaKazakhstanPage';
 import { LoadingScreen } from '../components/Loader';
 
 function Corners() {
@@ -35,8 +35,7 @@ export default function VisaOverviewPage() {
   // Беларусь: виза D, но подача напрямую в посольство в Минске
   if (country === 'by') return <VisaBelarusPage />;
   // Казахстан: виза D, канал подачи нестабилен
-  // Пилот дизайн-системы «Маршрут». Остальные страны пока на старой вёрстке.
-  if (country === 'kz') return <VisaKzRoutePage />;
+  if (country === 'kz') return <VisaKazakhstanPage />;
   return <VisaRuOverview />;
 }
 
