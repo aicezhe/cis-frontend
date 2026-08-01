@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PageTransition } from './components/PageTransition';
+import { LoadingScreen } from './components/Loader';
 import WelcomePage from './pages/WelcomePage';
 import RegisterPage from './pages/RegisterPage';
 import ChangeStagePage from './pages/ChangeStagePage';
@@ -57,11 +58,7 @@ import ParmaSubsectionPage from './pages/ParmaSubsectionPage';
 const MapPage = lazy(() => import('./pages/MapPage'));
 
 function MapPageFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-cream">
-      <p className="font-serif text-navy/60 italic">Загрузка карты…</p>
-    </div>
-  );
+  return <LoadingScreen />;
 }
 
 export default function App() {

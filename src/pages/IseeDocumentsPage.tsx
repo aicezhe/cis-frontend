@@ -4,6 +4,7 @@ import { useIsee } from '../hooks/useIsee';
 import { Price } from '../components/Price';
 import type { IseeSeed, IseePersonQuestion, IseeDocOption } from '../types/isee';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 // ── модель человека в опроснике ───────────────────────────────────────────────
 
@@ -185,9 +186,7 @@ export default function IseeDocumentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!isee) return null;

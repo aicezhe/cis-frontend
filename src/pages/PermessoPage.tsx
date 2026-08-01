@@ -5,6 +5,7 @@ import { useRelocation } from '../hooks/useRelocation';
 import { useMod209 } from '../hooks/useMod209';
 import { Price } from '../components/Price';
 import { ContentPage, PageHeader, TldrCard, H2, Steps, Step, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function PermessoPage() {
   const navigate = useNavigate();
@@ -14,9 +15,7 @@ export default function PermessoPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!relocation) {

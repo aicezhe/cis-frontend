@@ -4,6 +4,7 @@ import { useParmaLife } from '../hooks/useParmaLife';
 import { ParmaIcon } from '../components/ParmaIcon';
 import { parmaGroupById } from '../lib/parmaGroups';
 import type { ParmaSubsection } from '../types/parmaLife';
+import { LoadingScreen } from '../components/Loader';
 
 // Карточка подраздела — навайный треугольник по диагонали с иконкой, название
 // на кремовой половине. Единый стиль плиток внутри раздела «В Парме».
@@ -41,9 +42,7 @@ export default function ParmaGroupPage() {
 
   if (loading || !parmaLife) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

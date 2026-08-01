@@ -5,6 +5,7 @@ import { useParmaLife } from '../hooks/useParmaLife';
 import { Price } from '../components/Price';
 import type { ParmaSubsection } from '../types/parmaLife';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 function BulletList({ items, icon = '◆' }: { items: string[]; icon?: string }) {
   return (
@@ -379,9 +380,7 @@ export default function ParmaSubsectionPage() {
 
   if (loading || !parmaLife) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
 

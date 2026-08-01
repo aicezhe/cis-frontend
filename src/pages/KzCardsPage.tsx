@@ -1,5 +1,6 @@
 import { useKzSimBanking } from '../hooks/useKzSimBanking';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 // Инициалы провайдера для аватарки-плитки (как в российской «Карты и оплата»).
 function initials(name: string): string {
@@ -13,9 +14,7 @@ export default function KzCardsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!data) return null;

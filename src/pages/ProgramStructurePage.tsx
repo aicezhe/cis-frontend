@@ -4,6 +4,7 @@ import { useMyProgram } from '../hooks/useProgram';
 import { api } from '../lib/api';
 import type { CourseFull } from '../types/api';
 import { ContentPage, PageHeader, TldrCard, H2 } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 // Нормативный total CFU по типу программы — не сумма распарсенных предметов
 const TARGET_CFU: Record<string, number> = {
@@ -103,9 +104,7 @@ export default function ProgramStructurePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!program) return null;

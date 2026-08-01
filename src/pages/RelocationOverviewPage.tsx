@@ -6,6 +6,7 @@ import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useRelocation } from '../hooks/useRelocation';
 import { HomeAddressInput } from '../components/HomeAddressInput';
+import { LoadingScreen } from '../components/Loader';
 
 const STEPS_CHECKS_KEY = 'cispr_travel_steps_checks';
 
@@ -34,9 +35,7 @@ export default function RelocationOverviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

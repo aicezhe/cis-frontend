@@ -4,6 +4,7 @@ import { Trash2 } from 'lucide-react';
 import { isAuthed } from '../lib/api';
 import { getLauraProfile } from '../lib/laura';
 import { listMemory, deleteMemory, clearMemory, type MemoryItem } from '../lib/memory';
+import { Loader } from '../components/Loader';
 
 const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
 const PROGRAM_LABELS: Record<string, string> = {
@@ -127,7 +128,7 @@ export default function MemoryPage() {
 
       <h3 className="font-serif text-gold text-sm italic px-6 mt-6 mb-2">Из разговоров</h3>
       {loading ? (
-        <p className="font-serif text-navy/50 italic px-6 mt-2">Загрузка…</p>
+        <div className="px-6 mt-2"><Loader size={34} /></div>
       ) : items.length === 0 ? (
         <div className="mx-6 bg-soft-cream border border-navy/20 rounded-2xl px-5 py-4">
           <p className="font-serif text-navy/60 text-sm leading-relaxed">

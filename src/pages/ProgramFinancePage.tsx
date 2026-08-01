@@ -3,6 +3,7 @@ import { Lightbulb } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
 import { Price } from '../components/Price';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function ProgramFinancePage() {
   const navigate = useNavigate();
@@ -10,9 +11,7 @@ export default function ProgramFinancePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!program) return null;

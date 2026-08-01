@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { refreshAccessToken } from '../lib/api';
+import { LoadingScreen, useMinCycle } from './Loader';
 
 /**
  * Silent-refresh при старте приложения.
@@ -12,6 +13,9 @@ import { refreshAccessToken } from '../lib/api';
  */
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
+  // Заставка на старте держится хотя бы один круг анимации: refresh с живой
+  // cookie отвечает за десятки миллисекунд, и кольца иначе моргали бы.
+  const showLoader = useMinCycle(!ready);
 
   useEffect(() => {
     let cancelled = false;
@@ -23,13 +27,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  if (!ready) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
-    );
-  }
+  if (showLoader) return <LoadingScreen />;
 
   return <>{children}</>;
 }

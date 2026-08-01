@@ -5,6 +5,7 @@ import TabBar from '../components/TabBar';
 import { GridButton } from '../components/GridButton';
 import { useVisa, useVisaBy } from '../hooks/useVisa';
 import type { VisaByStep } from '../types/visa';
+import { LoadingScreen } from '../components/Loader';
 
 function Corners() {
   return (
@@ -44,9 +45,7 @@ export default function VisaBelarusPage() {
 
   if (loadingRu || loadingBy) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
   if (!visa || !by) {

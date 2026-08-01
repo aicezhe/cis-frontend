@@ -1,14 +1,13 @@
 import { useKzSimBanking } from '../hooks/useKzSimBanking';
 import { ContentPage, PageHeader, TldrCard, Steps, Step } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function KzSimPage() {
   const { data, loading } = useKzSimBanking();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!data) return null;

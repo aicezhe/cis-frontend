@@ -1,5 +1,6 @@
 import { useHousingSearch } from '../hooks/useHousingSearch';
 import { ContentPage, PageHeader, TldrCard, InfoCard } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function HousingSearchPage() {
   // Поиск жилья одинаков для всех стран — грузим из единого источника, а не из
@@ -8,9 +9,7 @@ export default function HousingSearchPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!housing) return null;

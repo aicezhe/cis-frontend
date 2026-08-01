@@ -4,6 +4,7 @@ import { useMyProgram } from '../hooks/useProgram';
 import { useMyLegalization } from '../hooks/useFoundation';
 import type { RequiredDocument, TwelfthYearOptions } from '../types/laurea';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 const DOCS_KEY = 'cispr_docs_checklist';
 const TWELFTH_YEAR_KEY = 'cispr_12year_path';
@@ -250,9 +251,7 @@ export default function ProgramDocumentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!program) return null;

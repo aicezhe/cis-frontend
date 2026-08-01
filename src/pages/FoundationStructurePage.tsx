@@ -1,6 +1,7 @@
 import { useFoundation } from '../hooks/useFoundation';
 import type { FoundationModality } from '../types/foundation';
 import { ContentPage, PageHeader, TldrCard, H2, BodyText } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 const MODALITY_LABEL: Record<FoundationModality, string> = {
   in_presenza: 'очно',
@@ -13,9 +14,7 @@ export default function FoundationStructurePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (error || !data) {

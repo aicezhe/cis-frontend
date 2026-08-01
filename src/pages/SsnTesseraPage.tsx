@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { TriangleAlert, ArrowRight } from 'lucide-react';
 import { useSsnTessera } from '../hooks/useSsnTessera';
 import { ContentPage, PageHeader, TldrCard, H2, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 function Bullets({ items }: { items: string[] }) {
   return (
@@ -22,9 +23,7 @@ export default function SsnTesseraPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!ssn) {

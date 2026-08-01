@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useRelocation } from '../hooks/useRelocation';
 import { ContentPage, PageHeader, TldrCard } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 // Инициалы провайдера для аватарки-плитки («Crédit Agricole — CartaConto…» → «CA»)
 function initials(name: string): string {
@@ -16,9 +17,7 @@ export default function CardsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!relocation?.cards_ru) {

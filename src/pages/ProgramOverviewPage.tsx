@@ -7,6 +7,7 @@ import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { GridButton } from '../components/GridButton';
+import { LoadingScreen } from '../components/Loader';
 
 // Ключевые термины в «Важно знать» подсвечиваем золотым,
 // чтобы взгляд цеплялся за смысл, а не за стену текста.
@@ -94,9 +95,7 @@ export default function ProgramOverviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

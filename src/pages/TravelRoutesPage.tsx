@@ -5,6 +5,7 @@ import { Price } from '../components/Price';
 import { RouteCard } from '../components/RouteCard';
 import type { ArrivalStep } from '../types/relocation';
 import { ContentPage, PageHeader, TldrCard, H2, BodyText, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 function StepBox({ s }: { s: ArrivalStep }) {
   return (
@@ -78,9 +79,7 @@ export default function TravelRoutesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
 

@@ -3,6 +3,7 @@ import { useFoundation } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
 import { ContentPage, PageHeader, TldrCard, H2, InfoCard, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 const CHECKS_KEY = 'cispr_foundation_checks';
 
@@ -27,9 +28,7 @@ export default function FoundationFinancePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (error || !data) {

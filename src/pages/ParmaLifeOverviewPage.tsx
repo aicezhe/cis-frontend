@@ -6,6 +6,7 @@ import { parmaIconComponent } from '../components/ParmaIcon';
 import { GridButton } from '../components/GridButton';
 import { HomeAddressInput } from '../components/HomeAddressInput';
 import { PARMA_GROUPS } from '../lib/parmaGroups';
+import { LoadingScreen } from '../components/Loader';
 
 export default function ParmaLifeOverviewPage() {
   useTrackSection('parma');
@@ -14,9 +15,7 @@ export default function ParmaLifeOverviewPage() {
 
   if (loading || !parmaLife) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

@@ -1,6 +1,7 @@
 import { GraduationCap } from 'lucide-react';
 import { useMyProgram } from '../hooks/useProgram';
 import { ContentPage, PageHeader, TldrCard, H2, InfoCard, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function ProgramLanguagesPage() {
   const { program, loading } = useMyProgram();
@@ -8,9 +9,7 @@ export default function ProgramLanguagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!program) return null;

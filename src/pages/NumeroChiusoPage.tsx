@@ -4,6 +4,7 @@ import { useNumeroChiuso } from '../hooks/useProgram';
 import { Price } from '../components/Price';
 import type { TestEntry } from '../types/laurea';
 import { ContentPage, PageHeader, TldrCard, H2, InfoCard, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 function TestCard({ test }: { test: TestEntry }) {
   const [open, setOpen] = useState(false);
@@ -104,9 +105,7 @@ export default function NumeroChiusoPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
 

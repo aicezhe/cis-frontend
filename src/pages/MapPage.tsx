@@ -13,6 +13,7 @@ import { openRouteFromCurrentLocation } from '../utils/openInMaps';
 import { loadHomeAddress } from '../lib/homeAddress';
 import { lociMapStyle } from '../lib/lociMapStyle';
 import type { LociCategoryId, LociPlace } from '../types/loci';
+import { Loader } from '../components/Loader';
 
 // Векторная подложка в фирменных цветах (см. lib/lociMapStyle) вместо растровых
 // тайлов OSM — та же роль, что раньше играл <TileLayer>, но без чужой палитры
@@ -149,7 +150,7 @@ export default function MapPage() {
       >
         {loading || !data ? (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="font-serif text-navy/60 italic">Загрузка карты…</p>
+            <Loader size={64} />
           </div>
         ) : (
           <MapContainer

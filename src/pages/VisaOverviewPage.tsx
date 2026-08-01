@@ -8,6 +8,7 @@ import { useVisa, getConsularDistrict } from '../hooks/useVisa';
 import VisaUkrainePage from './VisaUkrainePage';
 import VisaBelarusPage from './VisaBelarusPage';
 import VisaKazakhstanPage from './VisaKazakhstanPage';
+import { LoadingScreen } from '../components/Loader';
 
 function Corners() {
   return (
@@ -57,9 +58,7 @@ function VisaRuOverview() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

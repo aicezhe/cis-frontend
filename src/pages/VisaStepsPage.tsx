@@ -6,6 +6,7 @@ import { useMyLegalization } from '../hooks/useFoundation';
 import { Price } from '../components/Price';
 import type { VisaSeed, VisaStep } from '../types/visa';
 import { ContentPage, PageHeader, TldrCard, Note, InfoCard } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 const CHECKS_KEY = 'cispr_visa_docs_checks';
 
@@ -317,9 +318,7 @@ export default function VisaStepsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!visa) {

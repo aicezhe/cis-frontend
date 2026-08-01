@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRelocation, openNearbyShops } from '../hooks/useRelocation';
 import { Price } from '../components/Price';
 import { ContentPage, PageHeader, TldrCard, Note } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 const CHECKS_KEY = 'cispr_after_arrival_checks';
 
@@ -26,9 +27,7 @@ export default function AfterArrivalPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!relocation) {

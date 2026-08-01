@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useRelocation } from '../hooks/useRelocation';
 import { ContentPage, PageHeader, TldrCard, H2, Steps, Step } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 export default function CodiceFiscalePage() {
   const navigate = useNavigate();
@@ -8,9 +9,7 @@ export default function CodiceFiscalePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!relocation) {

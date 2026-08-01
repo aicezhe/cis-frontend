@@ -8,6 +8,7 @@ import { GridButton } from '../components/GridButton';
 import { useFoundation, useMyLegalization } from '../hooks/useFoundation';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
+import { LoadingScreen } from '../components/Loader';
 
 const CHECKS_KEY = 'cispr_foundation_checks';
 
@@ -56,9 +57,7 @@ export default function FoundationOverviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <p className="font-serif text-navy/60 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-cream" />
     );
   }
 

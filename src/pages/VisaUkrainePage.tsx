@@ -5,6 +5,7 @@ import TabBar from '../components/TabBar';
 import { useVisaUa } from '../hooks/useVisa';
 import type { VisaUaBorderCategory } from '../types/visa';
 import { ContentPage, PageHeader, TldrCard, H2, Note, InfoCard } from '../components/content';
+import { LoadingScreen } from '../components/Loader';
 
 // Уровень риска выезда — семантический цвет (ok/warn/hard), не акцент.
 const LEVEL_STYLES: Record<VisaUaBorderCategory['level'], { border: string; bg: string; badge: string }> = {
@@ -85,9 +86,7 @@ export default function VisaUkrainePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-content-bg">
-        <p className="font-golos text-content-ink-2 italic">Загрузка…</p>
-      </div>
+      <LoadingScreen className="bg-content-bg" />
     );
   }
   if (!visa) {
