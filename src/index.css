@@ -10,20 +10,22 @@ body {
 /* ── Дизайн-система «Маршрут» ────────────────────────────────────────────────
    Дубликаты токенов из tailwind.config для мест, где Tailwind неудобен:
    пунктир сегмента маршрута, подложка термина, гало вокруг ромба-маркера. */
+/* Значения обязаны совпадать с токенами rt-* в tailwind.config: линия маршрута
+   и ромбы рисуются отсюда, а карточки рядом — оттуда. Разъедутся — станция
+   будет одного золота, а линия под ней другого. */
 :root {
-  --rt-paper: #f4f1eb;
-  --rt-paper-2: #fbf9f5;
-  --rt-ink: #16253e;
-  --rt-ink-2: #3e4b60;
-  --rt-ink-3: #5a6577;
-  --rt-gold: #b08f4f;
+  --rt-paper: #f4f1e9;
+  --rt-paper-2: #fefbf3;
+  --rt-ink: #1c2a48;
+  --rt-ink-2: #4e5a75;
+  --rt-ink-3: #7a8398;
+  --rt-gold: #b89968;
   --rt-gold-ink: #7e5f2a;
   --rt-gold-lite: #d4b36a;
   --rt-gold-soft: #e2d6ba;
-  --rt-navy: #17283f;
-  --rt-navy-2: #0e1b2e;
-  --rt-line: #dfd8ca;
-  --rt-on-navy: #d9d3c6;
+  --rt-navy: #1c2a48;
+  --rt-line: #ddd6c6;
+  --rt-on-navy: #e7e2d5;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -309,14 +311,6 @@ body {
   32%           { opacity: 0.7; transform: translateY(-3px); }
 }
 .typing-dot { animation: typing-dot 1.2s ease-in-out infinite; }
-
-/* Лента гасит текст у верхней и нижней кромки, вместо того чтобы резать строку
-   пополам под шапкой и над строкой ввода. Маска не создаёт containing block,
-   поэтому таббару и композеру она не мешает. */
-.chat-fade-edges {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%);
-}
 
 /* Курсор в конце ответа, пока текст ещё стримится.
    Псевдоэлемент на последнем блоке, а не отдельный span: span вставал бы новой

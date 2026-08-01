@@ -3,6 +3,7 @@ import { useTrackSection } from '../hooks/useTrackSection';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
+import { Loader } from '../components/Loader';
 import { ApiError, isAuthed } from '../lib/api';
 import { INITIAL_GREETING, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
 import { Paperclip, X, FileText, Image as ImageIcon, Pencil, Check, Menu, Plus, ArrowUp } from 'lucide-react';
@@ -261,14 +262,33 @@ export default function LauraPage() {
 
     let lauraText = '';
 
+    // Стрим приходит мелкими кусками — иногда по несколько слов. Рисовать на
+    // каждый кусок значит гонять весь markdown-рендер десятки раз в секунду:
+    // именно от этого чат подтормаживал на длинных ответах. Копим куски и
+    // отдаём в стейт пачкой, чуть реже кадра.
+    let pending = '';
+    let flushTimer: number | null = null;
+
+    const flush = () => {
+      flushTimer = null;
+      if (!pending) return;
+      const chunk = pending;
+      pending = '';
+      setMessages((prev) =>
+        prev.map((m) => (m.id === lauraMsgId ? { ...m, text: m.text + chunk } : m)),
+      );
+    };
+
     try {
       const profile = getLauraProfile();
       for await (const chunk of streamLaura(historyForRequest, profile, attachmentForRequest)) {
         lauraText += chunk;
-        setMessages((prev) =>
-          prev.map((m) => (m.id === lauraMsgId ? { ...m, text: m.text + chunk } : m)),
-        );
+        pending += chunk;
+        if (flushTimer === null) flushTimer = window.setTimeout(flush, 60);
       }
+      // хвост короче интервала иначе потерялся бы
+      if (flushTimer !== null) clearTimeout(flushTimer);
+      flush();
 
       // Сохраняем в БД (если чат создан)
       if (lauraText && activeChatId) {
@@ -313,6 +333,9 @@ export default function LauraPage() {
       setError(msg);
       setMessages((prev) => prev.filter((m) => m.id !== lauraMsgId || m.text.length > 0));
     } finally {
+      // на ошибке таймер мог остаться заряженным — иначе он выстрелит уже
+      // после того, как реплику убрали из ленты
+      if (flushTimer !== null) clearTimeout(flushTimer);
       setIsStreaming(false);
     }
   }
@@ -340,16 +363,19 @@ export default function LauraPage() {
   if (!authed) {
     return (
       <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-24">
-        <div className="px-6 pt-12 pb-4 border-b border-navy/10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center">
-              <span className="font-script text-gold text-2xl leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
-            </div>
-            <div>
-              <h1 className="font-serif text-navy text-2xl font-bold">Laura</h1>
-              <p className="font-serif text-gold text-xs font-bold">твой гид по Парме</p>
-            </div>
-          </div>
+        <div className="px-6 pt-12 pb-4">
+          <h1 className="font-serif text-navy text-2xl font-bold">
+            <span
+              className="font-script text-gold font-normal"
+              style={{ fontSize: '1.9em', lineHeight: 0, verticalAlign: '-0.22em' }}
+            >
+              L
+            </span>
+            aura
+          </h1>
+          {/* хвост каллиграфической «L» спускается ниже строки — без запаса
+              он наезжает на подзаголовок */}
+          <p className="font-serif text-gold text-sm italic mt-3">твой гид по Парме</p>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
           <p className="font-serif text-navy text-base leading-relaxed mb-6">
@@ -498,10 +524,7 @@ export default function LauraPage() {
         >
           <Menu size={19} />
         </button>
-        <span className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-          <span className="font-script text-gold text-base leading-none" style={{ transform: 'translate(-14%, 6%)' }}>L</span>
-        </span>
-        <h1 className="font-serif text-navy/70 text-sm flex-1 min-w-0 truncate">
+        <h1 className="font-golos text-navy/70 text-sm flex-1 min-w-0 truncate">
           {chats.find((c) => c.id === activeChatId)?.title || 'Laura'}
         </h1>
         <button
@@ -527,11 +550,11 @@ export default function LauraPage() {
       <div
         ref={listRef}
         onScroll={handleListScroll}
-        className="chat-fade-edges flex-1 min-h-0 px-5 pt-3 pb-6 flex flex-col gap-6 overflow-y-auto no-scrollbar"
+        className="flex-1 min-h-0 px-5 pt-4 pb-6 flex flex-col gap-6 overflow-y-auto no-scrollbar"
       >
         {chatsLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <TypingDots />
+            <Loader size={44} />
           </div>
         ) : messages.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center px-8 gap-2">
@@ -560,7 +583,7 @@ export default function LauraPage() {
               return (
                 <div key={msg.id} className="self-stretch w-full msg-in">
                   {isEmpty ? (
-                    <TypingDots />
+                    <Loader size={26} />
                   ) : (
                     <LauraMarkdown
                       text={msg.text}
@@ -575,7 +598,7 @@ export default function LauraPage() {
                 key={msg.id}
                 className="self-end max-w-[82%] rounded-3xl rounded-br-lg px-4 py-2.5 bg-navy msg-in"
               >
-                <p className="font-serif text-cream text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                <p className="font-golos text-cream text-[15px] leading-[1.5] whitespace-pre-wrap break-words">
                   {msg.text}
                 </p>
               </div>
@@ -664,8 +687,8 @@ function LauraMarkdown({ text, streaming = false }: { text: string; streaming?: 
   const navigate = useNavigate();
   return (
     <div
-      className={'font-serif text-[15px] text-navy/90 break-words space-y-3' + (streaming ? ' streaming' : '')}
-      style={{ lineHeight: 1.65 }}
+      className={'font-golos text-[15px] text-navy/90 break-words space-y-3' + (streaming ? ' streaming' : '')}
+      style={{ lineHeight: 1.6 }}
     >
       <ReactMarkdown
         components={{
@@ -703,16 +726,3 @@ function LauraMarkdown({ text, streaming = false }: { text: string; streaming?: 
   );
 }
 
-function TypingDots() {
-  return (
-    <div className="flex items-center gap-1.5 py-1">
-      {[0, 180, 360].map((delay) => (
-        <span
-          key={delay}
-          className="typing-dot w-1.5 h-1.5 rounded-full bg-navy"
-          style={{ animationDelay: `${delay}ms` }}
-        />
-      ))}
-    </div>
-  );
-}
