@@ -20,6 +20,12 @@
          так что векторное преимущество всё равно теряется, а вес — нет.
          apple-touch-icon сделан квадратным и непрозрачным: iOS накладывает
          свою маску, и прозрачные углы стали бы на домашнем экране чёрными. -->
+    <!-- favicon.ico обязателен, даже когда есть PNG-ссылки ниже: браузеры
+         (в первую очередь Safari) всё равно дёргают /favicon.ico по умолчанию,
+         а SPA-фолбэк из public/_redirects отдавал на этот путь index.html со
+         статусом 200. Браузер получал «успешный» ответ, который не картинка,
+         и запоминал промах. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
