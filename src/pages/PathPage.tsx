@@ -232,7 +232,7 @@ export default function PathPage() {
           Ниже lg обёртки — обычные блоки, поток и порядок ровно как были.
           Между колонками нет gap: у детей уже есть свои mx-6/px-6, и они
           складываются в жёлоб 48px — третий отступ был бы лишним. */}
-      <div className="lg:flex lg:items-start">
+      <div className="lg:flex">
 
         {/* flex flex-col у обеих колонок неспроста: раньше эти блоки были
             прямыми детьми flex-контейнера страницы. В обычном блоке у них
@@ -329,7 +329,12 @@ export default function PathPage() {
           вставал вровень с заголовком раздела, а не с карточкой новости под
           ним, и правая половина казалась приподнятой. Число завязано на ту
           шапку — поменяешь там кегль или отступ, поправь и здесь. */}
-      <aside className="flex flex-col lg:mt-[38px] lg:w-[22rem] lg:flex-shrink-0 lg:sticky lg:top-8">
+      {/* lg:justify-between — колонка тянется на всю высоту соседней (родитель
+          по умолчанию items-stretch) и раскладывает свои три блока по этой
+          высоте, чтобы низ сводки совпал с низом списка этапов. Прежний
+          lg:sticky убран: у растянутой на всю строку колонки прилипать не
+          к чему. На телефоне свободной высоты нет, justify-between не влияет. */}
+      <aside className="flex flex-col lg:justify-between lg:mt-[38px] lg:w-[22rem] lg:flex-shrink-0">
 
         <div className="hidden lg:block mx-6 mt-7 rounded-2xl bg-navy px-5 py-4">
           <p className="font-serif text-cream/60 text-xs tracking-wide">ОБЩИЙ ПРОГРЕСС</p>
@@ -344,6 +349,12 @@ export default function PathPage() {
             среднее по четырём этапам · закрыто {doneSections} из {sections.length}
           </p>
         </div>
+
+        {/* Заголовок и карточка — одной группой: justify-between разводит
+            прямых детей, а подпись обязана остаться при своей карточке.
+            flex flex-col у обёртки обязателен — в обычном блоке кнопка из
+            растянутой стала бы inline-block по ширине текста. */}
+        <div className="flex flex-col">
 
         <h3 className="font-serif text-gold text-lg italic px-6 mt-8 mb-2">
           Расходы
@@ -395,6 +406,8 @@ export default function PathPage() {
             Оценки для {uniCosts.country?.toUpperCase()} · меняй валюту в Настройках
           </p>
         </button>
+
+        </div>
 
         {/* Куда идти дальше. На телефоне не нужна: там до списка этапов один
             свайп, а на широком экране этапы уехали в соседнюю колонку. */}

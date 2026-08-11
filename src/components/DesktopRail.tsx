@@ -59,6 +59,14 @@ export function DesktopRail() {
         aria-label="На главную — Парма"
       />
 
+      {/* Подпись и вкладки — по центру всей высоты рейла, а не остатка.
+          my-auto здесь не годится: сверху рисунок на 115px, снизу аватар на
+          36px, и группа съезжала бы вниз на разницу. Поэтому вынимаем её из
+          потока и центрируем абсолютно. Отсчёт идёт от самого <nav>: у него
+          position: sticky, а это уже позиционированный элемент — добавлять
+          relative нельзя, оно бы затёрло прилипание. */}
+      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex flex-col items-center">
+
       <p className="font-serif text-gold text-[10px] tracking-[0.22em] mb-5">МЕНЮ</p>
 
       <div className="flex flex-col items-center gap-9">
@@ -101,6 +109,8 @@ export function DesktopRail() {
             </span>
           </button>
         ))}
+      </div>
+
       </div>
 
       {/* Профиль внизу: на телефоне в него ведёт аватар с главной, а на
