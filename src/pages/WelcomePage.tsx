@@ -103,6 +103,114 @@ export default function WelcomePage() {
   // Рамка/звёзды при регистрации просто гаснут.
   const frameCls = leaving === 'register' ? 'wp-fade' : '';
 
+  // Десктоп — отдельная разметка. Композиция здесь другая по сути, а не по
+  // отступам: герой живёт в тёмной трети, блок действия — в светлой, снизу
+  // полоса с разделами и годом. Через md: это превратилось бы в два десятка
+  // взаимогасящих классов на каждом элементе.
+  // Анимации ухода тут нет вовсе — на широком экране переход мгновенный,
+  // поэтому leaveCls/leaveDelay/frameCls ниже не нужны.
+  if (isDesktop) {
+    return (
+      <div
+        className="relative flex min-h-screen flex-col overflow-hidden"
+        style={{
+          background:
+            'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 24%, #F4F1E9 56%, #F4F1E9 100%)',
+        }}
+      >
+
+        <div className="absolute inset-0 z-0">
+          {stars.map((star, i) => (
+            <div
+              key={i}
+              className="star absolute rounded-full"
+              style={{
+                top: star.top,
+                left: star.left,
+                width: star.size,
+                height: star.size,
+                background: `rgba(${star.rgb},${star.bright})`,
+                boxShadow:
+                  star.size > 1.8
+                    ? `0 0 ${Math.round(star.size * 2.5)}px ${(star.size * 0.35).toFixed(1)}px rgba(${star.rgb},${(star.bright * 0.55).toFixed(2)})`
+                    : 'none',
+                ...starVars(i, star.twMin),
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold/60 z-0" />
+
+        {/* Силуэт прижат к нижней полосе и частично уходит за неё — как в
+            макете: здания «стоят» на линии, а не висят над ней. */}
+        <img
+          src={skyline}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 left-0 right-0 mx-auto w-full max-w-xl translate-y-[34%] select-none z-0"
+          style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
+        />
+
+        {/* Верхний блок — на тёмной части, поэтому текст cream */}
+        <div className="relative z-10 flex flex-col items-center px-8 pt-[11vh] text-center">
+          <h1
+            className="font-serif text-cream font-bold leading-tight"
+            style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)', letterSpacing: '0.03em' }}
+          >
+            Путь&nbsp;в&nbsp;Парму
+          </h1>
+          <p className="font-serif text-gold italic text-2xl leading-snug mt-4">
+            через тернии, но не в одиночку.
+          </p>
+
+          {/* Орнамент вместо простой черты: две линии и ромб между ними */}
+          <div className="mt-7 flex items-center gap-4" aria-hidden>
+            <span className="block h-px w-16 bg-gold/70" />
+            <span className="block h-1.5 w-1.5 rotate-45 bg-gold" />
+            <span className="block h-px w-16 bg-gold/70" />
+          </div>
+        </div>
+
+        {/* Нижний блок — уже на светлой части, текст navy */}
+        <div className="relative z-10 mt-auto flex flex-col items-center px-8 pb-[13vh] text-center">
+          {/* Неразрывный пробел держит «для» при следующем слове: без него
+              строка ломалась после предлога и он висел в конце первой. */}
+          <p className="font-golos text-navy/75 text-xl leading-relaxed max-w-md">
+            Структура, ответы, поддержка для&nbsp;русскоязычных студентов.
+          </p>
+
+          <button
+            onClick={() => go('login')}
+            className="mt-9 w-full max-w-[34rem] rounded-2xl bg-navy py-4 font-serif text-cream text-xl shadow-sm transition-colors hover:bg-navy/90"
+          >
+            Войти
+          </button>
+
+          <p className="font-golos text-navy/60 text-base mt-6">
+            Впервые здесь?{' '}
+            <button
+              onClick={() => go('register')}
+              className="text-navy underline underline-offset-4 decoration-gold decoration-1 hover:decoration-2"
+            >
+              Создать аккаунт →
+            </button>
+          </p>
+        </div>
+
+        {/* Нижняя полоса: слева разделы приложения, справа город и год */}
+        <div className="relative z-10 flex items-center justify-between border-t border-gold/50 bg-soft-cream/80 px-10 py-4">
+          <span className="font-golos text-navy/45 text-sm tracking-[0.2em]">
+            LAURA · PATH · LOCI
+          </span>
+          <span className="font-golos text-navy/45 text-sm tracking-[0.2em]">
+            PARMA · MMXXVI
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col md:justify-center px-8 overflow-hidden">
 
