@@ -139,3 +139,14 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .claude/
+# Ключи и сертификаты — на случай, если кто-то положит их рядом с кодом.
+# Ни одного такого файла в истории нет (проверено gitleaks + trufflehog),
+# это защита на будущее.
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+secrets.json
+serviceaccount*.json
