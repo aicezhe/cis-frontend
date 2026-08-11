@@ -54,7 +54,7 @@ export function DesktopRail() {
           с телефона. Фон у нерисуемого элемента не запрашивается вообще. */}
       <button
         onClick={() => navigate('/path')}
-        className="mb-7 bg-contain bg-no-repeat bg-center"
+        className="mb-7 bg-contain bg-no-repeat bg-center print:hidden"
         style={{ width: 64, height: 87, backgroundImage: `url(${baptistery})` }}
         aria-label="На главную — Парма"
       />
@@ -67,14 +67,17 @@ export function DesktopRail() {
           relative нельзя, оно бы затёрло прилипание. */}
       <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex flex-col items-center">
 
-      <p className="font-serif text-gold text-[10px] tracking-[0.22em] mb-5">МЕНЮ</p>
+      <p className="font-serif text-gold text-[10px] tracking-[0.22em] mb-5 print:hidden">МЕНЮ</p>
 
       <div className="flex flex-col items-center gap-9">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => navigate(tab.route)}
-            className="flex flex-col items-center gap-1.5"
+            className={
+              'flex flex-col items-center gap-1.5 ' +
+              (active === tab.id ? '' : 'print:hidden')
+            }
             aria-current={active === tab.id ? 'page' : undefined}
           >
             {tab.icon ? (
@@ -117,7 +120,7 @@ export function DesktopRail() {
           десктопе с вложенной страницы туда иначе не попасть. */}
       <button
         onClick={() => navigate('/settings')}
-        className="mt-auto rounded-full border border-navy/25 overflow-hidden"
+        className="mt-auto rounded-full border border-navy/25 overflow-hidden print:hidden"
         aria-label="Профиль"
       >
         <Avatar
