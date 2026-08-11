@@ -71,6 +71,21 @@ function starVars(i: number, twMin: number): React.CSSProperties {
   } as React.CSSProperties;
 }
 
+/** Уголки-скобки — фирменный мотив тёмных плашек приложения (те же, что на
+ *  карточке LOCI и на экране визы). Здесь мельче: там ими обведена карточка,
+ *  а тут кнопка, и уголки в 12px на её высоте выглядели бы накладкой. */
+function Corners() {
+  const base = 'pointer-events-none absolute w-2.5 h-2.5 border-gold';
+  return (
+    <>
+      <span className={base + ' top-2.5 left-2.5 border-t-2 border-l-2'} />
+      <span className={base + ' top-2.5 right-2.5 border-t-2 border-r-2'} />
+      <span className={base + ' bottom-2.5 left-2.5 border-b-2 border-l-2'} />
+      <span className={base + ' bottom-2.5 right-2.5 border-b-2 border-r-2'} />
+    </>
+  );
+}
+
 export default function WelcomePage() {
   const navigate = useNavigate();
   const isDesktop = useIsDesktop();
@@ -194,25 +209,40 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        {/* ── Правая панель: что это и с чего начать ──────────────────────── */}
+        {/* ── Правая панель: что это и с чего начать ────────────────────────
+            Блок шире (max-w-md против sm): на 55% экрана узкая колонка висела
+            в пустоте. Ритм собран вокруг кнопки — над ней воздуха больше, чем
+            под ней, поэтому ссылка читается спутником кнопки, а описание
+            отделено от пары. Раньше отступы были 40 сверху и 24 снизу, и связь
+            распадалась: три отдельных элемента вместо одного узла. */}
         <div className="flex flex-1 items-center justify-center px-12">
-          <div className="w-full max-w-sm text-center">
+          <div className="flex w-full max-w-md flex-col items-center text-center">
 
             {/* Неразрывный пробел держит «для» при следующем слове: без него
                 строка ломалась после предлога и он висел в конце первой. */}
-            <p className="font-serif text-navy/70 text-lg leading-relaxed">
+            <p className="font-serif text-navy/85 font-medium text-xl leading-relaxed">
               Структура, ответы, поддержка для&nbsp;русскоязычных студентов.
             </p>
 
+            {/* Ширина 19rem = 304px подобрана под текст над кнопкой: его длинная
+                строка 297px. Кнопка во всю колонку (448px) была шире описания,
+                и уголки расползались по концам широкой полосы — читались рамкой
+                вокруг плашки, а не скобками. Теперь кнопка чуть шире строки, и
+                блок собирается в столбик по одной оси.
+                Пилюля с золотой обводкой заменена прямоугольником с уголками:
+                на скруглении в 9999px уголок-скобка лечь не может, ему нужна
+                прямая сторона. Обводки нет вовсе — на тёмных плашках
+                приложения уголки стоят без неё, и вместе они дали бы двойную
+                золотую рамку. */}
             <button
               onClick={() => go('login')}
-              className="mt-10 w-full rounded-full bg-navy py-3.5 font-serif text-cream text-xl border border-gold/50 transition-colors hover:bg-navy/90"
-              style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
+              className="relative mt-9 w-[19rem] rounded-xl bg-navy py-4 font-serif text-cream text-xl shadow-sm transition-colors hover:bg-navy/90"
             >
+              <Corners />
               Войти
             </button>
 
-            <p className="font-serif text-navy/70 text-base mt-6">
+            <p className="font-serif text-navy/75 font-medium text-base mt-5">
               Впервые здесь?{' '}
               <button
                 onClick={() => go('register')}
