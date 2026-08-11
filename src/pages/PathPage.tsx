@@ -228,14 +228,7 @@ export default function PathPage() {
         <span className="flex-1 h-px bg-navy/15" />
       </div>
 
-      {/* Виджет «Сегодня почитать» — 3 материала из мира международной
-          учёбы, меняются каждый день детерминированно по дате.
-          Живёт над колонками и занимает всю ширину: внутри горизонтальная
-          карусель, и в узкой колонке карточка получалась заметно уже списка
-          этапов под ней — правая часть экрана перевешивала. */}
-      <NewsWidget />
-
-      {/* Две колонки начиная с lg: слева этапы, справа сводка.
+      {/* Две колонки начиная с lg: слева новости и этапы, справа сводка.
           Ниже lg обёртки — обычные блоки, поток и порядок ровно как были.
           Между колонками нет gap: у детей уже есть свои mx-6/px-6, и они
           складываются в жёлоб 48px — третий отступ был бы лишним. */}
@@ -246,6 +239,10 @@ export default function PathPage() {
             схлопнулись бы вертикальные margin'ы, а кнопка расходов из
             растянутой стала бы inline-block по ширине текста. */}
         <div className="flex flex-col lg:flex-1 lg:min-w-0">
+
+          {/* Виджет «Сегодня почитать» — 3 материала из мира международной
+              учёбы, меняются каждый день детерминированно по дате */}
+          <NewsWidget />
 
           <h3 className="font-serif text-navy text-xl text-center mt-8 mb-4">
             Твой путь
@@ -327,17 +324,14 @@ export default function PathPage() {
       {/* Правая колонка — сводка: сколько пройдено, сколько стоит, куда идти
           дальше. На телефоне это просто продолжение потока, а блоки, которых
           там раньше не было, скрыты (hidden lg:…). */}
-      <aside className="flex flex-col lg:w-[22rem] lg:flex-shrink-0 lg:sticky lg:top-8">
+      {/* lg:mt-[38px] — опускаем колонку ровно на высоту шапки «Актуальное»
+          слева (26px строка + mb-3): без этого верх карточки прогресса
+          вставал вровень с заголовком раздела, а не с карточкой новости под
+          ним, и правая половина казалась приподнятой. Число завязано на ту
+          шапку — поменяешь там кегль или отступ, поправь и здесь. */}
+      <aside className="flex flex-col lg:mt-[38px] lg:w-[22rem] lg:flex-shrink-0 lg:sticky lg:top-8">
 
-        {/* Заголовок колонки — точная копия классов «Твоего пути» слева.
-            Не для красоты: он выравнивает верх карточек в обеих колонках сам,
-            без подгонки отступа под высоту соседнего заголовка. Поменяешь там
-            кегль или mt — здесь поменяй тем же значением. */}
-        <h3 className="hidden lg:block font-serif text-navy text-xl text-center mt-8 mb-4">
-          Сводка
-        </h3>
-
-        <div className="hidden lg:block mx-6 rounded-2xl bg-navy px-5 py-4">
+        <div className="hidden lg:block mx-6 mt-7 rounded-2xl bg-navy px-5 py-4">
           <p className="font-serif text-cream/60 text-xs tracking-wide">ОБЩИЙ ПРОГРЕСС</p>
           <p className="font-serif text-cream text-3xl leading-none mt-1.5">{overallPercent}%</p>
           <div className="h-1 rounded-full bg-cream/20 overflow-hidden mt-3">
