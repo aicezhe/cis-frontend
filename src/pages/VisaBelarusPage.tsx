@@ -239,7 +239,7 @@ export default function VisaBelarusPage() {
 
         {/* Плитки — как в России */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-4 md:flex md:flex-wrap md:justify-center">
           {gridButtons.map((b, i) => (
             <GridButton key={b.to} {...b} wide={gridButtons.length % 2 === 1 && i === gridButtons.length - 1} />
           ))}

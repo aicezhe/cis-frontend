@@ -58,7 +58,7 @@ export default function ParmaLifeOverviewPage() {
 
       {/* Три общих раздела — плитки с анимацией. Внутри каждого — подразделы. */}
       <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Разделы:</p>
-      <div className="px-6 grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-4">
+      <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4 md:flex md:flex-wrap md:justify-center">
         {PARMA_GROUPS.map((g, i) => (
           <GridButton
             key={g.id}
