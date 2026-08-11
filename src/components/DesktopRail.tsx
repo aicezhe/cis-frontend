@@ -14,6 +14,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Avatar } from './Avatar';
 import { loadCachedAvatar } from '../lib/avatar';
+import baptistery from '../assets/parmaBaptistery.png';
 import iconPath from '../assets/iconPath.svg';
 import iconLoci from '../assets/iconLoci.svg';
 
@@ -41,14 +42,24 @@ export function DesktopRail() {
                  border-r border-navy/15 bg-cream py-8"
       aria-label="Разделы"
     >
-      {/* Знак — тот же, что на вкладке браузера: рамка из золотых скобок */}
+      {/* Знак — Баптистерий с того же рисунка Пармы, что на экране входа.
+          Почему одно здание, а не вся тройка: рисунок нарисован тонкой
+          линией под ширину ~384px, и на 84px (вся тройка в рейле) штрихи
+          сливаются в грязь. Баптистерий узнаётся и на 64px, потому что
+          масштаб уменьшения у него в три раза мягче.
+          PNG, а не SVG: в исходнике здания лежат встроенным растром,
+          векторных путей там нет вообще.
+          Фоном, а не <img>: рейл скрыт через display:none до md, а картинку
+          в теге браузер тянет всё равно — 42 КБ впустую на каждой загрузке
+          с телефона. Фон у нерисуемого элемента не запрашивается вообще. */}
       <button
         onClick={() => navigate('/path')}
-        className="mb-12 rounded-xl overflow-hidden"
-        aria-label="На главную"
-      >
-        <img src="/favicon-192.png" alt="CIS.PR" width={40} height={40} />
-      </button>
+        className="mb-7 bg-contain bg-no-repeat bg-center"
+        style={{ width: 64, height: 87, backgroundImage: `url(${baptistery})` }}
+        aria-label="На главную — Парма"
+      />
+
+      <p className="font-serif text-gold text-[10px] tracking-[0.22em] mb-5">МЕНЮ</p>
 
       <div className="flex flex-col items-center gap-9">
         {tabs.map((tab) => (
