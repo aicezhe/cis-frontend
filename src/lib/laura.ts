@@ -64,8 +64,22 @@ export interface LauraAttachment {
   data_b64: string;
 }
 
+/** Сколько последних сообщений уезжает на бэк.
+ *
+ *  Должно совпадать с `laura_max_messages_per_request` на бэкенде (40 = 20
+ *  ходов): там это жёсткая валидация, и превышение вернётся 422 на весь
+ *  запрос. Раньше фронт отправлял переписку целиком, поэтому длинный чат
+ *  просто перестал бы отвечать.
+ *
+ *  Режем хвост, а не начало: последнее сообщение — текущий вопрос юзера, он же
+ *  поисковый запрос в RAG, и потерять его нельзя. */
+export const MAX_HISTORY_MESSAGES = 40;
+
+/** Столько символов принимает бэкенд в одном сообщении юзера. */
+export const MAX_MESSAGE_CHARS = 2000;
+
 function toBackendMessages(messages: Message[]): BackendMessage[] {
-  return messages.map((m) => ({
+  return messages.slice(-MAX_HISTORY_MESSAGES).map((m) => ({
     role: m.from === 'user' ? 'user' : 'assistant',
     content: m.text,
   }));

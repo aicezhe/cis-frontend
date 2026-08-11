@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import TabBar from '../components/TabBar';
 import { Loader } from '../components/Loader';
 import { ApiError, isAuthed } from '../lib/api';
-import { INITIAL_GREETING, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
+import { INITIAL_GREETING, MAX_MESSAGE_CHARS, getLauraProfile, streamLaura, fileToAttachment, type LauraAttachment } from '../lib/laura';
 import { Paperclip, X, FileText, Image as ImageIcon, Pencil, Check, Menu, Plus, ArrowUp } from 'lucide-react';
 import {
   type Chat,
@@ -651,6 +651,11 @@ export default function LauraPage() {
             disabled={isStreaming || chatsLoading}
             rows={1}
             autoComplete="off"
+            // Столько же принимает бэкенд; без потолка здесь длинный вопрос
+            // отправлялся бы и возвращался 422 уже после нажатия «отправить».
+            // Обрезать молча — тоже плохо, поэтому именно maxLength: браузер
+            // просто перестаёт принимать ввод, и это видно сразу.
+            maxLength={MAX_MESSAGE_CHARS}
             // no-scrollbar: autoGrow выставляет height ровно в scrollHeight, и на
             // округлении вылезала нативная полоса прокрутки — тонкая вертикальная
             // чёрточка у правого края поля.
