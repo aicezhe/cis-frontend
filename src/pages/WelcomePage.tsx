@@ -2,7 +2,7 @@ import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIsDesktop } from '../hooks/useIsDesktop';
-import { starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
+import { makeStarField, starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
 
 // Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
 // ре-рендере, но выглядело естественно-разбросанным.
@@ -35,6 +35,12 @@ const stars = Array.from({ length: 54 }, (_, i) => {
     twMin: +(0.3 + rand(i + 500) * 0.5).toFixed(2), // амплитуда мерцания вразнобой
   };
 });
+
+// Небо для десктопной левой панели: занимает всю её высоту, а не верхнюю
+// треть экрана, поэтому звёзд больше и разброс по top на все 100%. Сид тот же,
+// что на панели входа, — два экрана стоят рядом в одном флоу, и разный рисунок
+// неба читался бы как склейка из разных макетов.
+const panelStars = makeStarField(64, 100, 21);
 
 // Детерминированные параметры анимации по индексу — мерцание/дрейф вразнобой.
 function starVars(i: number, twMin: number): React.CSSProperties {
@@ -108,140 +114,99 @@ export default function WelcomePage() {
   // Рамка/звёзды при регистрации просто гаснут.
   const frameCls = leaving === 'register' ? 'wp-fade' : '';
 
-  // Десктоп — отдельная разметка. Композиция здесь другая по сути, а не по
-  // отступам: герой живёт в тёмной трети, блок действия — в светлой, снизу
-  // полоса с разделами и годом. Через md: это превратилось бы в два десятка
-  // взаимогасящих классов на каждом элементе.
-  // Анимации ухода тут нет вовсе — на широком экране переход мгновенный,
-  // поэтому leaveCls/leaveDelay/frameCls ниже не нужны.
+  // Десктоп — отдельная разметка: две панели, как на экране входа. Через md:
+  // это не собрать, композиция другая по сути, а не по отступам.
+  // Анимаций ухода тут нет вовсе — на широком экране переход мгновенный,
+  // поэтому leaveCls/leaveDelay/frameCls ниже относятся только к телефону.
   if (isDesktop) {
     return (
-      <div className="relative flex min-h-screen flex-col overflow-hidden bg-cream">
+      <div className="flex min-h-screen bg-soft-cream">
 
-        {/* ── Небо ────────────────────────────────────────────────────────────
-            Тёмный блок сам подстраивается под высоту героя, а не задаётся
-            процентами градиента на всю страницу. Раньше было наоборот, и на
-            каждой высоте окна граница ночь/день попадала в разное место: то
-            резала подзаголовок, то оставляла орнамент на серой середине, где
-            золото не читается. Теперь навсегда: герой на navy, растушёвка
-            начинается ниже него. */}
-        <section
-          className="relative px-8 pt-[11vh] pb-44"
-          style={{
-            // Один градиент на всю секцию вместо отдельной полосы-растушёвки
-            // поверх bg-navy. У полосы низ округлялся отдельно от дробной
-            // высоты секции, и по стыку проступал волосок navy. Стопы
-            // отмеряны от низа самой секции, поэтому шва нет в принципе,
-            // на любой высоте окна.
-            background:
-              'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 62%, #F4F1E9 96%, #F4F1E9 100%)',
-          }}
-        >
+        {/* ── Левая панель: ночное небо и герой ───────────────────────────
+            Ровно та же рамка, что на экране входа: те же 45%, те же плоские
+            цвета без градиента, тот же силуэт и та же подпись понизу. Раньше
+            Welcome был растянутой мобильной вёрсткой с закатным градиентом на
+            всю страницу — рядом с входом это читалось как два разных
+            приложения. */}
+        <div className="relative w-[45%] flex-shrink-0 overflow-hidden bg-navy flex flex-col items-center justify-center px-12">
 
-          {/* Звёзды гаснут к низу: раньше их прятала полоса-растушёвка,
-              которая лежала сверху. Теперь градиент — фон секции, и звёзды
-              над ним, поэтому маскируем их сами. */}
-          <div
-            className="absolute inset-0"
-            style={{
-              maskImage: 'linear-gradient(to bottom, #000 0%, #000 50%, transparent 85%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 50%, transparent 85%)',
-            }}
-          >
-            {stars.map((star, i) => (
+          <div className="absolute inset-0">
+            {panelStars.map((s, i) => (
               <div
                 key={i}
                 className="star absolute rounded-full"
                 style={{
-                  top: star.top,
-                  left: star.left,
-                  width: star.size,
-                  height: star.size,
-                  background: `rgba(${star.rgb},${star.bright})`,
-                  boxShadow:
-                    star.size > 1.8
-                      ? `0 0 ${Math.round(star.size * 2.5)}px ${(star.size * 0.35).toFixed(1)}px rgba(${star.rgb},${(star.bright * 0.55).toFixed(2)})`
-                      : 'none',
-                  ...starVars(i, star.twMin),
+                  top: s.top,
+                  left: s.left,
+                  width: s.size,
+                  height: s.size,
+                  ...starBaseStyle(s),
+                  ...starVars(i, s.twMin),
                 }}
               />
             ))}
           </div>
 
-          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold/60" />
+          {/* Силуэт на navy: multiply на тёмном съел бы линии в ноль, поэтому
+              инверсия и прозрачность — как на панели входа. */}
+          <img
+            src={skyline}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute bottom-16 left-0 right-0 mx-auto w-full max-w-sm select-none"
+            style={{ opacity: 0.16, filter: 'invert(1) brightness(1.6)' }}
+          />
 
           <div className="relative z-10 flex flex-col items-center text-center">
             <h1
               className="font-serif text-cream font-bold leading-tight"
-              style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)', letterSpacing: '0.03em' }}
+              style={{ fontSize: 'clamp(2rem, 3.4vw, 3.25rem)', letterSpacing: '0.03em' }}
             >
               Путь&nbsp;в&nbsp;Парму
             </h1>
-            <p className="font-serif text-gold italic text-2xl leading-snug mt-4">
+            <p className="font-serif text-gold italic text-xl mt-3">
               через тернии, но не в одиночку.
             </p>
-
-            {/* Орнамент вместо простой черты: две линии и ромб между ними */}
-            <div className="mt-7 flex items-center gap-4" aria-hidden>
-              <span className="block h-px w-[72px] bg-gold/70" />
-              <span className="block h-1.5 w-1.5 rotate-45 bg-gold/90" />
-              <span className="block h-px w-[72px] bg-gold/70" />
-            </div>
+            {/* Простая черта вместо орнамента с ромбом: на входе такая же,
+                и минималистичность держится именно на этом. */}
+            <span className="block bg-gold/60 mt-6" style={{ width: 56, height: 1 }} />
           </div>
-        </section>
 
-        {/* Силуэт — основание композиции: стоит на нижней полосе.
-            Высота в vh, а не фиксированная ширина: иначе на невысоком окне
-            здания налезали на кнопку. А ниже 820px по высоте он скрыт совсем
-            — там блок действия и так почти упирается в полосу, и декору
-            места нет. Ширина берётся из пропорций, поэтому w-auto. */}
-        <img
-          src={skyline}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute bottom-12 left-0 right-0 mx-auto hidden h-[16vh] w-auto select-none z-0 [@media(min-height:820px)]:block"
-          style={{ opacity: 0.2, mixBlendMode: 'multiply' }}
-        />
+          <div className="absolute inset-x-0 bottom-0 border-t border-gold/40 py-4 text-center">
+            <span className="font-serif text-cream/45 text-xs tracking-[0.28em]">
+              PARMA · MMXXVI
+            </span>
+          </div>
+        </div>
 
-        {/* ── Действие ────────────────────────────────────────────────────────
-            Центрируется в остатке высоты (flex-1 + justify-center), а не
-            прибито к низу. Из-за прибивки между орнаментом и этим блоком
-            зияло ~370px пустого градиента, и экран распадался на две
-            несвязанные половины. */}
-        <section className="relative z-10 flex flex-1 flex-col items-center px-8 pt-8 text-center">
-          {/* Неразрывный пробел держит «для» при следующем слове: без него
-              строка ломалась после предлога и он висел в конце первой. */}
-          <p className="font-serif text-navy/70 text-xl leading-relaxed max-w-md">
-            Структура, ответы, поддержка для&nbsp;русскоязычных студентов.
-          </p>
+        {/* ── Правая панель: что это и с чего начать ──────────────────────── */}
+        <div className="flex flex-1 items-center justify-center px-12">
+          <div className="w-full max-w-sm text-center">
 
-          <button
-            onClick={() => go('login')}
-            className="mt-8 w-[19rem] rounded-full bg-navy py-3.5 font-serif text-cream text-xl border border-gold/50 transition-colors hover:bg-navy/90"
-            style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
-          >
-            Войти
-          </button>
+            {/* Неразрывный пробел держит «для» при следующем слове: без него
+                строка ломалась после предлога и он висел в конце первой. */}
+            <p className="font-serif text-navy/70 text-lg leading-relaxed">
+              Структура, ответы, поддержка для&nbsp;русскоязычных студентов.
+            </p>
 
-          <p className="font-serif text-navy/70 text-base mt-5">
-            Впервые здесь?{' '}
             <button
-              onClick={() => go('register')}
-              className="text-navy underline underline-offset-4 decoration-gold/60 decoration-1 hover:decoration-gold hover:decoration-2"
+              onClick={() => go('login')}
+              className="mt-10 w-full rounded-full bg-navy py-3.5 font-serif text-cream text-xl border border-gold/50 transition-colors hover:bg-navy/90"
+              style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
             >
-              Создать аккаунт →
+              Войти
             </button>
-          </p>
-        </section>
 
-        {/* Нижняя полоса: слева разделы приложения, справа город и год */}
-        <div className="relative z-10 flex items-center justify-between border-t border-gold/50 bg-soft-cream/80 px-10 py-4">
-          <span className="font-serif text-navy/40 text-xs tracking-[0.28em]">
-            LAURA <span className="text-gold/80">·</span> PATH <span className="text-gold/80">·</span> LOCI
-          </span>
-          <span className="font-serif text-navy/40 text-xs tracking-[0.28em]">
-            PARMA <span className="text-gold/80">·</span> MMXXVI
-          </span>
+            <p className="font-serif text-navy/70 text-base mt-6">
+              Впервые здесь?{' '}
+              <button
+                onClick={() => go('register')}
+                className="text-navy underline underline-offset-4 decoration-gold/60 decoration-1 hover:decoration-gold hover:decoration-2"
+              >
+                Создать аккаунт →
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     );
