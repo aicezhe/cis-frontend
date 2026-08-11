@@ -63,6 +63,11 @@ export default function WelcomePage() {
       if (heroRef.current) setHeroWidth(heroRef.current.offsetWidth);
     };
     measure();
+    // Первый замер приходится на момент, когда Playfair ещё не подгрузился, и
+    // фраза меряется метриками подменного шрифта: кнопка получала 193px вместо
+    // 206 и такой оставалась до первого ресайза. Перемеряем, когда шрифты
+    // доехали. Опционально — в jsdom document.fonts нет.
+    document.fonts?.ready.then(measure);
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
@@ -111,69 +116,99 @@ export default function WelcomePage() {
   // поэтому leaveCls/leaveDelay/frameCls ниже не нужны.
   if (isDesktop) {
     return (
-      <div
-        className="relative flex min-h-screen flex-col overflow-hidden"
-        style={{
-          background:
-            'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 28%, #F4F1E9 58%, #F4F1E9 100%)',
-        }}
-      >
+      <div className="relative flex min-h-screen flex-col overflow-hidden bg-cream">
 
-        <div className="absolute inset-0 z-0">
-          {stars.map((star, i) => (
-            <div
-              key={i}
-              className="star absolute rounded-full"
-              style={{
-                top: star.top,
-                left: star.left,
-                width: star.size,
-                height: star.size,
-                background: `rgba(${star.rgb},${star.bright})`,
-                boxShadow:
-                  star.size > 1.8
-                    ? `0 0 ${Math.round(star.size * 2.5)}px ${(star.size * 0.35).toFixed(1)}px rgba(${star.rgb},${(star.bright * 0.55).toFixed(2)})`
-                    : 'none',
-                ...starVars(i, star.twMin),
-              }}
-            />
-          ))}
-        </div>
+        {/* ── Небо ────────────────────────────────────────────────────────────
+            Тёмный блок сам подстраивается под высоту героя, а не задаётся
+            процентами градиента на всю страницу. Раньше было наоборот, и на
+            каждой высоте окна граница ночь/день попадала в разное место: то
+            резала подзаголовок, то оставляла орнамент на серой середине, где
+            золото не читается. Теперь навсегда: герой на navy, растушёвка
+            начинается ниже него. */}
+        <section
+          className="relative px-8 pt-[11vh] pb-44"
+          style={{
+            // Один градиент на всю секцию вместо отдельной полосы-растушёвки
+            // поверх bg-navy. У полосы низ округлялся отдельно от дробной
+            // высоты секции, и по стыку проступал волосок navy. Стопы
+            // отмеряны от низа самой секции, поэтому шва нет в принципе,
+            // на любой высоте окна.
+            background:
+              'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 62%, #F4F1E9 96%, #F4F1E9 100%)',
+          }}
+        >
 
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold/60 z-0" />
+          {/* Звёзды гаснут к низу: раньше их прятала полоса-растушёвка,
+              которая лежала сверху. Теперь градиент — фон секции, и звёзды
+              над ним, поэтому маскируем их сами. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              maskImage: 'linear-gradient(to bottom, #000 0%, #000 50%, transparent 85%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 50%, transparent 85%)',
+            }}
+          >
+            {stars.map((star, i) => (
+              <div
+                key={i}
+                className="star absolute rounded-full"
+                style={{
+                  top: star.top,
+                  left: star.left,
+                  width: star.size,
+                  height: star.size,
+                  background: `rgba(${star.rgb},${star.bright})`,
+                  boxShadow:
+                    star.size > 1.8
+                      ? `0 0 ${Math.round(star.size * 2.5)}px ${(star.size * 0.35).toFixed(1)}px rgba(${star.rgb},${(star.bright * 0.55).toFixed(2)})`
+                      : 'none',
+                  ...starVars(i, star.twMin),
+                }}
+              />
+            ))}
+          </div>
 
-        {/* Силуэт прижат к нижней полосе и частично уходит за неё — как в
-            макете: здания «стоят» на линии, а не висят над ней. */}
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold/60" />
+
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <h1
+              className="font-serif text-cream font-bold leading-tight"
+              style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)', letterSpacing: '0.03em' }}
+            >
+              Путь&nbsp;в&nbsp;Парму
+            </h1>
+            <p className="font-serif text-gold italic text-2xl leading-snug mt-4">
+              через тернии, но не в одиночку.
+            </p>
+
+            {/* Орнамент вместо простой черты: две линии и ромб между ними */}
+            <div className="mt-7 flex items-center gap-4" aria-hidden>
+              <span className="block h-px w-[72px] bg-gold/70" />
+              <span className="block h-1.5 w-1.5 rotate-45 bg-gold/90" />
+              <span className="block h-px w-[72px] bg-gold/70" />
+            </div>
+          </div>
+        </section>
+
+        {/* Силуэт — основание композиции: стоит на нижней полосе.
+            Высота в vh, а не фиксированная ширина: иначе на невысоком окне
+            здания налезали на кнопку. А ниже 820px по высоте он скрыт совсем
+            — там блок действия и так почти упирается в полосу, и декору
+            места нет. Ширина берётся из пропорций, поэтому w-auto. */}
         <img
           src={skyline}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute bottom-0 left-0 right-0 mx-auto w-full max-w-md translate-y-[30%] select-none z-0"
+          className="pointer-events-none absolute bottom-12 left-0 right-0 mx-auto hidden h-[16vh] w-auto select-none z-0 [@media(min-height:820px)]:block"
           style={{ opacity: 0.2, mixBlendMode: 'multiply' }}
         />
 
-        {/* Верхний блок — на тёмной части, поэтому текст cream */}
-        <div className="relative z-10 flex flex-col items-center px-8 pt-[12vh] text-center">
-          <h1
-            className="font-serif text-cream font-bold leading-tight"
-            style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)', letterSpacing: '0.03em' }}
-          >
-            Путь&nbsp;в&nbsp;Парму
-          </h1>
-          <p className="font-serif text-gold italic text-2xl leading-snug mt-4">
-            через тернии, но не в одиночку.
-          </p>
-
-          {/* Орнамент вместо простой черты: две линии и ромб между ними */}
-          <div className="mt-7 flex items-center gap-4" aria-hidden>
-            <span className="block h-px w-[72px] bg-gold/70" />
-            <span className="block h-1.5 w-1.5 rotate-45 bg-gold/90" />
-            <span className="block h-px w-[72px] bg-gold/70" />
-          </div>
-        </div>
-
-        {/* Нижний блок — уже на светлой части, текст navy */}
-        <div className="relative z-10 mt-auto flex flex-col items-center px-8 pb-[10vh] text-center">
+        {/* ── Действие ────────────────────────────────────────────────────────
+            Центрируется в остатке высоты (flex-1 + justify-center), а не
+            прибито к низу. Из-за прибивки между орнаментом и этим блоком
+            зияло ~370px пустого градиента, и экран распадался на две
+            несвязанные половины. */}
+        <section className="relative z-10 flex flex-1 flex-col items-center px-8 pt-8 text-center">
           {/* Неразрывный пробел держит «для» при следующем слове: без него
               строка ломалась после предлога и он висел в конце первой. */}
           <p className="font-serif text-navy/70 text-xl leading-relaxed max-w-md">
@@ -197,7 +232,7 @@ export default function WelcomePage() {
               Создать аккаунт →
             </button>
           </p>
-        </div>
+        </section>
 
         {/* Нижняя полоса: слева разделы приложения, справа город и год */}
         <div className="relative z-10 flex items-center justify-between border-t border-gold/50 bg-soft-cream/80 px-10 py-4">
