@@ -26,13 +26,22 @@ export function useIsDesktop(): boolean {
   );
 
   useEffect(() => {
+    const update = () =>
+      setIsDesktop(window.matchMedia?.(DESKTOP_QUERY).matches ?? false);
     const mq = window.matchMedia?.(DESKTOP_QUERY);
-    if (!mq) return;
-    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener('change', onChange);
+    // Слушаем и mq.change, и window.resize. Дублирование намеренное:
+    // change — штатный сигнал, но в эмулированных вьюпортах (DevTools,
+    // автоматизация) он местами не стреляет, и страница застревала в
+    // десктопной ветке после сужения окна. resize стреляет везде; update
+    // идемпотентен, лишний вызов ничего не стоит.
+    mq?.addEventListener('change', update);
+    window.addEventListener('resize', update);
     // между первым рендером и подпиской окно могли успеть перетащить
-    setIsDesktop(mq.matches);
-    return () => mq.removeEventListener('change', onChange);
+    update();
+    return () => {
+      mq?.removeEventListener('change', update);
+      window.removeEventListener('resize', update);
+    };
   }, []);
 
   return isDesktop;

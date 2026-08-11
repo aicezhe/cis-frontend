@@ -115,7 +115,7 @@ export default function WelcomePage() {
         className="relative flex min-h-screen flex-col overflow-hidden"
         style={{
           background:
-            'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 24%, #F4F1E9 56%, #F4F1E9 100%)',
+            'linear-gradient(to bottom, #1C2A48 0%, #1C2A48 28%, #F4F1E9 58%, #F4F1E9 100%)',
         }}
       >
 
@@ -148,12 +148,12 @@ export default function WelcomePage() {
           src={skyline}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute bottom-0 left-0 right-0 mx-auto w-full max-w-xl translate-y-[34%] select-none z-0"
-          style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
+          className="pointer-events-none absolute bottom-0 left-0 right-0 mx-auto w-full max-w-md translate-y-[30%] select-none z-0"
+          style={{ opacity: 0.2, mixBlendMode: 'multiply' }}
         />
 
         {/* Верхний блок — на тёмной части, поэтому текст cream */}
-        <div className="relative z-10 flex flex-col items-center px-8 pt-[11vh] text-center">
+        <div className="relative z-10 flex flex-col items-center px-8 pt-[12vh] text-center">
           <h1
             className="font-serif text-cream font-bold leading-tight"
             style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)', letterSpacing: '0.03em' }}
@@ -166,32 +166,33 @@ export default function WelcomePage() {
 
           {/* Орнамент вместо простой черты: две линии и ромб между ними */}
           <div className="mt-7 flex items-center gap-4" aria-hidden>
-            <span className="block h-px w-16 bg-gold/70" />
-            <span className="block h-1.5 w-1.5 rotate-45 bg-gold" />
-            <span className="block h-px w-16 bg-gold/70" />
+            <span className="block h-px w-[72px] bg-gold/70" />
+            <span className="block h-1.5 w-1.5 rotate-45 bg-gold/90" />
+            <span className="block h-px w-[72px] bg-gold/70" />
           </div>
         </div>
 
         {/* Нижний блок — уже на светлой части, текст navy */}
-        <div className="relative z-10 mt-auto flex flex-col items-center px-8 pb-[13vh] text-center">
+        <div className="relative z-10 mt-auto flex flex-col items-center px-8 pb-[10vh] text-center">
           {/* Неразрывный пробел держит «для» при следующем слове: без него
               строка ломалась после предлога и он висел в конце первой. */}
-          <p className="font-golos text-navy/75 text-xl leading-relaxed max-w-md">
+          <p className="font-serif text-navy/70 text-xl leading-relaxed max-w-md">
             Структура, ответы, поддержка для&nbsp;русскоязычных студентов.
           </p>
 
           <button
             onClick={() => go('login')}
-            className="mt-9 w-full max-w-[34rem] rounded-2xl bg-navy py-4 font-serif text-cream text-xl shadow-sm transition-colors hover:bg-navy/90"
+            className="mt-8 w-[19rem] rounded-full bg-navy py-3.5 font-serif text-cream text-xl border border-gold/50 transition-colors hover:bg-navy/90"
+            style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,153,104,0.15)' }}
           >
             Войти
           </button>
 
-          <p className="font-golos text-navy/60 text-base mt-6">
+          <p className="font-serif text-navy/70 text-base mt-5">
             Впервые здесь?{' '}
             <button
               onClick={() => go('register')}
-              className="text-navy underline underline-offset-4 decoration-gold decoration-1 hover:decoration-2"
+              className="text-navy underline underline-offset-4 decoration-gold/60 decoration-1 hover:decoration-gold hover:decoration-2"
             >
               Создать аккаунт →
             </button>
@@ -200,11 +201,11 @@ export default function WelcomePage() {
 
         {/* Нижняя полоса: слева разделы приложения, справа город и год */}
         <div className="relative z-10 flex items-center justify-between border-t border-gold/50 bg-soft-cream/80 px-10 py-4">
-          <span className="font-golos text-navy/45 text-sm tracking-[0.2em]">
-            LAURA · PATH · LOCI
+          <span className="font-serif text-navy/40 text-xs tracking-[0.28em]">
+            LAURA <span className="text-gold/80">·</span> PATH <span className="text-gold/80">·</span> LOCI
           </span>
-          <span className="font-golos text-navy/45 text-sm tracking-[0.2em]">
-            PARMA · MMXXVI
+          <span className="font-serif text-navy/40 text-xs tracking-[0.28em]">
+            PARMA <span className="text-gold/80">·</span> MMXXVI
           </span>
         </div>
       </div>
