@@ -12,8 +12,8 @@
 // он остаётся контрактом мобильной вёрстки.
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Avatar } from './Avatar';
-import { loadCachedAvatar } from '../lib/avatar';
+import { LogOut } from 'lucide-react';
+import { logout } from '../lib/api';
 import baptistery from '../assets/parmaBaptistery.png';
 import iconPath from '../assets/iconPath.svg';
 import iconLoci from '../assets/iconLoci.svg';
@@ -35,6 +35,16 @@ export function DesktopRail() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const active = activeTab(pathname);
+
+  // Порядок как в Настройках: сначала отзыв refresh-токена на сервере, потом
+  // чистка памяти. Наоборот нельзя — logout() ходит на /auth/logout, а после
+  // clear() ему уже нечем представиться.
+  async function handleLogout() {
+    if (!confirm('Выйти из аккаунта? Прогресс и заметки на этом устройстве сотрутся.')) return;
+    await logout();
+    localStorage.clear();
+    navigate('/');
+  }
 
   return (
     <nav
@@ -60,8 +70,8 @@ export function DesktopRail() {
       />
 
       {/* Подпись и вкладки — по центру всей высоты рейла, а не остатка.
-          my-auto здесь не годится: сверху рисунок на 115px, снизу аватар на
-          36px, и группа съезжала бы вниз на разницу. Поэтому вынимаем её из
+          my-auto здесь не годится: сверху рисунок на 115px, снизу выход на
+          ~43px, и группа съезжала бы вниз на разницу. Поэтому вынимаем её из
           потока и центрируем абсолютно. Отсчёт идёт от самого <nav>: у него
           position: sticky, а это уже позиционированный элемент — добавлять
           relative нельзя, оно бы затёрло прилипание. */}
@@ -116,18 +126,20 @@ export function DesktopRail() {
 
       </div>
 
-      {/* Профиль внизу: на телефоне в него ведёт аватар с главной, а на
-          десктопе с вложенной страницы туда иначе не попасть. */}
+      {/* Выход внизу. Спрашиваем подтверждение, хотя в Настройках выход
+          молчаливый: там до кнопки надо дойти специально, а здесь она висит
+          на каждом экране ровно там, где раньше был аватар — один промах
+          мимо соседней иконки, и localStorage.clear() сотрёт все галочки,
+          адрес и историю Лауры. На сервер прогресс не уходит, вернуть его
+          после случайного выхода нечем. */}
       <button
-        onClick={() => navigate('/settings')}
-        className="mt-auto rounded-full border border-navy/25 overflow-hidden print:hidden"
-        aria-label="Профиль"
+        onClick={handleLogout}
+        className="mt-auto flex flex-col items-center gap-1.5 text-navy/40
+                   transition-colors hover:text-navy/70 print:hidden"
+        aria-label="Выйти из аккаунта"
       >
-        <Avatar
-          src={loadCachedAvatar()}
-          name={localStorage.getItem('cispr_nickname') || 'A'}
-          size={36}
-        />
+        <LogOut className="w-6 h-6" strokeWidth={1.5} />
+        <span className="font-serif text-[11px] tracking-wide">ВЫХОД</span>
       </button>
     </nav>
   );
