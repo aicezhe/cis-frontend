@@ -1,6 +1,7 @@
 import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useIsDesktop } from '../hooks/useIsDesktop';
 import { starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
 
 // Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
@@ -51,6 +52,7 @@ function starVars(i: number, twMin: number): React.CSSProperties {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+  const isDesktop = useIsDesktop();
   const [leaving, setLeaving] = useState<null | 'login' | 'register'>(null);
 
   // Кнопка «Войти» по ширине фразы «Путь в Парму» — замеряем её вживую.
@@ -68,12 +70,18 @@ export default function WelcomePage() {
   // Запуск анимации ухода, затем навигация. Вход — небо «накрывает» экран
   // (~0.5с), дальше поток звёзд и расплывание уже на странице входа (SkyIntro).
   // Регистрация — элементы по очереди отлетают, экран бежевеет (~1.15с).
+  //
+  // На десктопе уход не анимируем вовсе. Причин две. Первая: «накрытие» небом
+  // рассчитано на полноэкранный синий вход, а на широком экране вход — две
+  // панели, и синяя вуаль поверх них выглядит как чужой слой. Вторая: три
+  // секунды ожидания на мышке ощущаются иначе, чем на телефоне, где переход
+  // прикрывает загрузку следующего экрана.
   function go(kind: 'login' | 'register') {
     if (leaving) return;
     const reduce =
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
+    if (reduce || isDesktop) {
       navigate(kind === 'login' ? '/login' : '/register');
       return;
     }
@@ -96,7 +104,7 @@ export default function WelcomePage() {
   const frameCls = leaving === 'register' ? 'wp-fade' : '';
 
   return (
-    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
+    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col md:justify-center px-8 overflow-hidden">
 
       {/* Звёздное небо — единым слоем (чтобы уходило целиком).
           Свечение (ореол) только у крупных/ярких — как у настоящих звёзд.
@@ -130,17 +138,17 @@ export default function WelcomePage() {
         src={skyline}
         alt=""
         aria-hidden
-        className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none md:max-w-lg md:mx-auto z-0 ${frameCls}`}
+        className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none md:max-w-2xl md:mx-auto z-0 ${frameCls}`}
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
       {/* HERO: слоган — главный визуальный акцент */}
-      <div className="relative z-10 flex flex-col items-center text-center mt-48 px-6">
+      <div className="relative z-10 flex flex-col items-center text-center mt-48 md:mt-0 px-6">
         <p
           ref={heroRef}
           className={`font-serif text-navy font-bold leading-tight text-center inline-block ${leaveCls('left')}`}
           style={{
-            fontSize: 'clamp(1.8rem, 7vw, 2.8rem)',
+            fontSize: 'clamp(1.8rem, 7vw, 4rem)',
             letterSpacing: '0.04em',
             ...leaveDelay(0),
           }}
@@ -148,7 +156,7 @@ export default function WelcomePage() {
           Путь&nbsp;в&nbsp;Парму
         </p>
         <p
-          className={`font-serif text-cream italic text-lg leading-snug text-center mt-2 ${leaveCls('right')}`}
+          className={`font-serif text-cream md:text-gold italic text-lg md:text-2xl leading-snug text-center mt-2 md:mt-4 ${leaveCls('right')}`}
           style={leaveDelay(1)}
         >
           через тернии, но не в одиночку.
@@ -161,7 +169,7 @@ export default function WelcomePage() {
         />
 
         <p
-          className={`font-serif text-navy/60 text-sm leading-relaxed text-center mt-6 max-w-[260px] ${leaveCls('right')}`}
+          className={`font-serif text-navy/60 text-sm md:text-base leading-relaxed text-center mt-6 max-w-[260px] md:max-w-sm ${leaveCls('right')}`}
           style={leaveDelay(3)}
         >
           Структура, ответы, поддержка для русскоязычных студентов.
@@ -197,10 +205,12 @@ export default function WelcomePage() {
 
       {/* Резерв снизу под здания-watermark: теперь он тянется (flex-1), чтобы
           лишняя высота экрана уходила сюда, а не в зазор текст↔кнопка */}
-      <div className="flex-1 min-h-[220px]" />
+      <div className="flex-1 min-h-[220px] md:hidden" />
 
       {/* Тонкая золотая полоса внизу — рамка */}
-      <div className={`relative z-10 h-0.5 bg-gold/60 mb-4 ${frameCls}`} />
+      <div
+        className={`relative z-10 h-0.5 bg-gold/60 mb-4 md:absolute md:inset-x-0 md:bottom-0 md:mb-0 ${frameCls}`}
+      />
 
       {/* Регистрация: бежевый экран проступает по мере отлёта элементов */}
       {leaving === 'register' && (
