@@ -185,8 +185,21 @@ export default function PathPage() {
   );
   const expensesPercent = totalBudget === 0 ? 0 : Math.min(100, Math.round((totalSpent / totalBudget) * 100));
 
+  // Сводка для правой колонки на десктопе. Средний процент по четырём этапам,
+  // а не по всем галочкам разом: у разделов сильно разное число пунктов, и
+  // общий знаменатель дал бы «прогресс», где виза весит вчетверо больше
+  // переезда. Подпись под числом так и говорит — среднее по этапам.
+  const doneSections = sections.filter((s) => s.isCompletedSection).length;
+  const overallPercent = Math.round(
+    sections.reduce((sum, s) => sum + s.progress, 0) / sections.length,
+  );
+  // Этап, на котором человек сейчас. Если текущий по квизу уже закрыт,
+  // статуса 'current' не будет ни у кого — берём первый незакрытый.
+  const nextSection =
+    sections.find((s) => s.status === 'current') ?? sections.find((s) => !s.isCompletedSection);
+
   return (
-    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl lg:max-w-5xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
 
       <div className="flex items-center justify-between px-6 pt-12">
         <div>
@@ -215,135 +228,201 @@ export default function PathPage() {
         <span className="flex-1 h-px bg-navy/15" />
       </div>
 
-      {/* Виджет «Сегодня почитать» — 3 материала из мира международной учёбы,
-          меняются каждый день детерминированно по дате */}
-      <NewsWidget />
+      {/* Две колонки начиная с lg: слева новости и этапы, справа сводка.
+          Ниже lg обёртки — обычные блоки, поток и порядок ровно как были.
+          Между колонками нет gap: у детей уже есть свои mx-6/px-6, и они
+          складываются в жёлоб 48px — третий отступ был бы лишним. */}
+      <div className="lg:flex lg:items-start">
 
-      <h3 className="font-serif text-navy text-xl text-center mt-8 mb-4">
-        Твой путь
-      </h3>
+        {/* flex flex-col у обеих колонок неспроста: раньше эти блоки были
+            прямыми детьми flex-контейнера страницы. В обычном блоке у них
+            схлопнулись бы вертикальные margin'ы, а кнопка расходов из
+            растянутой стала бы inline-block по ширине текста. */}
+        <div className="flex flex-col lg:flex-1 lg:min-w-0">
 
-      {/* Этапы пути — вертикальный список с прогресс-баром.
-          Решение: 4 квадрата 2×2 сжимали контент и выглядели игрушечно;
-          горизонтальные строки дают воздух и фокус на прогрессе. */}
-      <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
-        {sections.map((section, i) => {
-          const isDone = section.status === 'done';
-          const isLast = i === sections.length - 1;
-          return (
-            <button
-              key={section.id}
-              onClick={() => {
-                if (section.id === 'uni') {
-                  const country = localStorage.getItem('cispr_country') || '';
-                  setCurrency(COUNTRY_CURRENCY_MAP[country] ?? 'EUR');
-                } else {
-                  setCurrency('EUR');
-                }
-                navigate('/path/' + section.id);
-              }}
-              className={
-                'w-full flex items-center gap-4 px-4 py-3.5 text-left active:bg-cream transition-colors ' +
-                (isLast ? '' : 'border-b border-navy/10')
-              }
-            >
-              {/* Иконка-акцент в круглом контейнере: тонкие линии золотом.
-                  Done: navy фон. Активный: cream фон. Обводка золотая в обоих. */}
-              <div
-                className={
-                  'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ' +
-                  (isDone ? 'bg-navy border border-gold/40' : 'bg-cream border border-gold/40')
-                }
-              >
-                <SectionIcon id={section.id as 'uni' | 'visa' | 'travel' | 'parma'} className="w-6 h-6 text-gold" />
-              </div>
+          {/* Виджет «Сегодня почитать» — 3 материала из мира международной
+              учёбы, меняются каждый день детерминированно по дате */}
+          <NewsWidget />
 
-              {/* Контент: название + прогресс-бар + проценты */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                  <h4 className="font-serif text-navy text-base font-bold">{section.title}</h4>
-                  <p
-                    className={
-                      'font-serif text-xs flex-shrink-0 ' +
-                      (isDone ? 'text-gold font-bold' : 'text-navy/50')
-                    }
-                  >
-                    {isDone ? '✓ пройдено' : `${section.progress}%`}
-                  </p>
-                </div>
-                <div className="h-1 rounded-full bg-navy/10 overflow-hidden">
-                  <div
-                    className={'h-full rounded-full transition-all duration-500 ' + (isDone ? 'bg-gold' : 'bg-navy')}
-                    style={{ width: section.progress + '%' }}
-                  />
-                </div>
-              </div>
+          <h3 className="font-serif text-navy text-xl text-center mt-8 mb-4">
+            Твой путь
+          </h3>
 
-              {/* Шеврон */}
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                className="text-navy/40 flex-shrink-0 -rotate-90"
-                fill="currentColor"
-              >
-                <path d="M7 10L1 4h12L7 10z" />
-              </svg>
-            </button>
-          );
-        })}
-      </div>
-
-      <h3 className="font-serif text-gold text-lg italic px-6 mt-8 mb-2">
-        Расходы
-      </h3>
-      {/* Тап — таблица «Стоимость» по всем разделам. Долгий тап — быстро
-          добавить свой расход, не заходя на страницу. */}
-      <button
-        onClick={() => navigate('/path/expenses')}
-        className="mx-6 text-left bg-soft-cream border border-navy/25 rounded-2xl p-5 select-none"
-        style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
-        {...longPressHandlers(() => setExpenseFor('Расход'))}
-      >
-        <p className="font-serif text-navy text-lg">
-          {fmt(totalSpent)} <span className="text-navy/60 text-sm">из {fmt(totalBudget)}</span>
-        </p>
-        <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
-          <div
-            className="h-full bg-navy rounded-full transition-all duration-500"
-            style={{ width: expensesPercent + '%' }}
-          />
-        </div>
-
-        {/* Разбивка по разделам */}
-        <div className="mt-3 pt-3 border-t border-navy/10 flex flex-col gap-1.5">
-          {sectionsOrder.map((id) => {
-            const budget = id === 'uni' ? dynamicUniBudget : sectionStaticTotal(id);
-            const label = sectionsData[id].titleFull;
-            // «В Парме» — это годовой расход на жизнь после переезда (а не на разовое мероприятие)
-            const perYear = id === 'parma';
+        {/* Этапы пути — вертикальный список с прогресс-баром.
+            Решение: 4 квадрата 2×2 сжимали контент и выглядели игрушечно;
+            горизонтальные строки дают воздух и фокус на прогрессе. */}
+        <div className="mx-6 bg-soft-cream border border-navy/15 rounded-2xl overflow-hidden">
+          {sections.map((section, i) => {
+            const isDone = section.status === 'done';
+            const isLast = i === sections.length - 1;
             return (
-              <div key={id} className="flex justify-between items-baseline">
-                <p className="font-serif text-navy/60 text-xs">
-                  {label}{perYear ? ' · в год' : ''}
-                </p>
-                <p className="font-serif text-navy/80 text-xs">{fmt(budget)}</p>
-              </div>
+              <button
+                key={section.id}
+                onClick={() => {
+                  if (section.id === 'uni') {
+                    const country = localStorage.getItem('cispr_country') || '';
+                    setCurrency(COUNTRY_CURRENCY_MAP[country] ?? 'EUR');
+                  } else {
+                    setCurrency('EUR');
+                  }
+                  navigate('/path/' + section.id);
+                }}
+                className={
+                  'w-full flex items-center gap-4 px-4 py-3.5 text-left active:bg-cream transition-colors ' +
+                  (isLast ? '' : 'border-b border-navy/10')
+                }
+              >
+                {/* Иконка-акцент в круглом контейнере: тонкие линии золотом.
+                    Done: navy фон. Активный: cream фон. Обводка золотая в обоих. */}
+                <div
+                  className={
+                    'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ' +
+                    (isDone ? 'bg-navy border border-gold/40' : 'bg-cream border border-gold/40')
+                  }
+                >
+                  <SectionIcon id={section.id as 'uni' | 'visa' | 'travel' | 'parma'} className="w-6 h-6 text-gold" />
+                </div>
+
+                {/* Контент: название + прогресс-бар + проценты */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-3 mb-1.5">
+                    <h4 className="font-serif text-navy text-base font-bold">{section.title}</h4>
+                    <p
+                      className={
+                        'font-serif text-xs flex-shrink-0 ' +
+                        (isDone ? 'text-gold font-bold' : 'text-navy/50')
+                      }
+                    >
+                      {isDone ? '✓ пройдено' : `${section.progress}%`}
+                    </p>
+                  </div>
+                  <div className="h-1 rounded-full bg-navy/10 overflow-hidden">
+                    <div
+                      className={'h-full rounded-full transition-all duration-500 ' + (isDone ? 'bg-gold' : 'bg-navy')}
+                      style={{ width: section.progress + '%' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Шеврон */}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  className="text-navy/40 flex-shrink-0 -rotate-90"
+                  fill="currentColor"
+                >
+                  <path d="M7 10L1 4h12L7 10z" />
+                </svg>
+              </button>
             );
           })}
         </div>
 
-        {/* Примечание об Украине (временная защита) */}
-        {uniCosts.has_visa_waiver && (
-          <p className="font-serif text-gold text-xs mt-3 font-bold">
-            ✓ Временная защита ЕС: виза D не нужна — стоимость визы не включена
+        </div>
+
+      {/* Правая колонка — сводка: сколько пройдено, сколько стоит, куда идти
+          дальше. На телефоне это просто продолжение потока, а блоки, которых
+          там раньше не было, скрыты (hidden lg:…). */}
+      <aside className="flex flex-col lg:w-[22rem] lg:flex-shrink-0 lg:sticky lg:top-8">
+
+        <div className="hidden lg:block mx-6 mt-7 rounded-2xl bg-navy px-5 py-4">
+          <p className="font-serif text-cream/60 text-xs tracking-wide">ОБЩИЙ ПРОГРЕСС</p>
+          <p className="font-serif text-cream text-3xl leading-none mt-1.5">{overallPercent}%</p>
+          <div className="h-1 rounded-full bg-cream/20 overflow-hidden mt-3">
+            <div
+              className="h-full bg-gold rounded-full transition-all duration-500"
+              style={{ width: overallPercent + '%' }}
+            />
+          </div>
+          <p className="font-serif text-cream/50 text-[11px] italic mt-2.5">
+            среднее по четырём этапам · закрыто {doneSections} из {sections.length}
           </p>
+        </div>
+
+        <h3 className="font-serif text-gold text-lg italic px-6 mt-8 mb-2">
+          Расходы
+        </h3>
+        {/* Тап — таблица «Стоимость» по всем разделам. Долгий тап — быстро
+            добавить свой расход, не заходя на страницу. */}
+        <button
+          onClick={() => navigate('/path/expenses')}
+          className="mx-6 text-left bg-soft-cream border border-navy/25 rounded-2xl p-5 select-none"
+          style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
+          {...longPressHandlers(() => setExpenseFor('Расход'))}
+        >
+          <p className="font-serif text-navy text-lg">
+            {fmt(totalSpent)} <span className="text-navy/60 text-sm">из {fmt(totalBudget)}</span>
+          </p>
+          <div className="h-1.5 rounded-full bg-navy/15 overflow-hidden mt-2">
+            <div
+              className="h-full bg-navy rounded-full transition-all duration-500"
+              style={{ width: expensesPercent + '%' }}
+            />
+          </div>
+
+          {/* Разбивка по разделам */}
+          <div className="mt-3 pt-3 border-t border-navy/10 flex flex-col gap-1.5">
+            {sectionsOrder.map((id) => {
+              const budget = id === 'uni' ? dynamicUniBudget : sectionStaticTotal(id);
+              const label = sectionsData[id].titleFull;
+              // «В Парме» — это годовой расход на жизнь после переезда (а не на разовое мероприятие)
+              const perYear = id === 'parma';
+              return (
+                <div key={id} className="flex justify-between items-baseline">
+                  <p className="font-serif text-navy/60 text-xs">
+                    {label}{perYear ? ' · в год' : ''}
+                  </p>
+                  <p className="font-serif text-navy/80 text-xs">{fmt(budget)}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Примечание об Украине (временная защита) */}
+          {uniCosts.has_visa_waiver && (
+            <p className="font-serif text-gold text-xs mt-3 font-bold">
+              ✓ Временная защита ЕС: виза D не нужна — стоимость визы не включена
+            </p>
+          )}
+
+          <p className="font-serif text-navy/40 text-[11px] italic mt-2">
+            Оценки для {uniCosts.country?.toUpperCase()} · меняй валюту в Настройках
+          </p>
+        </button>
+
+        {/* Куда идти дальше. На телефоне не нужна: там до списка этапов один
+            свайп, а на широком экране этапы уехали в соседнюю колонку. */}
+        {nextSection && (
+          <button
+            onClick={() => {
+              if (nextSection.id === 'uni') {
+                const country = localStorage.getItem('cispr_country') || '';
+                setCurrency(COUNTRY_CURRENCY_MAP[country] ?? 'EUR');
+              } else {
+                setCurrency('EUR');
+              }
+              navigate('/path/' + nextSection.id);
+            }}
+            className="hidden lg:flex mx-6 mt-4 items-center gap-3 rounded-2xl border border-gold/50 bg-soft-cream px-5 py-4 text-left"
+          >
+            <SectionIcon
+              id={nextSection.id as 'uni' | 'visa' | 'travel' | 'parma'}
+              className="w-6 h-6 text-gold flex-shrink-0"
+            />
+            <span className="min-w-0 flex-1">
+              <span className="block font-serif text-navy/50 text-xs">Продолжить</span>
+              <span className="block font-serif text-navy text-base font-bold">
+                {nextSection.title}
+              </span>
+            </span>
+            <span className="font-serif text-navy/40 text-sm flex-shrink-0">→</span>
+          </button>
         )}
 
-        <p className="font-serif text-navy/40 text-[11px] italic mt-2">
-          Оценки для {uniCosts.country?.toUpperCase()} · меняй валюту в Настройках
-        </p>
-      </button>
+      </aside>
+
+      </div>
 
       {expenseFor && (
         <AddExpenseSheet
