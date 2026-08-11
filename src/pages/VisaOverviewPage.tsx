@@ -66,7 +66,7 @@ function VisaRuOverview() {
   // нет seed для страны юзера (ua/by/kz) — заглушка
   if (!visa) {
     return (
-      <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+      <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
         <div className="px-6 pt-12">
           <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
         </div>
@@ -96,7 +96,7 @@ function VisaRuOverview() {
   ];
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
       <div className="px-6 pt-12">
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
@@ -257,7 +257,7 @@ function VisaRuOverview() {
 
         {/* Остальное — компактная сетка мелких плиток, как в Университете */}
         <p className="font-serif text-gold text-sm font-bold mt-2">Подробнее о:</p>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-4">
           {gridButtons.map((b, i) => (
             <GridButton key={b.to} {...b} wide={gridButtons.length % 2 === 1 && i === gridButtons.length - 1} />
           ))}

@@ -66,7 +66,7 @@ export default function LoginPage() {
   const canLogin = email.trim() !== '' && password.trim() !== '' && !loading;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
+    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col md:justify-center px-8 overflow-hidden">
 
       {intro && <SkyIntro onDone={() => setIntro(false)} />}
 
@@ -94,7 +94,7 @@ export default function LoginPage() {
         src={skyline}
         alt=""
         aria-hidden
-        className="absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none"
+        className="absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none md:max-w-lg md:mx-auto"
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
       </button>
 
       {/* HERO: «С возвращением» в едином ритме с WelcomePage */}
-      <div className="page-descend relative z-10 flex flex-col items-center text-center mt-32 px-6">
+      <div className="page-descend relative z-10 flex flex-col items-center text-center mt-32 md:mt-0 px-6">
         <p
           className="font-serif text-navy font-bold leading-tight"
           style={{
@@ -173,8 +173,12 @@ export default function LoginPage() {
         )}
       </div>
 
-      {/* Spacer + CTA: войти + ссылка регистрации */}
-      <div className="flex-1 min-h-[16px]" />
+      {/* Spacer + CTA: войти + ссылка регистрации.
+          md:hidden — распорка прижимает кнопку к низу экрана, чтобы на
+          телефоне она попадала под большой палец. На десктопе прижимать не к
+          чему: экран низкий и широкий, кнопка уезжала прямо на силуэт зданий.
+          Вместо распорки там центрируем всю группу (md:justify-center). */}
+      <div className="flex-1 min-h-[16px] md:hidden" />
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs mx-auto">
         <button
@@ -196,7 +200,7 @@ export default function LoginPage() {
       </div>
 
       {/* Резерв под здания */}
-      <div className="min-h-[220px]" />
+      <div className="min-h-[220px] md:min-h-0" />
 
     </div>
   );

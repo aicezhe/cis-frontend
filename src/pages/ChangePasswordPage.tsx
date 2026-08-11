@@ -44,7 +44,7 @@ export default function ChangePasswordPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen max-w-md mx-auto bg-cream flex flex-col items-center justify-center px-8">
+      <div className="min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col items-center justify-center px-8">
         <p className="font-serif text-navy text-2xl font-bold mb-3">Пароль изменён</p>
         <p className="font-serif text-navy/60 text-sm text-center mb-8">
           Новый пароль сохранён. Используй его при следующем входе.
@@ -60,7 +60,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen max-w-md mx-auto bg-cream flex flex-col">
+    <div className="min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col">
       <div className="flex items-center gap-4 px-6 pt-12 pb-6">
         <button onClick={() => navigate('/settings')} className="text-navy text-2xl">←</button>
         <h1 className="font-serif text-navy text-2xl font-bold">Смена пароля</h1>

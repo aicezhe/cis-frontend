@@ -96,7 +96,7 @@ export default function WelcomePage() {
   const frameCls = leaving === 'register' ? 'wp-fade' : '';
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
+    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col px-8 overflow-hidden">
 
       {/* Звёздное небо — единым слоем (чтобы уходило целиком).
           Свечение (ореол) только у крупных/ярких — как у настоящих звёзд.
@@ -130,7 +130,7 @@ export default function WelcomePage() {
         src={skyline}
         alt=""
         aria-hidden
-        className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none z-0 ${frameCls}`}
+        className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none select-none md:max-w-lg md:mx-auto z-0 ${frameCls}`}
         style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
       />
 

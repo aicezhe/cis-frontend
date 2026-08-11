@@ -12,7 +12,7 @@ import type { Confidence } from '../../types/guide';
  */
 export function RoutePage({ children }: { children: ReactNode }) {
   return (
-    <div className="rt-page relative mx-auto min-h-screen max-w-md bg-rt-paper px-6 pb-28">
+    <div className="rt-page relative mx-auto min-h-screen max-w-md md:max-w-2xl bg-rt-paper px-6 pb-28 md:pb-12">
       {children}
     </div>
   );
@@ -176,7 +176,8 @@ export function RouteTabBar({ active }: { active: 'laura' | 'path' | 'loci' }) {
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 z-40 grid w-full max-w-[430px] -translate-x-1/2 grid-cols-3 border-t border-rt-line pt-[13px]"
+      /* md:hidden — как и обычный TabBar: на десктопе навигация в левом меню */
+      className="md:hidden fixed bottom-0 left-1/2 z-40 grid w-full max-w-[430px] -translate-x-1/2 grid-cols-3 border-t border-rt-line pt-[13px]"
       style={{
         background: 'rgba(251, 249, 245, 0.95)',
         backdropFilter: 'blur(12px)',

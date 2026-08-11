@@ -111,7 +111,7 @@ export default function CoursePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen max-w-md mx-auto bg-cream flex flex-col gap-4 p-6 pt-16">
+      <div className="min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col gap-4 p-6 pt-16">
         <div className="h-8 w-2/3 rounded bg-navy/10 animate-pulse" />
         <div className="h-24 rounded-2xl bg-navy/10 animate-pulse" />
         <div className="h-40 rounded-2xl bg-navy/10 animate-pulse" />
@@ -121,7 +121,7 @@ export default function CoursePage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen max-w-md mx-auto bg-cream flex flex-col items-center justify-center gap-4 p-6">
+      <div className="min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col items-center justify-center gap-4 p-6">
         <p className="font-serif text-navy text-center">{error || 'Курс не найден'}</p>
         <button onClick={() => navigate(-1)} className="font-serif text-gold underline">
           назад
@@ -137,7 +137,7 @@ export default function CoursePage() {
   const showTabs = curricula.length > 1;
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-32">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-32 md:pb-12">
 
       <div className="px-6 pt-12">
         <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>

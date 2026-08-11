@@ -111,7 +111,7 @@ export default function ExpensesPage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28 print:max-w-full print:pb-0">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12 print:max-w-full print:pb-0">
       <div className="px-6 pt-12 flex items-center justify-between print:hidden">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>

@@ -156,7 +156,7 @@ export default function RegisterPage() {
   const nextEnabled = canGoNext();
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col">
 
       <div className="border-t-4 border-b-2 border-gold py-3 text-center">
         <span className="font-serif text-gold text-sm tracking-[0.2em]">
@@ -179,7 +179,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="page-rise flex flex-col items-center mt-32 px-8">
+      <div className="page-rise flex flex-col items-center w-full max-w-md mx-auto mt-32 px-8">
 
         <p className="font-serif text-gold text-sm tracking-widest mb-3">
           РЕГИСТРАЦИЯ

@@ -16,7 +16,11 @@ type IconComponent = React.ComponentType<{
 // (та же анимация, что звёзды на Welcome). Подпись — под рамкой.
 // onLongPress открывает произвольное действие (например, форму расхода).
 // wide — растянуть плитку на 2 колонки (для последней при нечётном числе,
-// чтобы не висела одиноко слева «крестиком»).
+// чтобы не висела одиноко слева «крестиком»). На десктопе сетка трёхколоночная,
+// и растяжка гасится: считать её должна была бы страница (там length % 2), а
+// при трёх колонках эта арифметика врёт — последняя плитка заняла бы две
+// колонки из трёх посреди ряда. Неполный последний ряд в сетке 3×N выглядит
+// нормально сам по себе, костыль там просто не нужен.
 export function GridButton({
   icon: Icon, title, to, seed, onLongPress, wide,
 }: {
@@ -27,7 +31,10 @@ export function GridButton({
   return (
     <button
       onClick={() => navigate(to)}
-      className={'flex flex-col items-center gap-1.5 select-none' + (wide ? ' col-span-2' : '')}
+      className={
+        'flex flex-col items-center gap-1.5 select-none' +
+        (wide ? ' col-span-2 md:col-span-1' : '')
+      }
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       {...(onLongPress ? longPressHandlers(onLongPress) : {})}
     >

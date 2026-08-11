@@ -259,7 +259,7 @@ export default function SectionPage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
 
       <div className="px-6 pt-12">
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>

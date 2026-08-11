@@ -45,7 +45,7 @@ export default function RelocationOverviewPage() {
   // блоки (жильё, SSN) всё равно доступны.
   if (!relocation) {
     return (
-      <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+      <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
         <div className="px-6 pt-12">
           <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
         </div>
@@ -59,7 +59,7 @@ export default function RelocationOverviewPage() {
         </p>
 
         <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
-        <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
+        <div className="px-6 grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-4">
           <GridButton icon={Route} title="Дорога в Парму" to="/path/travel/routes" seed={1} />
           <GridButton icon={Home} title="Поиск жилья" to="/path/travel/housing" seed={2} />
           <GridButton icon={HeartPulse} title="SSN и tessera sanitaria" to="/path/travel/ssn" seed={3} wide />
@@ -87,7 +87,7 @@ export default function RelocationOverviewPage() {
   ];
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
       <div className="px-6 pt-12">
         <button onClick={() => navigate('/path')} className="text-navy text-2xl">←</button>
       </div>
@@ -225,7 +225,7 @@ export default function RelocationOverviewPage() {
 
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}
       <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
-      <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4">
+      <div className="px-6 grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-4">
         {gridButtons.map((b, i) => (
           <GridButton key={b.to} {...b} wide={gridButtons.length % 2 === 1 && i === gridButtons.length - 1} />
         ))}

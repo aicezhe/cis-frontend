@@ -13,10 +13,33 @@
 
 import { useLayoutEffect, type ReactNode } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
+import { DesktopRail } from './DesktopRail';
 
 // Маршруты со своей режиссурой входа: небо на Welcome, SkyIntro на логине,
 // page-rise/page-descend на регистрации. Общий переход их бы задвоил.
 const OWN_INTRO = new Set(['/', '/login', '/register']);
+
+// Роуты до входа в приложение: вход, восстановление пароля, онбординг и квизы.
+// Левое меню на них не показываем — вкладок ещё нет, а пустой рейл сбоку
+// превратил бы форму входа в кусок интерфейса, в который некуда нажать.
+// Вход и линейный первый запуск. /change-stage и /change-course в списке НЕТ:
+// на них ходят и из онбординга, и из настроек, а во втором случае человек уже
+// внутри приложения — исчезнувшее меню читалось бы как поломка.
+// /choice-program здесь при том, что тоже открывается изнутри: это
+// полноэкранный герой на ночном небе, и cream-полоса меню рядом с navy-фоном
+// выглядела как обрезок чужого экрана.
+const NO_RAIL = new Set([
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/verify-code',
+  '/onboarding',
+  '/choice-program',
+  '/quiz-visa',
+  '/quiz-travel',
+]);
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -34,12 +57,24 @@ export function PageTransition({ children }: { children: ReactNode }) {
     if (navType !== 'POP') window.scrollTo(0, 0);
   }, [location.pathname, navType]);
 
-  if (OWN_INTRO.has(location.pathname)) return <>{children}</>;
-
   // key по пути — иначе анимация не перезапустится на новом экране
-  return (
+  const page = OWN_INTRO.has(location.pathname) ? (
+    children
+  ) : (
     <div key={location.pathname} className="page-fade">
       {children}
+    </div>
+  );
+
+  if (NO_RAIL.has(location.pathname)) return <>{page}</>;
+
+  // Рейл — обычный flex-сосед, а не fixed-панель: тогда колонка контента
+  // центрируется своим mx-auto по остатку ширины, без магических отступов
+  // под ширину меню. На телефоне обёртка ничего не делает (md:flex).
+  return (
+    <div className="md:flex md:items-start">
+      <DesktopRail />
+      <div className="md:flex-1 md:min-w-0">{page}</div>
     </div>
   );
 }

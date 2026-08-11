@@ -103,7 +103,7 @@ export default function ScholarshipPage() {
   const isee = asNum(data.isee_threshold_eur);
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-16">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-16 md:pb-12">
 
       <div className="px-6 pt-12">
         <button onClick={() => navigate(-1)} className="text-navy text-2xl">←</button>

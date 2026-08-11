@@ -129,7 +129,7 @@ export default function ChangeCoursePage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-28">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-28 md:pb-12">
 
       {/* Шапка */}
       <div className="flex items-center gap-4 px-6 pt-12 pb-2">
@@ -266,8 +266,12 @@ export default function ChangeCoursePage() {
         </>
       )}
 
-      {/* Нижняя кнопка действия */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-cream/95 backdrop-blur border-t border-navy/10 px-6 py-4">
+      {/* Нижняя кнопка действия.
+          left-[calc(50%+3rem)] на десктопе: панель fixed и центрируется по
+          вьюпорту, а колонка контента — по остатку ширины справа от меню
+          (w-24 = 6rem). Без сдвига на половину меню панель уезжала бы
+          на 48px левее кнопок, над которыми стоит. */}
+      <div className="fixed bottom-0 left-1/2 md:left-[calc(50%+3rem)] -translate-x-1/2 w-full max-w-md md:max-w-2xl bg-cream/95 backdrop-blur border-t border-navy/10 px-6 py-4">
         {stage === 'foundation' ? (
           <button
             onClick={saveFoundation}

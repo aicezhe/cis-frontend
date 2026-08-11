@@ -82,9 +82,9 @@ export function AddExpenseSheet({ defaultCategory, defaultLabel = '', expense, o
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-navy/60 flex items-end justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-navy/60 flex items-end md:items-center justify-center md:p-8" onClick={onClose}>
       <div
-        className="w-full max-w-md bg-cream rounded-t-3xl flex flex-col"
+        className="w-full max-w-md md:max-w-lg bg-cream rounded-t-3xl md:rounded-3xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="pt-3 pb-1 flex justify-center flex-shrink-0">

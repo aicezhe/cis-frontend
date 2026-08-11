@@ -44,7 +44,7 @@ export default function ChangeStagePage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col px-6 pb-10">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col px-6 pb-10">
 
       <p className="font-serif text-gold text-base font-semibold text-center mt-16 mb-6">
         Выбери свой шаг

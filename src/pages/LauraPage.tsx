@@ -362,7 +362,7 @@ export default function LauraPage() {
   // ── login-стена ──
   if (!authed) {
     return (
-      <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-24">
+      <div className="relative min-h-screen max-w-md md:max-w-3xl mx-auto bg-cream flex flex-col pb-24 md:pb-12">
         <div className="px-6 pt-12 pb-4">
           <h1 className="font-serif text-navy text-2xl font-bold">
             <span
@@ -401,7 +401,7 @@ export default function LauraPage() {
   // всегда на виду, прямо над таббаром.
   return (
     <div
-      className="relative h-dvh max-w-md mx-auto bg-cream flex flex-col overflow-hidden"
+      className="relative h-dvh max-w-md md:max-w-3xl mx-auto bg-cream flex flex-col overflow-hidden"
       style={{ paddingBottom: 'var(--tabbar-h)' }}
     >
 

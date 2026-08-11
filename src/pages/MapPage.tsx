@@ -114,7 +114,7 @@ export default function MapPage() {
     // Вся страница ровно во весь экран, без скролла: иначе на iOS Safari во
     // время «свайпа вверх» WebGL-канва MapLibre всплывает поверх fixed-меню
     // (известный баг рендеринга) — убираем сам скролл, а не боремся с ним.
-    <div className="relative h-[100dvh] max-w-md mx-auto bg-cream flex flex-col overflow-hidden">
+    <div className="relative h-[100dvh] max-w-md md:max-w-none mx-auto bg-cream flex flex-col overflow-hidden">
 
       {/* Шапка */}
       <div className="px-6 pt-12 pb-3 flex-shrink-0">

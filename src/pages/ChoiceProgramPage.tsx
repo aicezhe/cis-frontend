@@ -123,7 +123,7 @@ export default function ChoiceProgramPage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-gradient-to-b from-navy via-navy to-cream flex flex-col items-center px-6 pb-10 overflow-hidden">
+    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-navy to-cream flex flex-col items-center px-6 pb-10 overflow-hidden">
 
       {stars.map((star, i) => (
         <div

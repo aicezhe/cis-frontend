@@ -81,7 +81,7 @@ export default function MemoryPage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md mx-auto bg-cream flex flex-col pb-10">
+    <div className="relative min-h-screen max-w-md md:max-w-2xl mx-auto bg-cream flex flex-col pb-10">
       <div className="flex items-center gap-4 px-6 pt-12 pb-4">
         <button onClick={() => navigate('/settings')} className="text-navy text-2xl">←</button>
         <h1 className="font-serif text-navy text-3xl font-bold">Память Лауры</h1>
