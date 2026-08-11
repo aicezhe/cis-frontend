@@ -115,9 +115,32 @@ body {
   88%     { opacity: 1; }
   100%    { opacity: 1; } /* полностью непрозрачно ЗАДОЛГО до навигации — без просвета cream */
 }
+/* Звёзды падают тремя слоями глубины, а не одним жёстким пластом.
+   Дистанция задаётся переменной --fall, а длительность и кривая у всех
+   слоёв общие: значит приходят они одновременно, но проходят разный путь —
+   крупные (они же «ближние») быстрее, мелкие дальние медленнее. Это и даёт
+   параллакс. Одновременный приход тут обязателен: сразу после него страница
+   входа поднимает SkyIntro с теми же звёздами на тех же местах, и любой
+   опоздавший слой дал бы заметный скачок.
+
+   Три слоя, а не анимация на каждой из 60 звёзд: 60 промотированных слоёв
+   на телефоне стоят памяти, а разницы на глаз нет. */
 @keyframes wp-starfall {
-  from { transform: translateY(-125vh); }
+  from { transform: translateY(var(--fall, -125vh)); }
   to   { transform: translateY(0); }
+}
+
+/* Золотая линия горизонта идёт впереди наступающей ночи.
+   Раньше темнота просто наползала мягким краем — приём ничем не отличался от
+   любого затемнения. Золото — акцент бренда, им же нарисованы рамки на самом
+   Welcome, поэтому ведущая кромка из него привязывает переход к экрану, а не
+   выглядит универсальной шторкой. К краям линия сходит на нет: сплошная
+   читалась бы полосой, а не горизонтом. */
+@keyframes wp-horizon {
+  0%   { transform: translateY(-2vh); opacity: 0; }
+  12%  { opacity: 1; }
+  70%  { transform: translateY(104vh); opacity: 1; }
+  100% { transform: translateY(104vh); opacity: 0; }
 }
 @keyframes wp-fly-left {
   from { opacity: 1; transform: translateX(0); }
@@ -133,6 +156,7 @@ body {
 .wp-grad      { animation: wp-grad 1.5s cubic-bezier(0.33, 0, 0.2, 1) both; transform-origin: top; will-change: transform, opacity; }
 .wp-solid     { animation: wp-solid 1.5s cubic-bezier(0.4, 0, 0.4, 1) both; will-change: opacity; }
 .wp-starfall  { animation: wp-starfall 1.5s cubic-bezier(0.33, 0, 0.2, 1) both; will-change: transform; }
+.wp-horizon   { animation: wp-horizon 1.5s cubic-bezier(0.33, 0, 0.2, 1) both; will-change: transform, opacity; }
 .wp-fly-left  { animation: wp-fly-left 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fly-right { animation: wp-fly-right 0.58s cubic-bezier(0.5, 0, 0.75, 0) both; }
 .wp-fade      { animation: wp-fade 0.5s ease-out both; }
@@ -357,7 +381,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wp-grad, .wp-solid, .wp-starfall, .wp-fly-left, .wp-fly-right, .wp-fade,
+  .wp-grad, .wp-solid, .wp-starfall, .wp-horizon, .wp-fly-left, .wp-fly-right, .wp-fade,
   .wp-cream-in, .sky-intro, .page-rise, .page-descend,
   .page-fade, .msg-in, .typing-dot, .loader-in { animation: none; }
   .loader-ring { animation: none; opacity: 0.7; }

@@ -42,6 +42,21 @@ const stars = Array.from({ length: 54 }, (_, i) => {
 // неба читался бы как склейка из разных макетов.
 const panelStars = makeStarField(64, 100, 21);
 
+// Три слоя глубины для падения звёзд при уходе на вход. Делим по размеру:
+// крупная звезда читается как близкая, значит должна пройти больший путь и
+// двигаться быстрее. Значения --fall подобраны так, чтобы даже ближний слой
+// начинал выше кромки экрана и в кадре не было «рождения» звезды из пустоты.
+const STAR_DEPTHS = [
+  { fall: '-178vh', min: 2.0 },
+  { fall: '-146vh', min: 1.4 },
+  { fall: '-118vh', min: 0 },
+].map(({ fall, min }, idx, all) => ({
+  fall,
+  stars: TRANSITION_STARS.map((star, i) => ({ star, i })).filter(
+    ({ star }) => star.size >= min && (idx === 0 || star.size < all[idx - 1].min),
+  ),
+}));
+
 // Детерминированные параметры анимации по индексу — мерцание/дрейф вразнобой.
 function starVars(i: number, twMin: number): React.CSSProperties {
   const dir = i % 2 === 0 ? 1 : -1;
@@ -349,23 +364,45 @@ export default function WelcomePage() {
                 'linear-gradient(to bottom, rgba(28,42,72,0.72) 0%, rgba(20,33,60,0.68) 45%, rgba(15,28,52,0.5) 72%, rgba(13,24,48,0) 100%)',
             }}
           />
-          {/* звёзды падают вместе с небом на свои позиции (= позиции SkyIntro) */}
-          <div className="wp-starfall absolute inset-0">
-            {TRANSITION_STARS.map((s, i) => (
-              <div
-                key={i}
-                className="star absolute rounded-full"
-                style={{
-                  top: s.top,
-                  left: s.left,
-                  width: s.size,
-                  height: s.size,
-                  ...starBaseStyle(s),
-                  ...starVars(i + 60, s.twMin),
-                }}
-              />
-            ))}
-          </div>
+          {/* Звёзды падают на свои позиции (= позиции SkyIntro) тремя слоями
+              глубины: крупные считаем ближними и роняем с большей высоты,
+              мелкие — дальними. Путь разный, длительность и кривая общие,
+              поэтому приходят все разом и стык со SkyIntro остаётся бесшовным. */}
+          {STAR_DEPTHS.map(({ fall, stars: layer }) => (
+            <div
+              key={fall}
+              className="wp-starfall absolute inset-0"
+              style={{ '--fall': fall } as React.CSSProperties}
+            >
+              {layer.map(({ star, i }) => (
+                <div
+                  key={i}
+                  className="star absolute rounded-full"
+                  style={{
+                    top: star.top,
+                    left: star.left,
+                    width: star.size,
+                    height: star.size,
+                    ...starBaseStyle(star),
+                    ...starVars(i + 60, star.twMin),
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+
+          {/* Золотая кромка идёт впереди темноты — см. wp-horizon в index.css.
+              Лежит поверх градиента, иначе читалась бы не как ведущий край, а
+              как случайная полоса под вуалью. */}
+          <div
+            className="wp-horizon absolute left-0 right-0 top-0"
+            style={{
+              height: 1,
+              background:
+                'linear-gradient(to right, rgba(184,153,104,0) 0%, rgba(184,153,104,0.8) 18%, rgba(212,179,106,0.95) 50%, rgba(184,153,104,0.8) 82%, rgba(184,153,104,0) 100%)',
+              boxShadow: '0 0 14px 1px rgba(184,153,104,0.3)',
+            }}
+          />
         </div>
       )}
 
