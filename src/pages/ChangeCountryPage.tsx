@@ -15,10 +15,17 @@ const LABELS: Record<string, string> = Object.fromEntries(
   COUNTRIES.map((c) => [c.id, c.label]),
 );
 
-/** Покрытие по странам неровное: D-виза расписана только для России, переезд —
- *  тоже. Для by/kz эти разделы вернут пустоту, и человек должен узнать об этом
- *  до смены, а не после. */
-const FULL_COVERAGE = new Set(['ru']);
+/** Какие страны реально получают разделы «Виза» и «Переезд».
+ *
+ *  Сверено с картами в хуках, а не с описанием в CLAUDE.md — оно устарело.
+ *  SHARED_VISA_SEED и SHARED_RELOCATION_SEED оба равны { ru, by, kz } → эти три
+ *  страны разделы получают (правда, обе карты ведут их на российский сид, см.
+ *  ниже), а Украины в картах нет вовсе, и для неё разделы пустые.
+ *
+ *  Отдельная засада на будущее: visa_ua_seed.json, visa_by_seed.json и
+ *  visa_kz_seed.json в public/data лежат, но не используются — карты
+ *  подставляют вместо них ru. Белорус видит российские шаги подачи. */
+const FULL_COVERAGE = new Set(['ru', 'by', 'kz']);
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('ru-RU', {
@@ -101,7 +108,7 @@ export default function ChangeCountryPage() {
               <span className="font-serif text-navy text-base block">{c.label}</span>
               {!FULL_COVERAGE.has(c.id) && (
                 <span className="font-serif text-navy/50 text-xs italic">
-                  визы и переезда для этой страны пока нет
+                  разделов «Виза» и «Переезд» для этой страны пока нет
                 </span>
               )}
             </span>
