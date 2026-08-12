@@ -204,7 +204,9 @@ export default function RelocationOverviewPage() {
                     ))}
                   </div>
                 )}
-                {/* SSN упомянут выше (≈700 €/год) — ссылка на подробный общий блок */}
+                {/* Ссылка на общий блок про SSN. Раньше она подхватывала пункт
+                    про SSN в этом же списке, теперь пункта нет — ссылка стоит
+                    сама по себе как отдельный вход в тему. */}
                 <button
                   onClick={() => navigate('/path/travel/ssn')}
                   className="mt-3 flex items-center gap-1.5 font-serif text-gold text-sm font-bold"
