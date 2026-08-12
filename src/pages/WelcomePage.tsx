@@ -2,7 +2,7 @@ import skyline from '../assets/parma design.svg';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIsDesktop } from '../hooks/useIsDesktop';
-import { makeStarField, starBaseStyle, TRANSITION_STARS } from '../lib/nightSky';
+import { makeStarField, starBaseStyle } from '../lib/nightSky';
 
 // Детерминированный псевдо-рандом по индексу — чтобы небо не «прыгало» при
 // ре-рендере, но выглядело естественно-разбросанным.
@@ -41,21 +41,6 @@ const stars = Array.from({ length: 54 }, (_, i) => {
 // что на панели входа, — два экрана стоят рядом в одном флоу, и разный рисунок
 // неба читался бы как склейка из разных макетов.
 const panelStars = makeStarField(64, 100, 21);
-
-// Три слоя глубины для падения звёзд при уходе на вход. Делим по размеру:
-// крупная звезда читается как близкая, значит должна пройти больший путь и
-// двигаться быстрее. Значения --fall подобраны так, чтобы даже ближний слой
-// начинал выше кромки экрана и в кадре не было «рождения» звезды из пустоты.
-const STAR_DEPTHS = [
-  { fall: '-178vh', min: 2.0 },
-  { fall: '-146vh', min: 1.4 },
-  { fall: '-118vh', min: 0 },
-].map(({ fall, min }, idx, all) => ({
-  fall,
-  stars: TRANSITION_STARS.map((star, i) => ({ star, i })).filter(
-    ({ star }) => star.size >= min && (idx === 0 || star.size < all[idx - 1].min),
-  ),
-}));
 
 // Детерминированные параметры анимации по индексу — мерцание/дрейф вразнобой.
 function starVars(i: number, twMin: number): React.CSSProperties {
@@ -133,15 +118,12 @@ export default function WelcomePage() {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // Запуск анимации ухода, затем навигация. Вход — небо «накрывает» экран
-  // (~0.5с), дальше поток звёзд и расплывание уже на странице входа (SkyIntro).
-  // Регистрация — элементы по очереди отлетают, экран бежевеет (~1.15с).
+  // Запуск анимации ухода, затем навигация. Вход — экран плавно гаснет (~0.5с)
+  // и сменяется страницей входа. Регистрация — элементы по очереди отлетают,
+  // экран бежевеет (~1.15с), это не трогали.
   //
-  // На десктопе уход не анимируем вовсе. Причин две. Первая: «накрытие» небом
-  // рассчитано на полноэкранный синий вход, а на широком экране вход — две
-  // панели, и синяя вуаль поверх них выглядит как чужой слой. Вторая: три
-  // секунды ожидания на мышке ощущаются иначе, чем на телефоне, где переход
-  // прикрывает загрузку следующего экрана.
+  // На десктопе уход не анимируем вовсе: там вход — две панели, а не
+  // полноэкранный переход, и затемнение поверх них читалось бы как чужой слой.
   function go(kind: 'login' | 'register') {
     if (leaving) return;
     const reduce =
@@ -153,21 +135,28 @@ export default function WelcomePage() {
     }
     setLeaving(kind);
     if (kind === 'login') {
-      // флаг sky → страница входа проигрывает SkyIntro (бесшовно после накрытия)
-      window.setTimeout(() => navigate('/login', { state: { sky: true } }), 1460);
+      // Экран просто гаснет и сменяется входом. Флаг sky больше не шлём: он
+      // включал на странице входа SkyIntro — продолжение «накрытия небом»,
+      // которого теперь нет, и оно читалось бы как анимация на ровном месте.
+      // 520мс = 500 у wp-fade + запас, чтобы уход дорисовался до перехода.
+      window.setTimeout(() => navigate('/login'), 520);
     } else {
       window.setTimeout(() => navigate('/register'), 1150);
     }
   }
 
   // Регистрация: элемент отлетает влево/вправо со сдвигом очереди по order.
-  // Вход отдельным оверлеем-«накрытием», сами элементы не анимируем.
+  // Вход: ничего не разлетается, весь экран плавно гаснет — см. frameCls.
   const leaveCls = (side: 'left' | 'right') =>
     leaving === 'register' ? (side === 'left' ? 'wp-fly-left' : 'wp-fly-right') : '';
   const leaveDelay = (order: number): React.CSSProperties =>
     leaving === 'register' ? { animationDelay: `${(order * 0.1).toFixed(2)}s` } : {};
-  // Рамка/звёзды при регистрации просто гаснут.
+  // При регистрации гаснут рамка и звёзды — текст в это время разлетается сам.
   const frameCls = leaving === 'register' ? 'wp-fade' : '';
+  // Вход: гасим весь экран разом, одним классом на корне. Вешать fade на
+  // каждый элемент по отдельности не нужно и вредно — слова, кнопка и небо
+  // должны уходить одной волной, а не тремя наложенными прозрачностями.
+  const leaveScreenCls = leaving === 'login' ? 'wp-fade' : '';
 
   // Десктоп — отдельная разметка: две панели, как на экране входа. Через md:
   // это не собрать, композиция другая по сути, а не по отступам.
@@ -295,12 +284,12 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col md:justify-center px-8 overflow-hidden">
+    <div className={`relative min-h-screen max-w-md md:max-w-none mx-auto bg-gradient-to-b from-navy via-cream to-cream flex flex-col md:justify-center px-8 overflow-hidden ${leaveScreenCls}`}>
 
       {/* Звёздное небо — единым слоем (чтобы уходило целиком).
           Свечение (ореол) только у крупных/ярких — как у настоящих звёзд.
           При уходе на вход замораживаем (они под вуалью — незачем анимировать). */}
-      <div className={`absolute inset-0 z-0 ${frameCls} ${leaving === 'login' ? 'wp-frozen' : ''}`}>
+      <div className={`absolute inset-0 z-0 ${frameCls}`}>
         {stars.map((star, i) => (
           <div
             key={i}
@@ -408,70 +397,6 @@ export default function WelcomePage() {
         <div className="wp-cream-in absolute inset-0 bg-cream" style={{ zIndex: 5 }} />
       )}
 
-      {/* Вход: небо welcome (короткий градиент navy→прозрачный, как на экране)
-          во время анимации растягивается вниз, затем снизу проступает сплошной
-          синий. Звёзды падают вместе с небом на свои места. */}
-      {leaving === 'login' && (
-        <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 40 }}>
-          {/* сплошной синий — проявляется во второй половине */}
-          <div
-            className="wp-solid absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to bottom, #1C2A48 0%, #12203a 55%, #0d1830 100%)',
-            }}
-          />
-          {/* небо-градиент — ПОЛУПРОЗРАЧНЫЙ, растягивается вниз через scaleY
-              (welcome ещё просвечивает — мягкое «затягивание», не резкий синий) */}
-          <div
-            className="wp-grad absolute top-0 left-0 right-0"
-            style={{
-              height: '58vh',
-              background:
-                'linear-gradient(to bottom, rgba(28,42,72,0.72) 0%, rgba(20,33,60,0.68) 45%, rgba(15,28,52,0.5) 72%, rgba(13,24,48,0) 100%)',
-            }}
-          />
-          {/* Звёзды падают на свои позиции (= позиции SkyIntro) тремя слоями
-              глубины: крупные считаем ближними и роняем с большей высоты,
-              мелкие — дальними. Путь разный, длительность и кривая общие,
-              поэтому приходят все разом и стык со SkyIntro остаётся бесшовным. */}
-          {STAR_DEPTHS.map(({ fall, stars: layer }) => (
-            <div
-              key={fall}
-              className="wp-starfall absolute inset-0"
-              style={{ '--fall': fall } as React.CSSProperties}
-            >
-              {layer.map(({ star, i }) => (
-                <div
-                  key={i}
-                  className="star absolute rounded-full"
-                  style={{
-                    top: star.top,
-                    left: star.left,
-                    width: star.size,
-                    height: star.size,
-                    ...starBaseStyle(star),
-                    ...starVars(i + 60, star.twMin),
-                  }}
-                />
-              ))}
-            </div>
-          ))}
-
-          {/* Золотая кромка идёт впереди темноты — см. wp-horizon в index.css.
-              Лежит поверх градиента, иначе читалась бы не как ведущий край, а
-              как случайная полоса под вуалью. */}
-          <div
-            className="wp-horizon absolute left-0 right-0 top-0"
-            style={{
-              height: 1,
-              background:
-                'linear-gradient(to right, rgba(184,153,104,0) 0%, rgba(184,153,104,0.8) 18%, rgba(212,179,106,0.95) 50%, rgba(184,153,104,0.8) 82%, rgba(184,153,104,0) 100%)',
-              boxShadow: '0 0 14px 1px rgba(184,153,104,0.3)',
-            }}
-          />
-        </div>
-      )}
 
     </div>
   );
