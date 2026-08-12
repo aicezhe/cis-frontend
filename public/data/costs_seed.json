@@ -5,7 +5,6 @@
     "currency": "EUR",
     "data_policy": "Стоимости в EUR — приближённые, рассчитаны по курсам на июнь 2026. Актуальные суммы могут отличаться. Все данные из официальных источников."
   },
-
   "countries": {
     "ru": {
       "name_ru": "Россия",
@@ -50,13 +49,21 @@
         }
       },
       "visa": {
-        "consular_fee": { "eur": 90, "note_ru": "Консульский сбор — национальная виза D" },
-        "service_fee": { "eur": 22, "note_ru": "Сервисный сбор VMS / Almaviva" },
-        "insurance_year": { "eur": 200, "note_ru": "Медстраховка на год — от 150€ до 300€" },
+        "consular_fee": {
+          "eur": 50,
+          "note_ru": "[УТОЧНИТЬ] Национальная виза D, а не шенгенская C. Прежние 90 € — это сбор за C, к учебной визе он не относится. 50 € — цифра, которую сходятся называть справочники; на официальном портале МИД Италии подтвердить не удалось, а часть консульств учебные визы освобождает от сбора. Уточняй в своём консульстве перед оплатой."
+        },
+        "service_fee": {
+          "eur": 22,
+          "note_ru": "Сервисный сбор VMS / Almaviva [УТОЧНИТЬ] Ставка у операторов разная и меняется — смотри на сайте своего."
+        },
+        "insurance_year": {
+          "eur": 200,
+          "note_ru": "Медстраховка на год — от 150€ до 300€"
+        },
         "special_status": null
       }
     },
-
     "ua": {
       "name_ru": "Украина",
       "documents": {
@@ -97,9 +104,17 @@
         }
       },
       "visa": {
-        "consular_fee": { "eur": 90, "note_ru": "Консульский сбор — если нет временной защиты" },
-        "service_fee": { "eur": 20 },
-        "insurance_year": { "eur": 180 },
+        "consular_fee": {
+          "eur": 50,
+          "note_ru": "[УТОЧНИТЬ] Нужна только если оформляешь визу D вместо въезда по безвизу. По временной защите виза не нужна вовсе — тогда 0 €. Национальная виза D, а не шенгенская C. Прежние 90 € — это сбор за C, к учебной визе он не относится. 50 € — цифра, которую сходятся называть справочники; на официальном портале МИД Италии подтвердить не удалось, а часть консульств учебные визы освобождает от сбора. Уточняй в своём консульстве перед оплатой."
+        },
+        "service_fee": {
+          "eur": 20,
+          "note_ru": "Сервисный сбор визового центра [УТОЧНИТЬ] Ставка у операторов разная и меняется — смотри на сайте своего."
+        },
+        "insurance_year": {
+          "eur": 180
+        },
         "special_status": {
           "name_ru": "Временная защита в ЕС",
           "active": true,
@@ -108,7 +123,6 @@
         }
       }
     },
-
     "by": {
       "name_ru": "Беларусь",
       "documents": {
@@ -149,13 +163,20 @@
         }
       },
       "visa": {
-        "consular_fee": { "eur": 90 },
-        "service_fee": { "eur": 20 },
-        "insurance_year": { "eur": 180 },
+        "consular_fee": {
+          "eur": 50,
+          "note_ru": "[УТОЧНИТЬ] Национальная виза D, а не шенгенская C. Прежние 90 € — это сбор за C, к учебной визе он не относится. 50 € — цифра, которую сходятся называть справочники; на официальном портале МИД Италии подтвердить не удалось, а часть консульств учебные визы освобождает от сбора. Уточняй в своём консульстве перед оплатой."
+        },
+        "service_fee": {
+          "eur": 20,
+          "note_ru": "Сервисный сбор визового центра [УТОЧНИТЬ] Ставка у операторов разная и меняется — смотри на сайте своего."
+        },
+        "insurance_year": {
+          "eur": 180
+        },
         "special_status": null
       }
     },
-
     "kz": {
       "name_ru": "Казахстан",
       "documents": {
@@ -196,21 +217,32 @@
         }
       },
       "visa": {
-        "consular_fee": { "eur": 90 },
-        "service_fee": { "eur": 20 },
-        "insurance_year": { "eur": 170 },
+        "consular_fee": {
+          "eur": 50,
+          "note_ru": "[УТОЧНИТЬ] Национальная виза D, а не шенгенская C. Прежние 90 € — это сбор за C, к учебной визе он не относится. 50 € — цифра, которую сходятся называть справочники; на официальном портале МИД Италии подтвердить не удалось, а часть консульств учебные визы освобождает от сбора. Уточняй в своём консульстве перед оплатой."
+        },
+        "service_fee": {
+          "eur": 20,
+          "note_ru": "Сервисный сбор визового центра [УТОЧНИТЬ] Ставка у операторов разная и меняется — смотри на сайте своего."
+        },
+        "insurance_year": {
+          "eur": 170
+        },
         "special_status": null
       }
     }
   },
-
   "programs": {
     "foundation": {
       "name_ru": "Foundation Year",
       "course_fee_eur": 4000,
       "course_fee_dante_eur": 3200,
       "deposit_eur": 600,
-      "documents_needed": ["apostille", "translation_to_italian", "cimea"],
+      "documents_needed": [
+        "apostille",
+        "translation_to_italian",
+        "cimea"
+      ],
       "language_test_needed": false,
       "language_test_note_ru": "UniPR проверяет уровень самостоятельно при зачислении — отдельный сертификат не обязателен",
       "enrollment_min_eur": 0,
@@ -219,8 +251,15 @@
     "bachelor": {
       "name_ru": "Бакалавриат",
       "course_fee_eur": 0,
-      "documents_needed": ["apostille", "translation_to_italian", "cimea", "language_test_italian_b2"],
-      "documents_optional": ["language_test_english_b2"],
+      "documents_needed": [
+        "apostille",
+        "translation_to_italian",
+        "cimea",
+        "language_test_italian_b2"
+      ],
+      "documents_optional": [
+        "language_test_english_b2"
+      ],
       "tolc_fee_eur": 30,
       "imat_fee_eur": 130,
       "enrollment_min_eur": 156,
@@ -229,8 +268,15 @@
     "master": {
       "name_ru": "Магистратура",
       "course_fee_eur": 0,
-      "documents_needed": ["apostille", "translation_to_italian", "cimea", "language_test_english_b2"],
-      "documents_optional": ["language_test_italian_b2"],
+      "documents_needed": [
+        "apostille",
+        "translation_to_italian",
+        "cimea",
+        "language_test_english_b2"
+      ],
+      "documents_optional": [
+        "language_test_italian_b2"
+      ],
       "enrollment_min_eur": 156,
       "note_ru": "Стоимость обучения: аналогично бакалавриату — от 156€ (ISEE) до 2 500€/год."
     }
