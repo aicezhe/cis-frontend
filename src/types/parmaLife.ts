@@ -14,6 +14,10 @@ export interface ParmaContracts {
   title_ru: string;
   types_ru: string[];
   student_limit_ru: string;
+  /** Разбор заблуждения «по неделям можно как угодно, лишь бы 1040 за год». */
+  limit_myth_ru?: string;
+  /** Легальный путь работать больше — смена типа permesso. */
+  need_more_hours_ru?: string;
   avg_hourly_eur_min: number;
   avg_hourly_eur_max: number;
   avg_monthly_eur_min: number;

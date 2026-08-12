@@ -198,6 +198,16 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
             <div className="bg-content-gold-bg rounded-xl px-4 py-3 mt-3 flex gap-2">
               <TriangleAlert size={15} className="text-content-gold flex-shrink-0 mt-0.5" />
               <p className="text-content-ink text-[13px] leading-relaxed font-medium">{sec.contracts_ru.student_limit_ru}</p>
+              {sec.contracts_ru.limit_myth_ru && (
+                <p className="text-content-ink-2 text-[13px] leading-relaxed mt-2">
+                  {sec.contracts_ru.limit_myth_ru}
+                </p>
+              )}
+              {sec.contracts_ru.need_more_hours_ru && (
+                <p className="text-content-ink-2 text-[13px] leading-relaxed mt-2">
+                  {sec.contracts_ru.need_more_hours_ru}
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-2 mt-3">
               <div className="bg-content-bg border border-content-line rounded-xl px-3 py-3">
