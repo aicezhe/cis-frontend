@@ -32,7 +32,9 @@ function ArrivalSection({
   const toParma = steps[steps.length - 1];
   return (
     <div className={first ? '' : 'pt-4 border-t border-content-line'}>
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 text-left py-1">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 text-left py-1
+                       md:py-4 md:px-6 md:rounded-2xl md:border md:border-navy/15 md:bg-soft-cream/60
+                       md:transition-colors md:hover:border-navy/25 md:hover:bg-soft-cream">
         <div className="flex-1 min-w-0">
           <p className="text-content-navy text-lg font-semibold">{name}</p>
           {subtitle && <p className="text-content-ink-2 text-xs mt-0.5">{subtitle}</p>}

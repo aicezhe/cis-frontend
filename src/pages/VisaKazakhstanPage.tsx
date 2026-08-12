@@ -141,9 +141,11 @@ export default function VisaKazakhstanPage() {
         <div>
           <button
             onClick={() => setStepsOpen(!stepsOpen)}
-            className="w-full flex items-center gap-3 text-left py-1"
+            className="w-full flex items-center gap-3 text-left py-1
+                       md:py-4 md:px-6 md:rounded-2xl md:border md:border-navy/15 md:bg-soft-cream/60
+                       md:transition-colors md:hover:border-navy/25 md:hover:bg-soft-cream"
           >
-            <div className="flex-1 text-center">
+            <div className="flex-1 text-center md:pl-7">
               <h4 className="font-serif text-navy text-2xl font-bold">Шаги получения визы</h4>
               {!stepsOpen && (
                 <p className="font-serif text-gold text-sm mt-1 font-bold">От поступления до permesso</p>
