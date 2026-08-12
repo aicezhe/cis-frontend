@@ -172,7 +172,7 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
                 {sec.procedure_ru.map((s, i) => (
                   <li key={i} className="flex gap-3 items-start">
                     <span className="text-content-gold font-bold text-sm flex-shrink-0 w-4">{i + 1}.</span>
-                    <p className="text-content-ink text-[14.5px] leading-relaxed">{s}</p>
+                    <p className="text-content-ink text-[14.5px] leading-relaxed">{withLinks(s)}</p>
                   </li>
                 ))}
               </ol>
@@ -380,6 +380,32 @@ function Renderer({ sec }: { sec: ParmaSubsection }) {
         </div>
       )}
     </>
+  );
+}
+
+/** Превращает голые ссылки внутри пункта в кликабельные.
+ *
+ *  Нужно там, где ссылка — часть самого шага, а не справка внизу карточки:
+ *  «запишись вот здесь» работает, только если по ней можно нажать. Складывать
+ *  такие ссылки в общий блок links неправильно — человек читает шаг и должен
+ *  действовать не сходя с места. */
+function withLinks(text: string): React.ReactNode {
+  const parts = text.split(/(https?:\/\/[^\s,)]+)/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    /^https?:\/\//.test(part) ? (
+      <a
+        key={i}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-content-gold font-semibold underline underline-offset-2 break-all"
+      >
+        {part.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+      </a>
+    ) : (
+      part
+    ),
   );
 }
 
