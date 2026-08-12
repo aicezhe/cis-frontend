@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { seedUrl } from '../lib/seed';
-import type { RelocationSeed, LociRoute } from '../types/relocation';
+import type { RelocationSeed, LociRoute, RouteDisclaimer } from '../types/relocation';
 
 // Шаги переезда (виза уже на руках → штамп на границе → codice fiscale →
 // permesso → SSN) — это итальянская бюрократия, одинаковая для любой визы D,
@@ -39,10 +39,16 @@ export function useRelocation() {
 }
 
 let _lociCache: Record<string, LociRoute[]> | null = null;
+let _lociDisclaimers: Record<string, RouteDisclaimer> = {};
 
 export function useLociRoutes() {
   const country = localStorage.getItem('cispr_country') || 'ru';
   const [routes, setRoutes] = useState<LociRoute[]>(_lociCache?.[country] ?? []);
+  // Дисклеймер есть не у всех стран — только там, где данные быстро протухают
+  // (сейчас Беларусь: погранпереходы и рейсы меняются помесячно).
+  const [disclaimer, setDisclaimer] = useState<RouteDisclaimer | null>(
+    _lociDisclaimers[country] ?? null,
+  );
   const [loading, setLoading] = useState(!_lociCache);
 
   useEffect(() => {
@@ -51,13 +57,15 @@ export function useLociRoutes() {
       .then((r) => r.json())
       .then((d) => {
         _lociCache = d.routes_by_country;
+        _lociDisclaimers = d.disclaimer_by_country || {};
         setRoutes(d.routes_by_country[country] || []);
+        setDisclaimer(_lociDisclaimers[country] ?? null);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [country]);
 
-  return { routes, loading };
+  return { routes, disclaimer, loading };
 }
 
 // Deep links на Google Maps (своей карты с роутингом пока нет)

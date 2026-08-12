@@ -139,6 +139,12 @@ export interface RouteLeg {
   note_ru?: string;
 }
 
+/** Пометка «данные быстро устаревают» под блоком маршрутов конкретной страны. */
+export interface RouteDisclaimer {
+  text_ru: string;
+  checked_ru: string;
+}
+
 export interface LociRoute {
   id: string;
   name_ru: string;

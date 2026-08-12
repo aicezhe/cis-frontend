@@ -73,7 +73,7 @@ export default function TravelRoutesPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { relocation, loading } = useRelocation();
-  const { routes: lociRoutes } = useLociRoutes();
+  const { routes: lociRoutes, disclaimer: routesDisclaimer } = useLociRoutes();
   const openSteps = Boolean((location.state as { openSteps?: boolean } | null)?.openSteps);
   const back = () => navigate('/path/travel', openSteps ? { state: { openSteps: true } } : undefined);
 
@@ -93,6 +93,17 @@ export default function TravelRoutesPage() {
           lociRoutes.map((route) => <RouteCard key={route.id} route={route} />)
         )}
       </div>
+      {/* Пометка про быстро устаревающие данные — только для стран, где она
+          заведена в сиде. Дата сверки отдельной строкой: без неё «данные
+          меняются помесячно» не даёт понять, насколько старое то, что читаешь. */}
+      {routesDisclaimer && (
+        <>
+          <p className="text-content-ink-2 text-xs italic leading-relaxed mt-3">
+            {routesDisclaimer.text_ru}
+          </p>
+          <p className="text-content-ink-2 text-xs italic mt-1.5">{routesDisclaimer.checked_ru}</p>
+        </>
+      )}
     </>
   );
 
