@@ -4,6 +4,7 @@ import type {
   CourseCatalog,
   CourseFilters,
   CourseFull,
+  CountryChange,
   OnboardingPatch,
   ScholarshipComputation,
   ScholarshipRead,
@@ -196,6 +197,11 @@ export const api = {
       body: patch,
       auth: true,
     });
+  },
+
+  /** История смены страны, новые сверху. Пустой массив — страну ни разу не меняли. */
+  async countryHistory(): Promise<CountryChange[]> {
+    return request<CountryChange[]>('/api/v1/auth/me/country-history', { auth: true });
   },
 
   // Код подтверждения регистрации — обязателен, без него аккаунт не активен

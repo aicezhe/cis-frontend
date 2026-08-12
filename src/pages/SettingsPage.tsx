@@ -125,8 +125,9 @@ export default function SettingsPage() {
     };
   }, [courseName]);
 
-  // Страна задаётся один раз при регистрации — менять её нельзя (на неё
-  // завязаны визовый трек, переезд и цены). Показываем read-only.
+  // Страну теперь можно менять — раньше поле было read-only. На неё завязаны
+  // визовый трек, переезд и цены, поэтому смена живёт на отдельном экране с
+  // предупреждением и историей, а не переключателем прямо здесь.
   const COUNTRY_LABELS: Record<string, string> = { ru: 'Россия', ua: 'Украина', by: 'Беларусь', kz: 'Казахстан' };
   const country = localStorage.getItem('cispr_country') || '';
 
@@ -251,17 +252,20 @@ export default function SettingsPage() {
           <span className="text-navy/60 text-xl flex-shrink-0">→</span>
         </button>
 
-        {/* Страна — read-only: задаётся при регистрации, от неё зависят
-            визовый трек, переезд и цены */}
-        <div className="px-5 py-4 flex items-baseline justify-between gap-3">
+        {/* Страна: от неё зависят визовый трек, переезд и цены, поэтому
+            смена — на отдельном экране, с предупреждением и историей */}
+        <button
+          onClick={() => navigate('/change-country')}
+          className="w-full px-5 py-4 flex items-baseline justify-between gap-3 text-left"
+        >
           <div>
             <span className="font-serif text-navy text-base block">Моя страна</span>
-            <span className="font-serif text-navy/50 text-xs italic">задаётся при регистрации</span>
+            <span className="font-serif text-navy/50 text-xs italic">визовый трек, переезд и цены</span>
           </div>
           <span className="font-serif text-gold text-sm font-bold flex-shrink-0">
-            {COUNTRY_LABELS[country] || 'не указана'}
+            {COUNTRY_LABELS[country] || 'не указана'} ›
           </span>
-        </div>
+        </button>
 
       </div>
 

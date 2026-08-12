@@ -117,3 +117,11 @@ export interface CourseFilters {
   lang?: 'it' | 'en';
   is_stem?: boolean;
 }
+
+/** Одна запись из истории смены страны (GET /auth/me/country-history). */
+export interface CountryChange {
+  /** null — первичная установка при регистрации; в историю такие не пишутся. */
+  from_country: string | null;
+  to_country: string;
+  created_at: string;
+}
