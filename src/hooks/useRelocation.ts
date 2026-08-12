@@ -6,10 +6,11 @@ import type { RelocationSeed, LociRoute, RouteDisclaimer } from '../types/reloca
 // permesso → SSN) — это итальянская бюрократия, одинаковая для любой визы D,
 // поэтому ru/by/kz читают один и тот же сид (без дублирования контента).
 // У Украины принципиально другой трек (безвиз + permesso/временная защита без
-// визы D) — для нeё отдельного relocation-гайда пока нет, вернётся null.
+// визы D) и другая дорога — не через третьи страны, а через сухопутную границу.
+// Поэтому у неё свой сид, а не ссылка на российский.
 // RU-специфичные куски внутри общего сида (третьи страны в intro.key_ru,
 // карты в after_arrival.cash_card) страницы сами фильтруют по country==='ru'.
-const SHARED_RELOCATION_SEED: Record<string, string> = { ru: 'ru', by: 'ru', kz: 'ru' };
+const SHARED_RELOCATION_SEED: Record<string, string> = { ru: 'ru', by: 'ru', kz: 'ru', ua: 'ua' };
 
 const _cache: Record<string, RelocationSeed | null> = {};
 

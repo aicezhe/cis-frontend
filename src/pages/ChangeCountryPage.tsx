@@ -15,17 +15,10 @@ const LABELS: Record<string, string> = Object.fromEntries(
   COUNTRIES.map((c) => [c.id, c.label]),
 );
 
-/** Какие страны реально получают разделы «Виза» и «Переезд».
- *
- *  Сверено с картами в хуках, а не с описанием в CLAUDE.md — оно устарело.
- *  SHARED_VISA_SEED и SHARED_RELOCATION_SEED оба равны { ru, by, kz } → эти три
- *  страны разделы получают (правда, обе карты ведут их на российский сид, см.
- *  ниже), а Украины в картах нет вовсе, и для неё разделы пустые.
- *
- *  Отдельная засада на будущее: visa_ua_seed.json, visa_by_seed.json и
- *  visa_kz_seed.json в public/data лежат, но не используются — карты
- *  подставляют вместо них ru. Белорус видит российские шаги подачи. */
-const FULL_COVERAGE = new Set(['ru', 'by', 'kz']);
+/** У Украины есть свой раздел переезда, но визового трека нет: в
+ *  SHARED_VISA_SEED её нет, потому что путь другой — безвиз, а не виза D.
+ *  Материал по нему живёт в разделе «Виза» отдельным сидом visa_ua_seed. */
+const NO_VISA_TRACK = new Set(['ua']);
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('ru-RU', {
@@ -106,9 +99,9 @@ export default function ChangeCountryPage() {
           >
             <span>
               <span className="font-serif text-navy text-base block">{c.label}</span>
-              {!FULL_COVERAGE.has(c.id) && (
+              {NO_VISA_TRACK.has(c.id) && (
                 <span className="font-serif text-navy/50 text-xs italic">
-                  разделов «Виза» и «Переезд» для этой страны пока нет
+                  въезд по безвизу — раздел «Виза» устроен иначе
                 </span>
               )}
             </span>
@@ -122,12 +115,13 @@ export default function ChangeCountryPage() {
         ))}
       </div>
 
-      {changed && !FULL_COVERAGE.has(picked) && (
+      {changed && NO_VISA_TRACK.has(picked) && (
         <div className="mx-6 mt-4 flex items-start gap-2 border border-gold/60 rounded-xl px-4 py-3">
           <TriangleAlert size={16} className="text-gold flex-shrink-0 mt-0.5" />
           <p className="font-serif text-navy/75 text-xs leading-relaxed">
-            Для «{LABELS[picked]}» разделы «Виза» и «Переезд» пока пустые — они
-            расписаны только для России. Остальное приложение работает.
+            У «{LABELS[picked]}» въезд по безвизу, поэтому раздел «Виза» устроен
+            иначе, чем у остальных: там про статус в Италии, а не про подачу на
+            визу D. Переезд и всё остальное работает.
           </p>
         </div>
       )}
