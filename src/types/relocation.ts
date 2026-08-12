@@ -57,6 +57,15 @@ export interface RelocationSteps {
   disclaimer_ru: string;
 }
 
+/** Альтернативная ветка шагов 1–2 для украинцев по protezione temporanea.
+ *  Отдельный блок, а не флаг внутри общих шагов: у визы D и временной защиты
+ *  разный въездной документ и разный порядок получения permesso, и смешивать
+ *  их в одном списке — верный способ, чтобы человек пошёл не по своей ветке. */
+export interface RelocationStepsAlt extends RelocationSteps {
+  intro_ru: string;
+  student_and_tp_ru: string;
+}
+
 export interface CardOption {
   name: string;
   tag_ru?: string;
@@ -84,6 +93,8 @@ export interface RelocationSeed {
     key_ru: string;
   };
   steps_overview_ru: RelocationSteps;
+  /** Есть только у Украины. */
+  steps_tp_ru?: RelocationStepsAlt;
   travel_routes: {
     title_ru: string;
     first_trip_logic_ru: string;

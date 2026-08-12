@@ -225,6 +225,56 @@ export default function RelocationOverviewPage() {
         })()}</Collapse>
       </div>
 
+      {/* Ветка временной защиты — отдельной карточкой, а не переключателем
+          внутри общего списка. Переключатель прячет половину контента за
+          состоянием: человек, не заметивший его, читает чужую ветку и идёт
+          не в ту дверь. Здесь обе версии видны сразу и подписаны. */}
+      {relocation.steps_tp_ru && (
+        <div className="mx-6 mt-4 bg-soft-cream border border-gold/50 rounded-2xl px-5 py-4">
+          <h4 className="font-serif text-navy text-lg font-bold">
+            {relocation.steps_tp_ru.title_ru}
+          </h4>
+          <p className="font-serif text-navy/75 text-sm mt-2 leading-relaxed">
+            {relocation.steps_tp_ru.intro_ru}
+          </p>
+
+          {relocation.steps_tp_ru.steps.map((step, i) => (
+            <div key={i} className="mt-4 pt-4 border-t border-navy/10">
+              <p className="font-serif text-gold text-[11px] tracking-[0.18em] font-bold">
+                ШАГ {i + 1}
+              </p>
+              <p className="font-serif text-navy text-base font-bold mt-1">{step.title_ru}</p>
+              <p className="font-serif text-navy/75 text-sm mt-1.5 leading-relaxed">
+                {step.description_ru}
+              </p>
+              {step.details_ru && (
+                <div className="flex flex-col gap-1.5 mt-2">
+                  {step.details_ru.map((d, j) => (
+                    <div key={j} className="flex items-start gap-2">
+                      <span className="text-gold mt-0.5 text-sm flex-shrink-0">◆</span>
+                      <p className="font-serif text-navy/70 text-xs leading-relaxed">{d}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {step.warning_ru && (
+                <div className="flex items-start gap-2 mt-2.5 border border-gold/60 rounded-xl px-3 py-2">
+                  <span className="text-gold text-xs font-bold flex-shrink-0">!</span>
+                  <p className="font-serif text-navy/75 text-xs leading-relaxed">{step.warning_ru}</p>
+                </div>
+              )}
+            </div>
+          ))}
+
+          <p className="font-serif text-navy/70 text-xs mt-4 pt-3 border-t border-navy/10 leading-relaxed">
+            {relocation.steps_tp_ru.student_and_tp_ru}
+          </p>
+          <p className="font-serif text-navy/50 text-xs italic mt-2 leading-relaxed">
+            {relocation.steps_tp_ru.disclaimer_ru}
+          </p>
+        </div>
+      )}
+
       {/* Навигация — компактная сетка мелких плиток, как в Университете */}
       <p className="font-serif text-gold text-sm font-bold px-6 mt-8 mb-3">Подробнее о:</p>
       <div className="px-6 grid grid-cols-2 gap-x-5 gap-y-4 md:flex md:flex-wrap md:justify-center">
