@@ -205,18 +205,32 @@ export default function ProgramOverviewPage() {
 
         {/* Шаги поступления — единственный раздел прямо на странице. Можно
             свернуть/развернуть, но без рамки-«кнопки» — просто заголовок,
-            кликабельный, контент течёт дальше как обычный текст страницы. */}
+            кликабельный, контент течёт дальше как обычный текст страницы.
+
+            На десктопе этого мало. На телефоне заголовок занимает почти всю
+            ширину и нажать по нему трудно промахнуться; на широком экране он
+            повисает посреди пустоты, а стрелка уезжает к дальнему краю — и
+            вместе они перестают читаться как одна кнопка. Поэтому только с md
+            добавляем очень мягкую подложку и рамку: достаточно, чтобы блок
+            собрался и было видно, что он кликабельный, но не настолько, чтобы
+            он спорил с карточкой программы выше. Мобильная вёрстка не
+            меняется ни на пиксель. */}
         <div>
           <button
             onClick={() => setStepsOpen(!stepsOpen)}
-            className="w-full flex items-center gap-3 text-left py-1"
+            className="w-full flex items-center gap-3 text-left py-1
+                       md:py-4 md:px-6 md:rounded-2xl md:border md:border-navy/15 md:bg-soft-cream/60
+                       md:transition-colors md:hover:border-navy/25 md:hover:bg-soft-cream"
           >
-            <div className="flex-1 text-center">
+            <div className="flex-1 text-center md:pl-7">
               <h4 className="font-serif text-navy text-2xl font-bold">Шаги поступления</h4>
               {!stepsOpen && (
                 <p className="font-serif text-gold text-sm mt-1 font-bold">Документы, дедлайны, заявка</p>
               )}
             </div>
+            {/* md:pl-7 у текста выше компенсирует ширину стрелки со щелью:
+                иначе заголовок центрируется по остатку строки и на широком
+                экране заметно уезжает влево от середины блока. */}
             <svg
               width="16" height="16" viewBox="0 0 14 14"
               className={'text-navy flex-shrink-0 transition-transform ' + (stepsOpen ? 'rotate-180' : '')}
