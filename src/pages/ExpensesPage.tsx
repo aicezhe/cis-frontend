@@ -12,6 +12,8 @@ import type { Expense, ExpenseCategory } from '../lib/expenses';
 import { useCurrency } from '../hooks/useCurrency';
 import { formatPrice } from '../utils/formatPrice';
 
+const PAID_KEY = 'cispr_paid_expenses';
+
 const SECTIONS_ORDER: ExpenseCategory[] = ['uni', 'visa', 'travel', 'parma'];
 
 interface LineItem {
@@ -68,6 +70,21 @@ export default function ExpensesPage() {
   const [expanded, setExpanded] = useState<ExpenseCategory | 'all' | null>(null);
   const [healthSsn, setHealthSsn] = useState(() => localStorage.getItem('cispr_health_ssn') === 'true');
 
+  // Отметки «уже оплачено». Хранятся так же, как галочки прогресса, — массив
+  // id в localStorage. Ручные расходы тоже отмечаются: человек добавил строку
+  // и вправе сказать, что уже её закрыл.
+  const [paid, setPaid] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem(PAID_KEY) || '[]'); } catch { return []; }
+  });
+  const isPaid = (id: string) => paid.includes(id);
+  function togglePaid(id: string) {
+    setPaid((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(PAID_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
   function chooseHealth(ssn: boolean) {
     localStorage.setItem('cispr_health_ssn', String(ssn));
     setHealthSsn(ssn);
@@ -103,6 +120,18 @@ export default function ExpensesPage() {
 
   const total = SECTIONS_ORDER.reduce((sum, id) => sum + sectionTotal(id), 0);
 
+  // Оплачено и остаток. Общий total намеренно оставлен как был: на него
+  // завязана сводка расходов на дашборде, и менять его смысл здесь значило бы
+  // молча изменить цифру на другом экране.
+  const paidTotal = SECTIONS_ORDER.reduce(
+    (sum, id) =>
+      sum +
+      sectionItems(id).filter((i) => isPaid(i.id)).reduce((a, i) => a + i.eur, 0) +
+      expenses.filter((e) => e.category === id && isPaid(e.id)).reduce((a, e) => a + e.amount_eur, 0),
+    0,
+  );
+  const remaining = Math.max(0, total - paidTotal);
+
   // Печать/сохранение в PDF — системный диалог печати браузера (в нём есть
   // «Сохранить как PDF»), без сторонних библиотек. Печатается отдельное чистое
   // представление — таблица (hidden print:block ниже), а не вёрстка экрана.
@@ -129,6 +158,15 @@ export default function ExpensesPage() {
       <div className="mx-6 mt-5 bg-navy rounded-2xl px-5 py-4 print:hidden">
         <p className="font-serif text-gold text-xs uppercase tracking-widest font-bold">Итого</p>
         <p className="font-serif text-cream text-3xl font-bold mt-1">{fmt(total)}</p>
+        {/* Крупной цифрой остаётся общая сумма: на неё завязана сводка расходов
+            на дашборде, и подменить её остатком значило бы молча изменить число
+            на другом экране. Оплаченное идёт строкой ниже. */}
+        {paidTotal > 0 && (
+          <div className="mt-2 pt-2 border-t border-cream/15 flex items-baseline justify-between gap-3">
+            <span className="font-serif text-gold text-sm font-bold">Оплачено {fmt(paidTotal)}</span>
+            <span className="font-serif text-cream/70 text-sm">осталось {fmt(remaining)}</span>
+          </div>
+        )}
         <p className="font-serif text-cream/60 text-xs mt-1">
           Разовые расходы на старте (универ, виза, переезд) + первый год жизни в Парме. Оценки помечены «~».
         </p>
@@ -158,7 +196,11 @@ export default function ExpensesPage() {
                   </tr>
                   {sectionItems(id).map((item) => (
                     <tr key={item.id}>
-                      <td className="py-1 pl-4" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>{item.label}</td>
+                      {/* Галочка в печати — символом, а не цветом: PDF часто
+                          печатают чёрно-белым, и подсветка исчезла бы. */}
+                      <td className="py-1 pl-4" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>
+                        {isPaid(item.id) ? '☑ ' : '☐ '}{item.label}
+                      </td>
                       <td className="py-1 text-right" style={{ borderBottom: '1px solid rgba(28,42,72,0.12)' }}>
                         {item.approx ? '~' : ''}{fmt(item.eur)}
                       </td>
@@ -179,6 +221,18 @@ export default function ExpensesPage() {
               <td className="pt-4 font-bold text-base">ИТОГО</td>
               <td className="pt-4 font-bold text-base text-right">{fmt(total)}</td>
             </tr>
+            {paidTotal > 0 && (
+              <>
+                <tr>
+                  <td className="pt-1" style={{ color: '#B89968' }}>Уже оплачено</td>
+                  <td className="pt-1 text-right" style={{ color: '#B89968' }}>{fmt(paidTotal)}</td>
+                </tr>
+                <tr>
+                  <td className="font-bold">Осталось</td>
+                  <td className="font-bold text-right">{fmt(remaining)}</td>
+                </tr>
+              </>
+            )}
           </tbody>
         </table>
         <p className="text-navy/50 text-[11px] italic mt-4">
@@ -216,16 +270,33 @@ export default function ExpensesPage() {
                   ) : (
                     <>
                       {items.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => setEditingPrice({ id: item.id, label: item.label, baseEur: item.baseEur ?? item.eur })}
-                          className="flex items-start justify-between gap-3 text-left print:pointer-events-none"
-                        >
-                          <span className="font-serif text-navy/85 text-sm flex-1">{item.label}</span>
-                          <span className={'font-serif text-sm font-bold flex-shrink-0 ' + (item.edited ? 'text-gold' : 'text-navy/85')}>
-                            {item.approx ? '~' : ''}{fmt(item.eur)}
-                          </span>
-                        </button>
+                        <div key={item.id} className="flex items-start gap-2.5">
+                          {/* Галочка отдельной кнопкой, а не по тапу на строку:
+                              тап по строке уже занят — он открывает правку цены.
+                              Свести их в один жест значит сделать оба ненадёжными. */}
+                          <button
+                            onClick={() => togglePaid(item.id)}
+                            aria-label={isPaid(item.id) ? 'Отменить отметку об оплате' : 'Отметить как оплаченное'}
+                            className="flex-shrink-0 mt-0.5"
+                          >
+                            {isPaid(item.id) ? (
+                              <span className="w-4 h-4 rounded-full bg-gold flex items-center justify-center text-cream text-[9px]">✓</span>
+                            ) : (
+                              <span className="block w-4 h-4 rounded-full border-2 border-navy/25" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setEditingPrice({ id: item.id, label: item.label, baseEur: item.baseEur ?? item.eur })}
+                            className="flex items-start justify-between gap-3 text-left flex-1 print:pointer-events-none"
+                          >
+                            <span className={'font-serif text-sm flex-1 ' + (isPaid(item.id) ? 'text-navy/40 line-through' : 'text-navy/85')}>
+                              {item.label}
+                            </span>
+                            <span className={'font-serif text-sm font-bold flex-shrink-0 ' + (isPaid(item.id) ? 'text-navy/40' : item.edited ? 'text-gold' : 'text-navy/85')}>
+                              {item.approx ? '~' : ''}{fmt(item.eur)}
+                            </span>
+                          </button>
+                        </div>
                       ))}
 
                       {/* Ручные расходы — теми же строками, что seed-разбивка, а не
