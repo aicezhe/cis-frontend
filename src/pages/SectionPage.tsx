@@ -16,10 +16,10 @@ const sectionsData: Record<string, any> = {
       // Цены и порядок — из public/data/costs_seed.json (countries.ru.documents).
       // Апостиль ИДЁТ ПЕРВЫМ: перевод без штампа придётся переделывать. Перевод
       // (€60) — за комплект «аттестат + приложение», приложение и есть транскрипт.
-      { num: 3, title: 'Документы и легализация', sub: '€400–550', deadline: '14 дней', price: '€400–550', substeps: [
-        { title: 'Апостиль на аттестат', price: '€140' },
-        { title: 'Перевод аттестата на итальянский', price: '€60' },
-        { title: 'Сделать CIMEA или Dichiarazione di valore', price: '€75–150' },
+      { num: 3, title: 'Документы и легализация', deadline: '14 дней', price: '€0', substeps: [
+        { title: 'Апостиль на аттестат' },
+        { title: 'Перевод аттестата на итальянский' },
+        { title: 'Сделать CIMEA или Dichiarazione di valore' },
         { title: 'Сертификат итальянского B2', price: '€120–200' },
       ]},
       { num: 4, title: 'Регистрация интереса', sub: 'Let\'s keep in touch · €0', deadline: '7 дней', price: '€0', substeps: [] },
@@ -45,8 +45,8 @@ const sectionsData: Record<string, any> = {
       ]},
       { num: 2, title: 'Завершить поступление', sub: 'Acceptance letter · €0', deadline: 'актуально', price: '€340', substeps: [
         { title: 'Получить официальное письмо о зачислении', price: '€0' },
-        { title: 'Апостиль на аттестат', price: '€20–50' },
-        { title: 'Перевод документов об образовании', price: '€150–250' },
+        { title: 'Апостиль на аттестат' },
+        { title: 'Перевод документов об образовании' },
         { title: 'Dichiarazione di Valore (по запросу вуза)', price: '€30–60' },
       ]},
       { num: 3, title: 'Регистрация на Universitaly', sub: 'Pre-enrolment · €0', deadline: '7 дней', price: '€0', substeps: [
