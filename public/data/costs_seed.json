@@ -263,6 +263,8 @@
       "tolc_fee_eur": 30,
       "imat_fee_eur": 130,
       "enrollment_min_eur": 156,
+      "enrollment_no_isee_min_eur": 1500,
+      "enrollment_no_isee_max_eur": 2500,
       "note_ru": "Стоимость обучения: 156€/год (no tax area, ISEE ≤27 000€) до 2 500€/год (без ISEE). ISEE parificato оформляется бесплатно через CAF."
     },
     "master": {
@@ -278,6 +280,8 @@
         "language_test_italian_b2"
       ],
       "enrollment_min_eur": 156,
+      "enrollment_no_isee_min_eur": 1500,
+      "enrollment_no_isee_max_eur": 2500,
       "note_ru": "Стоимость обучения: аналогично бакалавриату — от 156€ (ISEE) до 2 500€/год."
     }
   }

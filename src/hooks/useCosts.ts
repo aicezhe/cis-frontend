@@ -12,6 +12,8 @@ export interface CostItem {
   eur: number;
   note_ru?: string;
   optional?: boolean;
+  /** Оценка, а не точная цифра — в UI помечается «~». */
+  approx?: boolean;
 }
 
 export interface UniCosts {
@@ -22,6 +24,9 @@ export interface UniCosts {
   has_visa_waiver: boolean; // UA с временной защитой
   loading: boolean;
 }
+
+/** Есть ли у юзера действующий ISEE. Пусто = нет: см. развилку взноса ниже. */
+export const ISEE_KEY = 'cispr_has_isee';
 
 let _cache: any | null = null;
 
@@ -77,14 +82,38 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
     });
   }
 
-  // Минимальный взнос при зачислении (бакалавр/маги)
+  // Взнос университету. Развилка по ISEE, а не одно число: с ISEE это 156 €,
+  // без него — 1500–2500 €, то есть разница в пятнадцать раз. Показать только
+  // 156 € значило бы занизить смету для всех, кто ISEE ещё не оформил, а
+  // взять худший случай молча — напугать тех, у кого он есть.
+  //
+  // Дефолт — БЕЗ ISEE: человек, который про ISEE ещё не думал, скорее его не
+  // имеет, и лучше пусть смета окажется завышенной, чем он приедет с
+  // недостающей тысячей евро.
   if ((program === 'bachelor' || program === 'master') && programData.enrollment_min_eur > 0) {
-    items.push({
-      id: 'uni:enrollment_min',
-      label_ru: 'Минимальный взнос (no tax area, ISEE ≤27 000€)',
-      eur: programData.enrollment_min_eur,
-      note_ru: 'С ISEE parificato — 156€/год. Без ISEE — до 2 500€/год.',
-    });
+    const hasIsee = localStorage.getItem(ISEE_KEY) === 'true';
+    items.push(
+      hasIsee
+        ? {
+            id: 'uni:enrollment_min',
+            label_ru: 'Взнос университету (с ISEE, no tax area)',
+            eur: programData.enrollment_min_eur,
+            note_ru: 'ISEE ≤27 000 € — 156 €/год. ISEE parificato оформляется бесплатно через CAF.',
+          }
+        : {
+            id: 'uni:enrollment_no_isee',
+            label_ru: 'Взнос университету (без ISEE)',
+            // В смету берём верх вилки: занижать то, на что человек копит, хуже,
+            // чем завысить. Диапазон целиком — в подписи.
+            eur: programData.enrollment_no_isee_max_eur ?? 2500,
+            approx: true,
+            note_ru:
+              `Без ISEE применяется максимальный взнос университета — обычно ` +
+              `${programData.enrollment_no_isee_min_eur ?? 1500}–${programData.enrollment_no_isee_max_eur ?? 2500} €, ` +
+              `точная сумма зависит от вуза. Оформление ISEE снижает эту сумму, ` +
+              `но требует времени через CAF — планируй заранее.`,
+          },
+    );
   }
 
   // ВИЗА здесь НЕ считается: у визовых расходов свой раздел-владелец «Виза»
@@ -103,7 +132,11 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
   };
 }
 
-export function useUniCosts(): UniCosts {
+/** @param hasIseeOverride — состояние тумблера ISEE со страницы. Передаётся
+ *  снаружи, потому что расчёт читает localStorage один раз в эффекте: без
+ *  этого аргумента переключение тумблера не пересчитывало бы смету до
+ *  перемонтирования, и человек видел бы старую сумму рядом с новым выбором. */
+export function useUniCosts(hasIseeOverride?: boolean): UniCosts {
   const country = (localStorage.getItem('cispr_country') || 'ru') as CountryCode;
   const stored = localStorage.getItem('cispr_program');
   const program: ProgramKey =
@@ -127,7 +160,7 @@ export function useUniCosts(): UniCosts {
         if (!cancelled) setResult((prev) => ({ ...prev, loading: false }));
       });
     return () => { cancelled = true; };
-  }, [country, program]);
+  }, [country, program, hasIseeOverride]);
 
   return result;
 }

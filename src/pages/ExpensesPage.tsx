@@ -5,7 +5,7 @@ import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { EditPriceSheet } from '../components/EditPriceSheet';
 import { sectionsData, parsePrice } from '../lib/sectionsData';
-import { useUniCosts } from '../hooks/useCosts';
+import { useUniCosts, ISEE_KEY } from '../hooks/useCosts';
 import { useExpenses } from '../hooks/useExpenses';
 import { usePriceOverrides } from '../hooks/usePriceOverrides';
 import type { Expense, ExpenseCategory } from '../lib/expenses';
@@ -59,7 +59,17 @@ function staticItems(id: 'visa' | 'travel' | 'parma'): LineItem[] {
 // «+» здесь) и отредактировать/удалить уже добавленный тапом по строке.
 export default function ExpensesPage() {
   const navigate = useNavigate();
-  const uniCosts = useUniCosts();
+  // Дефолт — «нет ISEE»: человек, который про ISEE ещё не думал, скорее его не
+  // имеет. Занизить смету по умолчанию хуже, чем завысить: во втором случае
+  // останутся лишние деньги, в первом их не хватит уже на месте.
+  const [hasIsee, setHasIsee] = useState(() => localStorage.getItem(ISEE_KEY) === 'true');
+  function chooseIsee(v: boolean) {
+    localStorage.setItem(ISEE_KEY, String(v));
+    setHasIsee(v);
+  }
+
+  // Смета зависит от тумблера — передаём его в хук, иначе пересчёт не случится.
+  const uniCosts = useUniCosts(hasIsee);
   const { expenses, totalByCategory, removeExpense } = useExpenses();
   const { overrides } = usePriceOverrides();
   const { currency } = useCurrency();
@@ -100,7 +110,7 @@ export default function ExpensesPage() {
   const sectionItems = (id: ExpenseCategory): LineItem[] => {
     const raw =
       id === 'uni'
-        ? uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru }))
+        ? uniCosts.items.map((i) => ({ id: i.id, label: i.label_ru, eur: i.eur, note: i.note_ru, approx: i.approx }))
         : id === 'parma'
         ? [...staticItems(id), healthItem(healthSsn)]
         : staticItems(id);
@@ -324,6 +334,37 @@ export default function ExpensesPage() {
                           </div>
                         </div>
                       ))}
+
+                      {/* Тумблер ISEE. Разница между ветками — 156 € против
+                          1500–2500 €, то есть смета меняется в разы. Поэтому
+                          выбор стоит прямо в разделе, а не прячется в
+                          настройках: он должен попасться на глаза тому, кто
+                          смотрит на итог. */}
+                      {id === 'uni' && (
+                        <div className="mt-1 pt-2 border-t border-navy/10 print:hidden">
+                          <p className="font-serif text-navy/50 text-[11px] mb-1.5">Есть действующий ISEE?</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => chooseIsee(false)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (!hasIsee ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              Нет — до {fmt(2500)}
+                            </button>
+                            <button
+                              onClick={() => chooseIsee(true)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (hasIsee ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              Есть — {fmt(156)}
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Выбор медицины — частная страховка (~€150) или SSN (€700).
                           Меняет строку «медицина» и итог раздела. */}
