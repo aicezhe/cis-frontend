@@ -53,7 +53,7 @@ export function NewsWidget() {
       {/* Хедер раздела */}
       <div className="flex items-center justify-between px-6 mt-7 mb-3">
         <h2 className="font-serif text-navy text-xl leading-none">
-          Актуальное
+          Новости
         </h2>
         <div className="flex gap-0">
           {TABS.map((t, i) => (
