@@ -28,6 +28,11 @@ export interface UniCosts {
 /** Есть ли у юзера действующий ISEE. Пусто = нет: см. развилку взноса ниже. */
 export const ISEE_KEY = 'cispr_has_isee';
 
+/** Идёт ли юзер на numero chiuso (медицина, архитектура, ветеринария).
+ *  Пусто = нет: отборочные тесты платят единицы, и держать их в смете у всех
+ *  значит завышать итог тем, кому они не нужны. */
+export const CHIUSO_KEY = 'cispr_numero_chiuso';
+
 let _cache: any | null = null;
 
 async function loadCostsSeed(): Promise<any> {
@@ -74,6 +79,16 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
   // Стоимость курса (Foundation) — полная цена курса, а не только депозит
   // (депозит — это первый взнос ИЗ этой суммы, а не отдельная статья расхода).
   if (program === 'foundation') {
+    // Доплаты при подаче — только у тех, кто идёт через FY. Для поступающих
+    // напрямую строки нет вовсе: показать её нулём значило бы намекнуть на
+    // расход, которого у них не бывает.
+    items.push({
+      id: 'uni:foundation_apply_extra',
+      label_ru: 'Foundation Year — доплаты при подаче',
+      eur: 600,
+      approx: true,
+      note_ru: 'Обычно 300–600 €: сборы за рассмотрение и сопутствующие платежи. В смету взят верх вилки.',
+    });
     items.push({
       id: 'uni:foundation_fee',
       label_ru: 'Курс Foundation Year',
@@ -116,6 +131,42 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
     );
   }
 
+  // Отборочный тест — только для numero chiuso. IMAT (медицина) дороже TOLC,
+  // берём его как верхнюю границу: кто идёт на медицину, заплатит больше.
+  if ((program === 'bachelor' || program === 'master') && localStorage.getItem(CHIUSO_KEY) === 'true') {
+    items.push({
+      id: 'uni:chiuso_test',
+      label_ru: 'Отборочный тест (numero chiuso)',
+      eur: programData.imat_fee_eur ?? 130,
+      approx: true,
+      note_ru: `TOLC — ${programData.tolc_fee_eur ?? 30} €, IMAT для медицины — ${programData.imat_fee_eur ?? 130} €. В смету взят верх.`,
+    });
+  }
+
+  // Документы для ISEE — отдельные от легализации диплома. Их часто путают:
+  // там апостиль на аттестат (140 € у РФ), здесь — на справки о доходах и
+  // составе семьи (20–30 €). Поэтому в подписи прямо сказано, что это не
+  // диплом; одинаковые слова «апостиль» и «перевод» в одной смете иначе
+  // читаются как дубль.
+  if (program === 'bachelor' || program === 'master') {
+    items.push(
+      {
+        id: 'uni:isee_apostille',
+        label_ru: 'Апостиль справок для ISEE',
+        eur: 30,
+        approx: true,
+        note_ru: 'Не диплом: справки о доходах и составе семьи. Обычно 20–30 €.',
+      },
+      {
+        id: 'uni:isee_translation',
+        label_ru: 'Перевод справок для ISEE',
+        eur: 15,
+        approx: true,
+        note_ru: 'Не диплом: перевод тех же справок. Обычно 8–15 €.',
+      },
+    );
+  }
+
   // ВИЗА здесь НЕ считается: у визовых расходов свой раздел-владелец «Виза»
   // (sectionsData.visa). Раньше consular/service/insurance попадали и сюда, и
   // туда — итог двоился. См. правило «каждый расход ровно в одном разделе».
@@ -136,7 +187,7 @@ function calcCosts(seed: any, country: CountryCode, program: ProgramKey): Omit<U
  *  снаружи, потому что расчёт читает localStorage один раз в эффекте: без
  *  этого аргумента переключение тумблера не пересчитывало бы смету до
  *  перемонтирования, и человек видел бы старую сумму рядом с новым выбором. */
-export function useUniCosts(hasIseeOverride?: boolean): UniCosts {
+export function useUniCosts(hasIseeOverride?: boolean, chiusoOverride?: boolean): UniCosts {
   const country = (localStorage.getItem('cispr_country') || 'ru') as CountryCode;
   const stored = localStorage.getItem('cispr_program');
   const program: ProgramKey =
@@ -160,7 +211,7 @@ export function useUniCosts(hasIseeOverride?: boolean): UniCosts {
         if (!cancelled) setResult((prev) => ({ ...prev, loading: false }));
       });
     return () => { cancelled = true; };
-  }, [country, program, hasIseeOverride]);
+  }, [country, program, hasIseeOverride, chiusoOverride]);
 
   return result;
 }

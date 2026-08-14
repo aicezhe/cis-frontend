@@ -5,7 +5,7 @@ import TabBar from '../components/TabBar';
 import { AddExpenseSheet } from '../components/AddExpenseSheet';
 import { EditPriceSheet } from '../components/EditPriceSheet';
 import { sectionsData, parsePrice } from '../lib/sectionsData';
-import { useUniCosts, ISEE_KEY } from '../hooks/useCosts';
+import { useUniCosts, ISEE_KEY, CHIUSO_KEY } from '../hooks/useCosts';
 import { useExpenses } from '../hooks/useExpenses';
 import { usePriceOverrides } from '../hooks/usePriceOverrides';
 import type { Expense, ExpenseCategory } from '../lib/expenses';
@@ -69,7 +69,15 @@ export default function ExpensesPage() {
   }
 
   // Смета зависит от тумблера — передаём его в хук, иначе пересчёт не случится.
-  const uniCosts = useUniCosts(hasIsee);
+  const [chiuso, setChiuso] = useState(() => localStorage.getItem(CHIUSO_KEY) === 'true');
+  function chooseChiuso(v: boolean) {
+    localStorage.setItem(CHIUSO_KEY, String(v));
+    setChiuso(v);
+  }
+
+  // Смета зависит от обоих тумблеров — передаём их в хук, иначе пересчёт не
+  // случится до перемонтирования.
+  const uniCosts = useUniCosts(hasIsee, chiuso);
   const { expenses, totalByCategory, removeExpense } = useExpenses();
   const { overrides } = usePriceOverrides();
   const { currency } = useCurrency();
@@ -361,6 +369,29 @@ export default function ExpensesPage() {
                               }
                             >
                               Есть — {fmt(156)}
+                            </button>
+                          </div>
+                          <p className="font-serif text-navy/50 text-[11px] mt-2.5 mb-1.5">
+                            Идёшь на numero chiuso? (медицина, архитектура, ветеринария)
+                          </p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => chooseChiuso(false)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (!chiuso ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              Нет
+                            </button>
+                            <button
+                              onClick={() => chooseChiuso(true)}
+                              className={
+                                'flex-1 font-serif text-xs rounded-full py-1.5 border ' +
+                                (chiuso ? 'bg-navy text-cream border-navy' : 'text-navy/70 border-navy/25')
+                              }
+                            >
+                              Да — тест до {fmt(130)}
                             </button>
                           </div>
                         </div>
