@@ -77,8 +77,10 @@ export function DesktopRail() {
           relative нельзя, оно бы затёрло прилипание. */}
       <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex flex-col items-center">
 
-      <p className="font-serif text-gold text-[10px] tracking-[0.22em] mb-5 print:hidden">МЕНЮ</p>
-
+      {/* Подписи «МЕНЮ» над вкладками нет: три иконки с именами внизу и так
+          читаются как навигация, а заголовок над ними только добавлял шума.
+          Центрирование группы от этого не поехало — оно абсолютное, от высоты
+          самого <nav>, а не от содержимого. */}
       <div className="flex flex-col items-center gap-9">
         {tabs.map((tab) => (
           <button
